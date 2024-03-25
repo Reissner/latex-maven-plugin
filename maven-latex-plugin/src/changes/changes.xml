@@ -975,6 +975,38 @@ This would enable this software to decide on the conversion, if supported.
 Else warning. 
 -->
 
+<!-- for chapter 4 various kinds of graphics are supported, 
+mp, fig, gp (gnuplot) and svg. 
+whereas mp is a special case, the other formats are currently converted into a combination 
+of latex fonts and pdf/eps graphics. 
+
+now fig2dev allows tikz output and this seems lossless. 
+gnuplot even in oldest version supported, 5.4 seems to have offered a tikz interface. 
+only inkscape used for converting svg seems not to offer tikz output. 
+For this there is a separate tool svg2tikz 
+described in https://github.com/xyz2tex/svg2tikz?tab=readme-ov-file
+
+In general one has to check how much conversion to tikz is lossless. 
+This is clarified for fig: it is lossless and we have an example document for this. 
+For the other formats, gp and svg this analysis is to be done. 
+
+In general tikz would be superior to current combination of latex (self invented ending ptx), 
+and, depending on the context pdf and eps. 
+All this would be replaced by a single tikz file with that ending. 
+Distinguish between hand made tikz and computed one. 
+This spares time and/or complexity because currently, eps and pdf are created, 
+which could be reduced to the format needed, but this is effort. 
+Even if we stick to a single case, we spare a single file, still two have to be created. 
+A closer look unveils that the latex file is created twice in some cases  without chance to change this. 
+With tikz we had a single file and in addition, this is much smaller 
+and it is likely that this can be created faster. 
+Let us check. 
+
+Another advantage would be fls file with dependencies. 
+Not clear: is tikz as mighty as the source format? 
+For combination pdf/eps with latex this is for sure the case. 
+-->
+
 
     <release version="2.0" date="2023-08-28" description="">
       <action dev='reissner' type='add'>
