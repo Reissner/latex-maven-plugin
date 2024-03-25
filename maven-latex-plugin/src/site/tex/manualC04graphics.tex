@@ -406,7 +406,7 @@ into pdf-, eps- and ptx-files with inclusions}
 
 The term ``gnuplot'' refers to a file format
 and to a program \texttt{gnuplot}
-which can read this format, both described in~\cite{GnuPlot}. 
+which can read this format, both described in~\cite{GnuPlot6_0}. 
 
 Note that there seems no official file extension 
 to identify gnuplot files. 
@@ -422,7 +422,7 @@ The gnuplot format is a textual command language you can even program with
 and may thus be created with any editor but
 for sake of reproducibility it is recommended to use only files
 created by \texttt{gnuplot}.
-To ensure that a hand-written gnuplot file \texttt{xxx.gp},
+To ensure that a handwritten gnuplot file \texttt{xxx.gp},
 e.g.\@ with a single line like
 %
 \begin{verbatim}
@@ -456,24 +456,27 @@ This software supports including
 figures stored in \texttt{.gp}-files created by \texttt{gnuplot}.
 To export a file \texttt{xxx.gp} into several external formats, 
 it uses \texttt{gnuplot} itself. 
-According to the manual~\cite{GnuPlot}, Part IV, 
-\texttt{gnuplot} supports output formats through so called \emph{terminals}. 
+According to the manual~\cite{GnuPlot6_0}, Part IV, 
+\texttt{gnuplot} supports output formats through so-called \emph{terminals}. 
 Among those are several ones intended for inclusion into \LaTeX-files, 
-like \texttt{Cairolatex}, \texttt{Eepic}, \texttt{Epslatex}, 
-\texttt{Latex}, \texttt{Lua}, 
-\texttt{Mf}, \texttt{Mp}, \texttt{Postscript}, \texttt{Ps(la)tex}, % chktex 36
-\texttt{Pstricks}, \texttt{Texdraw} and \texttt{Tpic}. 
+like \texttt{Cairolatex}, \texttt{Epscairo}, \texttt{Epslatex}, 
+\texttt{Latex}, \texttt{Lua (tikz)}, \texttt{Postscript}, \texttt{Ps(la)tex}, % chktex 36
+\texttt{Pstricks}, \texttt{Texdraw} and \texttt{Tikz} 
+which is in fact equivalent with \texttt{Lua (tikz)}. 
+Comparison with the manual~\cite{GnuPlot5_0} for older versions of \texttt{gnuplot} 
+shows that support of \texttt{Eepic}, \texttt{Mp} and \texttt{Tpic} ended. 
 Note that also export into the fig-format via the terminal \texttt{Fig} 
 is supported which in turn may be included in latex 
 as described in Section~\ref{sec:fig2dev}. 
-Also \texttt{gnuplot} pictures may be exported in MetaPost format 
+Also, \texttt{gnuplot} pictures may be exported in MetaPost format 
 which in turn may be included in latex 
 as described in Section~\ref{sec:metapost}. 
+% TBD: clarify maybe tikz is superior. see backlog. 
 
 This software supports the export of a file \texttt{xxx.gp} 
 only via the terminal \texttt{Cairolatex} 
-which offers export to mixed pdf and \LaTeX\@: 
-graphics in pdf and text in \LaTeX{}
+which offers export to mixed PDF and \LaTeX\@: 
+graphics in PDF and text in \LaTeX{}
 which yields the fonts typical for \LaTeX. 
 This is as described for fig-files in Section~\ref{sec:fig2dev}, 
 except that text is generally converted in \LaTeX{}-format, 
@@ -855,7 +858,7 @@ that the redefinition really influences rendering in the MetaPost file.
 
 
 
-\section{Inclusion of svg-files}\label{sec:picSvg}
+\section{Inclusion of SVG-files}\label{sec:picSvg}
 
 Comparable with the xfig-format described in Section~\ref{sec:fig2dev} 
 but much more elaborate and widely used is the \gls{svg}-format. 
@@ -865,13 +868,13 @@ which is itself quite short and more readable
 and gives also a good overview on ``SVG Big''. 
 For a tutorial, see~\cite{SvgTut}. 
 As stated in~\cite{Svg12Tiny}, Section~1.1, 
-svg-files may contain vector graphics, raster images and text. 
+SVG-files may contain vector graphics, raster images and text. 
 It may also contain video and audio elements 
 and may be interactive and dynamic, 
 which goes beyond what can be included in \LaTeX-files. 
 
 Figure~\ref{fig:svgWithText} shows a picture in \gls{svg}-format. 
-As pdf-files are included directly 
+As PDF-files are included directly 
 via the \cmd{includegraphics}-command, 
 using the \LaTeX-packages \pkg{xcolor} and \pkg{graphicx}, 
 virtually, 
@@ -918,7 +921,7 @@ Also, the \pkg{svg}-package does not provide the full flexibility
 of a standard solution. 
 Since this software is still under construction 
 and more than that, is in an experimental phase, 
-we provide explicit preprocessing of svg-files using \texttt{inkscape}. 
+we provide explicit preprocessing of SVG-files using \texttt{inkscape}. 
 Another problem with the \pkg{svg}-package is, 
 that according to~\cite{SvgP}, Section~1, 
 it does not work on Windows platforms. 
@@ -936,7 +939,7 @@ inkscape --export-filename=xxx.pdf --export-area-drawing --export-latex xxx.svg
 containing all graphics but text and another file \texttt{xxx.pdf\_tex}
 containing text and including \texttt{xxx.pdf}.
 The file \texttt{xxx.pdf\_tex}
-can be be integrated into the latex document as
+can be integrated into the latex document as
 %
 \begin{lstlisting}[language=TeX]
 \def\svgwidth{0.5\textwidth}
@@ -946,7 +949,7 @@ can be be integrated into the latex document as
 Unlike \texttt{fig2dev} and \texttt{gnuplot}, 
 specifying the files with their full path, 
 has no effect, i.e.~inclusion uses the file name only. 
-Thus \cmd{import}{} cannot be replaced by \cmd{input}{} 
+Thus, \cmd{import}{} cannot be replaced by \cmd{input}{} 
 and so the \LaTeX-package \pkg{import} is required. 
  
 
@@ -965,7 +968,7 @@ exports files \texttt{xxx.eps\_tex} and \texttt{xxx.eps}.
 In older versions of \texttt{inkscape},
 there was a configuration allowing \texttt{xxx.eps\_tex}
 to include uniformly both \texttt{xxx.pdf} and \texttt{xxx.eps}.
-Thus \texttt{xxx.pdf\_tex} could be deleted
+Thus, \texttt{xxx.pdf\_tex} could be deleted
 and \texttt{xxx.eps\_tex} moved to \texttt{xxx.ptx}
 which in turn could be included into the main document.
 
@@ -977,7 +980,7 @@ are included in \texttt{xxx.ptx}.
 Then it deletes the original files
 \texttt{xxx.pdf\_tex} and \texttt{xxx.eps\_tex}.
 
-The author has filed a bug report to the inkscape-team,
+The author has filed a bug report to the inkscape team,
 to avoid this workaround in the future. 
 
 \begin{figure}[htb]
