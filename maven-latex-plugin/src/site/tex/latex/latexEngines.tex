@@ -85,7 +85,7 @@ and discusses also aspects under which they are specific.
 These programs are just underlying tex engines preloading the the \LaTeX{} format. 
 The names of the underlying engines just drop the inner sylable ``\texttt{la}''. 
 For \texttt{pdftex} there is a user manual~\cite{PdfTexUsr}, 
-for \texttt{luatex} there is a reference manual~\cite{LuaTexRef} and 
+for \texttt{luatex} there is a reference manual~\cite{LuaTexRef24} and 
 for \texttt{xetex} a reference guide~\cite{XeTexRef}. 
 
 The first aspect we cover are the options (among those to display the version). 
@@ -271,7 +271,8 @@ This is the source of the following tables.
 
 The first observation is that, for \miktex{} all options start with two dashes, 
 whereas for \texlive{} this is the case only for luatex. 
-One has to clarify, whether the maven latex plugin under consideration really works for \miktex. 
+One has to clarify, 
+whether the maven latex plugin under consideration really works for \miktex. 
 
 {\footnotesize
 \begin{longtable}{|lllll|}
@@ -646,7 +647,7 @@ to set the following pieces of information to unknown:
   \item[Producer] This is \texttt{xdvipdfmx} with version for creating DVIs 
   and in general for \xelatex. 
   For creating PDF with \pdflatex{} or with \lualatex, 
-  it is something like \texttt{pdfTeX-1.40.25} or \texttt{LuaTeX-1.17.0}. 
+  it is something like \texttt{pdfTeX-1.40.25} or \texttt{LuaTeX-1.18.0}. 
   This shall be hidden for sake of security and stability of reproducibility. 
   \item[CreationDate] Note that despite of its name, in fact it is both date and time. 
   It is wrong if using \texttt{SOURCE\_DATE\_EPOCH=0 FORCE\_SOURCE\_DATE=1} 
@@ -683,7 +684,7 @@ Only banner and trailer identifier are suppressed in a compiler specific way.
 Besides code, \texttt{headerSuppressMetaPDF.tex} provides 
 additional info in the comments, 
 but for details specific for the individual compilers 
-see~\cite{LuaTexRef}, Section 3.2.2 for \lualatex, 
+see~\cite{LuaTexRef24}, Section 14.1.8 for \lualatex, 
 and~\cite{PdfTexUsr}, Section 7.2 for \pdflatex. 
 Seemingly, \xelatex{} is quite different from the other compilers 
 and tends to write fewer pieces of information. 
