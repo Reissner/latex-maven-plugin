@@ -36,7 +36,7 @@ This is mostly to spare processing time
 while still ensuring that the created documents are up-to-date. 
 Among others, \texttt{latexmk} uses this information. 
 
-Another possible use case for the FLS files is to ensure reprocucibility of the results. 
+Another possible use case for the FLS files is to ensure reproducibility of the results. 
 The FLS file can be the main contribution to this: 
 Essentially for reproduction all the input files mentioned in the FLS file 
 must be the delivered to reproduce the results. 
@@ -45,7 +45,7 @@ Part is in the installation so if this is known,
 only the files mentioned in the FLS file as input which are outside the installation must be delivered. 
 CAUTION\@: There are packages not part of an installation 
 but installed separately fitting into the folder structure of the installation 
-like the tikz uml package described in~\cite{tikzumlP} at time of this writing. 
+like the tikz-uml package described in~\cite{tikzumlP} at time of this writing. 
 
 To get all creates files all files mentioned in the FLS file as output must be delivered. 
 \medskip
@@ -103,13 +103,13 @@ In the first case, it seems that these paths refer to files in a subdirectory
 of the current directory, not in the second. 
 
 The absolute paths either refer to the installation or to a cache. 
-In my linux box, the cache is at \texttt{~/.cache/texmf/}, so it is in my home directory. 
+In my Linux box, the cache is at \texttt{~/.cache/texmf/}, so it is in my home directory. 
 
 The installation directory of a \TeX{} Live installation, 
 is given by \texttt{kpsewhich latex.ltx}, 
 just eliminating three containment levels from the path. 
 
-The rest of the input lines of the fls files are the following on my linux box: 
+The rest of the input lines of the FLS files are the following on my Linux box: 
 %
 \begin{verbatim}
 INPUT /var/lib/texmf/web2c/luahbtex/lualatex.fmt
@@ -126,20 +126,20 @@ the author knows about at time of this writing
 are the file \texttt{xxx.synctex.gz} and related. 
 In general, each package is responsible for keeping track of its file input and output. 
 So to ensure that the input and output files mentioned in the FLS file, 
-it is advisable to restrict oneself to a liminted set of packages. 
+it is advisable to restrict oneself to a limited set of packages. 
 
 If FIG files are used then as mentioned in~\cite{XFigF}, Section 3.2, 
 also pictures can be included. 
-Some of the supported formats allow even inclusion of further files. 
+Some supported formats allow even inclusion of further files. 
 
-Metapost files, described in~\cite{MPost} also offer a way to include other files. 
-Also the processor for metapost, \texttt{mpost} offers its own \texttt{recorder} option 
-as indicated in~\cite{MPost},~Appendix~B~2.1. 
-Note that also \texttt{luatex} can be used as a metapost processor 
+Metapost files, described in~\cite{MPost24} also offer a way to include other files. 
+Also, the processor for metapost, \texttt{mpost} offers its own \texttt{recorder} option 
+as indicated in~\cite{MPost24},~Appendix~B~2.1. 
+Note that also \texttt{luatex} can be used as a metapost processor, 
 and it should be checked which of the dependencies within metapost files 
 \texttt{luatex} records within its FLS file. 
 
-Strange enough, nowhere in the manual~\cite{MPost} 
+Strange enough, nowhere in the manual~\cite{MPost24} 
 is introduced the probably most relevant way of including other metapost files, 
 namely by the command \texttt{input}, 
 although Section~13.1 uses this mechanism to include \texttt{TEX.mp}. 
@@ -153,8 +153,8 @@ can be placed arbitrary \TeX{} material
 and in particular the \texttt{\textbackslash{}input} macro to include further TEX files. 
 
 For \texttt{lualatex},~\cite{LuaInMp}, 
-Section~``Helpers'' illustrates that lua code can be directly invoked within matapost. 
-Of course, lua can access files, possibly reading or writing, and it is hardly conceivable, 
+Section~``Helpers'' illustrates that Lua code can be directly invoked within metapost. 
+Of course, Lua can access files, possibly reading or writing, and it is hardly conceivable, 
 that the files seen or touched are recorded. 
 
 The author did not check for any of these constructions which may introduce dependencies, 
