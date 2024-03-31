@@ -18,15 +18,15 @@
     \ifLuaTeX%
       % for lualatex 
       % no adding to the trailer dictionary.
-      \pdfvariable trailerid{}% chktex 1
+      \pdfvariable trailerid{}% luatex 1.18, manual 14.1.8% chktex 1
 
       % omit only CreationDate and ModDate keys.
       % \pdfvariable suppressoptionalinfo 767% chktex 1
       % 767=512+0+128+64+...+1 this excludes all but 
       % We decided to omit all information 
-      \pdfvariable suppressoptionalinfo -1% chktex 1
+      \pdfvariable suppressoptionalinfo -1% luatex 1.18, manual 14.1.8 % chktex 1
       % The meaning of the bits are described in luatex reference manual 
-      % \cite{LuaTexRef}, Section 3.2.1. 
+      % \cite{LuaTexRef24}, Section 3.2.2. 
       % 0
       % + 1 % PTEX.FullBanner
       % + 2 % PTEX.FileName
@@ -38,6 +38,7 @@
       % + 128 % Producer
       % + 256 % Trapped
       % + 512 % ID
+      % with luatex 1.18 there are macros closer to pdftex. 
     \else
       \ifPDFTeX%
         % the following see pdftex user manual, \cite{PdfTexUsr}, Section 7.4
@@ -45,7 +46,7 @@
 
         % omit CreationDate and ModDate keys.
         % not before pdfTeX 3.14159265-2.6-1.40.17
-        % the following two see pdftex user manual, \cite{PdfTexUsr}, Section 7.4
+        % the following two see pdftex user manual, \cite{PdfTexUsr24}, Section 4.2
         \pdfinfoomitdate=1 % If nonzero, omit the /CreationDate and /ModDate
         % we do even more for security reasons 
         \pdfsuppressptexinfo=-1
