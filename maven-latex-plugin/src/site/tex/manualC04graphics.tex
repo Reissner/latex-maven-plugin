@@ -580,7 +580,7 @@ Although seemingly supported by \TeX{} only,
 \texttt{MetaPost} is interesting in its own right, 
 as it is a graphical programming language, 
 Turing complete, much like postscript, and allows also declarative programming. 
-The manual describing the language is~\cite{MPost}, 
+The manual describing the language is~\cite{MPost24}, 
 seemingly complete, but it is not. 
 Thus, one can be thankful for~\cite{MPostGuid} 
 which offers some introduction and for the really helpful tutorial~\cite{MPostTut}. 
@@ -641,9 +641,10 @@ which defaults to \texttt{mpost}, occasionally just \texttt{mp}.
 Each internal variable which can be set in the MP file 
 can also be set when invoking \texttt{mpost} 
 using the option \texttt{-s \textlangle{}variable\textrangle=\textlangle{}value\textrangle} 
-as described in~\cite{MPost},~Section~B.2.1. 
+as described in~\cite{MPost24},~Section~B.2.1. 
 There it is stated that the option is read just before the file is read, 
 which implies that the setting in the file overrides the command line setting. 
+Caution: in the manual, the variable is referred to as ``key''. 
 
 The most basic setting is \texttt{outputformat:="eps"} %chktex 18
 which is the only setting appropriate for latex. 
@@ -678,14 +679,14 @@ The setting of \texttt{prologues} controls where fonts come from and
 becomes relevant when using \TeX{} for typesetting. 
 Listing~\ref{lst:metapost}, line 21 includes a label via a note implicitly, 
 and for the material between \texttt{btex} and \texttt{etex} uses \TeX{}. 
-The manual~\cite{MPost}, Section 8.1 is on typesetting labels 
+The manual~\cite{MPost24}, Section 8.1 is on typesetting labels 
 and specifies the meaning of \texttt{prologues}. 
 If we stick to including in \LaTeX{} and creating PDF out of that only, 
 the default setting $0$ is appropriate always 
 but since this software uses DVI as intermediate format, e.g.\@ to create HTML, 
 or because for debugging one wants to view the MPS files standalone in a viewer 
 things are not so easy. 
-For details see~\cite{MPost}, Section 14.2. 
+For details see~\cite{MPost24}, Section 14.2. 
 Setting \texttt{prologues:=1} is deprecated. 
 The only save way to get the correct display is to include fonts in the MPS file, 
 setting \texttt{prologues:=3}, but this makes the MPS file quite big. 
