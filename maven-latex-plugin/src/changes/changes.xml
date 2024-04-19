@@ -1315,6 +1315,10 @@ For combination pdf/eps with latex this is for sure the case.
       <action dev="reissner" type="add">
          added exception TSS04 checking validity of targets.
       </action>
+      <!-- htlatex: label creates no ancor. 
+      The description is in https://www.tug.org/pipermail/tex4ht/2023q3/003377.html 
+      The related cfg file is in this folder. 
+      -->
 
       <!-- somehwere in the intro of tikz manual, it is said that metafont is now part of luatex. 
 				This may mean that no two compilation steps are required. 
