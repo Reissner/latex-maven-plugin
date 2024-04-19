@@ -1010,6 +1010,83 @@ For combination pdf/eps with latex this is for sure the case.
 
     <release version="2.0" date="2023-08-28" description="">
       <action dev='reissner' type='add'>
+        document minTikz.tex showing that fig2dev can export 'everything' lossless in tikz format. 
+        Here, all kinds of objects can be exported, 
+        but still not clear whether this is true with all options. 
+      </action>
+      <action dev='reissner' type='add'>
+        added litPub.bib to use in dependent projects 
+        like our quality management project https://github.com/Reissner/QMngMnt. 
+      </action>
+      <action dev='reissner' type='add'>
+        added documentation on files fdb_latexmk. 
+        Strictly speaking, this is needed in later versions. 
+      </action>
+      <action dev='reissner' type='add'>
+        extended pattern patternWarnLatex 
+        to detect warnings in log files. 
+      </action>
+      <action dev='reissner' type='fix'>
+        For suppression of meta info: take into account, 
+        that xelatex never enters if branch of \ifpdf! 
+      </action>
+
+      <action dev='reissner' type='fix'>
+        For html creation always use dvi/xdv, never pdf.. 
+        Well this is a point as long as we use tex4ht. 
+      </action>
+      <action dev='reissner' type='add'>
+        preceeding \documentclass besides \PassOptionsToPackage 
+        which is described below, 
+        allow newbool/setbool, (allows for variants, e.g. ) DocumentMetadata. 
+        The latter require more general regular expressions to match, 
+        because structures may be arbitrarily nested. 
+      </action>
+      <action dev='reissner' type='add'>
+        support of magic comments: this allows to treat particular documents individually, 
+        e.g. compiling with pdflatex instead of default lualatex or so. 
+        This affects parameter patternCreatedFromLatexMain. 
+        Magic comments overwrite other settings. 
+      </action>
+      <action dev='reissner' type='add'>
+        make output formats depend on document class (e.g. no html for beamer or letter). 
+        using parameter docClassesToTargets. 
+        But as a consequence, need a defined set of document classes. 
+        Others are processed with warning and targets cannot be restricted. 
+      </action>
+      <action dev='reissner' type='add'>
+        in site: now use automatically generated site on goals. 
+      </action>
+      <action dev='reissner' type='add'>
+        To manual added lots of material on document development and preferred usage 
+      </action>
+      <action dev='reissner' type='add'>
+        latex main files now work with \PassOptionToPackage 
+        and pass options in \documentclass, e.g. 10pt,hyperref=destlabel,english. 
+        This is to allow general header loading packages without specific options 
+        and it allows options to be passed to more than one package. 
+      </action>
+      <action dev='reissner' type='fix'>
+        in headers replaced booleans by \IfPackageLoadedTF and \IfClassLoadedTF
+      </action>
+      <action dev='reissner' type='fix'>
+        in header.tex: options of package rerunfilecheck 
+        which corrects page numbers in index. 
+      </action>
+      <action dev='reissner' type='fix'>
+        base LatexProcessor.needRun on both log AND aux file. 
+      </action>
+      <action dev='reissner' type='add'>
+        added several document classes as e.g. beamer, leaflet, scrlttr2, minimal
+      </action>
+      <action dev='reissner' type='fix'>
+        fixed several default values in config of this maven plugin in pom. 
+      </action>
+      <action dev='reissner' type='add'>
+        To PDF documents created added meta info. 
+        This is disentangled now from headers. 
+      </action>
+      <action dev='reissner' type='add'>
         Weak CI: could compile all documents in a CI pipeline, 
         but diff did not yet work. 
         So the test consist in successful compilation. 
@@ -1018,14 +1095,31 @@ For combination pdf/eps with latex this is for sure the case.
         in LatexProcessor.runDiffPdf concerning return values. 
       </action>
       <action dev='reissner' type='fix'>
+        interpretation of return code (triggered by fix with with runDiffPdf 
+        and by introducing chktex)
+      </action>
+      <action dev='reissner' type='add'>
+        concept for creating reproducible documents 
+        using SOURCE_DATE_EPOCH and FORCE_SOURCE_DATE. 
+        This also uses ntlatex (no time latex)
+      </action>
+      <action dev='reissner' type='fix'>
         in goal vrs generalized patterns for versions 
         to make correct for general texlive. 
         and took into account that a tool may be never used and thus not installed. 
       </action>
       <action dev='reissner' type='fix'>
-        interpretation of return code (triggered by fix with with runDiffPdf 
-        and by introducing chktex)
+        in goal vrs now take also languages java (this is a java plugin),
+        python for (de)pythontex and perl (for latexmk) into account 
+        and also built tools maven and ant. 
       </action>
+      <action dev='reissner' type='fix,add'>
+        updated literature. 
+        Now for the updated literature the reference name includes the date. 
+        This shall be now a general rule 
+        but this is realized only if something changes. 
+      </action>
+
       <action dev='reissner' type='fix'>
         Design: e.g. 
         - core package cannot depend on mojo package
@@ -1037,16 +1131,16 @@ For combination pdf/eps with latex this is for sure the case.
         causing errors in class Target. 
       </action>
       <action dev='reissner' type='fix'>
-        eliminated lot of warnings, also from ltex, extended dictionary 
+        eliminated lot of warnings, also from ltex, extended dictionary, 
+        reformatted tex files. 
       </action>
       <action dev='reissner' type='add'>
-        XXXXXXXXXXpartial support for destlabel. Would be good for HMTL and docs there. 
+        XXXXXXXXXXpartial support for destlabel. 
+        Would be good for HMTL and docs there. 
+        Rest on backlog. 
       </action>
       <action dev='reissner' type='add'>
-        XXXXXXXXXXadd header.tex to inj goal. 
-      </action>
-      <action dev='reissner' type='add'>
-        documentation on the web site.. before it was mainly the manual in PDF format. 
+        documentation on the web site. before it was mainly the manual in PDF format. 
         Now replace apt by md and md.vm 
         unify. 
         Used automatic generation of documentation. 
@@ -1057,13 +1151,15 @@ For combination pdf/eps with latex this is for sure the case.
         to prepare place in maven central: added gpg plugin and issue management. 
       </action>
       <action dev='reissner' type='add'>
-        For document development: support include instead of input 
+        For document development: support \include instead of \input 
         and use this in the manual. 
-        That speeds up the pdf conversion and requires just removal of additional aux files. 
+        That speeds up the pdf conversion 
+        and requires just removal of additional aux files. 
       </action>
       <action dev='reissner' type='add'>
         for tool ebb: 
-        add parameter createBoundingBoxes and added explanation of fine type xbb and bb
+        add parameter createBoundingBoxes 
+        and added explanation of fine type xbb and bb
       </action>
       <action dev='reissner' type='add'>
         rework on mpost: much better and also simpler results and better documentation. 
@@ -1077,12 +1173,48 @@ For combination pdf/eps with latex this is for sure the case.
         updated parameters of inkscape: long form. 
       </action>
       <action dev='reissner' type='add'>
-        goal inj with parameter: injecting files .latexmkrc, .chktexrc, instVScode4tex.sh. 
+        developped header.tex, which is intended as always to be included, further: 
+        added A4 opt ion to geometry, added option destlabel to hyperref, tocbibind, 
+        microtype, anyfontsize (e.g. for beamer), xurl, 
+        babel, csquote, ...
+        but also extracted includes related with graphics and meta info 
+        into separate headers or into the tex file itself. 
+        Eliminated also packages: 
+        ifthen replaced by \IfClassLoadedTF and \IfPackageLoadedTF.
+        Tricked about useful ordering. 
+        So far it is possible to include header.tex always 
+        preceeded or followed by other package loading. 
+      </action>
+      <action dev='reissner' type='add'>
+        some injections are set executable and this action is even supervised, 
+        so a warning indicates if that goes wrong. 
+      </action>
+      <action dev='reissner' type='add'>
+        injections as properties. 
+        In particular scripts are likely to be put in workspace that way, 
+        because this is done once. 
+        Injections to be updated each build run, are better injected classically 
+        via plugin config. 
+      </action>
+      <action dev='reissner' type='add'>
+        Updated and extended default string for setting patternCreatedFromLatexMain
+      </action>      
+      <action dev='reissner' type='add'>
+        goal inj with parameter: injecting files are 
+        - config files .latexmkrc, .chktexrc with lot of improvements 
+        - headers 
+          - header.tex intended to be input always 
+          - headerGrp for graphic 
+          - headerSuppressMedaPdf used in conjunction with reproducibility of PDFs
+        - instVScode4tex.sh, ntlatex for support of monitoring reproducibility of PDFs
+        - pythontexW and depythontexW for including code into latex documents 
+
         To that end, added @RuntimeParameter, which unlike @Parameter persists at runtime 
         In Settings: toString now based on reflection. 
         In Settings: introduced filtering omg. 
         Also extended clr cleaning all what inj creates
         added parameter injections and added property latex.injections for command line use 
+        Some injections are influenced by the config, some are executable. 
       </action>
 
       <action dev='reissner' type='add'>
@@ -1091,9 +1223,7 @@ For combination pdf/eps with latex this is for sure the case.
       <action dev='reissner' type='add'>
         In manual added a lot of text on document development. 
       </action>
-      <action dev='reissner' type='add'>
-        added instVScoce4tex.sh to resources. 
-      </action>
+
       <action dev='reissner' type='add'>
         undergo buildParams.tex and pom4pdf.xml 
         a filter inserting settings of this plugin.
@@ -1103,7 +1233,8 @@ For combination pdf/eps with latex this is for sure the case.
       that latexmk with that file yields the same result 
       as this software with default settings. 
       This is a bunch of changes. 
-      Also added bib2gls so that also with bib2gls this works as we want for this software 
+      Also added bib2gls so that also with bib2gls this works 
+      as we want for this software 
       (prepare release 2.1)
       Turned .latexmkrc into a resource and added to pom accordingly. 
       Let .latexmkrc  undergo a filter inserting settings of this plugin.
@@ -1118,6 +1249,7 @@ For combination pdf/eps with latex this is for sure the case.
         in particular introduced .chktexrc as a resource 
         added goal chk and added to targets and to the default set. 
         Note that chk does not emit output files. 
+        Added link to .chktexrc injected to each folder containing tex files. 
       </action>
       <action dev='reissner' type='update'>
         updated versions of converters, dependencies and plugins, java, ... 
