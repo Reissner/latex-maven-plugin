@@ -182,6 +182,7 @@
     <versionItf>0.11.0</versionItf>
     <versionAnt>1.10.14</versionAnt>
     <versionSlf4j>2.1.0-alpha1</versionSlf4j>
+    <versionsACCM>4.0.0-alpha-7</versionsACCM><!-- 4.0.0-alpha-13 does not work -->
     <versionStripped>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}</versionStripped>
     <urlSite>https://www.simuline.eu/LatexMavenPlugin/</urlSite>
   </properties>
@@ -192,7 +193,7 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <version>4.0.0-alpha-7</version>
+      <version>${versionsACCM}</version>
       <scope>provided</scope>
       <!-- TBD: with default scope, this yields a warning, because not forseen like that. 
         We shall file a feature requrest -->
@@ -220,7 +221,7 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-compat</artifactId>
-      <version>4.0.0-alpha-7</version><!-- 4.0.0-alpha-13 does not work -->
+      <version>${versionsACCM}</version>
       <scope>test</scope>
     </dependency>
 
@@ -229,7 +230,7 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
-      <version>4.0.0-alpha-7</version>
+      <version>${versionsACCM}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -248,7 +249,7 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-model</artifactId>
-      <version>4.0.0-alpha-7</version>
+      <version>${versionsACCM}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -596,7 +597,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
-        <version>3.1.0</version><!--3.2.4-->
+        <version>3.2.4</version>
         <executions>
           <execution>
             <id>sign-artifacts</id>
@@ -604,6 +605,10 @@
             <goals>
               <goal>sign</goal>
             </goals>
+            <!--configuration>
+              <keyname>${gpg.keyname}</keyname>
+              <passphraseServerId>${gpg.keyname}</passphraseServerId>
+            </configuration-->
           </execution>
         </executions>
       </plugin>
@@ -897,7 +902,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>3.11.0</version><!--newest 3.12.0 does not work-->
+        <version>3.11.0</version><!--3.11.0 newest 3.12.0 does not work-->
         <configuration>
           <goalPrefix>latex</goalPrefix>
           <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
@@ -931,7 +936,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.3.0</version><!-- 3.2.2 works, newer is 3.3.0 -->
+        <version>3.3.0</version>
         <executions>
           <execution>
             <id>second-jar</id>
