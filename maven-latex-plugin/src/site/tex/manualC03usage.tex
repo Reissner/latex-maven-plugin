@@ -267,9 +267,9 @@ the proper presentation, e.g.\@
 % TBD: eliminate change of font size: long line must be breakable 
 \begin{Verbatim}[fontsize=\scriptsize]
 \RequirePackage[l2tabu, orthodox]{nag}
-\PassOptionsToPackage{colorlinks,linkcolor=blue,urlcolor=blue,citecolor=blue}{hyperref}
+\PassOptionsToPackage{colorlinks,linkcolor=blue,urlcolor=blue,citecolor=blue,destlabel}{hyperref}
 
-\documentclass[10pt,hyperref=destlabel,english]{beamer}
+\documentclass[10ptenglish]{beamer}
 \mode<presentation>%
 
 \input{useBeamer}
@@ -294,9 +294,11 @@ Observe, that both documents use \texttt{header.tex} injected
 as described in Section~\ref{subsec:header} loading various packages. 
 The beamer class is special in that it loads the \pkg{hyperref} package itself. 
 To avoid option clash with \texttt{header.tex}, 
-document class \texttt{beamer} must specify \texttt{hyperref=destlabel}. 
+for document class \texttt{beamer} option \texttt{destlabel} 
+must be passed to the package. 
+% originally in \documentclass[hyperref=destlabel] 
 Maybe it is a matter of taste, but \texttt{beamer} tends to make links invisible. 
-To force loading options specifying colors for links, 
+To force loading options specifying colors for links and \texttt{destlabel}, 
 use \cmd{PassOptionsToPackage} as shown above. 
 
 All documents but beamer documents 
