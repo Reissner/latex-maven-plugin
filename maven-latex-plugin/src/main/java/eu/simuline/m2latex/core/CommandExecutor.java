@@ -508,6 +508,10 @@ class CommandExecutor {
       throw new BuildFailureException("TEX01: Error running " + command + ". ",
           e);
     }
+    // TBD: what if returnCode=-1 is not overwritten? 
+    // how to distinguish from real return code -1? 
+    // replace above by Integer returnCode = null;
+    // and insert here assert returnCode != null;
 
     log.debug("Output:\n" + output.getOutput() + "\n");
     // TBD: fix bug: return code based on checker. 
