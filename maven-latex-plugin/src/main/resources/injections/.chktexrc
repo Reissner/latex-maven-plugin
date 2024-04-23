@@ -10,8 +10,9 @@ Silent {
 WipeArg {
   # for package listings 
   \lstinputlisting:[]{} \lstset:{}
-  # for commands \textTT and \inputNoChk both defined in header.tex 
-  \textTT:{}
+  # for commands \textttNoChk and \inputNoChk both defined in header.tex 
+  #\textTT:{}
+  \textttNoChk:{}
   \inputNoChk:{}
 }
 

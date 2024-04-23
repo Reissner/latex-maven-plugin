@@ -208,7 +208,8 @@
 }
 
 % wrappers in conjunction with .chktex: ignored 
-\newcommand{\textTT}[1]{\texttt{#1}}
+%\newcommand{\textTT}[1]{\texttt{#1}}
+\newcommand{\textttNoChk}[1]{\texttt{#1}}
 % chktex executes \input{#1} but does not find the file #1: suppress that warning 
 \newcommand{\inputNoChk}[1]{\input{#1}} % chktex 27
 
