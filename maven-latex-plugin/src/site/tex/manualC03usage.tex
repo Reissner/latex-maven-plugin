@@ -110,6 +110,8 @@ This is quite easy, since there is little allowed preceding these commands.
 
 Consequently, the pattern matches the region from the start of the file 
 to and including the \cmd{documentclass} or \cmd{documentstyle} command. 
+This starting segment of a \LaTeX{} main file 
+is called the \textit{opening}\index{opening}. 
 
 Here a word of warning is at place: if a TEX file does not fit the pattern, 
 it is not interpreted as a \LaTeX{} main file without further warning. 
@@ -1193,8 +1195,12 @@ but due to a bug, any invocation of \cmd{DocumentMetadata} corrupts reproducibil
 After this is fixed, the \cmd{setMinorVersionPdf} shall be removed again. 
 % TBD: check from time to time. 
 
-Another command provided is \cmd{textTT} which sets the argument in typewriter font 
+Another class of commands provided is represented by \cmd{textttNoChk} 
+which sets the argument in typewriter font 
 just like \cmd{texttt} but for which checks by \texttt{chktex} are suppressed. 
+Another example for this kind of command is \cmd{inputNoChk} 
+which may be used to input either generated material like TikZ,
+or text which is no \LaTeX{} at all. 
 For details see Sections~\ref{subsec:latChkRc} and~\ref{subsec:develCheck}. 
 \medskip
 
@@ -1801,7 +1807,7 @@ which is also injected.
 In general, \texttt{.chktexrc} excludes content of environments 
 and of arguments of commands defined in packages loaded by \texttt{header.tex} 
 or defined therein directly. 
-A nice example of another kind of synergy is the command \cmd{textTT} 
+A nice example of another kind of synergy is the command \cmd{textttNoChk} 
 defined in \texttt{header.tex}. 
 Functionally, it is just \cmd{texttt} which sets the argument in typewriter font, 
 but in \texttt{.chktexrc} it is listed among the commands 
