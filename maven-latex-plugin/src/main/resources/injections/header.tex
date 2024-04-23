@@ -64,7 +64,7 @@
   \usepackage[aux]{rerunfilecheck}
 }
 
-
+\makeatletter\disable@package@load{auxhook}{}\makeatother% just bugfix: superfluous in next hyperref version 
 % hyperref and xcolor 
 
 \ifpdf%
@@ -97,7 +97,7 @@
     \fi
   }% tex4ht not loaded 
 \fi%ifpdf
-
+\makeatletter\reenable@package@load{auxhook}\makeatother% just bugfix: superfluous in next hyperref version 
 
 \IfPackageLoadedTF{luamplib}{%
   \newcommand*\inputmpcode[1]{\begin{mplibcode}input #1\end{mplibcode}}

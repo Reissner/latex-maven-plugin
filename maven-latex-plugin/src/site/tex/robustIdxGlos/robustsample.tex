@@ -48,11 +48,12 @@
 \usepackage{robustglossary}
 
 
+\makeatletter\disable@package@load{auxhook}{}\makeatother% just bugfix: superfluous in next hyperref version 
 \ifpdf%
   \usepackage[destlabel, plainpages=false, hyperindex=false]{hyperref} %
 \else
   \IfPackageLoadedTF{tex4ht}{%
-    \usepackage[tex4ht,     destlabel, plainpages=false, hyperindex=false]{hyperref}
+   \usepackage[tex4ht,     destlabel, plainpages=false, hyperindex=false]{hyperref}
   }{%
     \ifXeTeX%
       \usepackage[          destlabel, plainpages=false, hyperindex=false]{hyperref}%[plainpages=false,hyperindex=false]
@@ -64,6 +65,8 @@
     \fi%
   }
 \fi
+\makeatletter\reenable@package@load{auxhook}\makeatother% just bugfix: superfluous in next hyperref version 
+
 \input{../headerSuppressMetaPDF.tex}
 
 \hypersetup{
