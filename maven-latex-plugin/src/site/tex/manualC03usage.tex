@@ -260,7 +260,15 @@ except for the special specification of fontsize and versioning of the class:
 
 \begin{Verbatim}[fontsize=\footnotesize]
 \documentclass[english,german,a4paper,fontsize=10pt,version=last]{scrlttr2}
+...
+\input{header.tex}
+\LoadLetterOption{DIN}
 \end{Verbatim}
+
+Observe that after inputting \texttt{header.tex} which loads \pkg{geometry}, 
+various pseudo lengths have to be readjusted. 
+This is done by loading the letter option. 
+Without it may happen, that the text does not reach until the bottom of the frame. 
 
 
 What is special for beamer presentations is, 
