@@ -48,9 +48,9 @@ public class PdfMojoTest extends AbstractMojoTestCase {
 
     // run the pdf-goal in the pom 
     // TBD: in other framework: also check lifecycle phase like site and so 
-// PdfMojo testMojo = (PdfMojo) lookupMojo("pdf", testPom);
-// assertNotNull(testMojo);
-// testMojo.execute();
+    PdfMojo testMojo = (PdfMojo) lookupMojo("pdf", testPom);
+    assertNotNull(testMojo);
+    testMojo.execute();
     // Here, according to pom2pdf.xml, the generated pdf is expected at 
     // ${basedir}/src/test/resources/integration/target/manualLMP.pdf
     //assert act.exists() && cmp.exists();
