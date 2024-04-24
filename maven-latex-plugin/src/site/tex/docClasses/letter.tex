@@ -3,7 +3,8 @@
 \documentclass[english,german,a4paper,fontsize=10pt,version=last]{scrlttr2}
 
 \input{../header.tex}
-
+\LoadLetterOption{DIN}% reload to make consistent again after loading geometry 
+% else text does not reach lower boundary 
 \input{descSender.tex}
 
 \newcommand{\subject}{Meilenstein Dokumentation }
@@ -67,6 +68,7 @@
 
 \selectlanguage{german}
 
+%\KOMAoptions{firstfoot=false}
 
 \begin{document}
 
@@ -84,7 +86,8 @@
 
   Wie Sie wissen, haben wir einen Teil des Projektantrages in \LaTeX{} verfasst. 
   Nun habe ich alle Dokumentation bei jedem \foreignlanguage{english}{Build} 
-  der Software oder der zugehörigen Seite durch ein \foreignlanguage{english}{Maven Plugin} aus \LaTeX{} generiert. 
+  der Software oder der zugehörigen Seite 
+  durch ein \foreignlanguage{english}{Maven Plugin} aus \LaTeX{} generiert. 
   Leider basiert das \foreignlanguage{english}{Plugin} auf sehr alten Techniken, 
   sodass ich zwar meine Diplomarbeit kompilieren kann, 
   nicht aber die \LaTeX{} Dokumente des Projektantrages. 
@@ -94,14 +97,13 @@
   Zudem ist es nun auch möglich in qualitativ akzeptabler Weise 
   Briefe zu kompilieren. 
   Insbesondere dieser Brief ist mit dem Plugin generiert. 
+
+  %\lipsum{1}
   
 
 
   \closing{\Grussworte\\[2\baselineskip]}
 
 \end{letter}
-
-% Hier folgt der Lebenslauf samt Anlagen 
-%\includepdf[pages=-]{../../LebenslaufAktuell/lebenslauf.pdf}
 
 \end{document}
