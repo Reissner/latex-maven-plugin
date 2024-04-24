@@ -1073,16 +1073,16 @@
       <plugin>
         <groupId>eu.simuline.m2latex</groupId>
         <artifactId>latex-maven-plugin</artifactId>
-        <version>1.8</version><!-- 1.8 2.0-SNAPSHOT -->
-        <!-- <configuration>
+        <version>2.0</version><!-- 1.8 2.0-SNAPSHOT -->
+        <configuration>
           <settings>
-            <convertersExcluded>upmendex, xindy</convertersExcluded> -->
+            <convertersExcluded>upmendex, xindy</convertersExcluded>
             <!--texSrcDirectory>src/site/tex/testMagicComments</texSrcDirectory-->
             <!--latex2pdfCommand>xelatex</latex2pdfCommand-->
             <!--pdfViaDvi>true</pdfViaDvi-->
-            <!-- <cleanUp>false</cleanUp> -->
+            <cleanUp>false</cleanUp>
             <!--chkDiff>true</chkDiff-->
-            <!-- <targets>chk,pdf,html</targets> -->
+            <targets>chk,pdf,html</targets>
             <!--pdfViaDvi>true</pdfViaDvi-->
 
 
@@ -1103,8 +1103,8 @@
               xhtml,uni-html4,5,pic-tabular
             </tex4htStyOptions-->
 
-          <!-- </settings>
-        </configuration -->
+          </settings>
+        </configuration>
 
         <executions>
           <!--execution>
@@ -1125,7 +1125,7 @@
               <goal>clr</goal>
             </goals>
           </execution>
-<!--          <execution>
+          <execution>
             <?m2e execute onConfiguration?>
             <id>inject-files</id>
             <goals>
@@ -1144,7 +1144,7 @@
             <configuration>
               <versionsWarnOnly>true</versionsWarnOnly>
             </configuration>
-          </execution-->
+          </execution>
         </executions>
       </plugin>
     </plugins>
