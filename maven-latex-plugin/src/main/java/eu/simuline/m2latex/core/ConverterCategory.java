@@ -143,7 +143,11 @@ enum ConverterCategory {
 			return "ebb";
 		}
 	},
-
+	Latexmk() {
+		String getExtName() {
+			return "latexmk";
+		}
+	},
 	// Those are not usable
 	// TBD: clarify: For latex to html/odt
 	// dvips: for conversion to ps??
@@ -152,7 +156,6 @@ enum ConverterCategory {
 	// upmendex: right interface?
 	// xindy
 	// pythontex, depythontex
-	// latexmk
 	Unspecific {
 		String getExtName() {
 			throw new UnsupportedOperationException();
@@ -161,7 +164,8 @@ enum ConverterCategory {
   /**
    * Category of converters in an abstract sense 
    * which are not configurable in the settings. 
-   * Currently, these are maven, ant and java itself. 
+   * Currently, these are build tools, i.e. maven and ant 
+   * and programming languages like java, python and Perl. 
    * Could be Environment. 
    */
   Unparametrized {

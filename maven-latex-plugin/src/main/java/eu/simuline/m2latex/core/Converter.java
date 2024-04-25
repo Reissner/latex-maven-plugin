@@ -794,7 +794,7 @@ enum Converter {
     }
 
     ConverterCategory getCategory() {
-      return ConverterCategory.Unspecific;
+      return ConverterCategory.Latexmk;
     }
   },
   MetaPost {

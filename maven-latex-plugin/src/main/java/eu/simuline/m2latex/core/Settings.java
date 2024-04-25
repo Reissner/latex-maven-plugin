@@ -384,6 +384,14 @@ public class Settings {
   @Parameter(name = "mainFilesExcluded", defaultValue = "")
   private String mainFilesExcluded = "";
 
+  /**
+   * The extent to which latexmk or to be more precise, 
+   * the command given by {@link #latexmkCommand} is used to build. 
+   * The default is {@link LatexmkUsage#NotAtAll}. 
+   */
+  @RuntimeParameter
+  @Parameter(name = "latexmkUsage")//, defaultValue = "NotAtAll"
+  private LatexmkUsage latexmkUsage = LatexmkUsage.NotAtAll;
 
   // texPath, commands and arguments 
 
@@ -1877,6 +1885,29 @@ public class Settings {
   @Parameter(name = "diffPdfCommand", defaultValue = "diff")
   private String diffPdfCommand = "diff";
 
+  /**
+   * The latexmk command to create a pdf-file from a latex file and other files. 
+   * The default value is <code>latexmk</code> there will be hardly a reason to change it. 
+   * Conceivable is a wrapper around, unlikely is a reimplementation. 
+   */
+  @RuntimeParameter
+  @Parameter(name = "latexmkCommand", defaultValue = "latexmk")
+  private String latexmkCommand = "latexmk";
+
+  /**
+   * The options for the command {@link #latexmkCommand}. 
+   * Since this command is controlled 
+   * to a wide extend by the config file <code>.latexmkrc</code>, 
+   * the options are of minor importance. 
+   * On the other hand, there are options not allowed for this software 
+   * because they change behavior in a way not taken into account. 
+   * So add options with care. 
+   * The default value is the empty string. 
+   */
+  @RuntimeParameter
+  @Parameter(name = "latexmkOptions", defaultValue = "")
+  private String latexmkOptions = "";
+
   //TBD: add options; 
   // diff: no sensible options are available. 
   // diff-pdf same
@@ -2576,6 +2607,14 @@ public class Settings {
     return getCommand(ConverterCategory.DiffPdf);
   }
 
+  public String getLatexmkCommand() throws BuildFailureException {
+    return getCommand(ConverterCategory.Latexmk);
+  }
+
+  public String getLatexmkOptions() {
+    return this.latexmkOptions;
+  }
+
   // setter methods 
 
   /**
@@ -3214,6 +3253,13 @@ public class Settings {
 
   public void setDiffPdfCommand(String diffPdfCommand) {
     this.diffPdfCommand = diffPdfCommand;
+  }
+
+  public void setLatexmkCommand(String latexmkCommand) {
+    this.latexmkCommand = latexmkCommand;
+  }
+  public void setLatexmkOptions(String latexmkOptions) {
+    this.latexmkOptions = latexmkOptions;
   }
 
   /**
