@@ -1094,6 +1094,77 @@ a build exception is thrown as specified in Table~\ref{tab:TLP}.
 The configurations related with diff check are collected in Section~\ref{sec:paramRepro}. 
 
 
+\section{Alternative build process with \texttt{latexmk}}\label{sec:latexmk}
+\index{latexmk}
+
+This section is on running the build process of \LaTeX{} main files 
+with \texttt{latexmk} or equivalent. 
+Although the functionality is readily explained, 
+the intention is not so obvious: 
+In Section~\ref{subsec:develLatexmk} 
+describes the role of \texttt{latexmk} as a build tool 
+in the course of document development, 
+whereas this \LaTeX{} builder is for final, quality checked build. 
+So the two tools seem to be complementary. 
+Section~\ref{subsec:latChkRc} describes that this \LaTeX{} builder 
+can write its own configuration as 
+a config file \texttt{.latexmkrc} for \texttt{latexmk} 
+so that builds with \texttt{latexmk} are in line 
+with final builds by this \LaTeX{} builder itself. 
+
+So running \texttt{latexmk} from within this \LaTeX{} builder 
+seems superfluous at first sight. 
+A closer look onto \texttt{.latexmkrc} unveils that this is just a Perl script 
+which is very flexible realizing new or special functionality, 
+whereas this \LaTeX{} builder is tied to a quite rigid configuration in the pom. 
+So, for example if for building a document tools are needed 
+which are not supported by this \LaTeX{} builder, 
+their invocation can be implemented directly in \texttt{.latexmkrc}. 
+Since this \LaTeX{} builder writes a single \texttt{.latexmkrc} 
+in the root directory \texttt{texSrcDirectory}, 
+which must be made available in each subfolder by adding a link, 
+the config \texttt{.latexmkrc} by his \LaTeX{} builder 
+may be replaced by a hand-crafted config file for each folder separately. 
+
+Having explained this, the question arises 
+why this \LaTeX{} builder does not in general rely on \texttt{latexmk} 
+and invokes \LaTeX{} compilers and other converters directly. 
+One reason is that \LaTeX{} builder does not only invoke converters, 
+it also checks return values and, depending on the converter, 
+log files emitting errors and warnings if appropriate. 
+So, delegating to \texttt{latexmk} 
+the user can no longer check that the build process passed without warning or error. 
+A second aspect is, that the build algorithms differ: 
+\texttt{latexmk} runs the \LaTeX{} main file then detecting which files are missing 
+and then tries to build these based on rules. 
+The basic idea behind is ``backward discovery'' of dependencies, 
+whereas this \LaTeX{} builder first builds the graphic files globally 
+(\texttt{latexmk} detects last) 
+before for each \LaTeX{} main file is compiled. 
+So this \LaTeX{} builder combines ``forward discovery'' and backwards discovery. 
+Pure  backward discovery is more elegant 
+but as the \LaTeX{} compiler stops at each graphic file not present 
+before creating it and rerunning the \LaTeX{} main file, 
+it may result in excessive reruns if there are many created graphics in the document. 
+
+So there are strong reasons to avoid \texttt{latexmk}, 
+but there are also reasons to allow in special cases. 
+The parameter \texttt{\$latexmkUsage} described in Table~\ref{tab:paramGen} 
+on page \pageref{tab:paramGen} allows gradually use of \texttt{latexmk}, 
+not at all, fully or as backend creating graphic files a priori. 
+As a rule, \texttt{latexmk} shall be used as much as required and as little as possible. 
+
+This shows also that it is a good thing 
+to be able to activate \texttt{latexmk} in individual \LaTeX{} main files. 
+In the next version, this is realized with magic comments. 
+XXXXXX Reference to according section required. XXXXXXXX 
+Whereas \texttt{\$latexmkUsage} allows three levels of usage, 
+the magic comment can choose to use \texttt{latexmk} or not. 
+
+The graphic files are preprocessed except if \texttt{\$latexmkUsage} is set to \texttt{Fully}. 
+The magic comment results in a warning 
+if it does not change whether \texttt{latexmk} 
+is invoked or not compared to when it is absent. 
 
 \section{Creating hypertext}\label{sec:tex2html}
 

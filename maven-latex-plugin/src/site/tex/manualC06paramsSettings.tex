@@ -393,6 +393,26 @@ using magic comments as described in Section~\ref{subsec:sourcesLatex}.
   See parameter \texttt{mainFilesIncluded}. 
 \end{minipage}
 } \\
+\texttt{latexmkUsage}          &  NotAtAll        \\
+\multicolumn2{|l|}{
+\begin{minipage}{0.95\linewidth}
+The extent to which \texttt{latexmk} or to be more precise, 
+the command given by \texttt{latexmkCommand} is used to build. 
+The following values for build strategy are allowed: 
+%
+\begin{description}
+  \item[NotAtAll] \texttt{latexmk} is not used at all. 
+  \item[AsBackend] \texttt{latexmk} is used as backend, 
+  i.e. graphic files are created as for goal \texttt{grp} 
+  as in strategy \texttt{NotAtAll} before \texttt{latexmk} is invoked 
+  on the individual \LaTeX{} main files. 
+  \item[Fully] build is by applying \texttt{latexmk} 
+  on the individual \LaTeX{} main files without any prior actions. 
+\end{description}
+
+For a more detailed description see Section~\ref{sec:latexmk}. 
+\end{minipage}
+} \\
 \texttt{texPath}          &  empty string        \\
 \multicolumn2{|l|}{
 \begin{minipage}{0.95\linewidth}
@@ -2444,6 +2464,9 @@ a bit of reverse engineering shows the following distinction:
 
 On this behavior this software bases its failure messages. 
 
+The options of \texttt{chktex} are described in detail 
+in~\cite{ChkTeX22}, Section 6.1.2. % chktex 17 bug: rest but in 1674
+
 
 \section{Parameters for ensuring reproducibility}\label{sec:paramRepro}
 
@@ -2531,5 +2554,59 @@ ranging from byte equivalence to some kind of visual equivalence.
   } \\
 \end{longtable}
 
-The options of \texttt{chktex} are described in detail 
-in~\cite{ChkTeX22}, Section 6.1.2. % chktex 17 bug: rest but in 1674
+
+
+
+\section{Parameters for \texttt{latexmk} and related}\label{sec:paramLatexmk}
+
+As described in Section~\ref{sec:latexmk}, 
+based on the parameter \texttt{\$latexmkUsage} described in Table~\ref{tab:paramGen} 
+on page~\pageref{tab:paramGen}, 
+the build process can be delegated gradually to \texttt{latexmk} 
+or an equivalent tool. 
+Table \ref{tab:paramLatexmk} lists the parameters controlling invocation. 
+Note that besides the options, which shall be used with care, 
+also the config file \texttt{.latexmkrc} goes into. 
+The details concerning the config file are described in~\cite{LatexMk23}, 
+Section ``CONFIGURATION/INITIALIZATION (RC) FILES''. 
+On the other hand, 
+as indicated in \cite{LatexMk23}, 
+Section ``DEALING WITH ERRORS, PROBLEMS, ETC'', 
+\texttt{latexmk} does not write its own log file 
+and so there is no parameter in Table~\ref{tab:paramLatexmk} for a pattern 
+of warnings or errors. 
+
+
+\begin{longtable}{|ll|}
+  \toprule
+  Parameter        & Default  \\
+  \multicolumn2{|l|}{Explanation }  \\
+  \midrule
+  \midrule
+  \endfirsthead%
+  \bottomrule
+    \caption{\label{tab:paramLatexmk} The parameters for \texttt{latexmk} and related}
+  \endlastfoot%
+  \texttt{latexmkCommand}      & \texttt{latexmk}        \\
+  \multicolumn2{|l|}{
+  \begin{minipage}{0.95\linewidth}
+    The latexmk command to create a pdf-file from a latex file and other files. 
+    Instead of the default value \texttt{latexmk} a wrapper is conceivable, 
+    a reimplementation seems quite unlikely *smile*. 
+  \end{minipage}
+  } \\
+  \texttt{latexmkOptions}      & empty  \\
+  \multicolumn2{|l|}{
+  \begin{minipage}{0.95\linewidth}
+    The options for the command \texttt{\$latexmkCommand}. 
+    Since this command is controlled 
+    to a wide extend by the config file \texttt{.latexmkrc}, 
+    the options are of minor importance. 
+    On the other hand, there are options not allowed for this software 
+    because they change behavior in a way not taken into account. 
+    So add options with care. 
+    The allowed options and their defaults are given in~\cite{LatexMk23}, 
+    Section ``LATEXMK OPTIONS AND ARGUMENTS ON COMMAND LINE''. 
+  \end{minipage}
+  } \\
+\end{longtable}
