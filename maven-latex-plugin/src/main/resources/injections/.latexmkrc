@@ -32,6 +32,9 @@ $lualatex = "internal mylatex %A %O";
 
 # superfluous for perl >=5.36 according to documentation, but does not work for me (perl 5.38?)
 use feature 'signatures';
+# the following desirable but currently not possible 
+#use strict;
+#use warnings;
 
 # Used in general to transform string representations from pom to perl specific representations 
 # maybe there are alternative: yes for true and no for false. Clarify. 
@@ -48,17 +51,23 @@ sub mylatex($fileName, @opts) {
   # the options passed by latexmk were in %O and are thus part of @args 
   # the last part of @args is passed also by latexmk as %S
   #print("args by latexmk: @args\n");
+  my $latexCommand = ${latex2pdfCommand};
+  # $programMagic is set by invoking something like 
+  # latexmk -e '$programMagic=pdflatex'
+  if (defined($programMagic)) {
+    $latexCommand = $programMagic;
+  }
   my $pdfViaDvi = $boolStrToVal{'${pdfViaDvi}'};
   die "Error: Boolean expected but found '{$boolStrToVal}'. " unless exists($boolStrToVal{'${pdfViaDvi}'});
   if ($pdfViaDvi) {
     # note that exactly one of the two options -no-pdf -output-format=dvi applies; 
     # the other is ignored. 
     # TBD: eliminate: xelatex emits a warning because -output-format is unknown 
-    $resLatex    = system("${latex2pdfCommand} ${latex2pdfOptions} -no-pdf -output-format=dvi @opts $fileName");
-    $resDviToPdf = system("${dvi2pdfCommand}   ${dvi2pdfOptions}                                    $fileName");
+    $resLatex    = system("$latexCommand     ${latex2pdfOptions} -no-pdf -output-format=dvi @opts $fileName");
+    $resDviToPdf = system("${dvi2pdfCommand} ${dvi2pdfOptions}                                    $fileName");
     return ($resLatex or $resDviToPdf)
   } else {
-    return system("${latex2pdfCommand} ${latex2pdfOptions} @opts $fileName");
+    return         system("$latexCommand     ${latex2pdfOptions} @opts $fileName");
   }
   #print("invoke: ${latex2pdfCommand} ${latex2pdfOptions} @opts $fileName\n");
   #return system("${latex2pdfCommand} ${latex2pdfOptions} @opts $fileName");

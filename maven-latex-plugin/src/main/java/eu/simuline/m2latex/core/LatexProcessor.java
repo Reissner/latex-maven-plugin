@@ -1993,9 +1993,22 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
     File texFile = desc.texFile;
     // FIXME: wrong name; better is latex2dev
+
     String command = this.settings.getLatexmkCommand();
+
+    Optional<String> programMagic =
+      desc.groupMatch(LatexMainParameterNames.programMagic);
+    String options = this.settings.getLatexmkOptions();
+    if (programMagic.isPresent()) {
+      if (!options.isEmpty()) {
+        options += " ";
+      }
+      options += "-e $programMagic=q/"+programMagic.get()+"/";
+    }
+    //System.out.println("option: |"+options+"|");
     this.log.debug("Running " + command + " on '" + texFile.getName() + "'. ");
-    String[] args = buildArguments("", texFile);// TBD: activate reading arguments. 
+    String[] args = buildArguments(options, texFile);// TBD: activate reading arguments. 
+    //System.out.println("args: |"+Arrays.asList(args)+"|");
     // may throw BuildFailureException TEX01,
     // may log warning EEX01, EEX02, EEX03, WEX04, WEX05
     this.executor.execute(desc.parentDir, // workingDir
@@ -2120,9 +2133,11 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
   protected static String[] buildHtlatexArguments(Settings settings,
       File texFile) {
-    return new String[] {texFile.getName(), settings.getTex4htStyOptions(),
-        settings.getTex4htOptions(), settings.getT4htOptions(),
-        settings.getLatex2pdfOptions()};
+    return new String[] {texFile.getName(), 
+      settings.getTex4htStyOptions(),
+      settings.getTex4htOptions(), 
+      settings.getT4htOptions(),
+      settings.getLatex2pdfOptions()};
   }
 
   /**
