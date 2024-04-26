@@ -3268,8 +3268,9 @@ public class Settings {
   public void setLatexmkCommand(String latexmkCommand) {
     this.latexmkCommand = latexmkCommand;
   }
+
   public void setLatexmkOptions(String latexmkOptions) {
-    this.latexmkOptions = latexmkOptions;
+    this.latexmkOptions = beautifyOptions(latexmkOptions);
   }
 
   /**
