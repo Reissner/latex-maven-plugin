@@ -2026,8 +2026,13 @@ public class LatexProcessor extends AbstractLatexProcessor {
       // Here we shall create dvi or xdv file 
       // FIXME: this shall be based on analysis of the options of the converter, 
       // not on its name 
-      options += isTypeXelatex ? " -no-pdf"
-          : " -output-format=" + dev.getLatexOutputFormat();
+      if (!options.isEmpty()) {
+        options += " ";
+      } else {
+        assert false;
+      }
+      options += isTypeXelatex ? "-no-pdf"
+          : "-output-format=" + dev.getLatexOutputFormat();
     }
 
     return buildArguments(options, texFile);
