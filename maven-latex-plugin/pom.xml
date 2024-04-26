@@ -1073,7 +1073,7 @@
       <plugin>
         <groupId>eu.simuline.m2latex</groupId>
         <artifactId>latex-maven-plugin</artifactId>
-        <version>2.0</version><!-- 1.8 2.0-SNAPSHOT -->
+        <version>2.1-SNAPSHOT</version><!-- 2.0 2.1-SNAPSHOT -->
         <configuration>
           <settings>
             <convertersExcluded>upmendex, xindy</convertersExcluded>
@@ -1084,6 +1084,7 @@
             <!--chkDiff>true</chkDiff-->
             <targets>chk,pdf,html</targets>
             <!--pdfViaDvi>true</pdfViaDvi-->
+            <latexmkUsage>AsBackend</latexmkUsage>
 
 
             <!--diffDirectory>src/main/resources/docsCmp</diffDirectory-->

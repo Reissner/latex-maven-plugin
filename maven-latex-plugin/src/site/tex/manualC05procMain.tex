@@ -1166,6 +1166,57 @@ The magic comment results in a warning
 if it does not change whether \texttt{latexmk} 
 is invoked or not compared to when it is absent. 
 
+
+% this is only for goal pdf 
+% and maybe even only if pdfViaDvi is not set: LatexProcessor.processLatex2pdf
+% changes for latexmk must be done in LatexProcessor.processLatex2dev
+% bypassing processLatex2devCore... not clear whether also bypassing warnings. 
+% maybe better not doing so: at least part of warnings. 
+% on the other hand: misleading. 
+% maybe warning that warnings are bypassed. 
+% This could be done globally if \texttt{\$latexmkUsage} is not NotAtAll. 
+% Also specifically if triggered by a magic comment. 
+
+% note that running with latexmk neglects choice of latex compiler in magic comment. 
+% this requires a warning. 
+% In contrast, magic comments referring to the target and related are respected 
+
+% currently, preprocessing of graphic files is done in any case, 
+% although specified differently. 
+
+% make a note that still the return codes of latexmk are recorded resulting in EEX01 
+% and also the presence of a pdf is monitored triggering EEC03 if not updated. 
+% also the manual shows how to convert warnings into errors. 
+
+% special for latexmk: may not touch pdf file although all ok: 
+% return code is stil 0 
+
+% pdf files created with latexmk are not suitable for strict diffing: 
+% they contain the date. 
+% If this functionality is added, then ntlatex is no longer mandatory. 
+% This affects also the documentation. 
+
+% latexmk is never used for cleanup with latexmk -c or latexmk -C 
+
+% running latexmk does not respect magic comments: neither target nor compiler. 
+% well, maybe target yes. have a look and document. 
+% seemingly also restrictions due to the class are respected. 
+
+% eliminate: 
+% [INFO] Converting into pdf:  LaTeX file '/home/ernst/OpenSource/LatexMavenPluginGit/latex-maven-plugin/maven-latex-plugin/src/site/tex/./testMagicComments/testProgram.tex'. 
+% [INFO] Running latexmk bypassing direct compilation. 
+% [ERROR] EEX01: Running latexmk failed with return code 12. 
+
+% preferred usage: 
+% latexmkUsage=NotAtAll, but activation by magic comment shall be preferred usage. 
+% this brings problems finding out whether really latexmk has been used. 
+% an idea would be to include the fdb_latexmk file as this is specific for latexmk 
+% But this has to be done in a way, that compilation still works if not present. 
+% Only the diff to the original fails then. 
+
+
+
+
 \section{Creating hypertext}\label{sec:tex2html}
 
 To create HTML and XHTML from TEX files (more precise from \LaTeX{} files), 

@@ -1031,6 +1031,13 @@ public class LatexProcessor extends AbstractLatexProcessor {
    */
   private void processLatex2dev(LatexMainDesc desc, LatexDev dev)
       throws BuildFailureException {
+    // TBD: improve this in several respect. 
+    if (dev == LatexDev.pdf && this.settings.getLatexmkUsage() != LatexmkUsage.NotAtAll) {
+      this.log.info("Running latexmk bypassing direct compilation. ");
+      runLatexmk(desc);
+      return;
+    }
+    this.log.info("No latexmk because target=" + dev + " and usage=" + this.settings.getLatexmkUsage());
     // may throw BuildFailureException TEX01,
     // log warning EAP01, EAP02, WAP04, WLP02, WFU03, WLP04, WLP05,
     // EEX01, EEX02, EEX03, WEX04, WEX05
@@ -1939,13 +1946,13 @@ public class LatexProcessor extends AbstractLatexProcessor {
         Converter.XeLatex.getCommand().equals(command);
     String[] args =
         buildLatexArguments(this.settings, dev, texFile, isTypeXelatex);
+    if (this.settings.isChkDiff()) {
+      this.executor.setIsTimeless();
+    }
     // may throw BuildFailureException TEX01,
     // may log warning EEX01, EEX02, EEX03, WEX04, WEX05
     // CAUTION: an error also occurs if running xelatex in conjunction with dvi mode 
     // because this engine creates xdv instead of dvi 
-    if (this.settings.isChkDiff()) {
-      this.executor.setIsTimeless();
-    }
     this.executor.execute(desc.parentDir, // workingDir
         this.settings.getTexPath(), command, args,
         dev.latexTargetFile(desc, isTypeXelatex));
@@ -1956,6 +1963,44 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
     // FIXME: documentation that in the dvi file,
     // png, jpg and svg are not visible, but present.
+  }
+
+  /**
+   * Runs the latexmk command given by {@link Settings#getLatexmkCommand()}
+   * on the latex main file <code>texFile</code>
+   * described by <code>desc</code>
+   * in the directory containing <code>texFile</code> with arguments
+   * <!--given by {@link #buildLatexArguments(Settings, LatexDev, File, boolean)}-->.
+   * The output format of the LaTeX run is given by <code>PDF</code> currently.
+   * <p>
+   * Logs a warning or an error if running latexmk failed.
+   * <p>
+   * Logging:
+   * <ul>
+   * <li>EEX01, EEX02, EEX03, WEX04, WEX05:
+   * if running the latexmk command failed.
+   * </ul>
+   *
+   * @param desc
+   *     the description of a latex main file <code>texFile</code>
+   *     to be processed.
+   * @throws BuildFailureException
+   *     TEX01 if invocation of the latexmk command returned by
+   *     {@link Settings#getLatexmkCommand()} failed.
+   */
+  private void runLatexmk(LatexMainDesc desc) 
+    throws BuildFailureException {
+
+    File texFile = desc.texFile;
+    // FIXME: wrong name; better is latex2dev
+    String command = this.settings.getLatexmkCommand();
+    this.log.debug("Running " + command + " on '" + texFile.getName() + "'. ");
+    String[] args = buildArguments("", texFile);// TBD: activate reading arguments. 
+    // may throw BuildFailureException TEX01,
+    // may log warning EEX01, EEX02, EEX03, WEX04, WEX05
+    this.executor.execute(desc.parentDir, // workingDir
+        this.settings.getTexPath(), command, args, desc.pdfFile);
+    // TBD: desc.withSuffix(SUFFIX_HTML): maybe depending on Target
   }
 
   // also for tests
@@ -2021,6 +2066,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
     if (this.settings.isChkDiff()) {
       this.executor.setIsTimeless();
     }
+    // may throw BuildFailureException TEX01,
+    // may log warning EEX01, EEX02, EEX03, WEX04, WEX05
     this.executor.execute(desc.parentDir, // workingDir
         this.settings.getTexPath(), command, args, desc.pdfFile);
     // FIXME: what about error logging?

@@ -390,7 +390,7 @@ public class Settings {
    * The default is {@link LatexmkUsage#NotAtAll}. 
    */
   @RuntimeParameter
-  @Parameter(name = "latexmkUsage")//, defaultValue = "NotAtAll"
+  @Parameter(name = "latexmkUsage", defaultValue = "NotAtAll")
   private LatexmkUsage latexmkUsage = LatexmkUsage.NotAtAll;
 
   // texPath, commands and arguments 
@@ -2292,6 +2292,11 @@ public class Settings {
         : new HashSet<String>(Arrays.asList(this.mainFilesExcluded.split(" ")));
   }
 
+
+  public LatexmkUsage getLatexmkUsage() {
+    return this.latexmkUsage;
+  }
+
   // texPath, commands and arguments 
 
   public File getTexPath() {
@@ -2750,6 +2755,11 @@ public class Settings {
     this.mainFilesExcluded =
         mainFilesExcluded.replaceAll("(\t|\n| )+", " ").trim();
   }
+
+  public void setLatexmkUsage(LatexmkUsage latexmkUsage) {
+    this.latexmkUsage = latexmkUsage;
+  }
+
 
   public void setTexPath(File texPath) {
     this.texPath = texPath;
