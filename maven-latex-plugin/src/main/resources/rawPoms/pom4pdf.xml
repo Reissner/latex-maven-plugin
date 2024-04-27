@@ -247,6 +247,13 @@ beamer,leaflet,scrlttr2:chk,pdf,txt
     -->
             <mainFilesExcluded>useBeamerHandout</mainFilesExcluded>
 
+            <!--
+            The extent to which latexmk or to be more precise, 
+            the command given by {\$latexmkCommand} is used to build. 
+            The default is 'NotAtAll'. 
+            We change for development of release 2.1 to test AsBackend and Fully-->
+            <latexmkUsage>AsBackend</latexmkUsage>
+
             <!-- Path to the TeX scripts or null. 
 In the latter case, the scripts must be on the system path. 
 Note that in the pom, <texPath /> 
@@ -1185,6 +1192,22 @@ avoiding verbose output and backing up the output log-file. -->
       Thus usable for a wrapper only. -->
 
             <diffPdfCommand>diff</diffPdfCommand>
+
+            <!-- The latexmk command to create a pdf-file from a latex file and other files. 
+              The default value is <code>latexmk</code> there will be hardly a reason to change it. 
+              Conceivable is a wrapper around, unlikely is a reimplementation. 
+            -->
+            <latexmkCommand>latexmk</latexmkCommand>
+
+            <!-- The options for the command {$latexmkCommand}. 
+                 Since this command is controlled 
+                 to a wide extend by the config file <code>.latexmkrc</code>, 
+                 the options are of minor importance. 
+                 On the other hand, there are options not allowed for this software 
+                 because they change behavior in a way not taken into account. 
+                 So add options with care. 
+                 The default value is the empty string. -->
+            <latexmkOptions></latexmkOptions>
 
           </settings>
         </configuration>
