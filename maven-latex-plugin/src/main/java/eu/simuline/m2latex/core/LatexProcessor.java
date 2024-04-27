@@ -1031,13 +1031,16 @@ public class LatexProcessor extends AbstractLatexProcessor {
    */
   private void processLatex2dev(LatexMainDesc desc, LatexDev dev)
       throws BuildFailureException {
-    // TBD: improve this in several respect. 
-    if (dev == LatexDev.pdf && this.settings.getLatexmkUsage() != LatexmkUsage.NotAtAll) {
-      this.log.info("Running latexmk bypassing direct compilation. ");
-      runLatexmk(desc);
-      return;
-    }
-    this.log.info("No latexmk because target=" + dev + " and usage=" + this.settings.getLatexmkUsage());
+
+    // invocation of latexmk here is suitable if used not only for pdf but also for dvi in future 
+    // // TBD: improve this in several respect. 
+    // if (dev == LatexDev.pdf && this.settings.getLatexmkUsage() != LatexmkUsage.NotAtAll) {
+    //   this.log.info("Running latexmk bypassing direct compilation. ");
+    //   runLatexmk(desc);
+    //   return;
+    // }
+    // this.log.info("No latexmk because target=" + dev + " and usage=" + this.settings.getLatexmkUsage());
+
     // may throw BuildFailureException TEX01,
     // log warning EAP01, EAP02, WAP04, WLP02, WFU03, WLP04, WLP05,
     // EEX01, EEX02, EEX03, WEX04, WEX05
@@ -1059,6 +1062,15 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
   void processLatex2pdf(LatexMainDesc desc) throws BuildFailureException {
     this.log.info("Converting into pdf:  LaTeX file '" + desc.texFile + "'. ");
+
+    // TBD: improve this in several respect. 
+    if (this.settings.getLatexmkUsage() != LatexmkUsage.NotAtAll) {
+      this.log.info("Running latexmk bypassing direct compilation. ");
+      runLatexmk(desc);
+      return;
+    }
+    this.log.info("No latexmk because usage=" + this.settings.getLatexmkUsage());
+
     LatexDev dev = this.settings.getPdfViaDvi();
 
     // may throw BuildFailureException TEX01,
