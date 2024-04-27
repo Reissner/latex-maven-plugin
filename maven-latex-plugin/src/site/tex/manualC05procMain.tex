@@ -1177,10 +1177,6 @@ is invoked or not compared to when it is absent.
 % This could be done globally if \texttt{\$latexmkUsage} is not NotAtAll. 
 % Also specifically if triggered by a magic comment. 
 
-% note that running with latexmk neglects choice of latex compiler in magic comment. 
-% this requires a warning. 
-% In contrast, magic comments referring to the target and related are respected 
-
 % currently, preprocessing of graphic files is done in any case, 
 % although specified differently. 
 
@@ -1188,24 +1184,23 @@ is invoked or not compared to when it is absent.
 % and also the presence of a pdf is monitored triggering EEC03 if not updated. 
 % also the manual shows how to convert warnings into errors. 
 
-% special for latexmk: may not touch pdf file although all ok: 
-% return code is stil 0 
-
-% pdf files created with latexmk are not suitable for strict diffing: 
-% they contain the date. 
-% If this functionality is added, then ntlatex is no longer mandatory. 
-% This affects also the documentation. 
+% make a note: special for latexmk: may not touch pdf file although all ok: 
+% return code is still 0 
 
 % latexmk is never used for cleanup with latexmk -c or latexmk -C 
 
-% running latexmk does not respect magic comments: neither target nor compiler. 
-% well, maybe target yes. have a look and document. 
-% seemingly also restrictions due to the class are respected. 
+% on magic comments: 
+% - target: currently, latexmk is applied only to pdf creation. 
+%           the target is determined on a higher level, so it is taken into account 
+% - program: taken into account. 
+% - latexmk: this magic comment shall be added, 
+%            because in many cases latexmk is only wanted for individual latex main files. 
+%            It is only to switch latexmk usage on
+%            There is some interference with latexmkUsage: 
+%            - no effect for Fully and AsBackend 
+%            - For NotAtAll, graphics are created already. 
 
-% eliminate: 
-% [INFO] Converting into pdf:  LaTeX file '/home/ernst/OpenSource/LatexMavenPluginGit/latex-maven-plugin/maven-latex-plugin/src/site/tex/./testMagicComments/testProgram.tex'. 
-% [INFO] Running latexmk bypassing direct compilation. 
-% [ERROR] EEX01: Running latexmk failed with return code 12. 
+
 
 % preferred usage: 
 % latexmkUsage=NotAtAll, but activation by magic comment shall be preferred usage. 
@@ -1213,6 +1208,29 @@ is invoked or not compared to when it is absent.
 % an idea would be to include the fdb_latexmk file as this is specific for latexmk 
 % But this has to be done in a way, that compilation still works if not present. 
 % Only the diff to the original fails then. 
+% In fact, even two latex main files are required: 
+% - one for which latexmk is activated although latexmkUsage is set to the default NotAtAll
+% - another one for which latexmk is not requested by magic comment. 
+% This can be any document which is already present. 
+
+% Maybe check that latexmk respects also the compiler given by magic comment. 
+% Decision: no: is checked for one document once and this is suficient although later it is compiled generically. 
+% This is decided because wrong compiler is detected quickly. 
+
+% latexmk can be invoked as 
+% SOURCE_DATE_EPOCH=0 FORCE_SOURCE_DATE=1 latexmk xxx.tex 
+% as well. 
+% That way all converters are invoked with the same environment variables. 
+% The deceicive ones are xxxlatex and dvipdf 
+% It may be a good idea to provide ntlatexmk analogous to ntlatex as an injection. 
+% Adapt documentation accordinly. 
+
+
+
+
+% baglock: chkDiff as a magic comment. 
+% this may be better in many cases than a global setting chkDiff (although this has applications also)
+
 
 
 
