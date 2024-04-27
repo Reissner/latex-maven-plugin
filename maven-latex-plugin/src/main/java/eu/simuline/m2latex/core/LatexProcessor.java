@@ -1893,6 +1893,51 @@ public class LatexProcessor extends AbstractLatexProcessor {
     return true;
   } // runPythontexByNeed
 
+  /**
+   * Runs the latexmk command given by {@link Settings#getLatexmkCommand()}
+   * on the latex main file <code>texFile</code>
+   * described by <code>desc</code>
+   * in the directory containing <code>texFile</code> with arguments
+   * <!--given by {@link #buildLatexArguments(Settings, LatexDev, File, boolean)}-->.
+   * The output format of the LaTeX run is given by <code>PDF</code> currently.
+   * <p>
+   * Logs a warning or an error if running latexmk failed.
+   * <p>
+   * Logging:
+   * <ul>
+   * <li>EEX01, EEX02, EEX03, WEX04, WEX05:
+   * if running the latexmk command failed.
+   * </ul>
+   *
+   * @param desc
+   *     the description of a latex main file <code>texFile</code>
+   *     to be processed.
+   * @throws BuildFailureException
+   *     TEX01 if invocation of the latexmk command returned by
+   *     {@link Settings#getLatexmkCommand()} failed.
+   */
+  private void runLatexmk(LatexMainDesc desc) 
+    throws BuildFailureException {
+
+    File texFile = desc.texFile;
+    // FIXME: wrong name; better is latex2dev
+
+    String command = this.settings.getLatexmkCommand();
+
+    Optional<String> programMagic =
+      desc.groupMatch(LatexMainParameterNames.programMagic);
+
+    String[] args = buildArguments(this.settings.getLatexmkOptions(), texFile, 
+      programMagic.isPresent() 
+      ? new String[] {"-e", "$programMagic=q/"+programMagic.get()+"/"}
+      : new String[] {});
+    this.log.debug("Running " + command + " on '" + texFile.getName() + "'. ");
+    // may throw BuildFailureException TEX01,
+    // may log warning EEX01, EEX02, EEX03, WEX04, WEX05
+    this.executor.execute(desc.parentDir, // workingDir
+        this.settings.getTexPath(), command, args, desc.pdfFile);
+    // TBD: desc.withSuffix(SUFFIX_HTML): maybe depending on Target
+  }
 
   /**
    * Runs the LaTeX command given by {@link #getLatex2pdfCommand()}
@@ -1963,52 +2008,6 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
     // FIXME: documentation that in the dvi file,
     // png, jpg and svg are not visible, but present.
-  }
-
-  /**
-   * Runs the latexmk command given by {@link Settings#getLatexmkCommand()}
-   * on the latex main file <code>texFile</code>
-   * described by <code>desc</code>
-   * in the directory containing <code>texFile</code> with arguments
-   * <!--given by {@link #buildLatexArguments(Settings, LatexDev, File, boolean)}-->.
-   * The output format of the LaTeX run is given by <code>PDF</code> currently.
-   * <p>
-   * Logs a warning or an error if running latexmk failed.
-   * <p>
-   * Logging:
-   * <ul>
-   * <li>EEX01, EEX02, EEX03, WEX04, WEX05:
-   * if running the latexmk command failed.
-   * </ul>
-   *
-   * @param desc
-   *     the description of a latex main file <code>texFile</code>
-   *     to be processed.
-   * @throws BuildFailureException
-   *     TEX01 if invocation of the latexmk command returned by
-   *     {@link Settings#getLatexmkCommand()} failed.
-   */
-  private void runLatexmk(LatexMainDesc desc) 
-    throws BuildFailureException {
-
-    File texFile = desc.texFile;
-    // FIXME: wrong name; better is latex2dev
-
-    String command = this.settings.getLatexmkCommand();
-
-    Optional<String> programMagic =
-      desc.groupMatch(LatexMainParameterNames.programMagic);
-
-    String[] args = buildArguments(this.settings.getLatexmkOptions(), texFile, 
-      programMagic.isPresent() 
-      ? new String[] {"-e", "$programMagic=q/"+programMagic.get()+"/"}
-      : new String[] {});
-    this.log.debug("Running " + command + " on '" + texFile.getName() + "'. ");
-    // may throw BuildFailureException TEX01,
-    // may log warning EEX01, EEX02, EEX03, WEX04, WEX05
-    this.executor.execute(desc.parentDir, // workingDir
-        this.settings.getTexPath(), command, args, desc.pdfFile);
-    // TBD: desc.withSuffix(SUFFIX_HTML): maybe depending on Target
   }
 
   // also for tests
