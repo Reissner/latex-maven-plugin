@@ -1926,11 +1926,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
     Optional<String> programMagic =
       desc.groupMatch(LatexMainParameterNames.programMagic);
-
-    String[] args = buildArguments(this.settings.getLatexmkOptions(), texFile, 
-      programMagic.isPresent() 
-      ? new String[] {"-e", "$programMagic=q/"+programMagic.get()+"/"}
-      : new String[] {});
+    String[] args = buildLatexmkArguments(settings, programMagic, texFile);
     this.log.debug("Running " + command + " on '" + texFile.getName() + "'. ");
     // may throw BuildFailureException TEX01,
     // may log warning EEX01, EEX02, EEX03, WEX04, WEX05
@@ -1938,6 +1934,15 @@ public class LatexProcessor extends AbstractLatexProcessor {
         this.settings.getTexPath(), command, args, desc.pdfFile);
     // TBD: desc.withSuffix(SUFFIX_HTML): maybe depending on Target
   }
+
+  // also for tests
+  protected static String[] buildLatexmkArguments(Settings settings, Optional<String> programMagic,
+    File texFile) throws BuildFailureException {
+      return buildArguments(settings.getLatexmkOptions(), texFile, 
+        programMagic.isPresent() 
+        ? new String[] {"-e", "$programMagic=q/"+programMagic.get()+"/"}
+        : new String[] {});
+    }
 
   /**
    * Runs the LaTeX command given by {@link #getLatex2pdfCommand()}
