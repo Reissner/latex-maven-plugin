@@ -1095,7 +1095,7 @@
             <!--mainFilesIncluded>manualLMP</mainFilesIncluded-->
             <mainFilesExcluded>latexmk test useBeamerHandout</mainFilesExcluded>
             <pythontexCommand>pythontexW:pythontex</pythontexCommand>
-            <pythontexOptions>- -rerun=always</pythontexOptions>
+            <pythontexOptions>--rerun=always</pythontexOptions>
             <!--patternErrPyTex>\* PythonTeX error|(PythonTeX:  .+ -|    - Current: ) [1-9][0-9]* error\(s\), [0-9]+ warning\(s\)</patternErrPyTex-->
             <!--patternWarnPyTex>(PythonTeX:  .+ -|    - Current: ) [0-9]+ error\(s\), [1-9][0-9]* warning\(s\)</patternWarnPyTex-->
             <!--depythontexCommand>depythontexW</depythontexCommand-->
