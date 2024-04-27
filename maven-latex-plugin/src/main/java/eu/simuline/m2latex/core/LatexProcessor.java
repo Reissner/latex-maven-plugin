@@ -1927,6 +1927,9 @@ public class LatexProcessor extends AbstractLatexProcessor {
     Optional<String> programMagic =
       desc.groupMatch(LatexMainParameterNames.programMagic);
     String[] args = buildLatexmkArguments(settings, programMagic, texFile);
+    if (this.settings.isChkDiff()) {
+      this.executor.setIsTimeless();
+    }
     this.log.debug("Running " + command + " on '" + texFile.getName() + "'. ");
     // may throw BuildFailureException TEX01,
     // may log warning EEX01, EEX02, EEX03, WEX04, WEX05
