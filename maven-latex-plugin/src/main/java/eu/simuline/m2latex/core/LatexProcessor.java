@@ -1998,17 +1998,12 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
     Optional<String> programMagic =
       desc.groupMatch(LatexMainParameterNames.programMagic);
-    String options = this.settings.getLatexmkOptions();
-    if (programMagic.isPresent()) {
-      if (!options.isEmpty()) {
-        options += " ";
-      }
-      options += "-e $programMagic=q/"+programMagic.get()+"/";
-    }
-    //System.out.println("option: |"+options+"|");
+
+    String[] args = buildArguments(this.settings.getLatexmkOptions(), texFile, 
+      programMagic.isPresent() 
+      ? new String[] {"-e", "$programMagic=q/"+programMagic.get()+"/"}
+      : new String[] {});
     this.log.debug("Running " + command + " on '" + texFile.getName() + "'. ");
-    String[] args = buildArguments(options, texFile);// TBD: activate reading arguments. 
-    //System.out.println("args: |"+Arrays.asList(args)+"|");
     // may throw BuildFailureException TEX01,
     // may log warning EEX01, EEX02, EEX03, WEX04, WEX05
     this.executor.execute(desc.parentDir, // workingDir
@@ -2022,20 +2017,15 @@ public class LatexProcessor extends AbstractLatexProcessor {
     // FIXME: here it should be taken xelatex into account, using different settings: 
     // added is dev==pdf, then nothing, else dev==dvi it is "-no-pdf". 
     String options = settings.getLatex2pdfOptions();
-    if (!dev.isDefault()) {
+    if (dev.isDefault()) {
+      return buildArguments(options, texFile);
+    }
       // Here we shall create dvi or xdv file 
       // FIXME: this shall be based on analysis of the options of the converter, 
       // not on its name 
-      if (!options.isEmpty()) {
-        options += " ";
-      } else {
-        assert false;
-      }
-      options += isTypeXelatex ? "-no-pdf"
-          : "-output-format=" + dev.getLatexOutputFormat();
-    }
-
-    return buildArguments(options, texFile);
+    return buildArguments(options, texFile, 
+      isTypeXelatex ? "-no-pdf"
+                    : "-output-format=" + dev.getLatexOutputFormat());
   }
 
   /**
@@ -2415,16 +2405,9 @@ public class LatexProcessor extends AbstractLatexProcessor {
    */
   protected static String[] buildChkTexArguments(String options, File texFile,
       File clgFile) {
-    if (options.isEmpty()) {
-      return new String[] {"-o", clgFile.getName(), texFile.getName()};
-    }
-    String[] optionsArr = options.split(" ");
-    String[] args = Arrays.copyOf(optionsArr, optionsArr.length + 3);
-    args[optionsArr.length] = "-o";
-    args[optionsArr.length + 1] = clgFile.getName();
-    args[optionsArr.length + 2] = texFile.getName();
+    return buildArguments(options, texFile, "-o", clgFile.getName());
 
-    return args;
+
   }
 
   /**

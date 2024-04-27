@@ -167,30 +167,38 @@ abstract class AbstractLatexProcessor {
 
   /**
    * Returns an array of strings, 
-   * each entry with a single option given by <code>options</code> 
-   * except the last one which is the name of <code>file</code>. 
+   * starting with those extracted from <code>options</code> by splitting 
+   * followed by a copy of <code>addArgs</code> 
+   * and finally <code>file</code>. 
+   * <p>
+   * CAUTION: The last two categories are added not in the parameter order, 
+   * because they are given by varargs 
    *
    * @param options
-   *    the options string. The individual options 
+   *    the options string without enclosing blanks. 
+   *    The individual options in that string 
    *    are expected to be separated by a single blank. 
    * @param file
-   *    the file argument 
+   *    the file argument which is in the returned array last 
+   * @param addArgs
+   *    optional argument: further options 
+   *    inserted in the returned array just in front of the <code>file</code>. 
    * @return
    *    An array of strings: 
-   *    The 0th entry is the file name, 
-   *    The others, if <code>options</code> is not empty, 
-   *    are the options in <code>options</code>. 
+   *    The first elements are extracted from <code>options</code>, 
+   *    followed by the individual elements from <code>addArgs</code>; 
+   *    the last entry is <code>file</code>. 
    */
   // for both LatexProcessor and LatexPreProcessor 
   // and in tests 
-  protected static String[] buildArguments(String options, File file) {
-    if (options.isEmpty()) {
-      return new String[] {file.getName()};
-    }
-    String[] optionsArr = options.split(" ");
-    String[] args = Arrays.copyOf(optionsArr, optionsArr.length + 1);
-    args[optionsArr.length] = file.getName();
-
+  protected static String[] buildArguments(String options, File file,
+                                           String... addArgs) {
+    String[] optionsArr =
+        options.isEmpty() ? new String[] {} : options.split(" ");
+    String[] args =
+        Arrays.copyOf(optionsArr, optionsArr.length + addArgs.length + 1);
+    System.arraycopy(addArgs, 0, args, optionsArr.length, addArgs.length);
+    args[args.length - 1] = file.getName();
     return args;
   }
 }
