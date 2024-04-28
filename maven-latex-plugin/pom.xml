@@ -1084,16 +1084,25 @@
             <!--chkDiff>true</chkDiff-->
             <targets>chk,pdf,html</targets>
             <!--pdfViaDvi>true</pdfViaDvi-->
-            <latexmkUsage>AsBackend</latexmkUsage>
+            <!--latexmkUsage>AsBackend</latexmkUsage-->
 
 
             <!--diffDirectory>src/main/resources/docsCmp</diffDirectory-->
             <!--targets>chk,pdf,html</targets-->
             <!--docClassesToTargets>article,book:chk,dvi,pdf,html,odt,docx,rtf,txt beamer:chk,pdf,txt</docClassesToTargets-->
             <!--mainFilesIncluded>testtest</mainFilesIncluded-->
-            <!--patternLatexMainFile>\A%! LMP classMagic </patternLatexMainFile-->
-            <!--mainFilesIncluded>manualLMP</mainFilesIncluded-->
-            <mainFilesExcluded>latexmk test useBeamerHandout</mainFilesExcluded>
+            <!--patternLatexMainFile>
+\A
+(%\s*!\s*T[eE]X (TXS|spellcheck|encoding|root).*\R)*
+(%\s*!\s*T[eE]X program\s*=\s*(?&lt;programMagic&gt;[^} ]+)\R)?
+(%\s*!\s*T[eE]X .*\R)*
+% !LMP (?&lt;latexmkMagic&gt;latexmk)\R
+(%\s*!\s*LMP targets=(?&lt;targetsMagic&gt;(\p{Lower}|,)+)\R)?
+\\RequirePackage\s*(\[(\s|\w|[,=])*\])?\s*\{(\w|-)+\}\s*(\[(\d|[.-/])+\])?\R
+\\(documentstyle|documentclass)\s*(\[[^]]*\])?\s*\{(?&lt;docClass&gt;[^} ]+)\}
+            </patternLatexMainFile-->
+            <!--mainFilesIncluded>xfigFormat</mainFilesIncluded-->
+            <mainFilesExcluded>test useBeamerHandout</mainFilesExcluded>
             <pythontexCommand>pythontexW:pythontex</pythontexCommand>
             <pythontexOptions>--rerun=always</pythontexOptions>
             <!--patternErrPyTex>\* PythonTeX error|(PythonTeX:  .+ -|    - Current: ) [1-9][0-9]* error\(s\), [0-9]+ warning\(s\)</patternErrPyTex-->
