@@ -167,6 +167,8 @@ so that the document class is matched.  -->
 (%\s*!\s*T[eE]X (TXS|spellcheck|encoding|root).*\R)*
 (%\s*!\s*T[eE]X program\s*=\s*(?&lt;programMagic&gt;[^} ]+)\R)?
 (%\s*!\s*T[eE]X .*\R)*
+(%\s*!\s*LMP (?&lt;chkDiffMagic&gt;chkDiff)\R)?
+(%\s*!\s*LMP (?&lt;latexmkMagic&gt;latexmk)\R)?
 (%\s*!\s*LMP targets=(?&lt;targetsMagic&gt;(\p{Lower}|,)+)\R)?
 (\s*(
 \\RequirePackage\s*(\[(\s|\w|[,=])*\])?\s*\{(\w|-)+\}\s*(\[(\d|[.-/])+\])?|
@@ -250,9 +252,11 @@ beamer,leaflet,scrlttr2:chk,pdf,txt
             <!--
             The extent to which latexmk or to be more precise, 
             the command given by {\$latexmkCommand} is used to build. 
+            This setting can be overwritten for individual latex main files 
+            by the magic comment 'latexmkMagic'. 
             The default is 'NotAtAll'. 
             We change for development of release 2.1 to test AsBackend and Fully-->
-            <latexmkUsage>AsBackend</latexmkUsage>
+            <latexmkUsage>NotAtAll</latexmkUsage>
 
             <!-- Path to the TeX scripts or null. 
 In the latter case, the scripts must be on the system path. 
@@ -262,13 +266,18 @@ The default value is null. -->
             <texPath/>
 
             <!-- Indicates whether after creating artifacts 
-						 and copying them to the output directory 'outputDirectoryFile' 
-						 the artifacts are checked by diffing them against preexisting artifacts 
-						 in 'diffDirectoryFile' 
-						 using the diff command given by 'diffPdfCommand'. 
-						 Note that currently, only pdf files are checkd. 
-						 This is <code>false</code> by default and is set to <code>true</code> only 
-						 in the context of tests. -->
+						and copying them to the output directory 'outputDirectoryFile' 
+						the artifacts are checked by diffing them against preexisting artifacts 
+						in 'diffDirectoryFile' 
+						using the diff command given by 'diffPdfCommand'. 
+            If this is set, the system time is set to $0$ indicating 1970-01-01. 
+						Note that currently, only pdf files are checked. 
+
+            This setting can be overwritten for individual latex main files 
+            by the magic comment 'chkDiff'. 
+
+						This is 'false' by default and is set to 'true' only 
+						in the context of tests. -->
             <chkDiff>true</chkDiff>
 
 

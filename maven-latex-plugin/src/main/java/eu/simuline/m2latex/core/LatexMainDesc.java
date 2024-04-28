@@ -102,6 +102,10 @@ class LatexMainDesc implements Comparable<LatexMainDesc> {
     return Optional.ofNullable(this.matchRes.group(groupName.toString()));
   }
 
+  boolean groupMatches(LatexMainParameterNames groupName) {
+    return this.matchRes.group(groupName.toString()) != null;
+  }
+
   // Currently, document class is always defined. 
   String getDocClass() {
     String res = this.matchRes.group(LatexMainParameterNames.docClass.toString());
@@ -131,6 +135,7 @@ class LatexMainDesc implements Comparable<LatexMainDesc> {
   }
 
   public String toString() {
-    return "<LatexMainDesc>" + this.texFile.getName() + "</LatexMainDesc>";
+    return "<LatexMainDesc texFile='" + this.texFile.getName() + "'>" + 
+    this.matchRes + "</LatexMainDesc>";
   }
 } // class LatexMainDesc

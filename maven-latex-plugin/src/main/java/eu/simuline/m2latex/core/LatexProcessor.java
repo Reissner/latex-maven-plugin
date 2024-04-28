@@ -1062,14 +1062,15 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
   void processLatex2pdf(LatexMainDesc desc) throws BuildFailureException {
     this.log.info("Converting into pdf:  LaTeX file '" + desc.texFile + "'. ");
-
     // TBD: improve this in several respect. 
-    if (this.settings.getLatexmkUsage() != LatexmkUsage.NotAtAll) {
+    if (this.settings.getLatexmkUsage().runLatexmk()
+      || desc.groupMatches(LatexMainParameterNames.latexmkMagic)) {
       this.log.info("Running latexmk bypassing direct compilation. ");
       runLatexmk(desc);
       return;
     }
-    this.log.info("No latexmk because usage=" + this.settings.getLatexmkUsage());
+    this.log.info("No latexmk because usage=" + this.settings.getLatexmkUsage()
+    + " and no magic comment 'latexmk'. ");
 
     LatexDev dev = this.settings.getPdfViaDvi();
 

@@ -291,6 +291,8 @@ public class Settings {
   (%\\s*!\\s*T[eE]X (TXS|spellcheck|encoding|root).*\\R)*\
   (%\\s*!\\s*T[eE]X program\\s*=\\s*(?<programMagic>[^} ]+)\\R)?\
   (%\\s*!\\s*T[eE]X .*\\R)*\
+  (%\\s*!\\s*LMP (?<chkDiffMagic>chkDiff)\\R)?\
+  (%\\s*!\\s*LMP (?<latexmkMagic>latexmk)\\R)?\
   (%\\s*!\\s*LMP targets=(?<targetsMagic>(\\p{Lower}|,)+)\\R)?\
   (\\s*(\
   \\\\RequirePackage\\s*(\\[(\\s|\\w|[,=])*\\])?\\s*\\{(\\w|-)+\\}\\s*(\\[(\\d|[.-/])+\\])?|\
@@ -387,6 +389,8 @@ public class Settings {
   /**
    * The extent to which latexmk or to be more precise, 
    * the command given by {@link #latexmkCommand} is used to build. 
+   * This setting can be overwritten for individual latex main files 
+   * by the magic comment represented by {@link LatexMainParameterNames#latexmkMagic}. 
    * The default is {@link LatexmkUsage#NotAtAll}. 
    */
   @RuntimeParameter
@@ -414,7 +418,10 @@ public class Settings {
    * the artifacts are checked by diffing them against preexisting artifacts 
    * in {@link #diffDirectoryFile} 
    * using the diff command given by {@link #diffPdfCommand}. 
-   * Note that currently, only pdf files are checkd. 
+   * If this is set, the system time is set to 0 indicating 1970--01--01. 
+   * Note that currently, only pdf files are checked. 
+   * This setting can be overwritten for individual latex main files 
+   * as described by {@link LatexMainParameternames#chkDiffMagic}. 
    * This is <code>false</code> by default and is set to <code>true</code> only 
    * in the context of tests. 
    */

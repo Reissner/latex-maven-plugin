@@ -13,7 +13,11 @@ public enum LatexmkUsage {
    * As a consequence, the user can check that the build process passed without warning or error. 
    * This is the default value. 
    */
-  NotAtAll,
+  NotAtAll {
+    boolean runLatexmk() {
+      return false;
+    }
+  },
 
   /**
    * Graphic files needed to compile latex main files are created in a traditional way 
@@ -42,4 +46,7 @@ public enum LatexmkUsage {
   // TBD: well: cleanup shall be done by latexmk in this case also. 
   Fully;
 
+  boolean runLatexmk() {
+    return true;
+  }
 }

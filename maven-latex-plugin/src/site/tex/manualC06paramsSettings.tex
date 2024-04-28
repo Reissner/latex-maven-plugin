@@ -410,7 +410,11 @@ The following values for build strategy are allowed:
   on the individual \LaTeX{} main files without any prior actions. 
 \end{description}
 
-For a more detailed description see Section~\ref{sec:latexmk}. 
+This setting can be overwritten for individual latex main files 
+by the magic comment \texttt{latexmkMagic} 
+described in Section~\ref{subsec:patternLatexMainFile}. 
+
+For a more detailed description of usage of \texttt{latexmk} see Section~\ref{sec:latexmk}. 
 \end{minipage}
 } \\
 \texttt{texPath}          &  empty string        \\
@@ -543,7 +547,7 @@ is given by Listing~\ref{lst:patternLatexMainFile}.
 
 \lstinputlisting[language=XML, basicstyle=\scriptsize,
 numbers={left}, %stepnumber={5},
-linerange={166-179}, % chktex 8 TBD: why is this not covered by .chktexrc? 
+linerange={166-181}, % chktex 8 TBD: why is this not covered by .chktexrc? 
 breaklines,
 %float,
 captionpos=b, label={lst:patternLatexMainFile},
@@ -2533,6 +2537,11 @@ ranging from byte equivalence to some kind of visual equivalence.
 		using the diff command given by \texttt{\$diffPdfCommand}. 
     If this is set, the system time is set to $0$ indicating 1970--01--01. 
 		Note that currently, only pdf files are checked. 
+
+    This setting can be overwritten for individual latex main files 
+    by the magic comment \texttt{chkDiffMagic} 
+    described in Section~\ref{subsec:patternLatexMainFile}. 
+
 		This is \texttt{false} by default and is set to \texttt{true} only 
 		in the context of tests. 
   \end{minipage}

@@ -13,6 +13,29 @@ package eu.simuline.m2latex.core;
 public enum LatexMainParameterNames {
   /**
    * The name of the capturing group 
+   * indicating whether after creating the artifact 
+   * and copying it to the output directory {@link Settings#outputDirectoryFile} 
+   * the artifact is checked by diffing them against preexisting artifacts 
+   * as described for {@link Settings#chkDiff}. 
+   * Essentially, this overwrites {@link Settings#getChkDiff()} 
+   * for individual latex main files. 
+   */
+  chkDiffMagic,
+
+  /**
+   * The name of the capturing group 
+   * indicating whether <code>latexmk</code> or 
+   * to be more precise the latexmk like-tool 
+   * given by {@link Settings#getLatexmkCommand()} shall be used 
+   * bypassing the direct invocation of more basic tools. 
+   * Essentially, this overwrites {@link Settings#getLatexmkUsage()} 
+   * but this has influence on when graphic files are created: 
+   * In case of {@link LatexmkUsage#Fully}, these are not preprocessed. 
+   */
+  latexmkMagic,
+
+  /**
+   * The name of the capturing group 
    * representing the document class specified by the commands 
    * <code>documentclass</code> or <code>documentstyle</code>. 
    */
