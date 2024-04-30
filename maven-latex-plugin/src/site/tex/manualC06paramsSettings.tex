@@ -502,7 +502,7 @@ for intuitive understanding.
 
 The regular expression pattern \texttt{patternLatexMainFile} 
 matches exactly the files to be compiled, 
-the so called \LaTeX{} main files, and for latex main files 
+the so called \LaTeX{} main files, and for \LaTeX{} main files 
 it extracts the following pieces of information, 
 all by named capturing groups which have the form \texttt{(!<name>pattern)} 
 but in the pom \texttt{<} and \texttt{>} must be escaped 
@@ -510,34 +510,54 @@ and so capturing groups take the form \texttt{(!\&lt;name\&gt;pattern)}.
 The capturing group named \texttt{docClass} extracts the document class 
 from the command \cmd{documentclass}. 
 If \texttt{patternLatexMainFile} matches, 
-then also capturing group \texttt{docClass} must match, 
+also the capturing group \texttt{docClass} matches, 
 so that for latex main files the document class is always known. 
 All other capturing groups are defined though magic comments. 
-They may not match anything, 
-which means that the according piece of information is not available. 
+As the document class, they are directives specific to the given file 
+on how to compile it. 
+They override the general settings given in the pom. 
+A magic comment may not match, 
+which means that there is no according specific directive 
+and so the general setting holds. 
 
 Whether a capturing group must match or not, 
 the regular expression pattern \texttt{patternLatexMainFile} 
 must contain each of the following named capturing groups, 
 because the software asks for it. 
-
-\emph{The above conditions are to be satisfied also for any pattern defined by the user. }
+Note that all but \texttt{docClass} are optional. 
 
 \begin{description}
-  \item[docClass] the document class given by the command \cmd{documentclass}. 
-  \item[programMagic] the \LaTeX{} converter to be used 
+  \item[docClass]
+  the document class given by the command \cmd{documentclass}. 
+  \item[programMagic]
+  the \LaTeX{} converter to be used 
   specifically for the according document. 
-  This is optional and is intended to be specified only 
+  This is intended to be specified only 
   if the required converter for the given document deviates 
   from what is specified 
   globally as setting \texttt{latex2pdfCommand} described in 
   Table~\ref{tab:paramLatex2pdf} on page~\pageref{tab:paramLatex2pdf}. 
-  \item[targetsMagic] the targets to be built. 
-  This is optional and is intended to be specified only 
+  \item[targetsMagic]
+  the targets to be built. 
+  This is intended to be specified only 
   if the targets for the given document deviate from what is specified 
   globally as setting \texttt{targets} and \texttt{docClassesToTargets}, 
   both given in 
   Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen}. 
+  \item[latexmkMagic] 
+  whether \emph{for creating PDF files} \texttt{latexmk} shall be used. 
+  This is intended to run the build process with \texttt{latexmk} 
+  although the global setting \texttt{latexmkUsage} 
+  given in Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen} 
+  may specify direct compilation 
+  without \texttt{latexmk}. 
+  \item[chkDiffMagic]
+  whether the created file shall be checked against an original 
+  ensuring that it is correctly reproduced. 
+  This is intended to trigger check specific for this file 
+  although the general setting \texttt{chkDiff} 
+  given in Table~\ref{tab:paramDiffPdf} on page~\pageref{tab:paramDiffPdf} 
+  specifies no check for all files. 
 \end{description}
 
 The default pattern for identifying \LaTeX{} main files 
@@ -574,27 +594,37 @@ caption={The default pattern of the latex main file in a form as in a pom config
 Let us trace through line by line: 
 %
 \begin{description}
-  \item[1] The \cmd{A} indicates the start of the file. 
-  \item[2--4] These lines match magic comments \texttt{\%~!TEX}, 
-  which are used by other tools. 
+  \item[1]
+  The \cmd{A} indicates the start of the file. 
+  \item[2--4]
+  These lines match magic comments \texttt{\%~!TEX}, 
+  which are used by other build tools also. 
   Line 3 extracts \texttt{programMagic} 
   from the first magic comment of the form \texttt{\%~!TEX program=\dots}. 
   This is the behavior of the other tools also. 
   The other lines are to skip information from magic comments \texttt{\%~!TEX} 
   which are not needed. 
-  \item[5] This line matches a sole magic comment \texttt{\%~!LMP} 
-  which is specific for this software. 
-  It defines optionally \texttt{docClassMagic} and \texttt{targetMagic}. 
-  \item[6--11] Except for magic comments, 
-  this defines material which may precede the command \cmd{documentclass}. 
+  \item[5-7]
+  These lines match magic comments of the form \texttt{\%~!LMP\dots} 
+  which are specific for this software. 
+  Like the above magic comments they are all optional, 
+  but their ordering is fixed: First directive \texttt{chkDiffMagic} 
+  to activate diffing to check reproduction, then \texttt{latexmkMagic} 
+  to delegate build to \texttt{latexmk}. 
+  Both apply to creating PDF files only. 
+  Finally \texttt{targetsMagic} allows to specify a list of targets. 
+  %  It defines optionally \texttt{docClassMagic} and 
+  \item[8--11]
+  This defines material which may precede the command \cmd{documentclass}, 
+  except for magic comments and is the only one without magic comments. 
   Besides lines with specific commands, it matches empty lines and comment lines. 
-  Also, a line may start with whitespace may contain a command and end in a comment. 
+  Also, a line may start with whitespace 
+  and may contain a comand and end in a comment. 
+  The commands specified there may occur in arbitrary multiplicity and order. 
   This section is likely to be modified by the user. 
-  This segment is the only one without a magic comment. 
-  \item[11] Matches the command \cmd{documentclass} 
-  and extracts \texttt{docClass}. 
+  \item[11]
+  Matches the command \cmd{documentclass} and extracts \texttt{docClass}. 
 \end{description}
-
 
 
 
