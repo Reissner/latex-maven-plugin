@@ -88,7 +88,7 @@ are called \emph{\LaTeX{} main files}.
 As an example, 
 in the \emph{TEX source directory} of this software, 
 \texttt{manualLMP.tex} is a \LaTeX{} main file, 
-whereas the file \texttt{header.tex} is not, although also a \LaTeX-file; 
+whereas the file \texttt{header.tex} is not, although also a \LaTeX-file: 
 it is intended to be input in another TEX file, in this case \texttt{manualLMP.tex}. 
 
 
@@ -102,11 +102,11 @@ whereas the description here is quite high level.
 
 As a first approximation, a \LaTeX{} main file is one invoking 
 the command \cmd{documentclass} 
-or the outdated \cmd{documentstyle} both specifying the document class. 
+or the outdated \cmd{documentstyle}, both specifying the document class. 
 It must be excluded that the pattern matches a textual occurrence of \cmd{documentclass}, 
 which just occurs because the document is on \LaTeX{} 
 and mentions the command \cmd{documentclass}. 
-This is quite easy, since there is little allowed preceding these commands. 
+This is quite easy, since there is little allowed in TEX files preceding these commands. 
 
 Consequently, the pattern matches the region from the start of the file 
 to and including the \cmd{documentclass} or \cmd{documentstyle} command. 
@@ -128,12 +128,15 @@ So check whether the file under consideration is processed if
   the parameter \texttt{patternLatexMainFile} is changed 
 \end{itemize}
 %
-If you distrust the recognition mechanism altogether, 
-you can explicitly specify each \LaTeX{} main file in the parameter \texttt{mainFilesIncluded} 
+If you distrust the recognition mechanism via pattern matching altogether, 
+you can explicitly specify each \LaTeX{} main file 
+in the parameter \texttt{mainFilesIncluded} 
 described in Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen}. 
-This is safe because if a file specified that like is not a \LaTeX{} main file, 
+This is safe because if a file specified in \texttt{mainFilesIncluded} 
+that like is not a \LaTeX{} main file according to \texttt{patternLatexMainFile}, 
 a warning is emitted. 
-The disadvantage of this technique is that it is inconvenient and not well maintainable. 
+We could have decided that these files are compiled anyway, 
+but this would lead to a technique is that it is inconvenient and not well maintainable. 
 
 This software is tested for document classes 
 as the built-in classes \texttt{article} and \texttt{book}, 
@@ -186,11 +189,13 @@ Note the quotes and the correct hyphenation in the following paragraph.
 %       Liberté, Egalité, Fraternité
 % \end{foreignlanguage}
 % \end{center}
+\begin{quote}
 \begin{otherlanguage}{german}
   Sie las den Artikel \enquote{Chancen für eine diplomatische Lösung} 
   in der "`Wochenpost"', während er es sich nicht nehmen ließ, % chktex 18
   sich Thomas Manns Novelle "`{Der Tod in Venedig}"' zu Gemüte zu führen. % chktex 18
 \end{otherlanguage}
+\end{quote}
 
 To obtain correct quotes in the above paragraph, 
 package \pkg{csquotes} must be loaded with option \texttt{autostyle}. 
@@ -208,7 +213,7 @@ This is the technique to pass options to packages in general.
 For documents of class \texttt{minimal} there are no requirements imposed. 
 No checks and no PDF-info. 
 For all other document classes, it is recommended to load \pkg{nag} 
-before \cmd{documentclass} using 
+before \cmd{documentclass} by 
 %
 \begin{Verbatim}[fontsize=\small]
   \RequirePackage[l2tabu, orthodox]{nag}
@@ -266,7 +271,7 @@ except for the special specification of fontsize and versioning of the class:
 \end{Verbatim}
 
 Observe that after inputting \texttt{header.tex} which loads \pkg{geometry}, 
-various pseudo lengths have to be readjusted. 
+various pseudo lengths have to be re-adjusted. 
 This is done by loading the letter option. 
 Without it may happen, that the text does not reach until the bottom of the frame. 
 
@@ -279,7 +284,7 @@ the proper presentation, e.g.\@
 \RequirePackage[l2tabu, orthodox]{nag}
 \PassOptionsToPackage{colorlinks,linkcolor=blue,urlcolor=blue,citecolor=blue,destlabel}{hyperref}
 
-\documentclass[10ptenglish]{beamer}
+\documentclass[10pt,english]{beamer}
 \mode<presentation>%
 
 \input{useBeamer}
@@ -394,7 +399,8 @@ In contrast, the target set is given in the magic comment
 if it shall be specified individually for the given \LaTeX{} main file. 
 
 
-Note that documents of the beamer class can essentially only be compiled into a PDF, 
+Note that documents of the classes \texttt{beamer}, \texttt{leaflet} and \texttt{scrlttr2} 
+can essentially only be compiled into a PDF, 
 and maybe further to a TXT file. 
 In addition, to targets and goals \texttt{pdf} and \texttt{txt}, 
 it can be checked with target or goal \texttt{chk}. 
