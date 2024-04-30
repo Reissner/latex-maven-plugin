@@ -421,7 +421,7 @@ public class Settings {
    * If this is set, the system time is set to 0 indicating 1970--01--01. 
    * Note that currently, only pdf files are checked. 
    * This setting can be overwritten for individual latex main files 
-   * as described by {@link LatexMainParameternames#chkDiffMagic}. 
+   * as described by {@link LatexMainParameterNames#chkDiffMagic}. 
    * This is <code>false</code> by default and is set to <code>true</code> only 
    * in the context of tests. 
    */

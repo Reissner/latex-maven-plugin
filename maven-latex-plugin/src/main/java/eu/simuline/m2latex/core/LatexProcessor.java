@@ -2178,7 +2178,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * given by {@link Settings#getLatex2rtfCommand()}
    * on <code>texFile</code>
    * in the directory containing <code>texFile</code>
-   * with arguments given by {@link #buildArguments(String, File)}.
+   * with arguments given by {@link #buildArguments(String, File, String...)}.
    * <p>
    * Logging:
    * <ul>
