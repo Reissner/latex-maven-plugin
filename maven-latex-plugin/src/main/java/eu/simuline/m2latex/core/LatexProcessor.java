@@ -432,11 +432,10 @@ public class LatexProcessor extends AbstractLatexProcessor {
           this.log.debug(String.format("target %s has difftool %s", target,
               target.hasDiffTool()));
           if (!target.hasDiffTool()) {
-            this.log.debug(String.format("target %s has no difftool", target));
             continue;
           }
 
-          if (!this.settings.isChkDiff()) {
+          if (!isChkDiff(desc)) {
             this.log.debug("no artifact diff specified.");
             continue;
           }
@@ -478,6 +477,25 @@ public class LatexProcessor extends AbstractLatexProcessor {
           : "No cleanup");
       this.latex2PdfCmdMagic = Optional.empty();// superfluous
     }
+  }
+
+  /**
+   * Returns whether the pdf file under construction 
+   * is going to be checked whether an original is reproduced. 
+   * This is so if either {@link Settings#isChkDiff()} 
+   * requires that all such PDF files shall be checked 
+   * or <code>desc</code> requires an individual check for the given TEX file. 
+   * 
+   * @param desc
+   *   description of a TEX file. 
+   * @return
+   *   whether {@link Settings#isChkDiff()} 
+   *   or {@link LatexMainDesc#groupMatches(LatexMainParameterNames)} 
+   *   applied to {@link LatexMainParameterNames#chkDiffMagic} is true. 
+   */
+  private boolean isChkDiff(LatexMainDesc desc) {
+    return this.settings.isChkDiff()
+        || desc.groupMatches(LatexMainParameterNames.chkDiffMagic);
   }
 
   // TBD: rework 
@@ -1940,7 +1958,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
     Optional<String> programMagic =
       desc.groupMatch(LatexMainParameterNames.programMagic);
     String[] args = buildLatexmkArguments(settings, programMagic, texFile);
-    if (this.settings.isChkDiff()) {
+    if (isChkDiff(desc)) {
       this.executor.setIsTimeless();
     }
     this.log.debug("Running " + command + " on '" + texFile.getName() + "'. ");
@@ -2012,7 +2030,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
         Converter.XeLatex.getCommand().equals(command);
     String[] args =
         buildLatexArguments(this.settings, dev, texFile, isTypeXelatex);
-    if (this.settings.isChkDiff()) {
+    if (isChkDiff(desc)) {
       this.executor.setIsTimeless();
     }
     // may throw BuildFailureException TEX01,
