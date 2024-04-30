@@ -1232,6 +1232,16 @@ is invoked or not compared to when it is absent.
 % this may be better in many cases than a global setting chkDiff (although this has applications also)
 % extended patternLatexMainFile
 % TBD: adapt manual. 
+% This is part of preferred usage: both chkDiff setting in pom 
+% and according magic comment. 
+% unlike for latexmk, it is not possible to check both preferred usages: 
+% for this project the setting chkDiff=true holds 
+% so the magic comment must be checked outside the project. 
+
+% Idea: for reproduction check do not use epoque time 0 in general 
+% but use timestamp of original. 
+% This requires a more sophisiticated script ntlatex 
+% and some additional code on java side. 
 
 
 
