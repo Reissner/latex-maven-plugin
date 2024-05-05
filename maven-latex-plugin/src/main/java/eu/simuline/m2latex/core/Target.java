@@ -1,5 +1,7 @@
 package eu.simuline.m2latex.core;
 
+import java.util.Optional;
+
 /**
  * The enumeration of all supported (creational) targets.
  * These are targets where tex files are converted into a target format
@@ -22,7 +24,8 @@ public enum Target {
    */
   chk() {
     // may throw BuildFailureException TEX01
-    public void processSource(LatexProcessor latexProcessor, LatexMainDesc desc)
+    // Does not use timestamp
+    public void processSource(LatexProcessor latexProcessor, LatexMainDesc desc, Optional<Long> timestamp)
         throws BuildFailureException {
       latexProcessor.processCheck(desc);
     }
@@ -38,9 +41,9 @@ public enum Target {
     // FIXME: how does this fit with preprocessing??
 
     // may throw BuildFailureException TEX01
-    public void processSource(LatexProcessor latexProcessor, LatexMainDesc desc)
+    public void processSource(LatexProcessor latexProcessor, LatexMainDesc desc, Optional<Long> timestamp)
         throws BuildFailureException {
-      latexProcessor.processLatex2dvi(desc);
+      latexProcessor.processLatex2dvi(desc, timestamp);
     }
 
     public String getPatternOutputFiles(Settings settings) {
@@ -52,9 +55,9 @@ public enum Target {
    */
   pdf() {
     // may throw BuildFailureException TEX01
-    public void processSource(LatexProcessor latexProcessor, LatexMainDesc desc)
+    public void processSource(LatexProcessor latexProcessor, LatexMainDesc desc, Optional<Long> timestamp)
         throws BuildFailureException {
-      latexProcessor.processLatex2pdf(desc);
+      latexProcessor.processLatex2pdf(desc, timestamp);
     }
 
     public String getPatternOutputFiles(Settings settings) {
@@ -70,9 +73,9 @@ public enum Target {
    */
   html() {
     // may throw BuildFailureException TEX01
-    public void processSource(LatexProcessor latexProcessor, LatexMainDesc desc)
+    public void processSource(LatexProcessor latexProcessor, LatexMainDesc desc, Optional<Long> timestamp)
         throws BuildFailureException {
-      latexProcessor.processLatex2html(desc);
+      latexProcessor.processLatex2html(desc, timestamp);
     }
 
     public String getPatternOutputFiles(Settings settings) {
@@ -85,9 +88,9 @@ public enum Target {
    */
   odt() {
     // may throw BuildFailureException TEX01
-    public void processSource(LatexProcessor latexProcessor, LatexMainDesc desc)
+    public void processSource(LatexProcessor latexProcessor, LatexMainDesc desc, Optional<Long> timestamp)
         throws BuildFailureException {
-      latexProcessor.processLatex2odt(desc);
+      latexProcessor.processLatex2odt(desc, timestamp);
     }
 
     public String getPatternOutputFiles(Settings settings) {
@@ -99,9 +102,9 @@ public enum Target {
    */
   docx() {
     // may throw BuildFailureException TEX01
-    public void processSource(LatexProcessor latexProcessor, LatexMainDesc desc)
+    public void processSource(LatexProcessor latexProcessor, LatexMainDesc desc, Optional<Long> timestamp)
         throws BuildFailureException {
-      latexProcessor.processLatex2docx(desc);
+      latexProcessor.processLatex2docx(desc, timestamp);
     }
 
     public String getPatternOutputFiles(Settings settings) {
@@ -113,9 +116,9 @@ public enum Target {
    */
   rtf() {
     // may throw BuildFailureException TEX01
-    public void processSource(LatexProcessor latexProcessor, LatexMainDesc desc)
+    public void processSource(LatexProcessor latexProcessor, LatexMainDesc desc, Optional<Long> timestamp)
         throws BuildFailureException {
-      latexProcessor.processLatex2rtf(desc);
+      latexProcessor.processLatex2rtf(desc);//, timestamp
     }
 
     public String getPatternOutputFiles(Settings settings) {
@@ -127,9 +130,9 @@ public enum Target {
    */
   txt() {
     // may throw BuildFailureException TEX01
-    public void processSource(LatexProcessor latexProcessor, LatexMainDesc desc)
+    public void processSource(LatexProcessor latexProcessor, LatexMainDesc desc, Optional<Long> timestamp)
         throws BuildFailureException {
-      latexProcessor.processLatex2txt(desc);
+      latexProcessor.processLatex2txt(desc, timestamp);
     }
 
     public String getPatternOutputFiles(Settings settings) {
@@ -160,7 +163,7 @@ public enum Target {
    *    to transform <code>texFile</code> failed.
    */
   public abstract void processSource(LatexProcessor latexProcessor,
-          LatexMainDesc desc) throws BuildFailureException;
+          LatexMainDesc desc, Optional<Long> timestamp) throws BuildFailureException;
 
   /**
    * Returns the pattern of the output files.
@@ -170,7 +173,8 @@ public enum Target {
    * without suffix.
    * For target {@link #html}, this is much more complicated,
    * because a lot of files are created in general,
-   * not only <code>^T$T\.h?tml?$</code>.
+   * not only <code>^T$T\.h?tml?$</code>. 
+   * Note that log files are usually no output files as understood here. 
    *
    * @param settings
    *    the settings required to determine the pattern.

@@ -19,8 +19,10 @@
 package eu.simuline.m2latex.core;
 
 import java.io.File;
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import        org.codehaus.plexus.util.cli.CommandLineException;
@@ -134,34 +136,49 @@ class CommandExecutor {
 
   /**
    * Maps names of environment variables to values. 
-   * Currently sets <code>SOURCE_DATE_EPOCH=0</code> 
-   * indicating the time 1970-01-01 midnight 
+   * Currently sets <code>SOURCE_DATE_EPOCH</code> 
+   * to the number of seconds since 1970-01-01 midnight 
    * and <code>FORCE_SOURCE_DATE=1</code> 
    * forcing that setting. 
    * <p>
-   * This is used to run commands always at the same time 
-   * contributing to reproducibility. 
+   * This is used to run commands at system time 
+   * given by the target file which is the base for reproducibility. 
    */
-  private static final Map<String, String> TIMELESS_ENV;
+  private static final Map<String, String> TIMESTAMP_ENV;
+
+  /**
+   * The key for {@link #TIMESTAMP_ENV} 
+   * to set <code>SOURCE_DATE_EPOCH</code> 
+   */
+  private static final String DATE_EPOCH = "SOURCE_DATE_EPOCH";
 
   static {
-    TIMELESS_ENV = new TreeMap<String, String>();
-    TIMELESS_ENV.put("SOURCE_DATE_EPOCH","0");
-    TIMELESS_ENV.put("FORCE_SOURCE_DATE","1");
+    TIMESTAMP_ENV = new TreeMap<String, String>();
+    TIMESTAMP_ENV.put("FORCE_SOURCE_DATE","1");
   }
 
   /**
-   * Indicates whether the next invocation of 
-   * {@link #execute(File, File, String, ReturnCodeChecker, String[])} 
-   * invokes a command timeless, 
-   * i.e. with environment described by {@link #TIMELESS_ENV}. 
+   * Indicates the optional timestamp for the next invocation of 
+   * {@link #execute(File, File, String, ReturnCodeChecker, String[])}. 
+   * If a timestamp is given, 
+   * the next invocation is done with environment given by {@link #TIMESTAMP_ENV}; 
+   * else without this environment. 
+   * Initially, no timestamp is given. 
    */
-  private boolean isTimeless;
+  private Optional<Long> timestampOpt;
 
   private final LogWrapper log;
 
+  /**
+   * Creates an executor with the given logger 
+   * and initial invocation without given timestamp 
+   * (see {@link #timestampOpt}). 
+   *
+   * @param log
+   *    the current logger. 
+   */
   CommandExecutor(LogWrapper log) {
-    this.isTimeless = false;
+    this.timestampOpt = Optional.empty();
     this.log = log;
   }
 
@@ -398,26 +415,27 @@ class CommandExecutor {
     return true;
   }
 
+  // TBD: rework: whether present or not. 
   /**
-   * Turns the next command execution 
-   * into a timeless execution setting environment variables 
-   * according to {@link #TIMELESS_ENV}. 
+   * Selects a timestamp for the next command execution 
+   * by invoking with environment variables according to {@link #TIMESTAMP_ENV}. 
    * The execution happens by 
    * direct or indirect invocation of 
    * {@link #execute(File, File, String, ReturnCodeChecker, String[])}. 
    * After executing a command, 
-   * this method this method reverts to execution in normal time. 
+   * the execution method reverts to execution in system time, i.e. without specified timestamp. 
    * <p>
-   * The method {@link #setIsTimeless()} is used to execute a latex compiler 
-   * or a DVI/XDV to PDF converter timeless. 
+   * The method {@link #setTimestamp(Optional)} is used to execute a latex compiler 
+   * a DVI/XDV to PDF converter or a tool like <code>latexmk</code>. 
    * Invocation is always via 
    * {@link #execute(File, File, String, String[], File...)}. 
    * 
-   * @see LatexProcessor#runLatex2dev(LatexMainDesc, LatexDev)
-   * @see LatexProcessor#runDvi2pdf(LatexMainDesc)
+   * @see LatexProcessor#runLatex2dev(LatexMainDesc, LatexDev, Optional)
+   * @see LatexProcessor#runLatexmk(LatexMainDesc, Optional)
+   * @see LatexProcessor#runDvi2pdf(LatexMainDesc, Optional)
    */
-  void setIsTimeless() {
-    this.isTimeless = true;
+  void setTimestamp(Optional<Long> timestamp) {
+    this.timestampOpt =timestamp;
   }
 
   /**
@@ -427,11 +445,11 @@ class CommandExecutor {
    * Here, <code>pathToExecutable</code> is the path 
    * to the executable. It may be null. 
    * <p>
-   * If {@link #isTimeless} is set by {@link #setIsTimeless()}, 
+   * If {@link #timestampOpt} is set by {@link #setTimestamp(Optional)}, 
    * before invocation of this method, 
-   * the environment given by {@link #TIMELESS_ENV} is set 
+   * the environment given by {@link #TIMESTAMP_ENV} is set 
    * ensuring timeless execution. 
-   * As a side effect, {@link #isTimeless} is reset again. 
+   * As a side effect, {@link #timestampOpt} is reset again. 
    * <p>
    * Logging: 
    * EEX01 for return code other than 0. 
@@ -482,11 +500,15 @@ class CommandExecutor {
     String executable = new File(pathToExecutable, command).getPath();
     Commandline cl = new Commandline(executable);
     cl.getShell().setQuotedArgumentsEnabled(true);
-    if (this.isTimeless) {
-      for (Map.Entry<String, String> entry : TIMELESS_ENV.entrySet()) {
+    if (this.timestampOpt.isPresent()) {
+      this.log.info("Run with timestamp " + 
+      new SimpleDateFormat("yyyy MM dd HH:mm:ss").format(new Date(timestampOpt.get())));
+      this.log.info("ts: '"+this.timestampOpt.get()+"'");
+      TIMESTAMP_ENV.put(DATE_EPOCH, this.timestampOpt.get().toString());
+      for (Map.Entry<String, String> entry : TIMESTAMP_ENV.entrySet()) {
         cl.addEnvironment(entry.getKey(), entry.getValue());
       }
-      this.isTimeless = false;
+      this.timestampOpt = Optional.empty();
     }
     cl.addArguments(args);
     if (workingDir != null) {
