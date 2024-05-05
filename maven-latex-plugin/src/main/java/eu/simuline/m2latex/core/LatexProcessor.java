@@ -444,32 +444,27 @@ public class LatexProcessor extends AbstractLatexProcessor {
             continue;
           }
           this.log.debug("Prepare verification by diffing: ");
-    
-          File diffRootDir = 
-              this.settings.getDiffDirectoryFile().getAbsoluteFile();
-          File artifactBaseDir = this.settings.getOutputDirectoryFile();
+
+
+
           assert targetFiles.size() == 1 : "Expected one target file, found "
               + targetFiles + ". ";
           File pdfFileAct = targetFiles.iterator().next();
           this.log.debug(String.format("act file %s", pdfFileAct));
-          File pdfFileCmp1 = TexFileUtils.getPdfFileDiff(pdfFileAct,
-              artifactBaseDir, diffRootDir);
-              
 
-          File texBaseDir = this.settings.getTexSrcDirectoryFile();
+
+
           File pdfFileCmp = TexFileUtils.getPdfFileDiff(desc.pdfFile,
-              texBaseDir,
-              diffRootDir);
-          assert pdfFileCmp.equals(pdfFileCmp1);
-
-
-
+            this.settings.getTexSrcDirectoryFile(),
+            this.settings.getDiffDirectoryFile().getAbsoluteFile());
           this.log.debug(String.format("cmp file %s", pdfFileCmp));
           if (!pdfFileCmp.exists()) {
             throw new BuildFailureException("TLP02: No file '" + pdfFileCmp
                 + "' to compare with artifact from '" + texFile + "'. ");
           }
           assert pdfFileCmp.exists();
+
+          
           assert pdfFileAct.exists();// TBD: ensure that this file really exists. 
           // but this shall be clear also above before trying to copy to target folder 
           boolean coincide = runDiffPdf(pdfFileCmp, pdfFileAct);
