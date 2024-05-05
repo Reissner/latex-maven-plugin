@@ -38,15 +38,6 @@ or when development finished at a stage.
 
 \section{The source files and their directories}\label{sec:sources}
 
-The \LaTeX-files and all other files contributing to creating documentation 
-from \LaTeX-files in the build process 
-are searched in the \emph{\TeX{} source directory} and subdirectories recursively. 
-\index{\TeX{} source directory}% chktex 24
-By default, this is \texttt{./src/site/tex}, 
-where ``\texttt{.}'' is the \emph{base directory} of this maven/ant-project. 
-This structure complies with conventions in maven-projects. 
-\index{base directory}% chktex 24
-
 Source files are files contributing to creating documentation 
 from \LaTeX-files in the build process 
 which are not themselves created in the build process. 
@@ -121,9 +112,7 @@ So check whether the file under consideration is processed if
   \item 
   it is built for the first time or 
   \item 
-  its head starting from beginning of the file 
-  to the line containing the \cmd{documentclass} or \cmd{documentstyle} command 
-  is changed or
+  its opening  is changed or
   \item 
   the parameter \texttt{patternLatexMainFile} is changed 
 \end{itemize}
@@ -135,20 +124,23 @@ described in Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen}.
 This is safe because if a file specified in \texttt{mainFilesIncluded} 
 that like is not a \LaTeX{} main file according to \texttt{patternLatexMainFile}, 
 a warning is emitted. 
-We could have decided that these files are compiled anyway, 
+That way one can check whether the pattern is matched. 
+We could have decided that these files are compiled with or without warning, 
 but this would lead to a technique is that it is inconvenient and not well maintainable. 
 
 This software is tested for document classes 
-as the built-in classes \texttt{article} and \texttt{book}, 
-for \texttt{beamer} which is for presentations as described in~\cite{Beamer}, 
-for \texttt{leaflet} creating leaflets as explained in~\cite{Leaflet} 
-and in~\cite{LeafletMan}, 
-for letters using document class \texttt{scrlttr2} and for the class \texttt{minimal}. 
-So far, \texttt{scrlttr2} is the only KOMA\index{KOMA} class 
-this software has been tested for. 
-KOMA classes are treated in~\cite{KomaAnl23} 
-and \texttt{scrlttr2} described in~\cite{KomaAnl23}, Part 1, Chapter 4. 
-Note that \texttt{scrlttr2} replaces \texttt{letter} which is not recommended. 
+%
+\begin{itemize}
+  \item \texttt{article} and \texttt{book} which are built-in, 
+  \item \texttt{beamer} for presentations as described in~\cite{Beamer}, 
+  \item \texttt{leaflet} creating leaflets as explained in~\cite{Leaflet} and in~\cite{LeafletMan}, 
+  \item \texttt{scrlttr2} for letters described in~\cite{KomaAnl23}, Part1, Chapter 4, 
+  \item and \texttt{minimal} for quite special uses (did not find real documentation). 
+\end{itemize}
+
+
+Note that \texttt{scrlttr2} replaces the built-in \texttt{letter} which is not recommended. 
+In fact, is the only KOMA\index{KOMA} class this software is tested for. 
 The attentive reader may realize 
 that the built-in document class \texttt{report} is not mentioned. 
 It shall work but is currently not tested. 
@@ -235,8 +227,7 @@ must be preceded by the following kind of code:
 \setbool{isConfidential}{true}
 \end{Verbatim}
 
-The new thing is not the \cmd{RequirePackage}, 
-but it is defining and setting a boolean 
+The new thing is defining and setting a boolean 
 via \cmd{newbool} and \cmd{setbool}, respectively. 
 It is a good idea to set a watermark via 
 %
@@ -261,7 +252,7 @@ except special options like \texttt{notumble}.
 \end{Verbatim}
 
 The same is true for letters of type \texttt{scrlttr2}, 
-except for the special specification of fontsize and versioning of the class: 
+except for the special specification of font size and versioning of the class: 
 
 \begin{Verbatim}[fontsize=\footnotesize]
 \documentclass[english,german,a4paper,fontsize=10pt,version=last]{scrlttr2}
@@ -322,10 +313,10 @@ Beamer documents may specify accordingly \texttt{aspectratio}.
 All this must be allowed for \LaTeX{} main files. 
 
 
-It also makes sense to allow comments, 
+It also makes sense to allow comments also in openings, 
 i.e.\@ text from unescaped \texttt{\%} to the end of the line, 
 and also magic comments. 
-A magic comment, as all comments, is invisible to the \LaTeX{} compilers 
+A magic comment, as all comments, is ignored by the \LaTeX{} compilers 
 but give hints to more high level tools 
 like IDEs or build tools like this \LaTeX{} builder. 
 Typically, it is a comment comprising a whole line and starting with \texttt{\%~!}, 
@@ -333,32 +324,17 @@ maybe followed by an identifier of the tool it refers to
 or by an identifier referring to TEX files in general. 
 For example latex workshop and \TeX{}shop support the magic comment \texttt{\%~!TEX root} 
 and this must be essentially in the first line. 
-The magic comments for this tool may be preceded by other magic comments 
-and starts with \texttt{\%~!LMP} which is short for ``latex maven plugin''. 
-This is not completely correct but easy to remember. 
-
-
-Since the pattern \texttt{patternLatexMainFile} may never be appropriate for all situations 
-to match the document class in \cmd{documentclass} 
-and not all users are familiar with regular expressions to adapt by need, 
-marking a \LaTeX{} main file by specifying its document class like in 
-\texttt{\%~!LMP class=\dots} is an easy workaround. 
-
-As will be explained in detail in Section~\ref{sec:outputFormats}, 
-the explicit document class is only used 
-to restrict the targets for which to compile a \LaTeX{} main file. 
-The targets can be specified for each \LaTeX{} main file individually 
-using \texttt{\%~!LMP targets=\dots}. 
-In fact specifying targets marks a TEX file as a \LaTeX{} main file also 
-making specification of the class as \texttt{\%~!LMP class=\dots} superfluous. 
-Nevertheless, \texttt{\%~!LMP class=\dots\ targets=\dots} is allowed. 
+The magic comments specific for this tool may be preceded by general magic comments 
+and start with \texttt{\%~!LMP} which is short for ``latex maven plugin''. 
+This is not fully correct but easy to remember. 
 
 This \LaTeX{} builder is designed to cooperate with other tools. 
-The magic comments of the other tools as described in various places in Section~\ref{sec:devel} 
+The magic comments of the other tools 
+as described in various places in Section~\ref{sec:devel} 
 on document development and in particular in Section~\ref{subsec:develLatexmk}. 
 Thus, if appropriate, also magic comments of other tools are read, 
-except \auctex, because this places magic comments at the end of file, 
-forcing the build software to read all. 
+except those of \auctex, because \auctex{} places magic comments at the end of file, 
+forcing this software to read all the file if it accessed \auctex{} magic comments also. 
 All other tools including latex workshop for VS Code 
 support a subset of what is 
 \href{http://transit.iut2.upmf-grenoble.fr/doc/texstudio/html/usermanual_en.html#TEXCOM}%
@@ -368,35 +344,106 @@ only \texttt{program} and \texttt{root} are relevant.
 If a root is given, then the file is no \LaTeX{} main file 
 and, provided the feature is used, also the converse is true. 
 Since this software shall not rely on further tooling, 
-\texttt{root} is not used. 
+it does not use \texttt{root}. 
+All in all, among the general magic comments only 
+\texttt{\%~!TEX program=\dots} is read. 
+It can occur more than once, but the first occurrence is what counts; 
+the others are ignored silently. % TBD: really good? 
+Note that the magic comment \texttt{\%~!TEX program=\dots} overrides 
+the setting \texttt{latex2pdfCommand} for creating PDF files and related, 
+specified in Table~\ref{tab:paramLatex2pdf} on page~\pageref{tab:paramLatex2pdf}, 
+but not the \texttt{tex4htCommand} from Table~\ref{tab:paramLatex2Html} 
+on page~\pageref{tab:paramLatex2Html}. 
 
-In contrast, magic comments like \texttt{\%~!TeX program=\dots} 
-specifying the \LaTeX{} converter signify a \LaTeX{} main file in any case. 
-It overwrites also the converter 
-given in the general setting \texttt{latex2pdfCommand} 
-specified in Table~\ref{tab:paramLatex2pdf} on page~\pageref{tab:paramLatex2pdf}. 
-A magic comment specifying the converter does not specify, 
-neither the target directly nor via the document class. 
+After the general magic comments of the form \texttt{\%~!TEX \dots} 
+come the ones specific for this \LaTeX{} builder. 
+They take the form \texttt{\%~!LMP \dots}. 
+Like the general magic comments, the specific ones are all optional, 
+but in contrast, they come in a fixed order without repetition. 
+
+What follows is a full range of magic comments: 
+%
+\begin{Verbatim}
+% !TEX program=lualatex
+% !LMP chkDiff
+% !LMP latexmk
+% !LMP targets=chk,pdf,html
+
+\documentclass[a4paper]{article}
+\end{Verbatim}
 
 
-The pattern \texttt{patternLatexMainFile} matches comments and in particular magic comments, 
-but it is written also to extract the parameters in magic comments described above 
-as it extracts the document class from the \cmd{documentclass} command. 
-In fact more than that: 
-It matches if the magic comment indicates 
-that the file under consideration is a \LaTeX{} main file 
-or if the presence of a \cmd{documentclass} command signifies this. 
+Section~\ref{subsec:patternLatexMainFile} 
+describes the meaning of the individual comments 
+in the course of explaining the pattern \texttt{patternLatexMainFile}. 
+Note that there the names of the magic comments is given, whereas the above listing refers to the content, 
+but it is easy to identify the according magic comments. 
+The relation of the magic comments is described in the following. 
 
-If the magic comment of this tool specifies the document class or the target set, 
-it is considered a \LaTeX{} main file, even if no \texttt{documentclass} is matched. 
-In fact, it does not make sense to specify both in the magic comment, 
-the document class and the target set, 
-because the document class is used only to determine the target set. 
-Typically, the document class is given as a magic comment, 
-if it is not easy to get the pattern for the specific document right, 
-maybe because the user is not so familiar with the technique, so it is a fallback. 
-In contrast, the target set is given in the magic comment 
-if it shall be specified individually for the given \LaTeX{} main file. 
+The magic comments may come only in the ordering given in the above listing, 
+but each of them is optional. 
+They can be freely combined, 
+but note that \texttt{chkDiff} and \texttt{latexmkMagic} 
+apply to creation and check PDF files only. 
+So, for \texttt{targets=pdf,html}, these magic comments apply to target \texttt{pdf}, 
+but not to \texttt{html}. 
+For \texttt{targets=chk,html} it even takes no effect at all 
+without issuing a warning. 
+As explained above, \texttt{program} affects 
+only the targets \texttt{pdf} and \texttt{dvi} including also XDV files. 
+
+
+% Since the pattern \texttt{patternLatexMainFile} may never be appropriate for all situations 
+% to match the document class in \cmd{documentclass} 
+% and not all users are familiar with regular expressions to adapt by need, 
+% there need to be a workaround to adapting the pattern. 
+% One is to use \cmd{input} to inlude material which does not fit. 
+
+% In future, it is conceivable to use also magic comments for this task. 
+% In fact, any of our magic comments signifies already a \LaTeX{} main file. 
+% The idea is instead of 
+% The only problem is, that if the pattern 
+% marking a \LaTeX{} main file by specifying its document class like in 
+% \texttt{\%~!LMP class=\dots} is an easy workaround. 
+
+% As will be explained in detail in Section~\ref{sec:outputFormats}, 
+% the explicit document class is only used 
+% to restrict the targets for which to compile a \LaTeX{} main file. 
+% The targets can be specified for each \LaTeX{} main file individually 
+% using \texttt{\%~!LMP targets=\dots}. 
+% In fact specifying targets marks a TEX file as a \LaTeX{} main file also 
+% making specification of the class as \texttt{\%~!LMP class=\dots} superfluous. 
+% Nevertheless, \texttt{\%~!LMP class=\dots\ targets=\dots} is allowed. 
+
+
+
+% In contrast, magic comments like \texttt{\%~!TeX program=\dots} 
+% specifying the \LaTeX{} converter signify a \LaTeX{} main file in any case. 
+% It overwrites also the converter 
+% given in the general setting \texttt{latex2pdfCommand} 
+% specified in Table~\ref{tab:paramLatex2pdf} on page~\pageref{tab:paramLatex2pdf}. 
+% A magic comment specifying the converter does not specify, 
+% neither the target directly nor via the document class. 
+
+
+% The pattern \texttt{patternLatexMainFile} matches comments and in particular magic comments, 
+% but it is written also to extract the parameters in magic comments described above 
+% as it extracts the document class from the \cmd{documentclass} command. 
+% In fact more than that: 
+% It matches if the magic comment indicates 
+% that the file under consideration is a \LaTeX{} main file 
+% or if the presence of a \cmd{documentclass} command signifies this. 
+
+% If the magic comment of this tool specifies the document class or the target set, 
+% it is considered a \LaTeX{} main file, even if no \texttt{documentclass} is matched. 
+% In fact, it does not make sense to specify both in the magic comment, 
+% the document class and the target set, 
+% because the document class is used only to determine the target set. 
+% Typically, the document class is given as a magic comment, 
+% if it is not easy to get the pattern for the specific document right, 
+% maybe because the user is not so familiar with the technique, so it is a fallback. 
+% In contrast, the target set is given in the magic comment 
+% if it shall be specified individually for the given \LaTeX{} main file. 
 
 
 Note that documents of the classes \texttt{beamer}, \texttt{leaflet} and \texttt{scrlttr2} 

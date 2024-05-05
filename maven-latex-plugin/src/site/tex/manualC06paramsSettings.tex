@@ -524,7 +524,11 @@ Whether a capturing group must match or not,
 the regular expression pattern \texttt{patternLatexMainFile} 
 must contain each of the following named capturing groups, 
 because the software asks for it. 
-Note that all but \texttt{docClass} are optional. 
+Distinguish between the pattern and the matching strings: 
+Whereas in the pattern all groups must be mentioned, 
+a string may match without matching the group. 
+Whereas \texttt{docClass} is mandatory, i.e. the according group matches, 
+the magic comments are all optional, i.e. they need not match any part of the string. 
 
 \begin{description}
   \item[docClass]
@@ -552,7 +556,7 @@ Note that all but \texttt{docClass} are optional.
   may specify direct compilation 
   without \texttt{latexmk}. 
   \item[chkDiffMagic]
-  whether the created file shall be checked against an original 
+  whether the \emph{created PDF file} shall be checked against an original 
   ensuring that it is correctly reproduced. 
   This is intended to trigger check specific for this file 
   although the general setting \texttt{chkDiff} 
