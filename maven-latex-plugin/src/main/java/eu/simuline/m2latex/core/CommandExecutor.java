@@ -417,8 +417,9 @@ class CommandExecutor {
 
   // TBD: rework: whether present or not. 
   /**
-   * Selects a timestamp for the next command execution 
-   * by invoking with environment variables according to {@link #TIMESTAMP_ENV}. 
+   * Selects a timestamp in <em>milliseconds</em> since 1970-01-01 for the next command execution 
+   * by invoking with environment variables according to {@link #TIMESTAMP_ENV} 
+   * which is in <em>seconds</em> since  since 1970-01-01. 
    * The execution happens by 
    * direct or indirect invocation of 
    * {@link #execute(File, File, String, ReturnCodeChecker, String[])}. 
@@ -430,12 +431,15 @@ class CommandExecutor {
    * Invocation is always via 
    * {@link #execute(File, File, String, String[], File...)}. 
    * 
+   * @param timestampOpt
+   *    an optional which is either empty or wraps a timestamp in milliseconds since 1970-01-01. 
+   * 
    * @see LatexProcessor#runLatex2dev(LatexMainDesc, LatexDev, Optional)
    * @see LatexProcessor#runLatexmk(LatexMainDesc, Optional)
    * @see LatexProcessor#runDvi2pdf(LatexMainDesc, Optional)
    */
-  void setTimestamp(Optional<Long> timestamp) {
-    this.timestampOpt =timestamp;
+  void setTimestamp(Optional<Long> timestampOpt) {
+    this.timestampOpt =timestampOpt;
   }
 
   /**
@@ -503,8 +507,10 @@ class CommandExecutor {
     if (this.timestampOpt.isPresent()) {
       this.log.info("Run with timestamp " + 
       new SimpleDateFormat("yyyy MM dd HH:mm:ss").format(new Date(timestampOpt.get())));
-      this.log.info("ts: '"+this.timestampOpt.get()+"'");
-      TIMESTAMP_ENV.put(DATE_EPOCH, this.timestampOpt.get().toString());
+      this.log.info("timestamp in ms: '"+this.timestampOpt.get()+"'");
+      // the epoch time in timeStampOpt is in ms, 
+      // whereas in environment variable DATE_EPOCH it is in s 
+      TIMESTAMP_ENV.put(DATE_EPOCH, Long.toString(this.timestampOpt.get()/1000));
       for (Map.Entry<String, String> entry : TIMESTAMP_ENV.entrySet()) {
         cl.addEnvironment(entry.getKey(), entry.getValue());
       }

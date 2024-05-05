@@ -431,7 +431,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
             }
             assert pdfFileCmp.exists();
             long timestamp = pdfFileCmp.lastModified();
-            timestampOpt = Optional.of(0L);
+            timestampOpt = Optional.of(timestamp);
             pdfFileCmpOpt = Optional.of(pdfFileCmp);
 
           }
