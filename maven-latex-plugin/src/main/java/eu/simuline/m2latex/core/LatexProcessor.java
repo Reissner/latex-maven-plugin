@@ -418,10 +418,21 @@ public class LatexProcessor extends AbstractLatexProcessor {
         for (Target target : targetsForBuild) {
 
           Optional<Long> timestampOpt = Optional.empty();
+          Optional<File> pdfFileCmpOpt = Optional.empty();
           if (target.hasDiffTool() && isChkDiff(desc)) {
-            //long timestamp = diffRootDir.lastModified();
-            timestampOpt = Optional.of(0L);
 
+            File pdfFileCmp = TexFileUtils.getPdfFileDiff(desc.pdfFile,
+                this.settings.getTexSrcDirectoryFile(),
+                this.settings.getDiffDirectoryFile().getAbsoluteFile());
+            this.log.debug(String.format("cmp file %s", pdfFileCmp));
+            if (!pdfFileCmp.exists()) {
+              throw new BuildFailureException("TLP02: No file '" + pdfFileCmp
+                  + "' to compare with artifact from '" + texFile + "'. ");
+            }
+            assert pdfFileCmp.exists();
+            long timestamp = pdfFileCmp.lastModified();
+            timestampOpt = Optional.of(0L);
+            pdfFileCmpOpt = Optional.of(pdfFileCmp);
 
           }
 
@@ -451,23 +462,11 @@ public class LatexProcessor extends AbstractLatexProcessor {
               + targetFiles + ". ";
           File pdfFileAct = targetFiles.iterator().next();
           this.log.debug(String.format("act file %s", pdfFileAct));
-
-
-
-          File pdfFileCmp = TexFileUtils.getPdfFileDiff(desc.pdfFile,
-            this.settings.getTexSrcDirectoryFile(),
-            this.settings.getDiffDirectoryFile().getAbsoluteFile());
-          this.log.debug(String.format("cmp file %s", pdfFileCmp));
-          if (!pdfFileCmp.exists()) {
-            throw new BuildFailureException("TLP02: No file '" + pdfFileCmp
-                + "' to compare with artifact from '" + texFile + "'. ");
-          }
-          assert pdfFileCmp.exists();
-
-          
           assert pdfFileAct.exists();// TBD: ensure that this file really exists. 
+
+
           // but this shall be clear also above before trying to copy to target folder 
-          boolean coincide = runDiffPdf(pdfFileCmp, pdfFileAct);
+          boolean coincide = runDiffPdf(pdfFileCmpOpt.get(), pdfFileAct);
           if (coincide) {
             this.log.info("checked: coincides with expected artifact. ");
             continue;
