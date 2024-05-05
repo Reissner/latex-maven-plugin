@@ -26,8 +26,7 @@ import java.io.FileFilter;
 // import java.io.FileWriter;
 // import java.io.Writer;
 import java.io.IOException;
-
-
+import java.util.Optional;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.RETURNS_SMART_NULLS;
 import static org.mockito.Mockito.when;
@@ -205,7 +204,7 @@ public class LatexProcessorTest {
 
 		mockProcessLatex2pdf(false, false, false);
 
-		this.processor.processLatex2pdf(this.desc);
+		this.processor.processLatex2pdf(this.desc, Optional.empty());// means no timestamp for diff 
 		verifyProcessLatex2pdf(false, false, false);
 		verifyNoMoreInteractions(this.executor);
 		verifyNoMoreInteractions(this.fileUtils);
@@ -218,7 +217,7 @@ public class LatexProcessorTest {
 
 		mockProcessLatex2pdf(true, false, false);
 
-		this.processor.processLatex2pdf(this.desc);
+		this.processor.processLatex2pdf(this.desc, Optional.empty());// means no timestamp for diff 
 		verifyProcessLatex2pdf(true, false, false);
 		verifyNoMoreInteractions(this.executor);
 		verifyNoMoreInteractions(this.fileUtils);
@@ -230,8 +229,7 @@ public class LatexProcessorTest {
 	public void testProcessLatex2html() throws BuildFailureException {
 
 		mockProcessLatex2html(false, false, false);
-
-		this.processor.processLatex2html(this.desc);
+		this.processor.processLatex2html(this.desc, Optional.empty());// means no timestamp for diff 
 
 		verifyProcessLatex2html(false, false, false);
 		verifyNoMoreInteractions(this.executor);
