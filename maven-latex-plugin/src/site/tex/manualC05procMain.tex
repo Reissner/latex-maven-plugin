@@ -1166,6 +1166,16 @@ The magic comment results in a warning
 if it does not change whether \texttt{latexmk} 
 is invoked or not compared to when it is absent. 
 
+% special: latexmk does not update pdf regularly provoking EEX03 false positive 
+% We must find a way to prevent this. 
+% Also: this is another disadvantage of build with latexmk: 
+% It can be checked for update of files only if they were not present before. 
+% One could remove pdf before running, but that way an advantage gets lost: 
+% that latexmk does not compile anything if all is up to date. %
+% touch --date=@1714338620 twoPagerArt.pdf where the number after @ is the epoch time in seconds 
+% date -d @1234567890 convert epoch time in seconds into human readable format 
+% stat -c%Z file returns epoch time of file in seconds 
+
 
 % this is only for goal pdf 
 % and maybe even only if pdfViaDvi is not set: LatexProcessor.processLatex2pdf
