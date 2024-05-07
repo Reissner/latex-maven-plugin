@@ -255,6 +255,76 @@ class CommandExecutor {
           ReturnCodeChecker.IsNonZero, args, resFiles);
   }
 
+
+  /**
+   * Executes <code>command</code> in <code>workingDir</code>
+   * with list of arguments given by <code>args</code> 
+   * and logs if after execution the result file <code>resFile</code> does not exist. 
+   * CAUTION: In contrast to 
+   * {@link #execute(File,File,String,String[],File...)}, 
+   * It is not checked that the result files are updated 
+   * and it is just one result file neglecting log files and that like. 
+   * This method is suited to build tools updateing only by need 
+   * and currently it is only used for <code>latexmk</code> like tools. 
+   * <p>
+   * Logging: 
+   * <ul>
+   * <li> EEX01: return code other than 0. 
+   * <li> EEX02: no target file
+   * </ul>
+   *
+   * @param workingDir
+   *    the working directory or <code>null</code>. 
+   *    The shell changes to that directory 
+   *    before invoking <code>command</code> 
+   *    with arguments <code>args</code> if this is not <code>null</code>. 
+   *    Argument <code>null</code> is allowed only 
+   *    if no result files are given by <code>resFile</code>. 
+   *    Essentially this is just needed to determine the version. 
+   * @param pathToExecutable
+   *    the path to the executable <code>command</code>. 
+   *    This may be <code>null</code> if <code>command</code> 
+   *    is on the execution path 
+   * @param command
+   *    the name of the program to be executed 
+   * @param args
+   *    the list of arguments, 
+   *    each containing a blank enclosed in double quotes. 
+   * @param resFile
+   *    a result file which must exist after this command has been processed. 
+   *    It need  which shall be updated 
+   *    by this command. 
+   * @return
+   *    the output of the command which comprises the output stream 
+   *    and whether the return code is nonzero, i.e. the command succeeded. 
+   *    The io stream is used in tests only whereas the return code is used for pdfdiffs. 
+   * @throws BuildFailureException
+   *    TEX01 if invocation of <code>command</code> fails very basically: 
+   *    <ul>
+   *    <li><!-- see Commandline.execute() -->
+   *    the file expected to be the working directory 
+   *    does not exist or is not a directory. 
+   *    <li><!-- see Commandline.execute() -->
+   *    {@link Runtime#exec(String, String[], File)} fails 
+   *    throwing an {@link java.io.IOException}. 
+   *    <li> <!-- see CommandLineCallable.call() -->
+   *    an error inside systemOut parser occurs 
+   *    <li> <!-- see CommandLineCallable.call() -->
+   *    an error inside systemErr parser occurs 
+   *    <li> Wrapping an {@link InterruptedException} 
+   *    on the process to be executed thrown by {@link Process#waitFor()}. 
+   *    </ul>
+   */
+  CmdResult executeBuild(File workingDir,
+                         File pathToExecutable,
+                         String command,
+                         String[] args,
+                         File resFile) throws BuildFailureException {
+    CmdResult res = execute(workingDir, pathToExecutable, command, args);
+    existsOrErr(command, resFile);
+    return res;
+  }
+
   /**
    * Executes <code>command</code> in <code>workingDir</code>
    * with list of arguments given by <code>args</code> 
@@ -370,6 +440,28 @@ class CommandExecutor {
     return res;
   }
 
+  /**
+   * If the given file <code>target</code> does not exist 
+   * logs an error EEX02: no target file mentioning <code>command</code>. 
+   * Note that no error means only that the file exists, 
+   * not that it has been updated. 
+   * 
+   * @param command
+   *    the command that should build <code>target</code> by need. 
+   * @param target
+   * @return
+   *    whether <code>target</code> exists. 
+   *    Equivalently, whether no error is logged. 
+   */
+  private boolean existsOrErr(String command, File target) {
+    if (!target.exists()) {
+      this.log.error("EEX02: Running " + command + " failed: No target file '"
+          + target.getName() + "' written. ");
+      return false;
+    }
+    return true;
+  }
+
   // returns whether this method logged an error or a warning 
   // FIXME: return value nowhere used 
   /**
@@ -387,9 +479,7 @@ class CommandExecutor {
           File target,
           boolean existedBefore,
           long lastModifiedBefore) {
-    if (!target.exists()) {
-      this.log.error("EEX02: Running " + command + " failed: No target file '"
-          + target.getName() + "' written. ");
+    if (!existsOrErr(command, target)) {
       return false;
     }
     assert target.exists();
@@ -505,9 +595,9 @@ class CommandExecutor {
     Commandline cl = new Commandline(executable);
     cl.getShell().setQuotedArgumentsEnabled(true);
     if (this.timestampOpt.isPresent()) {
-      this.log.info("Run with timestamp " + 
-      new SimpleDateFormat("yyyy MM dd HH:mm:ss").format(new Date(timestampOpt.get())));
-      this.log.info("timestamp in ms: '"+this.timestampOpt.get()+"'");
+      this.log.info("Run with timestamp "
+        + new SimpleDateFormat("yyyy MM dd HH:mm:ss").format(new Date(timestampOpt.get()))
+        + "(" + this.timestampOpt.get()+ "ms)");
       // the epoch time in timeStampOpt is in ms, 
       // whereas in environment variable DATE_EPOCH it is in s 
       TIMESTAMP_ENV.put(DATE_EPOCH, Long.toString(this.timestampOpt.get()/1000));
