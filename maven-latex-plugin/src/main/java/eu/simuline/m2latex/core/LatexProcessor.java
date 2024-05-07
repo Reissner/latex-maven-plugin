@@ -304,7 +304,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * If a diff-tool for the target format is available
    * and if check by diff is specified, 
    * the resulting file is checked to be equal to a specified file. 
-   * A {@link BuildFailureException} is thrown if the files are not equal according to the diff tool. 
+   * A {@link BuildFailureException} is thrown 
+   * if the files are not equal according to the diff tool. 
    * The resulting files are identified by its suffixes 
    * via  {@link Target#getPatternOutputFiles(Settings)}. 
    * If no exception occurs before, they are copied to the target folder. 
@@ -330,7 +331,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
    *    the set of targets to be created. 
    *    The target 'chk' does not create artifacts except the log file clg. 
    *    The target set may have a single entry coming from the goal 
-   *    or, for goal {@link CfgLatexMojo} may be given by {@link Settings#getTargets()}. 
+   *    or, for goal {@link CfgLatexMojo} 
+   *    may be given by {@link Settings#getTargets()}. 
    * @throws BuildFailureException 
    *    <ul>
    *    <li> TSS01 if 
@@ -390,8 +392,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
       // process graphics and determine latexMainFiles
       // may throw BuildFailureException TEX01,
       // log warning WFU03, WPP02, WPP03,
-      // EEX01, EEX02, EEX03, WEX04, WEX05, EFU07, EFU08, EFU09: if filtering a file
-      // fails.
+      // EEX01, EEX02, EEX03, WEX04, WEX05, EFU07, EFU08, 
+      //    EFU09: if filtering a file fails.
       Collection<LatexMainDesc> latexMainDescs =
           this.preProc.processGraphicsSelectMain(texProcDir, node);
 
@@ -515,19 +517,18 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * TBD: logging
    * <ul>
    *    <li>WPP05: Included tex files which are no latex main files 
-     *    <li>WPP06: Included tex files which are no latex main files 
-     *    <li>WPP07: inluded/excluded files not identified by their names.
+   *    <li>WPP06: Included tex files which are no latex main files 
+   *    <li>WPP07: inluded/excluded files not identified by their names.
    * </ul>
    * 
    * @throws BuildFailureException
-   *                               <ul>
-   *                               <li>
-   *                               TSS02 if the tex source processing directory
-   *                               does either not exist
-   *                               or is not a directory.
-   *                               <li>
-   *                               TEX01 invoking FIXME
-   *                               </ul>
+   *    <ul>
+   *    <li>
+   *    TSS02 if the tex source processing directory
+   *    does either not existor is not a directory.
+   *    <li>
+   *    TEX01 invoking FIXME
+   *    </ul>
    */
   // used in ChkMojo.execute() only
   // FIXME: maybe sufficient not to create graphics, if no \input.
@@ -941,7 +942,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
     // rerun latex by need patternRerunMakeIndex
     boolean needMakeIndexReRun;
-    boolean needLatexReRun = (numLatexReRuns == 1) || needRun(true, latexCmd,
+    boolean needLatexReRun = (numLatexReRuns == 1) 
+    || needRun(true, latexCmd,
         desc.logFile, this.settings.getPatternReRunLatex());
 
     int maxNumReruns = this.settings.getMaxNumReRunsLatex();
@@ -1021,7 +1023,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
       return fileMatch.doesExprMatch();
     }
     this.log
-        .warn("WLP02: Cannot read " + TexFileUtils.getSuffix(logAuxFile, false)
+        .warn("WLP02: Cannot read " 
+            + TexFileUtils.getSuffix(logAuxFile, false)
             + " file '" + logAuxFile.getName() + "'; " + cmdStr
             + " may require " + (another ? "re" : "") + "run. ");
     return false;
@@ -1088,7 +1091,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
     logWarns(desc.logFile, getLatex2pdfCommand());
   }
 
-  void processLatex2dvi(LatexMainDesc desc, Optional<Long> timestampOpt) throws BuildFailureException {
+  void processLatex2dvi(LatexMainDesc desc, Optional<Long> timestampOpt)
+      throws BuildFailureException {
     this.log
         .info("Converting into dvi/xdv:  LaTeX file '" + desc.texFile + "'. ");
     // may throw BuildFailureException TEX01,
@@ -1097,7 +1101,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
     processLatex2dev(desc, LatexDev.dvips, timestampOpt);
   }
 
-  void processLatex2pdf(LatexMainDesc desc, Optional<Long> timestampOpt) throws BuildFailureException {
+  void processLatex2pdf(LatexMainDesc desc, Optional<Long> timestampOpt)
+      throws BuildFailureException {
     this.log.info("Converting into pdf:  LaTeX file '" + desc.texFile + "'. ");
 
     // TBD: improve this in several respect. 
@@ -1107,8 +1112,9 @@ public class LatexProcessor extends AbstractLatexProcessor {
       runLatexmk(desc, timestampOpt);
       return;
     }
-    this.log.info("No latexmk because usage=" + this.settings.getLatexmkUsage()
-    + " and no magic comment 'latexmk'. ");
+    this.log.info("No latexmk because usage=" 
+      + this.settings.getLatexmkUsage()
+      + " and no magic comment 'latexmk'. ");
 
     LatexDev dev = this.settings.getPdfViaDvi();
 
@@ -1181,10 +1187,10 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * </ul>
    *
    * @param logFile
-   *                the log-file to detect warnings in.
+   *    the log-file to detect warnings in.
    * @param command
-   *                the command which created <code>logFile</code>
-   *                and which maybe created warnings.
+   *    the command which created <code>logFile</code>
+   *    and which maybe created warnings.
    */
   private void logWarns(File logFile, String command) {
     if (!logFile.exists()) {
@@ -1238,7 +1244,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
   // TBD: check: is it really sensible to do preprocessing? 
   // TBD: also inconsistency: preprocessing with lualatex, xelatex, pdflatex
   // whereas processing is done with htlatex and with xtlatex... no lualatex involved. 
-  void processLatex2html(LatexMainDesc desc, Optional<Long> timestampOpt) throws BuildFailureException {
+  void processLatex2html(LatexMainDesc desc, Optional<Long> timestampOpt)
+      throws BuildFailureException {
     this.log.info("Converting into html: LaTeX file '" + desc.texFile + "'. ");
     // may throw BuildFailureException TEX01,
     // log warning EAP01, EAP02, WLP04, WLP05, WAP04, WLP02, WFU03,
@@ -1281,7 +1288,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * @see #runLatex2odt(LatexMainDesc)
    * @see Target#odt
    */
-  void processLatex2odt(LatexMainDesc desc, Optional<Long> timestampOpt) throws BuildFailureException {
+  void processLatex2odt(LatexMainDesc desc, Optional<Long> timestampOpt)
+      throws BuildFailureException {
     this.log.info("Converting into odt:  LaTeX file '" + desc.texFile + "'. ");
     // may throw BuildFailureException TEX01,
     // log warning EAP01, EAP02, WAP04, WLP02, WFU03, WLP04, WLP05
@@ -1326,7 +1334,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * @see #runOdt2doc(LatexMainDesc)
    * @see Target#docx
    */
-  void processLatex2docx(LatexMainDesc desc, Optional<Long> timestampOpt) throws BuildFailureException {
+  void processLatex2docx(LatexMainDesc desc, Optional<Long> timestampOpt)
+      throws BuildFailureException {
     this.log
         .info("Converting into doc(x): LaTeX file '" + desc.texFile + "'. ");
     // may throw BuildFailureException TEX0,
@@ -1391,7 +1400,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * @see #runPdf2txt(LatexMainDesc)
    * @see Target#txt
    */
-  void processLatex2txt(LatexMainDesc desc, Optional<Long> timestamp) throws BuildFailureException {
+  void processLatex2txt(LatexMainDesc desc, Optional<Long> timestamp)
+      throws BuildFailureException {
     this.log.info("Converting into txt:  LaTeX file '" + desc.texFile + "'. ");
     LatexDev dev = this.settings.getPdfViaDvi();
 
@@ -1939,7 +1949,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
     //CommandExecutor.CmdResult res = 
     this.executor.execute(desc.parentDir, // workingDir
         this.settings.getTexPath(), command,
-        //true, // This may change later, when rerun=never is taken into account. 
+        //true, 
+        // This may change later, when rerun=never is taken into account. 
         args, repOutFile);
 
     File logFile = desc.withSuffix(SUFFIX_PLG);
@@ -1955,7 +1966,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * on the latex main file <code>texFile</code>
    * described by <code>desc</code>
    * in the directory containing <code>texFile</code> with arguments
-   * <!--given by {@link #buildLatexArguments(Settings, LatexDev, File, boolean)}-->.
+   * <!--given by 
+   * {@link #buildLatexArguments(Settings, LatexDev, File, boolean)}-->.
    * The output format of the LaTeX run is given by <code>PDF</code> currently.
    * <p>
    * Logs a warning or an error if running latexmk failed.
@@ -1989,20 +2001,22 @@ public class LatexProcessor extends AbstractLatexProcessor {
     this.executor.setTimestamp(timestampOpt);
     this.log.debug("Running " + command + " on '" + texFile.getName() + "'. ");
     // may throw BuildFailureException TEX01,
-    // may log warning EEX01, EEX02, EEX03, WEX04, WEX05
-    this.executor.execute(desc.parentDir, // workingDir
-        this.settings.getTexPath(), command, args, desc.pdfFile);
+    // may log warning EEX01, EEX02, WEX05
+    // special: PDF file must exist after but need not be updated 
+    this.executor.executeBuild(desc.parentDir, // workingDir
+        this.settings.getTexPath(), command, args, desc.pdfFile);//
     // TBD: desc.withSuffix(SUFFIX_HTML): maybe depending on Target
   }
 
   // also for tests
-  protected static String[] buildLatexmkArguments(Settings settings, Optional<String> programMagic,
-    File texFile) throws BuildFailureException {
-      return buildArguments(settings.getLatexmkOptions(), texFile, 
-        programMagic.isPresent() 
-        ? new String[] {"-e", "$programMagic=q/"+programMagic.get()+"/"}
-        : new String[] {});
-    }
+  protected static String[] buildLatexmkArguments(Settings settings,
+                Optional<String> programMagic, File texFile)
+      throws BuildFailureException {
+    return buildArguments(settings.getLatexmkOptions(), texFile,
+        programMagic.isPresent()
+            ? new String[] {"-e", "$programMagic=q/" + programMagic.get() + "/"}
+            : new String[] {});
+  }
 
   /**
    * Runs the LaTeX command given by {@link #getLatex2pdfCommand()}
@@ -2044,7 +2058,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
    *     {@link #getLatex2pdfCommand()} failed.
    */
   private void runLatex2dev(LatexMainDesc desc,
-      LatexDev dev, Optional<Long> timestampOpt)
+                            LatexDev dev,
+                            Optional<Long> timestampOpt)
       throws BuildFailureException {
 
     File texFile = desc.texFile;
@@ -2121,7 +2136,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
    *     {@link #getDvi2pdfCommand()} failed.
    */
   // used in processLatex2pdf(File) and processLatex2txt(File) only
-  private void runDvi2pdf(LatexMainDesc desc, Optional<Long> timestampOpt) throws BuildFailureException {
+  private void runDvi2pdf(LatexMainDesc desc, Optional<Long> timestampOpt)
+      throws BuildFailureException {
     assert this.settings.getPdfViaDvi().isViaDvi();
 
     String command = getDvi2pdfCommand();
@@ -2530,19 +2546,23 @@ public class LatexProcessor extends AbstractLatexProcessor {
   private static final String FOLDER_INJ = "injections/";
 
   /**
-   * Processes injection of files like <code>.latexmkrc</code> and <code>.chktexrc</code> 
+   * Processes injection of files 
+   * like <code>.latexmkrc</code> and <code>.chktexrc</code> 
    * as described by <code>injections</code>, e.g. 
    * <ul>
    * <li> performing filtering similar to the resources plugin, </li>
    * <li> turning the result into an executable file, 
    * </ul>
-   * Filtering differs from the mechanism of the resources plugin in two respects: 
+   * Filtering differs from the mechanism of the resources plugin 
+   * in two respects: 
    * <ul>
-   * <li> The names are those of parameters in settings, not properties in the pom. </li>
+   * <li> The names are those of parameters in settings, 
+   * not properties in the pom. </li>
    * <li> The sources are loaded as a resource by the classloader 
    * by name <code>.latexmkrc</code> and <code>.chktexrc</code>, respectively. 
    * They are a kind of templates containing parameter names 
-   * and the target is a file in the folder given by {@link Settings#getTexSrcDirectoryFile()}. 
+   * and the target is a file in the folder 
+   * given by {@link Settings#getTexSrcDirectoryFile()}. 
    * This file contains the values of the parameters, finally. 
    * </ul>
    * 
@@ -2552,8 +2572,10 @@ public class LatexProcessor extends AbstractLatexProcessor {
    *   <ul>
    *   <li>
    *   TLP03: Failure while writing file '...' or closing in-stream. 
-   *   The file is created from a template replacing parameter names by their actual values. 
-   *   A reason may be that the template cannot be read or its in-stream cannot be closed. </li>
+   *   The file is created from a template replacing parameter names 
+   *   by their actual values. 
+   *   A reason may be that the template cannot be read 
+   *   or its in-stream cannot be closed. </li>
    *   <li> TMI01 if the stream to the template cannot be read. </li>
    *   </ul>
    */
@@ -2576,7 +2598,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
           // Here, outFile does not exist or is a regular file. 
 
           // may throw FileNotFoundException and so IOException: 
-          // if does not exist and a regular file of that name cannot be created for writing 
+          // if does not exist 
+          // and a regular file of that name cannot be created for writing 
           // or if it does exist and cannot be opened for writing, 
           // or if some error occurs when creating or opening for writing 
           PrintStream writer = new PrintStream(outFile);
@@ -2604,7 +2627,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
   /**
    * Deletes injected files if written by this software if possible. 
    * 
-   * WFU10, WFU11: if a config file is not written by this software or it is not clear or the reader cannot close. 
+   * WFU10, WFU11: if a config file is not written by this software 
+   *               or it is not clear or the reader cannot close. 
    * EFU05: if the config file shall be deleted but this coes not work. 
    */
   private void clearInjFiles() {
