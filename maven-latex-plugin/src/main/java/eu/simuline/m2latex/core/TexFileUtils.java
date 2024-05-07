@@ -170,21 +170,21 @@ class TexFileUtils {
 
   /**
    * Returns the pdf file which serves as a blue print for <code>pdfFileAct</code>. 
-   * The relative path of <code>pdfFileAct</code> to its ancestor <code>artifactBaseDir</code> 
+   * The relative path of <code>pdfFileAct</code> to its ancestor <code>texSourceDir</code> 
    * is the same as the blueprint to its ancestor <code>diffRootDir</code>. 
    *
    * @param pdfFileAct
    *     the artifact to be checked agains a blueprint in <code>diffRootDir</code>. 
    *     It must be contained in <code>artifactBaseDir</code>, immediately or not. 
-   * @param artifactBaseDir
-   *     the base directory for all artifacts, in particular of <code>pdfFileAct</code>. 
+   * @param texSourceDir
+   *     the base directory of the source files. 
    * @param diffBaseDir
    *     the root directory of all blue prints corresponding with <code>diffRootDir</code>. 
    */
-  static File getPdfFileDiff(File pdfFileAct, File artifactBaseDir,
+  static File getPdfFileDiff(File pdfFileAct, File texSourceDir,
       File diffBaseDir) {
     Path pdfFileActPath = pdfFileAct.toPath();
-    Path artifactBasePath = artifactBaseDir.toPath();
+    Path artifactBasePath = texSourceDir.toPath();
 
     assert pdfFileActPath.startsWith(artifactBasePath);
     pdfFileActPath = artifactBasePath.relativize(pdfFileActPath);

@@ -409,8 +409,10 @@ public class LatexProcessor extends AbstractLatexProcessor {
             || targetDir.isDirectory() : "Expected target folder " + targetDir
                 + " folder if exists. ";
 
-        Set<Target> targetsForBuild = getTargetsForBuild(desc, docClasses2Targets, targetSet);
-        this.latex2PdfCmdMagic = desc.groupMatch(LatexMainParameterNames.programMagic);
+        Set<Target> targetsForBuild =
+          getTargetsForBuild(desc, docClasses2Targets, targetSet);
+        this.latex2PdfCmdMagic = desc
+          .groupMatch(LatexMainParameterNames.programMagic);
         if (this.latex2PdfCmdMagic.isPresent()) {
           this.log.info("Using " + this.latex2PdfCmdMagic.get()
             + " to process '" + desc.texFile + "'. ");
@@ -418,11 +420,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
         // may throw BuildFailureException TSS04
         for (Target target : targetsForBuild) {
-
-          Optional<Long> timestampOpt = Optional.empty();
           Optional<File> pdfFileCmpOpt = Optional.empty();
           if (target.hasDiffTool() && isChkDiff(desc)) {
-
             File pdfFileCmp = TexFileUtils.getPdfFileDiff(desc.pdfFile,
                 this.settings.getTexSrcDirectoryFile(),
                 this.settings.getDiffDirectoryFile().getAbsoluteFile());
@@ -432,15 +431,16 @@ public class LatexProcessor extends AbstractLatexProcessor {
                   + "' to compare with artifact from '" + texFile + "'. ");
             }
             assert pdfFileCmp.exists();
-            long timestamp = pdfFileCmp.lastModified();
-            timestampOpt = Optional.of(timestamp);
             pdfFileCmpOpt = Optional.of(pdfFileCmp);
-
+            assert pdfFileCmpOpt.isPresent();
           }
 
           // may throw BuildFailureException TEX01,
           // log warning EEX01, EEX02, EEX03, WEX04, WEX05
-          target.processSource(this, desc, timestampOpt);
+          //target.processSource(this, desc, timestampOpt);
+
+          target.processSource(this, desc,
+            pdfFileCmpOpt.flatMap(file -> Optional.of(file.lastModified())));
           //target.processSource(this, getLatexMainDesc(texFile));
 
           FileFilter fileFilter = TexFileUtils.getFileFilter(texFile,
@@ -452,13 +452,12 @@ public class LatexProcessor extends AbstractLatexProcessor {
               .copyOutputToTargetFolder(texFile, fileFilter, targetDir);
 
 
-          if (!(target.hasDiffTool() && isChkDiff(desc))) {
+          //if (!(target.hasDiffTool() && isChkDiff(desc))) {
+          if (pdfFileCmpOpt.isEmpty()) {
             this.log.debug("no artifact diff specified.");
             continue;
           }
           this.log.debug("Prepare verification by diffing: ");
-
-
 
           assert targetFiles.size() == 1 : "Expected one target file, found "
               + targetFiles + ". ";
@@ -474,8 +473,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
             continue;
           }
           throw new BuildFailureException(
-              "TLP01: Artifact '" + pdfFileAct.getName() + "' from '" + texFile
-                  + "' could not be reproduced. ");
+              "TLP01: Artifact '" + pdfFileAct.getName() + 
+              "' from '" + texFile + "' could not be reproduced. ");
 
         } // target
       } // texFile
@@ -1559,7 +1558,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
       explIdxIdent =
           this.fileUtils.collectMatches(desc.idxFile, IDX_EXPL, GRP_IDENT_IDX);
       if (explIdxIdent == null) {
-        this.log.warn("WLP04: Cannot read idx file '" + desc.idxFile.getName()
+        this.log.warn("WLP04: Cannot read idx file '" 
+            + desc.idxFile.getName()
             + "'; skip creation of index. ");
         return false;
       }
