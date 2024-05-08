@@ -184,10 +184,10 @@ class TexFileUtils {
   static File getPdfFileDiff(File pdfFileAct, File texSourceDir,
       File diffBaseDir) {
     Path pdfFileActPath = pdfFileAct.toPath();
-    Path artifactBasePath = texSourceDir.toPath();
+    Path texSourcePath = texSourceDir.toPath();
 
-    assert pdfFileActPath.startsWith(artifactBasePath);
-    pdfFileActPath = artifactBasePath.relativize(pdfFileActPath);
+    assert pdfFileActPath.startsWith(texSourcePath);
+    pdfFileActPath = texSourcePath.relativize(pdfFileActPath);
 
     // this may exist but if so it is a directory because holds srcFile
     return new File(diffBaseDir, pdfFileActPath.toString());
