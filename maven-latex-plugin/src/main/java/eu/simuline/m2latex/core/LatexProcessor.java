@@ -64,12 +64,12 @@ import eu.simuline.m2latex.mojo.CfgLatexMojo;
  * according to the target(s) given by the parameters.
  * The elements of the enumeration {@link Target} use methods
  * {@link #processLatex2rtf(LatexMainDesc)},
- * {@link #processLatex2dvi(LatexMainDesc)},
- * {@link #processLatex2pdf(LatexMainDesc)},
- * {@link #processLatex2html(LatexMainDesc)},
- * {@link #processLatex2odt(LatexMainDesc)},
- * {@link #processLatex2docx(LatexMainDesc)}
- * and {@link #processLatex2txt(LatexMainDesc)}.
+ * {@link #processLatex2dvi(LatexMainDesc, Optional)},
+ * {@link #processLatex2pdf(LatexMainDesc, Optional)},
+ * {@link #processLatex2html(LatexMainDesc, Optional)},
+ * {@link #processLatex2odt(LatexMainDesc, Optional)},
+ * {@link #processLatex2docx(LatexMainDesc, Optional)}
+ * and {@link #processLatex2txt(LatexMainDesc, Optional)}.
  */
 public class LatexProcessor extends AbstractLatexProcessor {
 
@@ -300,7 +300,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * processing graphic-files 
    * via {@link LatexPreProcessor#processGraphicsSelectMain(File, DirNode)} 
    * and processing the tex main files 
-   * via {@link Target#processSource(LatexProcessor, LatexMainDesc)}. 
+   * via {@link Target#processSource(LatexProcessor, LatexMainDesc, Optional)}. 
    * If a diff-tool for the target format is available
    * and if check by diff is specified, 
    * the resulting file is checked to be equal to a specified file. 
@@ -741,7 +741,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * or a MakeGlossaries run fails
    * or if a BibTeX run or a MakeIndex or a MakeGlossary run issues a warning
    * in the according methods
-   * {@link #runLatex2dev(LatexMainDesc, LatexDev)},
+   * {@link #runLatex2dev(LatexMainDesc, LatexDev, Optional)},
    * {@link #runBibtexByNeed(LatexMainDesc)},
    * {@link #runMakeIndexByNeed(LatexMainDesc)} and
    * {@link #runMakeGlossaryByNeed(LatexMainDesc)}.
@@ -797,10 +797,10 @@ public class LatexProcessor extends AbstractLatexProcessor {
    *    <li>makeglossaries command
    *    from {@link Settings#getMakeGlossariesCommand()}
    *    </ul>
-   * @see #processLatex2devCore(LatexProcessor.LatexMainDesc, LatexDev)
-   * @see #processLatex2html(LatexMainDesc)
-   * @see #processLatex2odt(LatexMainDesc)
-   * @see #processLatex2docx(LatexMainDesc)
+   * @see #processLatex2devCore(LatexMainDesc, LatexDev, Optional)
+   * @see #processLatex2html(LatexMainDesc, Optional)
+   * @see #processLatex2odt(LatexMainDesc, Optional)
+   * @see #processLatex2docx(LatexMainDesc, Optional)
    */
   private int preProcessLatex2dev(LatexMainDesc desc,
                 LatexDev dev,
@@ -872,7 +872,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * <p>
    * Note that still no logging of warnings from a latex run is done.
    * This is done
-   * in {@link #processLatex2dev(LatexMainDesc, LatexDev)}.
+   * in {@link #processLatex2dev(LatexMainDesc, LatexDev, Optional)}.
    * The exclusion of logging of warnings is indicated by the name part
    * 'Core'.
    * Processing without logging of warnings
@@ -895,7 +895,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * (re)run MakeIndex/LaTeX required?
    * <li>WFU03: cannot close
    * <li>EEX01, EEX02, EEX03, WEX04, WEX05: as for
-   * {@link #preProcessLatex2dev(LatexProcessor.LatexMainDesc, LatexDev)}
+   * {@link #preProcessLatex2dev(LatexMainDesc, LatexDev, Optional)}
    * maybe caused by subsequent runs.
    * </ul>
    *
@@ -910,10 +910,10 @@ public class LatexProcessor extends AbstractLatexProcessor {
    *    Optional wrapping the timestamp as epoche time. 
    * @throws BuildFailureException
    *    TEX01 as for
-   *    {@link #preProcessLatex2dev(LatexMainDesc, LatexDev)}
+   *    {@link #preProcessLatex2dev(LatexMainDesc, LatexDev, Optional)}
    *    maybe caused by subsequent runs.
-   * @see #processLatex2dvi(LatexMainDesc)
-   * @see #processLatex2txt(LatexMainDesc)
+   * @see #processLatex2dvi(LatexMainDesc, Optional)
+   * @see #processLatex2txt(LatexMainDesc, Optional)
    */
   private void processLatex2devCore(LatexMainDesc desc,
     LatexDev dev, Optional<Long> timestampOpt)
@@ -1034,7 +1034,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * on the latex main file <code>texFile</code>
    * described by <code>desc</code>
    * repeatedly as described for
-   * {@link #processLatex2devCore(LatexProcessor.LatexMainDesc,LatexDev,Optional)}
+   * {@link #processLatex2devCore(LatexMainDesc,LatexDev,Optional)}
    * and issue a warning if the last LaTeX run issued a warning.
    * </ul>
    * <p>
@@ -1049,7 +1049,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * <li>WLP04: Cannot read idx file; skip creation of index
    * <li>WLP05: Use package 'splitidx' without option 'split'
    * <li>EEX01, EEX02, EEX03, WEX04, WEX05:
-   * {@link #processLatex2devCore(LatexProcessor.LatexMainDesc, LatexDev)}
+   * {@link #processLatex2devCore(LatexMainDesc, LatexDev, Optional)}
    * if running an exernal command fails.
    * </ul>
    *
@@ -1063,7 +1063,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    *    Optional wrapping the timestamp as epoche time. 
    * @throws BuildFailureException
    *    TEX01 as for
-   *    {@link #processLatex2devCore(LatexProcessor.LatexMainDesc, LatexDev)}.
+   *    {@link #processLatex2devCore(LatexMainDesc, LatexDev, Optional)}.
    * @see #needRun(boolean, String, File, String)
    * @see Target#pdf
    */
@@ -1233,11 +1233,11 @@ public class LatexProcessor extends AbstractLatexProcessor {
    *    Optional wrapping the timestamp as epoche time. 
    * @throws BuildFailureException
    *    TEX01 as for
-   *    {@link #preProcessLatex2dev(LatexProcessor.LatexMainDesc, LatexDev)}
+   *    {@link #preProcessLatex2dev(LatexMainDesc, LatexDev, Optional)}
    *    but also as for
    *    {@link #runLatex2html(LatexProcessor.LatexMainDesc)}.
-   * @see #preProcessLatex2dev(LatexProcessor.LatexMainDesc, LatexDev)
-   * @see #runLatex2html(LatexProcessor.LatexMainDesc)
+   * @see #preProcessLatex2dev(LatexMainDesc, LatexDev, Optional)
+   * @see #runLatex2html(LatexMainDesc)
    * @see Target#html
    */
   // TBD: check: is it really sensible to do preprocessing? 
@@ -1280,10 +1280,10 @@ public class LatexProcessor extends AbstractLatexProcessor {
    *    Optional wrapping the timestamp as epoche time. 
    * @throws BuildFailureException
    *    TEX01 as for
-   *    {@link #preProcessLatex2dev(LatexProcessor.LatexMainDesc, LatexDev)}
+   *    {@link #preProcessLatex2dev(LatexMainDesc, LatexDev, Optional)}
    *    but also as for
    *    {@link #runLatex2odt(LatexProcessor.LatexMainDesc)}.
-   * @see #preProcessLatex2dev(LatexMainDesc, LatexDev)
+   * @see #preProcessLatex2dev(LatexMainDesc, LatexDev, Optional)
    * @see #runLatex2odt(LatexMainDesc)
    * @see Target#odt
    */
@@ -1324,12 +1324,12 @@ public class LatexProcessor extends AbstractLatexProcessor {
    *    Optional wrapping the timestamp as epoche time. 
    * @throws BuildFailureException
    *    TEX01 as for
-   *    {@link #preProcessLatex2dev(LatexProcessor.LatexMainDesc, LatexDev)}
+   *    {@link #preProcessLatex2dev(LatexMainDesc, LatexDev, Optional)}
    *    but also as for
    *    {@link #runLatex2odt(LatexProcessor.LatexMainDesc)}
    *    and for {@link #runOdt2doc(LatexMainDesc)}.
-   * @see #preProcessLatex2dev(LatexMainDesc, LatexDev)
-   * @see #runLatex2odt(LatexProcessor.LatexMainDesc)
+   * @see #preProcessLatex2dev(LatexMainDesc, LatexDev, Optional)
+   * @see #runLatex2odt(LatexMainDesc)
    * @see #runOdt2doc(LatexMainDesc)
    * @see Target#docx
    */
@@ -1393,9 +1393,9 @@ public class LatexProcessor extends AbstractLatexProcessor {
    *    the tex file to be processed.
    * @throws BuildFailureException
    *    TEX01 as for
-   *    {@link #processLatex2devCore(LatexMainDesc, LatexDev)}
+   *    {@link #processLatex2devCore(LatexMainDesc, LatexDev, Optional)}
    *    and for {@link #runPdf2txt(LatexMainDesc)}.
-   * @see #processLatex2devCore(LatexProcessor.LatexMainDesc, LatexDev)
+   * @see #processLatex2devCore(LatexMainDesc, LatexDev, Optional)
    * @see #runPdf2txt(LatexMainDesc)
    * @see Target#txt
    */
@@ -2031,7 +2031,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * invoking {@link #logErrs(File, String)}
    * but not if bad boxes occurred or if warnings occurred.
    * This is done in
-   * {@link #processLatex2dev(LatexProcessor.LatexMainDesc, LatexDev)}
+   * {@link #processLatex2dev(LatexMainDesc, LatexDev, Optional)}
    * after the last LaTeX run only.
    * <p>
    * Logging:
@@ -2266,7 +2266,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * invoking {@link #logErrs(File, String)}
    * but not if bad boxes ocurred or if warnings occurred.
    * This is done in
-   * {@link #processLatex2dev(LatexProcessor.LatexMainDesc, LatexDev)}
+   * {@link #processLatex2dev(LatexMainDesc, LatexDev, Optional)}
    * after the last LaTeX run only.
    * <p>
    * Logging:

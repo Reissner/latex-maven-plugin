@@ -11,13 +11,14 @@ package eu.simuline.m2latex.core;
  * {@link #programMagic} and {@link #targetsMagic}. 
  */
 public enum LatexMainParameterNames {
+
   /**
    * The name of the capturing group 
    * indicating whether after creating the artifact 
    * and copying it to the output directory {@link Settings#outputDirectoryFile} 
-   * the artifact is checked by diffing them against preexisting artifacts 
+   * the artifact is checked by diffing against a preexisting artifact 
    * as described for {@link Settings#chkDiff}. 
-   * Essentially, this overwrites {@link Settings#getChkDiff()} 
+   * Essentially, this overwrites the settings in the pom 
    * for individual latex main files. 
    */
   chkDiffMagic,
@@ -40,12 +41,14 @@ public enum LatexMainParameterNames {
    * <code>documentclass</code> or <code>documentstyle</code>. 
    */
   docClass,
+
   /**
    * The name of the capturing group 
    * representing the target set 
    * specified by the magic comment <code>% !LMP targets=...</code>. 
    */
   targetsMagic,
+
   /**
    * The name of the capturing group 
    * representing the target set 
