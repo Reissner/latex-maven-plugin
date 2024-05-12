@@ -188,14 +188,17 @@ public class Settings {
 
   /**
    * Diff directory relative to {@link #baseDirectory} 
-   * used for diffing actually created artifact against prescribed one inthis directory. 
+   * used for diffing actually created artifacts 
+   * against prescribed ones in this directory. 
    * This is relevant only if {@link #chkDiff} is set. 
    * The according file is given by {@link #diffDirectoryFile}. 
-   * The default value is <code>.</code>. 
+   * The default value is <code>src/main/resources/docsCmp</code>. 
+   * This must be without trailing file separator. 
    */
   @RuntimeParameter
-  @Parameter(name = "diffDirectory", defaultValue = ".")
-  private String diffDirectory = ".";
+  @Parameter(name = "diffDirectory",
+  defaultValue = "src${file.separator}main${file.separator}resources${file.separator}docsCmp")
+  private String diffDirectory = "src/main/resources/docsCmp";
 
   /**
    * File for {@link #diffDirectory} based on @link #baseDirectory}. 
