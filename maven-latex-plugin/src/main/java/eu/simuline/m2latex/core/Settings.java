@@ -3365,6 +3365,14 @@ public class Settings {
   }
 
   /**
+   * Pattern for names of parameters annotated {@link RuntimeParameter} 
+   * used in 
+   * {@link #filterInjection(InputStream,PrintStream,String,Injection)} 
+   * to filter resources for injection. 
+   */
+  private static final String PATTERN_CONFIG = "\\$\\{(\\w+)\\}";
+
+  /**
    * Filters a resource given by <code>inStream</code> 
    * into a <code>writer</code> similar to the maven resources plugin: 
    * Replace the settings given by name in the form <code>${&lt;name%gt;}</code> 
@@ -3387,7 +3395,7 @@ public class Settings {
    *   given by the parameter {@link #texSrcDirectory} 
    *   with the same name as the resource defining <code>inStream</code>. 
    * @param version
-   *   the version of this softwaregoing into the headline.
+   *   the version of this software going into the headline.
    * @param inj
    *   The injection which determines the comment indentifier 
    *   and whether there is a hashbanb. 
@@ -3399,7 +3407,8 @@ public class Settings {
     BufferedReader bufReader =
         new BufferedReader(new InputStreamReader(inStream));
 
-    Pattern pattern = Pattern.compile("\\$\\{(\\w+)\\}");
+    // pattern for parameter 
+    Pattern pattern = Pattern.compile(PATTERN_CONFIG);
     Map<String, String> props = this.getProperties();
 
     String strLine;
