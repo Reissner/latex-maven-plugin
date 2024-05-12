@@ -51,7 +51,7 @@ sub mylatex($fileName, @opts) {
   # the options passed by latexmk were in %O and are thus part of @args 
   # the last part of @args is passed also by latexmk as %S
   #print("args by latexmk: @args\n");
-  my $latexCommand = ${latex2pdfCommand};
+  my $latexCommand = "${latex2pdfCommand}";
   # $programMagic is set by invoking something like 
   # latexmk -e '$programMagic=pdflatex'
   if (defined($programMagic)) {
