@@ -59,15 +59,14 @@ sub mylatex($fileName, @opts) {
   }
   my $pdfViaDvi = $boolStrToVal{'${pdfViaDvi}'};
   die "Error: Boolean expected but found '{$boolStrToVal}'. " unless exists($boolStrToVal{'${pdfViaDvi}'});
+  # note that exactly one of the two options -no-pdf -output-format=dvi applies; 
+  # the other is ignored. 
+  # TBD: eliminate: xelatex emits a warning because -output-format is unknown 
+  my $addArgs = $pdfViaDvi ? "-no-pdf -output-format=dvi " : "";
+  my $res = system("$latexCommand ${latex2pdfOptions} $addArgs @opts $fileName");
   if ($pdfViaDvi) {
-    # note that exactly one of the two options -no-pdf -output-format=dvi applies; 
-    # the other is ignored. 
-    # TBD: eliminate: xelatex emits a warning because -output-format is unknown 
-    $resLatex    = system("$latexCommand     ${latex2pdfOptions} -no-pdf -output-format=dvi @opts $fileName");
-    $resDviToPdf = system("${dvi2pdfCommand} ${dvi2pdfOptions}                                    $fileName");
-    return ($resLatex or $resDviToPdf)
-  } else {
-    return         system("$latexCommand     ${latex2pdfOptions} @opts $fileName");
+    $res = $res or system("${dvi2pdfCommand} ${dvi2pdfOptions} $fileName");
+    return $res;
   }
   #print("invoke: ${latex2pdfCommand} ${latex2pdfOptions} @opts $fileName\n");
   #return system("${latex2pdfCommand} ${latex2pdfOptions} @opts $fileName");
