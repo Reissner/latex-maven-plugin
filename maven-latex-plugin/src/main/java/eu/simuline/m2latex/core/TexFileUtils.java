@@ -30,9 +30,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
 import java.nio.file.Path;
+
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -303,12 +306,11 @@ class TexFileUtils {
    *    </ul>
    */
   // used in LatexProcessor.create() only 
-  Set<File> copyOutputToTargetFolder(File texFile, FileFilter fileFilter,
-      File targetDir) throws BuildFailureException {
+  Set<File> copyOutputToTargetFolder(File texFile, FileFilter fileFilter, File targetDir) 
+      throws BuildFailureException {
     Set<File> targetFiles = new HashSet<File>();
     assert texFile.exists()
-        && !texFile.isDirectory() : "Expected existing (regular) tex file "
-            + texFile;
+        && !texFile.isDirectory() : "Expected existing (regular) tex file " + texFile;
     assert !targetDir.exists() || targetDir
         .isDirectory() : "Expected existing target folder " + targetDir;
 
@@ -373,6 +375,9 @@ class TexFileUtils {
    *    reading from file/writing to file. 
    */
   private void doCopyFile(File srcFile, File destFile) throws IOException {
+    // Files.copy(srcFile.toPath(),
+    //           destFile.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
+
     // may throw FileNotFoundException <= IOException 
     // if cannot be opened for reading: e.g. not exists, is a directory,...
     FileInputStream input = new FileInputStream(srcFile);
@@ -397,6 +402,33 @@ class TexFileUtils {
     assert !destFile.isDirectory() && destFile
         .canWrite() : "Expected existing (regular) writable file " + destFile;
     destFile.setLastModified(srcFile.lastModified());
+  }
+
+  /**
+   * Sets the modification time of <code>file</code> if it exists, 
+   * to the timestamp wrapped by <code>timestampOpt</code> if any, 
+   * with a precision offered by the underlying system. 
+   * Else takes no action. 
+   * 
+   * Logging: 
+   * WFU04: Cannot assign timestamp 
+   * 
+   * @param file
+   *    the file to be endowed with the timestamp given by <code>timestampOpt</code> if not empty. 
+   * @param timestampOpt
+   *    requires a timestamp if not empty. 
+   */
+  // invoked by runLatex2dev, runDvi2Pdf, but not in runLatexmk 
+  void setModificationTime(File file, Optional<Long> timestampOpt) {
+    if (!file.exists() || timestampOpt.isEmpty()) {
+      // in the first case, in the call hierarchy given, there was already another warning 
+      // in the second case, the modification time shall not be set 
+      return;
+    }
+    boolean success = file.setLastModified(timestampOpt.get());
+    if (!success) {
+      this.log.warn("WFU04: Could not assign timestamp to target file " + file + ". ");
+    }
   }
 
   /**

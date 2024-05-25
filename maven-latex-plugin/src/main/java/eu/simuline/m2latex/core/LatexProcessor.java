@@ -755,6 +755,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * <li>WLP05: Use package 'splitidx' without option 'split'
    * <li>WLP02: Cannot read blg file: BibTeX run required?
    * <li>WFU03: cannot close log file
+   * <li>WFU04: Cannot assign timestamp 
    * <li>EEX01, EEX02, EEX03, WEX04, WEX05:
    * if one of the commands mentioned in the throws-tag fails
    * </ul>
@@ -810,7 +811,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
     // initial latex run
     // may throw BuildFailureException TEX01
     // may log warnings EEX01, EEX02, EEX03, WEX04, WEX05,
-    // EAP01, EAP02, WAP04, WFU03
+    // EAP01, EAP02, WAP04, WFU03, WFU04
     runLatex2dev(desc, dev, timestampOpt);
     //File texFile = desc.texFile;
 
@@ -894,6 +895,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * <li>WLP02: Cannot read log file: run BibTeX/
    * (re)run MakeIndex/LaTeX required?
    * <li>WFU03: cannot close
+   * <li>WFU04: Cannot assign timestamp 
    * <li>EEX01, EEX02, EEX03, WEX04, WEX05: as for
    * {@link #preProcessLatex2dev(LatexMainDesc, LatexDev, Optional)}
    * maybe caused by subsequent runs.
@@ -920,7 +922,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
       throws BuildFailureException {
 
     // may throw BuildFailureException TEX01,
-    // log warning WLP04, WLP05, EAP01, EAP02, WAP04, WLP02, WFU03,
+    // log warning WLP04, WLP05, EAP01, EAP02, WAP04, WLP02, WFU03, WFU04, 
     // EEX01, EEX02, EEX03, WEX04, WEX05
     int numLatexReRuns = preProcessLatex2dev(desc, dev, timestampOpt);
 
@@ -933,7 +935,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
           + "bibliography, index, or that like. ");
       // may throw BuildFailureException TEX01
       // may log warnings EEX01, EEX02, EEX03, WEX04, WEX05,
-      // EAP01, EAP02, WAP04, WFU03
+      // EAP01, EAP02, WAP04, WFU03, WFU04
       runLatex2dev(desc, dev, timestampOpt);
       numLatexReRuns--;
     }
@@ -967,7 +969,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
       // may throw BuildFailureException TEX01
       // may log warnings EEX01, EEX02, EEX03, WEX04, WEX05,
-      // EAP01, EAP02, WAP04, WFU03
+      // EAP01, EAP02, WAP04, WFU03, WFU04 
       runLatex2dev(desc, dev, timestampOpt);
       needLatexReRun = needRun(true, latexCmd, desc.logFile,
           this.settings.getPatternReRunLatex());
@@ -1041,6 +1043,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * Logging:
    * <ul>
    * <li>WFU03: cannot close
+   * <li>WFU04: Cannot assign timestamp 
    * <li>WAP04: if <code>logFile</code> is not readable.
    * <li>WLP01: if another rerun is required
    * but the maximum number of runs is reached.
@@ -1081,7 +1084,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
     // this.log.info("No latexmk because target=" + dev + " and usage=" + this.settings.getLatexmkUsage());
 
     // may throw BuildFailureException TEX01,
-    // log warning EAP01, EAP02, WAP04, WLP02, WFU03, WLP04, WLP05,
+    // log warning EAP01, EAP02, WAP04, WLP02, WFU03, WFU04, WLP04, WLP05,
     // EEX01, EEX02, EEX03, WEX04, WEX05
     processLatex2devCore(desc, dev, timestampOpt);
 
@@ -1096,7 +1099,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
         .info("Converting into dvi/xdv:  LaTeX file '" + desc.texFile + "'. ");
     // may throw BuildFailureException TEX01,
     // log warning EEX01, EEX02, EEX03, WEX04, WEX05
-    // WFU03, WAP04, WLP03, WLP04
+    // WFU03, WFU04, WAP04, WLP03, WLP04
     processLatex2dev(desc, LatexDev.dvips, timestampOpt);
   }
 
@@ -1118,14 +1121,14 @@ public class LatexProcessor extends AbstractLatexProcessor {
     LatexDev dev = this.settings.getPdfViaDvi();
 
     // may throw BuildFailureException TEX01,
-    // log warning EEX01, EEX02, EEX03, WEX04, WEX05, WLP04, WLP05
+    // log warning EEX01, EEX02, EEX03, WEX04, WEX05, WLP04, WLP05, WFU04 
     processLatex2dev(desc, dev, timestampOpt);
     // FIXME: certain figures are invisible in the intermediate dvi file,
     // but converstion to pdf shows that the figures are present.
 
     if (dev.isViaDvi()) {
       // may throw BuildFailureException TEX01,
-      // may log warning EEX01, EEX02, EEX03, WEX04, WEX05
+      // may log warning EEX01, EEX02, EEX03, WEX04, WEX05, WFU04 
       runDvi2pdf(desc, timestampOpt);//
     }
   }
@@ -1221,6 +1224,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * <li>WAP04: if <code>logFile</code> is not readable.
    * <li>WLP02: Cannot read blg file: BibTeX run required?
    * <li>WFU03: cannot close log file
+   * <li>WFU04: Cannot assign timestamp 
    * <li>WLP04: Cannot read idx file; skip creation of index
    * <li>WLP05: Use package 'splitidx' without option 'split'
    * <li>EEX01, EEX02, EEX03, WEX04, WEX05:
@@ -1247,7 +1251,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
       throws BuildFailureException {
     this.log.info("Converting into html: LaTeX file '" + desc.texFile + "'. ");
     // may throw BuildFailureException TEX01,
-    // log warning EAP01, EAP02, WLP04, WLP05, WAP04, WLP02, WFU03,
+    // log warning EAP01, EAP02, WLP04, WLP05, WAP04, WLP02, WFU03, WFU04, 
     // EEX01, EEX02, EEX03, WEX04, WEX05
     preProcessLatex2dev(desc, LatexDev.devViaDvi(true), timestampOpt);
     // may throw BuildFailureException TEX01,
@@ -1268,6 +1272,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * <li>WAP04: if <code>logFile</code> is not readable.
    * <li>WLP02: Cannot read blg file: BibTeX run required?
    * <li>WFU03: cannot close log file
+   * <li>WFU04: Cannot assign timestamp 
    * <li>WLP04: Cannot read idx file; skip creation of index
    * <li>WLP05: Use package 'splitidx' without option 'split'
    * <li>EEX01, EEX02, EEX03, WEX04, WEX05:
@@ -1291,7 +1296,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
       throws BuildFailureException {
     this.log.info("Converting into odt:  LaTeX file '" + desc.texFile + "'. ");
     // may throw BuildFailureException TEX01,
-    // log warning EAP01, EAP02, WAP04, WLP02, WFU03, WLP04, WLP05
+    // log warning EAP01, EAP02, WAP04, WLP02, WFU03, WFU04, WLP04, WLP05
     // EEX01, EEX02, EEX03, WEX04, WEX05
     preProcessLatex2dev(desc, this.settings.getPdfViaDvi(), timestampOpt);
     // may throw BuildFailureException TEX01,
@@ -1312,6 +1317,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * <li>WAP04: if <code>logFile</code> is not readable.
    * <li>WLP02: Cannot read blg file: BibTeX run required?
    * <li>WFU03: cannot close log file
+   * <li>WFU04: Cannot assign timestamp 
    * <li>WLP04: Cannot read idx file; skip creation of index
    * <li>WLP05: Use package 'splitidx' without option 'split'
    * <li>EEX01, EEX02, EEX03, WEX04, WEX05:
@@ -1338,7 +1344,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
     this.log
         .info("Converting into doc(x): LaTeX file '" + desc.texFile + "'. ");
     // may throw BuildFailureException TEX0,
-    // log warning EAP01, EAP02, WAP04, WLP02, WFU03, WLP04, WLP05
+    // log warning EAP01, EAP02, WAP04, WLP02, WFU03, WFU04, WLP04, WLP05
     // EEX01, EEX02, EEX03, WEX04, WEX05
     preProcessLatex2dev(desc, this.settings.getPdfViaDvi(), timestampOpt);
     // may throw BuildFailureException TEX0,
@@ -1387,6 +1393,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * <li>WLP05: Use package 'splitidx' without option 'split'
    * <li>EEX01, EEX02, EEX03, WEX04, WEX05:
    * if running an exernal command fails.
+   * <li>WFU04: Cannot assign timestamp 
    * </ul>
    *
    * @param desc
@@ -1405,12 +1412,12 @@ public class LatexProcessor extends AbstractLatexProcessor {
     LatexDev dev = this.settings.getPdfViaDvi();
 
     // may throw BuildFailureException TEX01,
-    // log warning EAP01, EAP02, WAP04, WLP02, WFU03, WLP04, WLP05,
+    // log warning EAP01, EAP02, WAP04, WLP02, WFU03, WFU04, WLP04, WLP05,
     // EEX01, EEX02, EEX03, WEX04, WEX05
     processLatex2devCore(desc, dev, timestamp);
     if (dev.isViaDvi()) {
       // may throw BuildFailureException TEX01,
-      // may log warning EEX01, EEX02, EEX03, WEX04, WEX05
+      // may log warning EEX01, EEX02, EEX03, WEX04, WEX05, WFU04
       runDvi2pdf(desc, timestamp);
     }
 
@@ -2040,6 +2047,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * <li>EAP02: Running <code>latex2pdf</code> failed. No log file
    * <li>WAP04: .log-file is not readable.
    * <li>WFU03: cannot close .log-file
+   * <li>WFU04: Cannot assign timestamp 
    * <li>EEX01, EEX02, EEX03, WEX04, WEX05:
    * if running the latex2pdf command failed.
    * </ul>
@@ -2075,20 +2083,24 @@ public class LatexProcessor extends AbstractLatexProcessor {
     String[] args =
         buildLatexArguments(this.settings, dev, texFile, isTypeXelatex);
     this.executor.setTimestamp(timestampOpt);
+    File latexTargetFile = dev.latexTargetFile(desc, isTypeXelatex);
     // may throw BuildFailureException TEX01,
     // may log warning EEX01, EEX02, EEX03, WEX04, WEX05
     // CAUTION: an error also occurs if running xelatex in conjunction with dvi mode 
     // because this engine creates xdv instead of dvi 
     this.executor.execute(desc.parentDir, // workingDir
         this.settings.getTexPath(), command, args,
-        dev.latexTargetFile(desc, isTypeXelatex));
+        latexTargetFile);
 
     // logging errors (warnings are done in processLatex2pdf)
     // may log EAP01, EAP02, WAP04, WFU03
     logErrs(desc.logFile, command);
 
     // FIXME: documentation that in the dvi file,
-    // png, jpg and svg are not visible, but present.
+    // png, jpg and svg are not visible, but present. 
+
+    // WFU04: Cannot assign timestamp 
+    this.fileUtils.setModificationTime(latexTargetFile, timestampOpt);
   }
 
   // also for tests
@@ -2123,6 +2135,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * WLP07: if both dvi and xdv files are present.
    * <li>EEX01, EEX02, EEX03, WEX04, WEX05:
    * if running the dvi2pdf command failed.
+   * <li>WFU04: Cannot assign timestamp 
    * </ul>
    *
    * @param desc
@@ -2160,7 +2173,10 @@ public class LatexProcessor extends AbstractLatexProcessor {
     this.executor.execute(desc.parentDir, // workingDir
         this.settings.getTexPath(), command, args, desc.pdfFile);
     // FIXME: what about error logging?
-    // Seems not to create a log-file.
+    // Seems not to create a log-file. 
+
+    // WFU04: Cannot assign timestamp 
+    this.fileUtils.setModificationTime(desc.pdfFile, timestampOpt);
   }
 
   /**
