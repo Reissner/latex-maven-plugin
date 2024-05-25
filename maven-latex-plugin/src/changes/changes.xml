@@ -997,6 +997,23 @@ https://tex.stackexchange.com/questions/782/what-are-the-available-documentclass
 think whether minimal shall not be standalone? 
 -->
 
+<!-- Section 3.2: {subsec:sourcesLatex} at its end 
+contains the idea of a magic comment 
+classMagic 
+
+This is a means to write latex main files with openings 
+not conforming with the current pattern, 
+i.e. the opening, i.e. section from start to 
+\documentclass[...]{...} does not match to the end, 
+so that the class is not matched. 
+one may use the pattern (\documentclass[...]{...})? 
+but then how to get the document class? by a magic including the line 
+
+% !LMP docClass=(docClassMagic)
+
+This shall not be preferred usage but a hot fix to get a TEX file declared as latex main file. 
+-->
+
     <release version="2.0" date="2023-08-28" description="">
       <action dev='reissner' type='add'>
         added several document classes to general usage: 
