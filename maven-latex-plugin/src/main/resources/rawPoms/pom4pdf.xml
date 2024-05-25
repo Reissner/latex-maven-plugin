@@ -1250,6 +1250,9 @@ avoiding verbose output and backing up the output log-file. -->
               <goal>inj</goal>
             </goals>
             <!-- tied implicitly to phase validate -->
+            <configuration>
+              <injections>latexmkrc,chktexrc,header,headerGrp,headerSuppressMetaPDF</injections>
+            </configuration>
           </execution>
           <execution>
             <id>validate-converters</id>

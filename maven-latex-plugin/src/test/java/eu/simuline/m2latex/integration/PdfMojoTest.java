@@ -48,6 +48,7 @@ public class PdfMojoTest extends AbstractMojoTestCase {
 
     // run the pdf-goal in the pom 
     // TBD: in other framework: also check lifecycle phase like site and so 
+    lookupMojo("inj", testPom);// this is to update .latexmkrc 
     PdfMojo testMojo = (PdfMojo) lookupMojo("pdf", testPom);
     assertNotNull(testMojo);
     testMojo.execute();
