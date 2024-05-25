@@ -23,8 +23,9 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -1111,6 +1112,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
     if (this.settings.getLatexmkUsage().runLatexmk()
       || desc.groupMatches(LatexMainParameterNames.latexmkMagic)) {
       this.log.info("Running latexmk bypassing direct compilation. ");
+      // CAUTION: timestamp is not used directly 
       runLatexmk(desc, timestampOpt);
       return;
     }
@@ -1990,6 +1992,11 @@ public class LatexProcessor extends AbstractLatexProcessor {
    *     to be processed.
    * @param timestampOpt
    *    Optional wrapping the timestamp as epoche time. 
+   *    CAUTION: is not used. 
+   *    The background is, 
+   *    that creation with timestamp from original pdf file in diffDirectory 
+   *    must be possible also with standalone execution of 
+   *    "latexmk -e '$chkDiffMagic=q/chkDiff/"'"
    * @throws BuildFailureException
    *     TEX01 if invocation of the latexmk command returned by
    *     {@link Settings#getLatexmkCommand()} failed.
@@ -2002,10 +2009,11 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
     String command = this.settings.getLatexmkCommand();
 
-    Optional<String> programMagic =
-      desc.groupMatch(LatexMainParameterNames.programMagic);
-    String[] args = buildLatexmkArguments(settings, programMagic, texFile);
-    this.executor.setTimestamp(timestampOpt);
+    String[] args = buildLatexmkArguments(settings, desc);
+    // CAUTION: this is not used. Instead given by pom and by magic comment 
+    // and encoded into created build arguments 
+    //this.executor.setTimestamp(timestampOpt);
+    //System.out.println("timestamp: "+timestampOpt);
     this.log.debug("Running " + command + " on '" + texFile.getName() + "'. ");
     // may throw BuildFailureException TEX01,
     // may log warning EEX01, EEX02, WEX05
@@ -2016,13 +2024,32 @@ public class LatexProcessor extends AbstractLatexProcessor {
   }
 
   // also for tests
+  // TBD: eliminate magic comments: occur in Settings and also in .latexmkrc 
   protected static String[] buildLatexmkArguments(Settings settings,
-                Optional<String> programMagic, File texFile)
-      throws BuildFailureException {
-    return buildArguments(settings.getLatexmkOptions(), texFile,
-        programMagic.isPresent()
-            ? new String[] {"-e", "$programMagic=q/" + programMagic.get() + "/"}
-            : new String[] {});
+      LatexMainDesc desc) throws BuildFailureException {
+
+    // running specific compiler given in magic comment 
+    Optional<String> programMagic =
+        desc.groupMatch(LatexMainParameterNames.programMagic);
+    List<String> addArgs = new ArrayList<String>();
+    if (programMagic.isPresent()) {
+      addArgs.add("-e");
+      addArgs.add("$programMagic=q/" + programMagic.get() + "/");
+    }
+
+    // running with specific time stamp if required in magic comment 
+    Optional<String> chkDiffMagic =
+        desc.groupMatch(LatexMainParameterNames.chkDiffMagic);
+    if (chkDiffMagic.isPresent()) {
+      addArgs.add("-e");
+      addArgs.add("$chkDiffMagic=q/" + chkDiffMagic.get() + "/");
+    }
+
+    // create arguments, both from settings and 
+    // the optional ones from magic comments 
+    return buildArguments(settings.getLatexmkOptions(), desc.texFile,
+        addArgs.toArray(new String[addArgs.size()])
+    );
   }
 
   /**

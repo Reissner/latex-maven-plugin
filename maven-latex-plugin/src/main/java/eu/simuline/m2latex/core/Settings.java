@@ -84,11 +84,17 @@ public class Settings {
    * The base directory of this maven project. 
    * This shall be set only once through {@link #setBaseDirectory(File)} 
    * in {@link eu.simuline.m2latex.mojo.AbstractLatexMojo#initialize()}. 
+   * It is not part of configuration in pom 
+   * but is filtered in {@link #filterInjection(InputStream, PrintStream, String, Injection)} 
+   * via {@link #getProperties()}. 
+   * Thus it is annotated as {@link RuntimeParameter}. 
+   * By constsruction this is without trailing file separator. 
    * TBD: clarify: what about ant task? 
    * TBD: improve design here. 
    *
    * @see CfgLatexMojo#baseDirectory
    */
+  @RuntimeParameter
   private File baseDirectory;
 
   /**
@@ -120,6 +126,7 @@ public class Settings {
    * This directory determines also the subdirectory of 
    * {@link #outputDirectory} to lay down the generated artifacts. 
    * The according file is given by {@link #texSrcDirectoryFile}. 
+   * This must be without trailing file separator. 
    * The default value is {@link #SST}. 
    */
   @RuntimeParameter
@@ -3349,14 +3356,15 @@ public class Settings {
   public static final String PARAM_PROP = "latex.injections";
 
   /**
-   * Returns the file assoicated with the resource <code>fileNameResource</code>. 
+   * Returns the file associated with the resource <code>fileNameResource</code>. 
    *
    * @param fileNameResource
    *   The name of the resource which is also the (short) file name returned. 
    * @return
    *   the file in directory {@link #texSrcDirectory} or in the local directory 
    *   with name <code>fileNameResource</code>. 
-   *   The directory is the local one if injection is invoked by property, 
+   *   The directory is the local one 
+   *   if injection is invoked by property named {@link #PARAM_PROP}, 
    *   else it is {@link #texSrcDirectory}. 
    */
   File rcResourceToFile(String fileNameResource) {

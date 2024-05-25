@@ -40,6 +40,14 @@ use feature 'signatures';
 # maybe there are alternative: yes for true and no for false. Clarify. 
 my %boolStrToVal = (true => 1, false => 0);
 
+# The following three is to determing PDF file to diff if chkDiff is set 
+my $baseDirectory='${baseDirectory}/';# trailing '/' for concatenation 
+my $texSrcDirectory='${texSrcDirectory}/';
+my $diffDirectory='${diffDirectory}/';
+
+use Cwd;
+use File::Spec::Functions;
+
 # TBD: not ideal foor pdfViaDvi=true: conversion dvi to pdf is needed only once at the end, 
 # whereas this method does conversion dvi to pdf each time also tex to dvi is performed. 
 # Thus in the long run only run dvi2pdf; the rest is done with rules. 
@@ -52,6 +60,18 @@ sub mylatex($fileName, @opts) {
   # the last part of @args is passed also by latexmk as %S
   #print("args by latexmk: @args\n");
   my $latexCommand = "${latex2pdfCommand}";
+  my $timeEnv = "";
+  # diff either by settings or by magic comment 
+  my $chkDiffB = $boolStrToVal{'${chkDiff}'} or defined($chkDiffMagic);
+  if ($chkDiffB) {
+    my $pdfFileOrg=catfile(getcwd, "$fileName.pdf");
+    $pdfFileOrg =~ s/\Q$baseDirectory$texSrcDirectory//;
+    my $pdfFileDiff = "$baseDirectory$diffDirectory$pdfFileOrg";
+    my $epoch_timestamp = (stat($pdfFileDiff))[9];# epoch time of last modification # TBD: avoid magic number 9 
+    #print "epoch_timestamp: $epoch_timestamp";
+    $timeEnv="SOURCE_DATE_EPOCH=$epoch_timestamp FORCE_SOURCE_DATE=1 ";
+  }
+
   # $programMagic is set by invoking something like 
   # latexmk -e '$programMagic=pdflatex'
   if (defined($programMagic)) {
@@ -63,13 +83,16 @@ sub mylatex($fileName, @opts) {
   # the other is ignored. 
   # TBD: eliminate: xelatex emits a warning because -output-format is unknown 
   my $addArgs = $pdfViaDvi ? "-no-pdf -output-format=dvi " : "";
-  my $res = system("$latexCommand ${latex2pdfOptions} $addArgs @opts $fileName");
+  my $res = system("$timeEnv$latexCommand ${latex2pdfOptions} $addArgs @opts $fileName");
   if ($pdfViaDvi) {
     $res = $res or system("${dvi2pdfCommand} ${dvi2pdfOptions} $fileName");
-    return $res;
   }
   #print("invoke: ${latex2pdfCommand} ${latex2pdfOptions} @opts $fileName\n");
   #return system("${latex2pdfCommand} ${latex2pdfOptions} @opts $fileName");
+  if ($chkDiffB) {
+    $res = $res or utime($epoch_timestamp, $epoch_timestamp, "$fileName.pdf");
+  }
+  return $res;
 }
 
 
