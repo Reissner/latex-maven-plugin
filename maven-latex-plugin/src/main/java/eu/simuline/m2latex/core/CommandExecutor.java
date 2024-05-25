@@ -19,11 +19,19 @@
 package eu.simuline.m2latex.core;
 
 import java.io.File;
+import java.io.IOException;
+
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.attribute.FileTime;
+
 import java.text.SimpleDateFormat;
+
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 
 import        org.codehaus.plexus.util.cli.CommandLineException;
 import        org.codehaus.plexus.util.cli.Commandline;// constructor
@@ -328,20 +336,31 @@ class CommandExecutor {
   /**
    * Executes <code>command</code> in <code>workingDir</code>
    * with list of arguments given by <code>args</code> 
-   * and logs if one of the expected target files 
-   * given by <code>resFile</code> is not newly created, 
-   * i.e. if it does not exist or is not updated. 
+   * checking the return value via <code>checker</code> 
+   * and logs a warning if one of the expected target files 
+   * given by <code>resFiles</code> is not guaranteed to be newly created, 
+   * or be updated. 
    * <p>
    * Supports timeless execution as described in 
    * {@link #execute(File, File, String, ReturnCodeChecker, String[], File...)}. 
    * <p>
    * Logging: 
    * <ul>
-   * <li> EEX01: return code other than 0 and <code>checkReturnCode</code> is set. 
-   * <li> EEX02: no target file
-   * <li> EEX03: target file not updated
-   * <li> WEX04: cannot read target file
-   * <li> WEX05: may emit false warnings
+   * <li> EEX01: proper execution failed: 
+   *      return code other than 0 and <code>checkReturnCode</code> is set. 
+   * <li> EEX02: a target file after execution missing 
+   * <li> EEX03: a target file is not updated, 
+   *      i.e. timestamp after not later than before. 
+   *      This implies the file existed 
+   *      before and after execution of <code>command</code> 
+   *      and that timestamps were readable before and after. 
+   * <li> WEX04: cannot read timestamp of a target file, 
+   *      either before execution or after. 
+   *      Readability of the timestamp before execution is checked only 
+   *      if the file exists and also readability of the timestamp after 
+   *      is checked only if the file existed before and after execution. 
+   * <li> WEX05: may emit false warnings: if modification times are too close 
+   *      and this cannot be corrected by sleeping. 
    * </ul>
    *
    * @param workingDir
@@ -396,25 +415,36 @@ class CommandExecutor {
                     File... resFiles) throws BuildFailureException {
     // analyze old result files 
     //assert resFile.length > 0;
+
+    // determine target files and their timestamps before execution 
     boolean[] existsTarget = new boolean[resFiles.length];
-    long[] lastModifiedTarget = new long[resFiles.length];
-    long currentTime = System.currentTimeMillis();
-    long minTimePast = Long.MAX_VALUE;
+    Long[] lastModifiedTargetMs = new Long[resFiles.length];
+    long currentTimeMs = System.currentTimeMillis();
+    long minTimePastMs = Long.MAX_VALUE;
+    Long modTimeOrNull;
     for (int idx = 0; idx < resFiles.length; idx++) {
       existsTarget[idx] = resFiles[idx].exists();
-      lastModifiedTarget[idx] = resFiles[idx].lastModified();
-      assert lastModifiedTarget[idx] <= currentTime;
-      // correct even if lastModifiedTarget[idx]==0 
-      minTimePast =
-          Math.min(minTimePast, currentTime - lastModifiedTarget[idx]);
+      if (existsTarget[idx]) {
+        // if modification time undetermined: null and emit warning WEX04 
+        modTimeOrNull = modTimeOrNull(resFiles[idx]);
+        lastModifiedTargetMs[idx] = modTimeOrNull;
+        if (modTimeOrNull == null) {
+          // Here, already a warning WEX04 has been emitted 
+          // also lastModifiedTargetMs[idx] == null 
+          continue;
+        }
+        assert modTimeOrNull <= currentTimeMs;
+        // correct even if lastModifiedTarget[idx]==0 
+        minTimePastMs = Math.min(minTimePastMs, currentTimeMs - modTimeOrNull);
+      }
     }
 
     // FIXME: this is based on a file system 
     // with modification time in steps of seconds, i.e. 1000ms 
-    if (minTimePast < 1001) {
+    if (minTimePastMs < 1001) {
       try {
         // 1001 is the minimal span of time to change modification time 
-        Thread.sleep(1001 - minTimePast);// for update control of target 
+        Thread.sleep(1001 - minTimePastMs);// for update control of target 
       } catch (InterruptedException ie) {
         this.log.warn("WEX05: Update control may emit false warnings. ");
       }
@@ -427,17 +457,39 @@ class CommandExecutor {
 
     // Proper execution 
     // may throw BuildFailureException TEX01, log warning EEX01 
-
     CmdResult res =
         execute(workingDir, pathToExecutable, command, checker, args);
 
     // may log EEX02, EEX03, WEX04 
     for (int idx = 0; idx < resFiles.length; idx++) {
       isUpdatedOrWarn(command, resFiles[idx], existsTarget[idx],
-          lastModifiedTarget[idx]);
+          lastModifiedTargetMs[idx]);
     }
 
     return res;
+  }
+
+  /**
+   * Returns the time of modification of this file or <code>null</code> if not readable. 
+   * 
+   * Warnings: WEX04
+   * 
+   * @param file
+   *    The file to be checked. 
+   * @return
+   *    the time of modification of this file or <code>null</code> if not readable. 
+   */
+  Long modTimeOrNull(File file) {
+    try {
+      // may throw IOException 
+      FileTime fTime =
+          Files.getLastModifiedTime(file.toPath(), LinkOption.NOFOLLOW_LINKS);
+      return fTime.to(TimeUnit.MILLISECONDS);
+    } catch (IOException ioe) {
+      this.log.warn("WEX04: Cannot read target file '" + file.getName()
+      + "'; may be outdated. ");
+      return null;
+    }
   }
 
   /**
@@ -462,11 +514,19 @@ class CommandExecutor {
     return true;
   }
 
-  // returns whether this method logged an error or a warning 
   // FIXME: return value nowhere used 
   /**
-   * @param command
-   *    the name of the program to be executed 
+   * Returns whether the file <code>target</code> could be checked to be updated 
+   * by the command named <code>command</code> and 
+   * emits a warning <code>EEX03</code> if it has not been updated. 
+   * It is invoked only by 
+   * {@link #execute(File, File, String, ReturnCodeChecker, String[], File[])} 
+   * after the command has been invoked. 
+   * The file <code>target</code> is updated if it exists and 
+   * either did not exist before according to <code>existedBefore</code> 
+   * or has a readable modification time 
+   * later than the former modification time <code>lastModifiedBefore</code> 
+   * which implies that this has been readable also, i.e. is not <code>null</code>. 
    *
    * Logging: 
    * <ul>
@@ -474,27 +534,46 @@ class CommandExecutor {
    * <li> EEX03: target file not updated 
    * <li> WEX04: cannot read target file 
    * </ul>
+   * 
+   * @param command
+   *    the name of the program to be executed 
+   * @param target
+   *    The file to be supervised. 
+   * @param existedBefore
+   *    Whether the file existed before invoking <code>command</code>. 
+   * @param lastModifiedBefore
+   *    The time of last modification before invoking <code>command</code> if known; 
+   *    else <code>null</code>. 
+   * @return
+   *    whether <code>target</code> has been updated. 
    */
   private boolean isUpdatedOrWarn(String command,
           File target,
           boolean existedBefore,
-          long lastModifiedBefore) {
+          Long lastModifiedBefore) {
+    // may emit EEX02
     if (!existsOrErr(command, target)) {
       return false;
     }
     assert target.exists();
     if (!existedBefore) {
+      // Here target was updated 
       return true;
     }
     assert existedBefore && target.exists();
 
-    long lastModifiedAfter = target.lastModified();
-    if (lastModifiedBefore == 0 || lastModifiedAfter == 0) {
-      this.log.warn("WEX04: Cannot read target file '" + target.getName()
-          + "'; may be outdated. ");
+    if (lastModifiedBefore == null) {
+      // Here, orignal modification time was not readable  
+      // warning already emitted 
       return false;
     }
-    assert lastModifiedBefore > 0 && lastModifiedAfter > 0;
+
+    // if modification time undetermined: null and emit warning WEX04 
+    Long lastModifiedAfter = modTimeOrNull(target);//target.lastModified();
+    if (lastModifiedAfter == null) {
+      // modification time not readable; warning already emitted 
+      return false;
+    }
 
     if (lastModifiedAfter <= lastModifiedBefore) {
       assert lastModifiedAfter == lastModifiedBefore;
