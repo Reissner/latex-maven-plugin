@@ -992,6 +992,10 @@ For combination pdf/eps with latex this is for sure the case.
 -->
 <!-- Fix: -->
 
+<!-- documentclasses: standalone, exam, moderncv, hitec, cd 
+https://tex.stackexchange.com/questions/782/what-are-the-available-documentclass-types-and-their-uses
+think whether minimal shall not be standalone? 
+-->
 
     <release version="2.0" date="2023-08-28" description="">
       <action dev='reissner' type='add'>
