@@ -1174,7 +1174,13 @@ is invoked or not compared to when it is absent.
 % that latexmk does not compile anything if all is up to date. %
 % touch --date=@1714338620 twoPagerArt.pdf where the number after @ is the epoch time in seconds 
 % date -d @1234567890 convert epoch time in seconds into human readable format 
-% stat -c%Z file returns epoch time of file in seconds 
+% date -d "Apr 29 2024" +%s convert human readable date into epoch time 
+% stat -c%Y file returns epoch time of file in seconds 
+% cp -p copy keeping the modification time 
+% latexmk -e '$chkDiffMagic=chkDiff' manualLMP to compile with diff 
+% latexmk -e '$programMagic=pdflatex' manualLMP to compile with pdflatex 
+% the latter two can be combined also 
+
 
 
 % this is only for goal pdf 
