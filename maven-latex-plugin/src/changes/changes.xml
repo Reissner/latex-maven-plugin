@@ -1018,6 +1018,12 @@ This shall not be preferred usage but a hot fix to get a TEX file declared as la
 a rework is needed when to do transition from File to Path class. 
 Currently it is mixed: Historically File, 
 and when needed Path which is generally superior. -->
+
+    <release version="2.1" date="2023-08-28" description="">
+      
+    </release>
+
+
     <release version="2.0" date="2023-08-28" description="">
       <action dev='reissner' type='add'>
         added several document classes to general usage: 
