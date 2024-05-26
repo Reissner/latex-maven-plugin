@@ -1024,6 +1024,12 @@ is really the modification time of the file,
 for testProgramLatexmk.pdf there is one day difference. 
 This is a bug. 
 The most likely reason is different counts in java and perl. -->
+<!-- Heavy bug: the test runs shall be configured with pom4pdf.xml 
+but it turns out this does not work. 
+There is no way to configure and it is needed. 
+So the workaround is to modify pom.xml so that it works roughly. 
+The details are in PdfMojoTest.java and the consequence for pom.xml is that chkDiff=true must be set -->
+
     <release version="2.1" date="2023-08-28" description="">
       
     </release>

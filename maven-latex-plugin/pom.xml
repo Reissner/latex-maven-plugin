@@ -1082,6 +1082,12 @@
             <!--pdfViaDvi>true</pdfViaDvi-->
             <cleanUp>false</cleanUp>
             <!--chkDiff>true</chkDiff-->
+            <!-- This is a hack: here it should be the default chkDiff=false, 
+              and only in pom4pdf.xml it shall be chkDiff=true, 
+              but this does not work properly. 
+              There is an according entry in the backlog in changes.xml 
+              and a more detailled description in PdfMojoTest.java -->
+            <chkDiff>true</chkDiff>
             <targets>chk,pdf,html</targets>
             <!--pdfViaDvi>true</pdfViaDvi-->
             <!--latexmkUsage>AsBackend</latexmkUsage-->
