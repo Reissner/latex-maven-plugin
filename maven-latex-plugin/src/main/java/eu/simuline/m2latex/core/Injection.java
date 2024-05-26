@@ -223,10 +223,6 @@ public enum Injection {
       return "%";
     }
 
-    boolean doFilter() {
-      return false;
-    }
-
     boolean hasShebang() {
       return false;
     }
