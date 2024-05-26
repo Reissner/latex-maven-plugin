@@ -1024,6 +1024,11 @@ is really the modification time of the file,
 for testProgramLatexmk.pdf there is one day difference. 
 This is a bug. 
 The most likely reason is different counts in java and perl. -->
+
+<!-- In LatexProcessor.create use file.lastModified() to find out the timestamp to run the build with. 
+This shall be something like CommandExecutor.modTimeOrNull 
+as is used for setting according modification time in target files. -->
+
 <!-- Heavy bug: the test runs shall be configured with pom4pdf.xml 
 but it turns out this does not work. 
 There is no way to configure and it is needed. 
