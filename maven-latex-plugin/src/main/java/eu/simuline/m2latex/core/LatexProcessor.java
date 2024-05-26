@@ -2609,6 +2609,14 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * This file contains the values of the parameters, finally. 
    * </ul>
    * 
+   * may log: 
+   * <ul>
+   * <li> WFU10: if the file has not been created by this software 
+   * <li> WFU11: if it cannot be ensured that the file has been created 
+   *      by this software </li>
+   *      or if the reader to read to decide cannot be closed. </li>
+   * </ul>
+   * 
    * @param injections
    *   define the files to be injected and how injection is done. 
    * @throws BuildFailureException
@@ -2619,7 +2627,10 @@ public class LatexProcessor extends AbstractLatexProcessor {
    *   by their actual values. 
    *   A reason may be that the template cannot be read 
    *   or its in-stream cannot be closed. </li>
-   *   <li> TMI01 if the stream to the template cannot be read. </li>
+   *   <li> TMI01: if the stream to the template cannot be read. </li>
+   *   <li> TMI01: if the stream to the according properties file 
+   *        could not be created </li>
+   *   <li> TMI02: if the properties could not be read. </li>
    *   </ul>
    */
   //      
@@ -2647,6 +2658,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
           // or if some error occurs when creating or opening for writing 
           PrintStream writer = new PrintStream(outFile);
           // may throw IOException: readline. 
+          // may throw TMI01, TMI02
           String version = this.metaInfo.getCoordinates().version;
           this.settings.filterInjection(inStream, writer, version, inj);
         }

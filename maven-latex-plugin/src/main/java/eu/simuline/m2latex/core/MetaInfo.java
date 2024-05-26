@@ -62,6 +62,8 @@ public class MetaInfo {
 	}
 
 	/**
+   * Returs properties read from the given file named <code>fileName</code>. 
+   * 
 	 * @param fileName
 	 *    an input stream to read from <code>fileName</code>. 
 	 * @return
@@ -76,7 +78,7 @@ public class MetaInfo {
 			throws BuildFailureException {
 		try {
 			Properties properties = new Properties();
-			// may throw TFU01
+			// may throw TMI01, also TFU01? 
 			properties.load(MetaInfo.getStream(fileName));
 			return properties;
 		} catch (IOException e) {
@@ -144,16 +146,17 @@ public class MetaInfo {
 		private final Attributes mAtts;
 
 		/**
-		 * Creates Manifest info instance 
+		 * Creates Manifest info instance. 
+     * 
 		 * @throws BuildFailureException
-		 *    TFU01: if the stream to the manifest file is not readable 
-		 *    TFU03: the manifest file is not readable although the stream is ok. 
+		 *    TMI01: if the stream to the manifest file is not readable 
+		 *    TMI03: the manifest file is not readable although the stream is ok. 
 		 */
 		ManifestInfo() throws BuildFailureException {
 
 			//System.out.println("MANIFEST: ");
 			try {
-				// getStream may throw TFU01
+				// getStream may throw TMI01
 				this.manifest = new Manifest(getStream(META_FOLDER + MANIFEST_FILE));
 			} catch (IOException e) {
 				throw new BuildFailureException(
@@ -843,6 +846,7 @@ public class MetaInfo {
 	 *           could not be created. </li>
 	 *    <li>TMI02: if the properties could not be read 
 	 *        from one of the two property files mentioned above. </li>
+   *    <li>TMI03: the manifest file is not readable although the stream is ok. </li>
 	 *    <li>TSS05: if converters are excluded in the pom which are not known. </li>
 	 *    </ul>
 	 */
@@ -852,6 +856,7 @@ public class MetaInfo {
 
 		String versionQuote = "";
 		if (includeVersionInfo) {
+      // may throw TMI01, TMI03
 			ManifestInfo manifestInfo = new ManifestInfo();
 			// TBC: how does maven determine that version?? 
 			//String versionMf = manifestInfo.getImplVersion();
