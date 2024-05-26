@@ -60,8 +60,9 @@ abstract class AbstractLatexMojo extends AbstractMojo
    * The target site directory of this maven project. 
    * Reinitializes {@link Settings#baseDirectory} via {@link #initialize()}. 
    */
+  // is adapted for tests in pom4pdf.xml 
   @Parameter(name = "targetSiteDirectory",
-      defaultValue = "${project.reporting.outputDirectory}", readonly = true)
+      defaultValue = "${project.reporting.outputDirectory}")//, readonly = true
   protected File targetSiteDirectory;
 
 
