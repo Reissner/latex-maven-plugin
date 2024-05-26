@@ -61,13 +61,14 @@ sub mylatex($fileName, @opts) {
   #print("args by latexmk: @args\n");
   my $latexCommand = "${latex2pdfCommand}";
   my $timeEnv = "";
+  my $epoch_timestamp;
   # diff either by settings or by magic comment 
-  my $chkDiffB = $boolStrToVal{'${chkDiff}'} or defined($chkDiffMagic);
+  my $chkDiffB = ($boolStrToVal{'${chkDiff}'} or defined($chkDiffMagic));
   if ($chkDiffB) {
     my $pdfFileOrg=catfile(getcwd, "$fileName.pdf");
     $pdfFileOrg =~ s/\Q$baseDirectory$texSrcDirectory//;
     my $pdfFileDiff = "$baseDirectory$diffDirectory$pdfFileOrg";
-    my $epoch_timestamp = (stat($pdfFileDiff))[9];# epoch time of last modification # TBD: avoid magic number 9 
+    $epoch_timestamp = int((stat($pdfFileDiff))[9]);# epoch time of last modification # TBD: avoid magic number 9 
     #print "epoch_timestamp: $epoch_timestamp";
     $timeEnv="SOURCE_DATE_EPOCH=$epoch_timestamp FORCE_SOURCE_DATE=1 ";
   }
