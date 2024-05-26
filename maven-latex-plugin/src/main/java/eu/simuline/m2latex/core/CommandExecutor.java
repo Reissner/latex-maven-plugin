@@ -679,6 +679,7 @@ class CommandExecutor {
         + "(" + this.timestampOpt.get()+ "ms)");
       // the epoch time in timeStampOpt is in ms, 
       // whereas in environment variable DATE_EPOCH it is in s 
+      // Note that division is implicitly rounded to 0 
       TIMESTAMP_ENV.put(DATE_EPOCH, Long.toString(this.timestampOpt.get()/1000));
       for (Map.Entry<String, String> entry : TIMESTAMP_ENV.entrySet()) {
         cl.addEnvironment(entry.getKey(), entry.getValue());
