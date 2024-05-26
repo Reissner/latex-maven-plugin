@@ -1219,6 +1219,8 @@ avoiding verbose output and backing up the output log-file. -->
             <latexmkOptions></latexmkOptions>
 
           </settings>
+          <!--injections>latexmkrc,chktexrc,header,headerGrp,headerSuppressMetaPDF</injections-->
+
         </configuration>
 
         <executions>
