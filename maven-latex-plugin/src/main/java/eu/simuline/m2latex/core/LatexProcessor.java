@@ -490,12 +490,20 @@ public class LatexProcessor extends AbstractLatexProcessor {
     }
   }
 
+  // TBD: rework documentation 
   /**
    * Returns whether the pdf file under construction 
    * is going to be checked whether an original is reproduced. 
-   * This is so if either {@link Settings#isChkDiff()} 
-   * requires that all such PDF files shall be checked 
-   * or <code>desc</code> requires an individual check for the given TEX file. 
+   * If the magic comment <code>% LMP chkDiff...</code> is set, 
+   * it takes precedence over {@link Settings#isChkDiff()} 
+   * which determines whether checks are performed 
+   * only if there is no magic comment. 
+   * The magic comment has two variants: 
+   * besides the one with boolean values, 
+   * also one without value which defaults to boolean true value. 
+   * <p>
+   * This applies to all kinds of compilation, 
+   * except for latexmk 
    * 
    * @param desc
    *   description of a TEX file. 
@@ -503,10 +511,20 @@ public class LatexProcessor extends AbstractLatexProcessor {
    *   whether {@link Settings#isChkDiff()} 
    *   or {@link LatexMainDesc#groupMatches(LatexMainParameterNames)} 
    *   applied to {@link LatexMainParameterNames#chkDiffMagic} is true. 
+   * @see #buildLatexmkArguments(Settings, LatexMainDesc)
    */
   private boolean isChkDiff(LatexMainDesc desc) {
-    return this.settings.isChkDiff()
-        || desc.groupMatches(LatexMainParameterNames.chkDiffMagic);
+    if (!desc.groupMatches(LatexMainParameterNames.chkDiffMagic)) {
+      return this.settings.isChkDiff();
+    }
+    // Here, the magic comment overrides the settings 
+    Optional<String> chkDiffValue = 
+    desc.groupMatch(LatexMainParameterNames.chkDiffMagicVal);
+    if (chkDiffValue.isEmpty()) {
+      // Here, no value is given so, the default is true \
+      return true;
+    }
+    return Boolean.parseBoolean(chkDiffValue.get());
   }
 
   // TBD: rework 
@@ -2042,7 +2060,13 @@ public class LatexProcessor extends AbstractLatexProcessor {
         desc.groupMatch(LatexMainParameterNames.chkDiffMagic);
     if (chkDiffMagic.isPresent()) {
       addArgs.add("-e");
-      addArgs.add("$chkDiffMagic=q/" + chkDiffMagic.get() + "/");
+      // isChkDiff implements the same except for latexmk 
+      Optional<String> chkDiffMagicValue =
+      desc.groupMatch(LatexMainParameterNames.chkDiffMagicVal);
+      String chkDiffMagicValueStr = chkDiffMagicValue.isPresent()
+      ? chkDiffMagic.get() 
+      : Boolean.TRUE.toString();// default=true if value not present 
+      addArgs.add("$chkDiffMagic=q/" + chkDiffMagicValueStr + "/");
     }
 
     // create arguments, both from settings and 

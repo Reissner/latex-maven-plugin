@@ -20,8 +20,18 @@ public enum LatexMainParameterNames {
    * as described for {@link Settings#chkDiff}. 
    * Essentially, this overwrites the settings in the pom 
    * for individual latex main files. 
+   * This magic comment can be given in conjunction with a Boolean value 
+   * which is captured by group {@link #chkDiffMagicVal}, 
+   * or without an explicit value in which case it defaults to <code>true</code>. 
    */
   chkDiffMagic,
+
+  /**
+   * The name of the capturing group capturing the boolean value 
+   * for check described for {@link #chkDiffMagic}. 
+   * Note that the value is optional and defaults to <code>true</code>. 
+   */
+  chkDiffMagicVal,
 
   /**
    * The name of the capturing group 

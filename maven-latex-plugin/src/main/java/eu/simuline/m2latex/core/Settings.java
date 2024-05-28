@@ -301,7 +301,7 @@ public class Settings {
   (%\\s*!\\s*T[eE]X (TXS|spellcheck|encoding|root).*\\R)*\
   (%\\s*!\\s*T[eE]X program\\s*=\\s*(?<programMagic>[^} ]+)\\R)?\
   (%\\s*!\\s*T[eE]X .*\\R)*\
-  (%\\s*!\\s*LMP (?<chkDiffMagic>chkDiff)\\R)?\
+  (%\\s*!\\s*LMP (?<chkDiffMagic>chkDiff)(=(?<chkDiffMagicVal>true|false))?\\R)?\
   (%\\s*!\\s*LMP (?<latexmkMagic>latexmk)\\R)?\
   (%\\s*!\\s*LMP targets=(?<targetsMagic>(\\p{Lower}|,)+)\\R)?\
   (\\s*(\

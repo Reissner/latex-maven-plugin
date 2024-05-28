@@ -63,7 +63,9 @@ sub mylatex($fileName, @opts) {
   my $timeEnv = "";
   my $epoch_timestamp;
   # diff either by settings or by magic comment 
-  my $chkDiffB = ($boolStrToVal{'${chkDiff}'} or defined($chkDiffMagic));
+  #my $chkDiffB = ($boolStrToVal{'${chkDiff}'} or defined($chkDiffMagic));
+  my $chkDiffB = (defined($chkDiffMagic) ? $chkDiffMagic : "${chkDiff}");
+  $chkDiffB = $boolStrToVal{$chkDiffB};
   if ($chkDiffB) {
     my $pdfFileOrg=catfile(getcwd, "$fileName.pdf");
     $pdfFileOrg =~ s/\Q$baseDirectory$texSrcDirectory//;

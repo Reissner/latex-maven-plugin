@@ -555,13 +555,15 @@ the magic comments are all optional, i.e. they need not match any part of the st
   given in Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen} 
   may specify direct compilation 
   without \texttt{latexmk}. 
-  \item[chkDiffMagic]
+  \item[chkDiffMagic,chkDiffMagicVal]
   whether the \emph{created PDF file} shall be checked against an original 
   ensuring that it is correctly reproduced. 
-  This is intended to trigger check specific for this file 
-  although the general setting \texttt{chkDiff} 
-  given in Table~\ref{tab:paramDiffPdf} on page~\pageref{tab:paramDiffPdf} 
-  specifies no check for all files. 
+  This is intended to control a check specific for this file 
+  overwriting the general setting \texttt{chkDiff} 
+  given in Table~\ref{tab:paramDiffPdf} on page~\pageref{tab:paramDiffPdf}. 
+
+  The magic comment can take the form \texttt{\% LMP chkDiff=<bool>} 
+  or \texttt{\% LMP chkDiff} which is just short for \texttt{\% LMP chkDiff=true}. 
 \end{description}
 
 The default pattern for identifying \LaTeX{} main files 
@@ -583,7 +585,7 @@ caption={The default pattern of the latex main file in a form as in a pom config
   % (%\s*!\s*T[eE]X (TXS|spellcheck|encoding|root).*\R)*
   % (%\s*!\s*T[eE]X program\s*=\s*(?&lt;programMagic&gt;[^} ]+)\R)?
   % (%\s*!\s*T[eE]X .*\R)*
-  % (%\s*!\s*LMP (?&lt;chkDiffMagic&gt;chkDiff)\R)?
+  % (%\s*!\s*LMP (?&lt;chkDiffMagic&gt;chkDiff)(=(?&lt;chkDiffMagicVal&gt;true|false))?\R)?
   % (%\s*!\s*LMP (?&lt;latexmkMagic&gt;latexmk)\R)?
   % (%\s*!\s*LMP targets=(?&lt;targetsMagic&gt;(\p{Lower}|,)+)\R)?
   % (\s*(
@@ -614,11 +616,18 @@ Let us trace through line by line:
   These lines match magic comments of the form \texttt{\%~!LMP\dots} 
   which are specific for this software. 
   Like the above magic comments they are all optional, 
-  but their ordering is fixed: First directive \texttt{chkDiffMagic} 
-  to activate diffing to check reproduction, then \texttt{latexmkMagic} 
-  to delegate build to \texttt{latexmk}. 
-  Both apply to creating PDF files only. 
-  Finally \texttt{targetsMagic} allows to specify a list of targets. 
+  but their ordering is fixed: 
+  %
+ \begin{description}
+  \item[\texttt{chkDiffMagic}]
+  to activate diffing to check reproduction,
+  or in conjunction with \texttt{chkDiffMagicVal} to switch reproduction check.
+  \item[\texttt{latexmkMagic}]
+  to delegate build to \texttt{latexmk}.
+  \item[\texttt{targetsMagic}] 
+  allows to specify a list of targets.
+  This is the sole of these magic comments not only applying to creating PDF files.
+\end{description}
   %  It defines optionally \texttt{docClassMagic} and 
   \item[8--11]
   This defines material which may precede the command \cmd{documentclass}, 
