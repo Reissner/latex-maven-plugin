@@ -1151,12 +1151,13 @@ So there are strong reasons to avoid \texttt{latexmk},
 but there are also reasons to allow in special cases. 
 The parameter \texttt{\$latexmkUsage} described in Table~\ref{tab:paramGen} 
 on page \pageref{tab:paramGen} allows gradually use of \texttt{latexmk}, 
-not at all, fully or as backend creating graphic files a priori. 
+not at all, fully or as backend where \texttt{latexmk} is invoked 
+after graphic files have been created with an internal process. 
 As a rule, \texttt{latexmk} shall be used as much as required and as little as possible. 
 
 This shows also that it is a good thing 
-to be able to activate \texttt{latexmk} in individual \LaTeX{} main files. 
-In the next version, this is realized with magic comments. 
+to be able to activate \texttt{latexmk} in individual \LaTeX{} main files 
+which is realized with magic comments. % TBD: reference 
 XXXXXX Reference to according section required. XXXXXXXX 
 Whereas \texttt{\$latexmkUsage} allows three levels of usage, 
 the magic comment can choose to use \texttt{latexmk} or not. 
@@ -1165,6 +1166,17 @@ The graphic files are preprocessed except if \texttt{\$latexmkUsage} is set to \
 The magic comment results in a warning 
 if it does not change whether \texttt{latexmk} 
 is invoked or not compared to when it is absent. 
+% TBD: this must change: magic comments overwrite the setings, this is a general rule. 
+
+% further motivations for integrating latexmk in this builder, in particular for individual files: 
+% there are cases where the build process of latexmk works, 
+% but not the internal build process of this builder. 
+% Integrating latexmk offers the strengths of latexmk. 
+% Note that there are also cases where the builtin build process of this builder is mightier than that of latexmk. 
+% Another reason for integrating latexmk here is the use case of source distribution: 
+% The document(s) may be passed to someone as the source, not as a target, like PDF. 
+% It is not clear that the 'customer' uses this latex builder, but maybe (s)he uses latexmk. 
+% In this case it makes sense to check, whether the document can be built with latexmk alone. 
 
 % special: latexmk does not update pdf regularly provoking EEX03 false positive 
 % We must find a way to prevent this. 

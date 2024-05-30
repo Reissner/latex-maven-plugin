@@ -1642,22 +1642,23 @@ Let us collect the challenges.
 The document may contain graphic files which must be precompiled by further tools 
 which must be invoked a priori on the console. 
 For FIG files this is \texttt{fig2dev}. 
-This must be repeated as soon as a FIG file changes. 
-% This invocation must be repeated as soon as a FIG file changes\footnote%
-% {Typically this triggers a sequence of invocations of converters 
-% along files one depending on the other. }. 
+This invocation must be repeated as soon as a FIG file changes\footnote%
+{Typically this triggers a sequence of invocations of converters 
+along files one depending on the other. }. 
 
 Then a latex converter like \lualatex{} must be invoked. 
 Typically, the latex converter must be invoked more than once 
 and besides the latex converter 
 some further auxiliary programs like \texttt{makeindex} must be run. 
-What to do is displayed on the console. 
-% Normally after invocation of an auxiliary program, 
-% the latex converter must be rerun at least once. 
+The console displays indications to the user what action take next. 
+Normally after invocation of an auxiliary program, 
+the latex converter must be rerun at least once. 
 Each of the programs may fail. 
 Most of the programs write success messages and more detailed information 
 containing error messages, warnings or just information messages 
 on the console and in their respective log files. 
+Potentially, these influence the actions the user must take next. 
+\smallskip
 
 What is needed is a tool for orchestration\index{orchestration} of the basic tools: 
 Orchestration means invoking more basic tools in a reasonable order 
@@ -1677,7 +1678,7 @@ If something goes wrong, and it is not clear what,
 it is typically a good idea to fall back to the more basic tools. 
 A great point with \texttt{latexmk} is, that this is possible without any problem, 
 and it is as simple to switch back from basic tools to \texttt{latexmk}. 
-This is what we mean when we say, that \texttt{latexmk} integrates the basic tools. 
+This is what we mean saying that \texttt{latexmk} \emph{integrates} the basic tools. 
 
 The best way to invoke \texttt{latexmk} for document development is 
 %
@@ -1688,11 +1689,11 @@ The best way to invoke \texttt{latexmk} for document development is
 According to~\cite{LatexMk23}, Section ``DESCRIPTION'', 
 the option \texttt{-pvc} is shorthand for ``preview continuously'' a kind of nonstop mode: 
 The PDF file, or whatsoever is created, 
-then a viewer is opened 
-%in the background 
+then a viewer is opened in the background 
 if not yet open 
 and then \texttt{latexmk} monitors changes of dependencies 
-and triggers a rebuild each time a change is detected. 
+and triggers a rebuild each time a change is detected 
+performing a proper sequence of invocations of latex converters and auxiliary tools. 
 Note that \texttt{latexmk} does not stop after finishing a compilation, 
 whether successful or not. 
 Instead, it awaits a change of a source file which triggers a new run of some basic tool 
@@ -1717,8 +1718,7 @@ before using the basic tools.
 
 
 
-Let us discuss the differences with this latex plugin: 
-%Let us discuss the differences between \texttt{latexmk} and this latex plugin: 
+Let us discuss the differences between \texttt{latexmk} and this latex plugin: 
 First, the plugin runs within a maven process which introduces a lot of overhead. 
 So this cannot be as fast as \texttt{latexmk} is. 
 In addition, a maven plugin cannot open a viewer. 
@@ -1729,7 +1729,8 @@ The latter properties which are disadvantages in the context of document develop
 can be overcome, by specifying a single target in the setting \texttt{targets} 
 or by invoking goals with a single target, e.g.\@ by \texttt{mvn latex:pdf} 
 and to restrict to building a subset of files and if needed a single latex main file
-with the settings \texttt{mainFilesExcluded} or \texttt{mainFilesIncluded}. 
+with the settings \texttt{mainFilesExcluded} or \texttt{mainFilesIncluded} 
+described in Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen}. 
 
 Another difference is, that by default, the plugin cleans up the folder with the TEX sources, 
 and only the resulting file, e.g.\@ PDF is copied to the target folder before cleanup. 
@@ -1741,8 +1742,8 @@ Still if a file is interesting it may be created by touch or by some basic latex
 as \lualatex{} or \texttt{makeindex} 
 and then a build done by this plugin will pertain the file updated by the build process. 
 For document development, 
-the parameter \texttt{cleanUp}, which is \texttt{true} by default, 
-can be set to \texttt{false} 
+the parameter \texttt{cleanUp}, also described in Table~\ref{tab:paramGen}, 
+which is \texttt{true} by default, can be set to \texttt{false} 
 so that no file in the latex directory is deleted. 
 
 So, it is clear that this plugin is for final global build with a lot of supervision 
@@ -1762,29 +1763,32 @@ according to Section~\ref{subsec:latChkRc}.
 Note that this feature is just offered, 
 but the user may also use his/her own file \texttt{.latexmkrc}. 
 
-There is a difference in the build process concerning mostly graphic files: 
-% Although the results shall be the same, 
-% there is a difference in the build process concerning mostly graphic files: 
+Based on injection of \texttt{.latexmkrc}, this plugin may even use \texttt{latexmk} 
+as a means to build bypassing its internal build rules. 
+For motivation of this feature and for details in implementation see Section~\ref{sec:latexmk}. 
+
+There is a difference in the build processes (except if this plugin uses \texttt{latexmk}) 
+concerning mostly graphic files: 
 \texttt{latexmk} detects dependencies via the \texttt{-recorder} option of the latex generator 
 and creates or recreated what is new or changed. 
 This is more elegant than the idea of this plugin 
-which is based on detecting hard coded set of files 
-and tracing log files. 
-% replace 
-If there are a lot of graphic files 
-\texttt{latexmk} may be forced to run the latex generator frequently, 
-whereas this plugin first creates all graphic files and then invokes the latex generator. 
-Nevertheless, the results shall be the same. 
-In the long run, it is planned that this plugin is enabled to build using \texttt{latexmk}. 
-% On the other hand, if a lot of graphic files are present, 
-% \texttt{latexmk} is forced to run the latex generator frequently, 
-% interrupting the generator run for each graphic files to be generated, 
-% generating the graphic file and rerunning. 
-% In contrast, this plugin first creates all graphic files and then invokes the latex generator. 
-% Encapsulating graphic files into \cmd{IfFileExists} is not really elegant but prevents \texttt{latexmk} from frequent reruns. 
-% The \LaTeX{} sources of this manual use \cmd{IfFileExists} for a listing of a generated graphic file. 
-% Unlike for inclusion of graphic files for being interpreted, in case of a listing \cmd{IfFileExists} is mandatory 
-% and not only a means to speed up build with  \texttt{latexmk}. 
+which is creates a fixed set of graphic files first 
+and is from that pointon based on detecting hard coded set of files and tracing log files. 
+Nevertheless, to deal with graphic files which are to be created in the course of the build, 
+\texttt{latexmk} runs the latex converter in \texttt{nonstopmode} mode. 
+Still, the converter run is interrupted, a single graphic file is created according to some rule 
+and then the converter is rerun. 
+For a document with 10 graphic files to be created in the course of the build, 
+for \texttt{latexmk} only the 10th runs of the converter is completed. 
+In contrast, this plugin requires a single run, so performance is significantly better. 
+The use of \cmd{IfFileExists} is not really elegant but prevents \texttt{latexmk} from frequent reruns 
+and in some cases is a technique to make the build process with \texttt{latexmk} work. 
+One of these cases, related with using \pkg{listings} is discussed below in this section. 
+
+More general, there are cases, where this latex builder succeeds but \texttt{latexmk} does not. 
+As this latex builder may invoke \texttt{latexmk} either in general or for selected files, 
+this latex builder is mightier than \texttt{latexmk}. 
+If both approaches succeed, the results shall be the same for this plugin and for \texttt{latexmk}. 
 
 It is possible to combine this plugin with \texttt{latexmk} to speed up \texttt{latexmk}: 
 %
@@ -1808,18 +1812,11 @@ see Section~\ref{subsec:develGraph},
 Section~\ref{sec:injFiles} is on file injection and 
 goal \texttt{clr} to clear created files is 
 described in Section~\ref{subsec:develClear}. 
-
-
-A valuable standalone build tool is \texttt{latexmk}. 
-It can even run in background. 
-This manual can also be compiled with \texttt{latexmk} 
-but only with adapted configuration file \texttt{.latexmkrc}. 
-For details see Section~\ref{sec:xmlPom}. 
 \medskip
 
 
 
-Finally, we show how this plugin may support \texttt{latexmk}. 
+Finally, we show how this plugin may support \texttt{latexmk} where. 
 To understand in which sense, one must dive very deep. 
 In short, injection of a header patches package \pkg{listings} 
 in a way that saves performance of \texttt{latexmk}. 
@@ -1833,15 +1830,12 @@ Then the file is created using the appropriate rule (hopefully unique)
 and the converter is run again, 
 this time passing the inclusion of the first created files 
 failing at the next one. 
-This goes on that way until the last included file is created. 
-Then the latex converter runs through without failure caused by missing files. 
-
-There are two problems with this: 
-This yields a huge number of runs for the converter 
-which is time-consuming 
-and there is at least one kind of inclusion which does not work that way: 
+To find out that another rule is needed, \texttt{latexmk} parses the LOG file of the latex compiler. 
+As the packages write log messages in their own style, 
+this is the point where the solution is no longer generic 
+and so it is no wonder that there is at least one kind of inclusion which does not work that way: 
 inclusion with \cmd{lstinputlisting} provided by \pkg{listings}. 
-In fact, i have an email from J.~Hoffmann, author of \pkg{listings} 
+In fact, the author has an email from J.~Hoffmann, author of \pkg{listings} 
 telling that there are more packages with the same problem. 
 To be checked: \pkg{fancyvrb} and \pkg{moreverb}. 
 Nevertheless, all other ways of inclusion \emph{used by this manual} 
