@@ -119,14 +119,14 @@
 % don't work inside an argument as discussed in  
 % https://tex.stackexchange.com/questions/719158/
 % does-ifpackageloadedtf-neutralize-xpatch
-\newif\iflistingsloaded
+\newif\iflistingsloaded%
 \IfPackageLoadedTF{listings}{%
-  \listingsloadedtrue
+  \listingsloadedtrue%
 }{%
-  \listingsloadedfalse
+  \listingsloadedfalse%
 }
 
-\iflistingsloaded
+\iflistingsloaded%
   \renewcommand{\lstlistoflistings}{\begingroup
   %\tocsection
   %\tocchapter
