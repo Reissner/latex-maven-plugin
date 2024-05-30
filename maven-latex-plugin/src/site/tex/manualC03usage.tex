@@ -944,11 +944,11 @@ according to the function of the files injected:
 %
 \begin{itemize}
   \item
-  Configuration files for \texttt{latexmk} and \texttt{chktex}. 
+  Configuration files for \tool{latexmk} and \texttt{chktex}. 
   These are hidden files and form the default. 
-  In particular, the configuration file of \texttt{latexmk} 
+  In particular, the configuration file of \tool{latexmk} 
   is adapted to the configuration of this plugin, 
-  to ensure that the results are the same whether created by \texttt{latexmk} 
+  to ensure that the results are the same whether created by \tool{latexmk} 
   or by this plugin. 
   \item
   Header files are intended to be included in TEX files. 
@@ -989,7 +989,7 @@ representing the configuration files.
   \endlastfoot%
   \multicolumn{2}{l}{configuration files} \\
   \midrule
-  latexmkrc             & \texttt{\footnotesize .latexmkrc}        & config file for \texttt{latexmk} \\% chktex 26
+  latexmkrc             & \texttt{\footnotesize .latexmkrc}        & config file for \tool{latexmk} \\% chktex 26
   chktexrc              & \texttt{\footnotesize .chktexrc}         & config file for \texttt{chktex}  \\% chktex 26
   \midrule
   \multicolumn{2}{l}{header files} \\
@@ -1062,24 +1062,24 @@ Now let us treat the injections individually.
 
 \subsection{The configuration files \texttt{.latexmkrc} and \texttt{.chktexrc}}\label{subsec:latChkRc}
 
-For document development the tool \texttt{latexmk} is a valuable build tool. 
+For document development the tool \tool{latexmk} is a valuable build tool. 
 Also, a linter like \texttt{chktex} is helpful 
 both for end control and for document development. 
 
 The file \href{\urlSite fromTex/.latexmkrc}{.latexmkrc} tied to the injection \texttt{latexmkrc} 
-is the configuration file for the build tool \texttt{latexmk} 
+is the configuration file for the build tool \tool{latexmk} 
 and likewise \href{\urlSite fromTex/.chktexrc}{.chktexrc} tied to the injection \texttt{chktexrc} 
 is the configuration file for the style check tool \texttt{chktex}. 
 The configuration files determine the behavior of the two tools without further options. 
 The user is kindly asked to help to improve these files, in particular \texttt{.chktexrc}. 
 
 Ideally, the injected \texttt{.latexmkrc} is adapted to the current settings of this plugin 
-and so invoking \texttt{latexmk} invoked with its configuration file 
+and so invoking \tool{latexmk} invoked with its configuration file 
 behaves like this latex plugin. 
 Currently, not all possible settings of this plugin 
 are taken into account in the \texttt{.latexmkrc}. 
 Nevertheless, for the default settings, 
-this maven plugin and \texttt{latexmk} create the same PDF files. 
+this maven plugin and \tool{latexmk} create the same PDF files. 
 
 At time of this writing, \texttt{.latexmkrc} works for various \LaTeX{} generators 
 but is only usable to create PDF files. 
@@ -1089,12 +1089,12 @@ In Section~\ref{subsec:header} we suggest injecting also a header file \texttt{h
 loading packages. 
 The config file \texttt{.chktexrc} is adapted to the header file \texttt{header.tex}. 
 
-Observe, that due to an incompatibility between tool \texttt{latexmk} and package \pkg{listings}, 
-this manual can only be compiled with \texttt{latexmk} 
+Observe, that due to an incompatibility between tool \tool{latexmk} and package \pkg{listings}, 
+this manual can only be compiled with \tool{latexmk} 
 if \pkg{listings} is not only loaded but also patched 
 as done by \texttt{header.tex} and described in Section~\ref{subsec:header}. 
 With that patch, this software yields the same resulting PDF file 
-as compilation with \texttt{latexmk}. 
+as compilation with \tool{latexmk}. 
 
 Currently, \texttt{.chktexrc} serves only to suppress warnings, 
 mainly on material which is the argument of commands or the content of an environment. 
@@ -1118,7 +1118,7 @@ also \texttt{header.tex}.
 
 
 As described in Sections~\ref{subsec:develLatexmk} and~\ref{subsec:develCheck}, 
-both tools \texttt{chktex} and \texttt{latexmk} 
+both tools \texttt{chktex} and \tool{latexmk} 
 are invoked directly by the user in the course of document development, 
 but they may be invoked by this \LaTeX{} builder in the course of a regular build, 
 i.e.\@ for maven goal \texttt{cfg} also. 
@@ -1167,14 +1167,14 @@ the configuration files \texttt{.latexmkrc} and \texttt{.chktexrc} are sufficien
 It is important that there is a unique central configuration file 
 applying to all latex main files. 
 There is the choice between at least two mechanisms to ensure this: 
-Either \texttt{latexmk} and \texttt{chktex} 
+Either \tool{latexmk} and \texttt{chktex} 
 are invoked with options \texttt{-r} and \texttt{-l}, respectively, 
 specifying the configuration file explicitly 
 or for each folder containing a latex main file 
 there must be a link named \texttt{.latexmkrc} and \texttt{.chktexrc}, respectively, 
 to the according central configuration file. 
 
-We recommend using links because then \texttt{latexmk} and \texttt{chktex} 
+We recommend using links because then \tool{latexmk} and \texttt{chktex} 
 can be used on the command line without further options. 
 This is convenient for the user when invoking the tools directly 
 which is the typical usage for document development. 
@@ -1207,7 +1207,7 @@ It applies only if \pkg{listings} is loaded prior input of \texttt{header.tex}.
 One modification is, redefinition of \cmd{lstlistoflistings} 
 to make the list of listings occur in the table of contents 
 and to rename the title so that it fits other lists as the list of figures.  
-The other point is modifying \pkg{listings}' output to make it digestible for \texttt{latexmk}. 
+The other point is modifying \pkg{listings}' output to make it digestible for \tool{latexmk}. 
 For details see Section~\ref{subsec:develLatexmk}. 
 
 \lstinputlisting[linerange={119-156},
@@ -1373,7 +1373,7 @@ which is just Perl code,
 into VS Code, one can see the highlighting, 
 of course provided the extensions given by \texttt{instVScode4tex.sh} are installed; 
 The configuration file \texttt{.latexmkrc} 
-for the development tool \texttt{latexmk} is in fact a Perl script. 
+for the development tool \tool{latexmk} is in fact a Perl script. 
 
 
 \subsection{Scripts in conjunction with reproducibility }\label{subsec:ntlatexVmdiff}
@@ -1521,7 +1521,7 @@ As described above, using this basic tools directly
 distracts much of the attention of the author/developer 
 from the content. 
 Thus, it is a good idea to use a tool to orchestrate the \LaTeX{} tools. 
-The author of this software prefers the orchestration tool \texttt{latexmk} 
+The author of this software prefers the orchestration tool \tool{latexmk} 
 which is described in Section~\ref{subsec:develLatexmk}. 
 
 The check tool \texttt{chktex} and the according goal \texttt{chk} 
@@ -1556,9 +1556,9 @@ one, \ltex{} is a spell and grammar checker,
 but the central extension is \texttt{james-yu.latex-workshop} 
 which also provides build functionality. 
 Among the build ``recipies'' is \texttt{latexmk (latexmkrc)} 
-which is recommended because it integrates well with build tool \texttt{latexmk} 
+which is recommended because it integrates well with build tool \tool{latexmk} 
 described in Section~\ref{subsec:develLatexmk} 
-in a way which integrates \texttt{latexmk} well with this \LaTeX{} builder. 
+in a way which integrates \tool{latexmk} well with this \LaTeX{} builder. 
 Note that \LaTeX{} Workshop also offers a command ``clean up'', 
 corresponding with goal \texttt{clr} of this software 
 which is described in more detail in Section~\ref{subsec:develClear}
@@ -1635,7 +1635,7 @@ insofar as the goal \texttt{clr} described in Section~\ref{subsec:develClear}
 eliminates additional AUX files tied to included sections. 
 
 
-\subsection{The build tool \texttt{latexmk}}\label{subsec:develLatexmk}
+\subsection{The build tool \tool{latexmk}}\label{subsec:develLatexmk}
 
 Essentially, it is possible to compile latex files only with editor, viewer and a console. 
 Let us collect the challenges. 
@@ -1671,16 +1671,16 @@ Also, an orchestration tool detects if a build fails
 or ideally even if a warning indicates 
 that the result is not correct or maybe only not ideal. 
 
-There is a tool doing this work, \texttt{latexmk}, 
+There is a tool doing this work, \tool{latexmk}, 
 except that it does not care about warnings. 
 
 If something goes wrong, and it is not clear what, 
 it is typically a good idea to fall back to the more basic tools. 
-A great point with \texttt{latexmk} is, that this is possible without any problem, 
-and it is as simple to switch back from basic tools to \texttt{latexmk}. 
-This is what we mean saying that \texttt{latexmk} \emph{integrates} the basic tools. 
+A great point with \tool{latexmk} is, that this is possible without any problem, 
+and it is as simple to switch back from basic tools to \tool{latexmk}. 
+This is what we mean saying that \tool{latexmk} \emph{integrates} the basic tools. 
 
-The best way to invoke \texttt{latexmk} for document development is 
+The best way to invoke \tool{latexmk} for document development is 
 %
 \begin{Verbatim}
   latexmk -pvc latexFile
@@ -1691,23 +1691,23 @@ the option \texttt{-pvc} is shorthand for ``preview continuously'' a kind of non
 The PDF file, or whatsoever is created, 
 then a viewer is opened in the background 
 if not yet open 
-and then \texttt{latexmk} monitors changes of dependencies 
+and then \tool{latexmk} monitors changes of dependencies 
 and triggers a rebuild each time a change is detected 
 performing a proper sequence of invocations of latex converters and auxiliary tools. 
-Note that \texttt{latexmk} does not stop after finishing a compilation, 
+Note that \tool{latexmk} does not stop after finishing a compilation, 
 whether successful or not. 
 Instead, it awaits a change of a source file which triggers a new run of some basic tool 
 until interrupted by the user. 
 The option \texttt{-pvc} is described in more detail 
 in~\cite{LatexMk23}, Section ``LATEXMK OPTIONS AND ARGUMENTS ON COMMAND LINE''. 
 One detail to be added, mentioned in~\cite{LatexMk23}, Section ``DESCRIPTION'', is, 
-that \texttt{latexmk} detects dependencies 
+that \tool{latexmk} detects dependencies 
 based on the FLS file written by the latex converter 
 when invoked with the \texttt{-recorder} option. 
 
 A small fallback step advisable if something goes wrong 
-is to interrupt continuous viewing and to invoke \texttt{latexmk} without options. 
-Then \texttt{latexmk} performs a single build and finishes; no viewer is opened. 
+is to interrupt continuous viewing and to invoke \tool{latexmk} without options. 
+Then \tool{latexmk} performs a single build and finishes; no viewer is opened. 
 This may help in understanding the problem, 
 but in general, it is advisable to go back to basic tools like \lualatex. 
 To understand the build process from scratch, 
@@ -1718,9 +1718,9 @@ before using the basic tools.
 
 
 
-Let us discuss the differences between \texttt{latexmk} and this latex plugin: 
+Let us discuss the differences between \tool{latexmk} and this latex plugin: 
 First, the plugin runs within a maven process which introduces a lot of overhead. 
-So this cannot be as fast as \texttt{latexmk} is. 
+So this cannot be as fast as \tool{latexmk} is. 
 In addition, a maven plugin cannot open a viewer. 
 Moreover, the plugin is designed to build all latex main files %in a project 
 and not to focus on a single one. 
@@ -1749,59 +1749,59 @@ so that no file in the latex directory is deleted.
 So, it is clear that this plugin is for final global build with a lot of supervision 
 sensitive to detecting caveats. 
 To overcome these, further development of the document is necessary, 
-which is better done individually on the problematic document with \texttt{latexmk}. 
-In a sense \texttt{latexmk} is the fallback to this maven plugin 
-as much as \lualatex{} is the fallback to \texttt{latexmk}. 
+which is better done individually on the problematic document with \tool{latexmk}. 
+In a sense \tool{latexmk} is the fallback to this maven plugin 
+as much as \lualatex{} is the fallback to \tool{latexmk}. 
 
-To make this work, this plugin must integrate \texttt{latexmk} 
-as \texttt{latexmk} integrates \lualatex{}. 
+To make this work, this plugin must integrate \tool{latexmk} 
+as \tool{latexmk} integrates \lualatex{}. 
 This is guaranteed, if this plugin can write a config file \texttt{.latexmkrc} 
-which causes \texttt{latexmk} to behave like this plugin. 
+which causes \tool{latexmk} to behave like this plugin. 
 This is exactly what injection of \texttt{.latexmkrc} is intended to do 
 according to Section~\ref{subsec:latChkRc}. 
 % TBD: in fact, this is not fully reached. 
 Note that this feature is just offered, 
 but the user may also use his/her own file \texttt{.latexmkrc}. 
 
-Based on injection of \texttt{.latexmkrc}, this plugin may even use \texttt{latexmk} 
+Based on injection of \texttt{.latexmkrc}, this plugin may even use \tool{latexmk} 
 as a means to build bypassing its internal build rules. 
 For motivation of this feature and for details in implementation see Section~\ref{sec:latexmk}. 
 
-There is a difference in the build processes (except if this plugin uses \texttt{latexmk}) 
+There is a difference in the build processes (except if this plugin uses \tool{latexmk}) 
 concerning mostly graphic files: 
-\texttt{latexmk} detects dependencies via the \texttt{-recorder} option of the latex generator 
+\tool{latexmk} detects dependencies via the \texttt{-recorder} option of the latex generator 
 and creates or recreated what is new or changed. 
 This is more elegant than the idea of this plugin 
 which is creates a fixed set of graphic files first 
 and is from that pointon based on detecting hard coded set of files and tracing log files. 
 Nevertheless, to deal with graphic files which are to be created in the course of the build, 
-\texttt{latexmk} runs the latex converter in \texttt{nonstopmode} mode. 
+\tool{latexmk} runs the latex converter in \texttt{nonstopmode} mode. 
 Still, the converter run is interrupted, a single graphic file is created according to some rule 
 and then the converter is rerun. 
 For a document with 10 graphic files to be created in the course of the build, 
-for \texttt{latexmk} only the 10th runs of the converter is completed. 
+for \tool{latexmk} only the 10th runs of the converter is completed. 
 In contrast, this plugin requires a single run, so performance is significantly better. 
-The use of \cmd{IfFileExists} is not really elegant but prevents \texttt{latexmk} from frequent reruns 
-and in some cases is a technique to make the build process with \texttt{latexmk} work. 
+The use of \cmd{IfFileExists} is not really elegant but prevents \tool{latexmk} from frequent reruns 
+and in some cases is a technique to make the build process with \tool{latexmk} work. 
 One of these cases, related with using \pkg{listings} is discussed below in this section. 
 
-More general, there are cases, where this latex builder succeeds but \texttt{latexmk} does not. 
-As this latex builder may invoke \texttt{latexmk} either in general or for selected files, 
-this latex builder is mightier than \texttt{latexmk}. 
-If both approaches succeed, the results shall be the same for this plugin and for \texttt{latexmk}. 
+More general, there are cases, where this latex builder succeeds but \tool{latexmk} does not. 
+As this latex builder may invoke \tool{latexmk} either in general or for selected files, 
+this latex builder is mightier than \tool{latexmk}. 
+If both approaches succeed, the results shall be the same for this plugin and for \tool{latexmk}. 
 
-It is possible to combine this plugin with \texttt{latexmk} to speed up \texttt{latexmk}: 
+It is possible to combine this plugin with \tool{latexmk} to speed up \tool{latexmk}: 
 %
 \begin{Verbatim}
   mvn clean validate latex:grp
 \end{Verbatim}
 %
 cleans like \texttt{latexmk -C} and in \texttt{validate} 
-invokes goal \texttt{inj} injecting \texttt{.latexmkrc} to configure \texttt{latexmk} 
+invokes goal \texttt{inj} injecting \texttt{.latexmkrc} to configure \tool{latexmk} 
 and maybe \texttt{header.tex} necessary to compile the latex files at all. 
-Finally, goal \texttt{grp} creates the graphic files which speeds up \texttt{latexmk}. 
+Finally, goal \texttt{grp} creates the graphic files which speeds up \tool{latexmk}. 
 Of course the above maven invocation is also a good initialization 
-for building with the basic tools without \texttt{latexmk}. 
+for building with the basic tools without \tool{latexmk}. 
 
 Finally, goal \texttt{clr} tied to phase \texttt{clean} erases all intermediate files 
 and thus makes the next build independent of the previous one. 
@@ -1816,21 +1816,21 @@ described in Section~\ref{subsec:develClear}.
 
 
 
-Finally, we show how this plugin may support \texttt{latexmk} where. 
+Finally, we show how this plugin may support \tool{latexmk} where. 
 To understand in which sense, one must dive very deep. 
 In short, injection of a header patches package \pkg{listings} 
-in a way that saves performance of \texttt{latexmk}. 
+in a way that saves performance of \tool{latexmk}. 
 Let us elaborate. 
 
-This software and \texttt{latexmk} follow a different philosophy in finding dependencies: 
+This software and \tool{latexmk} follow a different philosophy in finding dependencies: 
 Whereas this software creates image files in advance before invoking a latex converter, 
-\texttt{latexmk} first calls the latex converter in \texttt{nonstopmode} 
+\tool{latexmk} first calls the latex converter in \texttt{nonstopmode} 
 to avoid a stop because of a missing file. 
 Then the file is created using the appropriate rule (hopefully unique) 
 and the converter is run again, 
 this time passing the inclusion of the first created files 
 failing at the next one. 
-To find out that another rule is needed, \texttt{latexmk} parses the LOG file of the latex compiler. 
+To find out that another rule is needed, \tool{latexmk} parses the LOG file of the latex compiler. 
 As the packages write log messages in their own style, 
 this is the point where the solution is no longer generic 
 and so it is no wonder that there is at least one kind of inclusion which does not work that way: 
@@ -1846,11 +1846,11 @@ is by patching \pkg{listings} as described in Section~\ref{subsec:header}.
 
 The suggested workaround for the first problem is 
 creating graphic files using goal \texttt{grp} as described in Section~\ref{subsec:develGraph} 
-before invoking \texttt{latexmk}. 
+before invoking \tool{latexmk}. 
 
-Still some generalization in \texttt{latexmk} could spare this modification. 
+Still some generalization in \tool{latexmk} could spare this modification. 
 
-Another point is, that currently for each file \texttt{latexmk} creates with a separate rule, 
+Another point is, that currently for each file \tool{latexmk} creates with a separate rule, 
 another run of the latex processor is required: 
 The initial run is interrupted with the first missing file. 
 Then that file is created by an appropriate rule and the latex processor is rerun 
@@ -1873,7 +1873,7 @@ Since the file \texttt{.chktexrc} injected by this plugin as described in Sectio
 configures \texttt{chktex} whether \texttt{chktex} is invoked directly by the user 
 or via the plugin in goal \texttt{chk}, the results are the same. 
 In the wording coined in Section~\ref{subsec:develLatexmk}, 
-this plugin integrates \texttt{chktex} very much the same way as it integrates \texttt{latexmk} 
+this plugin integrates \texttt{chktex} very much the same way as it integrates \tool{latexmk} 
 namely by injection of a config file. 
 
 The config file \texttt{.chktexrc} in turn is adapted to the header \texttt{header.tex} 
@@ -1897,7 +1897,7 @@ one can be sure that also check with goal \texttt{chk} of this plugin does not y
 
 In the context of document development, 
 typically compilation is done by basic tools like \lualatex{} 
-or by an orchestration tool like \texttt{latexmk}. 
+or by an orchestration tool like \tool{latexmk}. 
 Nevertheless, since separation of builds is desirable, 
 intermediate files like graphic files are not present. 
 Maybe they are removed by cleaning. 
@@ -1924,7 +1924,7 @@ for development of documents.
 
 Note that in general \texttt{mvn clean validate latex:grp} 
 creates all files necessary to compile with a latex converter like \lualatex{} 
-and also to compile smoothly with \texttt{latexmk}. 
+and also to compile smoothly with \tool{latexmk}. 
 
 
 
@@ -2003,7 +2003,7 @@ Install script for installing extensions for VS Code
 helping in developing \LaTeX{} documents. 
 
 
-In addition, configuration scripts for \texttt{latexmk} and \texttt{chktex}. 
+In addition, configuration scripts for \tool{latexmk} and \texttt{chktex}. 
 Also describe how to use. 
 
 

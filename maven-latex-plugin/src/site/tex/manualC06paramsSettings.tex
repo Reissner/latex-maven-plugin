@@ -396,17 +396,17 @@ using magic comments as described in Section~\ref{subsec:sourcesLatex}.
 \texttt{latexmkUsage}          &  NotAtAll        \\
 \multicolumn2{|l|}{
 \begin{minipage}{0.95\linewidth}
-The extent to which \texttt{latexmk} or to be more precise, 
+The extent to which \tool{latexmk} or to be more precise, 
 the command given by \texttt{latexmkCommand} is used to build. 
 The following values for build strategy are allowed: 
 %
 \begin{description}
-  \item[NotAtAll] \texttt{latexmk} is not used at all. 
-  \item[AsBackend] \texttt{latexmk} is used as backend, 
+  \item[NotAtAll] \tool{latexmk} is not used at all. 
+  \item[AsBackend] \tool{latexmk} is used as backend, 
   i.e. graphic files are created as for goal \texttt{grp} 
-  as in strategy \texttt{NotAtAll} before \texttt{latexmk} is invoked 
+  as in strategy \texttt{NotAtAll} before \tool{latexmk} is invoked 
   on the individual \LaTeX{} main files. 
-  \item[Fully] build is by applying \texttt{latexmk} 
+  \item[Fully] build is by applying \tool{latexmk} 
   on the individual \LaTeX{} main files without any prior actions. 
 \end{description}
 
@@ -414,7 +414,7 @@ This setting can be overwritten for individual latex main files
 by the magic comment \texttt{latexmkMagic} 
 described in Section~\ref{subsec:patternLatexMainFile}. 
 
-For a more detailed description of usage of \texttt{latexmk} see Section~\ref{sec:latexmk}. 
+For a more detailed description of usage of \tool{latexmk} see Section~\ref{sec:latexmk}. 
 \end{minipage}
 } \\
 \texttt{texPath}          &  empty string        \\
@@ -549,12 +549,12 @@ the magic comments are all optional, i.e. they need not match any part of the st
   both given in 
   Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen}. 
   \item[latexmkMagic] 
-  whether \emph{for creating PDF files} \texttt{latexmk} shall be used. 
-  This is intended to run the build process with \texttt{latexmk} 
+  whether \emph{for creating PDF files} \tool{latexmk} shall be used. 
+  This is intended to run the build process with \tool{latexmk} 
   although the global setting \texttt{latexmkUsage} 
   given in Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen} 
   may specify direct compilation 
-  without \texttt{latexmk}. 
+  without \tool{latexmk}. 
   \item[chkDiffMagic,chkDiffMagicVal]
   whether the \emph{created PDF file} shall be checked against an original 
   ensuring that it is correctly reproduced. 
@@ -623,7 +623,7 @@ Let us trace through line by line:
   to activate diffing to check reproduction,
   or in conjunction with \texttt{chkDiffMagicVal} to switch reproduction check.
   \item[\texttt{latexmkMagic}]
-  to delegate build to \texttt{latexmk}.
+  to delegate build to \tool{latexmk}.
   \item[\texttt{targetsMagic}] 
   allows to specify a list of targets.
   This is the sole of these magic comments not only applying to creating PDF files.
@@ -786,11 +786,11 @@ The utility \texttt{pythontex} requires
 and creates a bunch of further files all in a folder of the form 
 `\texttt{pythontex-files-T\$T}' which must also be added to the regular expression. 
 
-Whereas typically \texttt{latexmk} creates only `\texttt{\^{}T\$T\.fdb\_latexmk}' 
+Whereas typically \tool{latexmk} creates only `\texttt{\^{}T\$T\.fdb\_latexmk}' 
 which is included in the very first expression, 
 during its run it creates `\texttt{\^{}(pdf|xe|lua)?latex\textbackslash d+\textbackslash.fls}', % chktex 36 
 where the digits represent the process number. 
-If interrupting \texttt{latexmk}, these files may remain, 
+If interrupting \tool{latexmk}, these files may remain, 
 so it is appropriate to add them to the regular expression. 
 
 Package `\pkg{srcltx}' or also \texttt{synctex} requires in addition 
@@ -2610,12 +2610,12 @@ ranging from byte equivalence to some kind of visual equivalence.
 
 
 
-\section{Parameters for \texttt{latexmk} and related}\label{sec:paramLatexmk}
+\section{Parameters for \protect\tool{latexmk} and related}\label{sec:paramLatexmk}
 
 As described in Section~\ref{sec:latexmk}, 
 based on the parameter \texttt{\$latexmkUsage} described in Table~\ref{tab:paramGen} 
 on page~\pageref{tab:paramGen}, 
-the build process can be delegated gradually to \texttt{latexmk} 
+the build process can be delegated gradually to \tool{latexmk} 
 or an equivalent tool. 
 Table \ref{tab:paramLatexmk} lists the parameters controlling invocation. 
 Note that besides the options, which shall be used with care, 
@@ -2625,7 +2625,7 @@ Section ``CONFIGURATION/INITIALIZATION (RC) FILES''.
 On the other hand, 
 as indicated in \cite{LatexMk23}, 
 Section ``DEALING WITH ERRORS, PROBLEMS, ETC'', 
-\texttt{latexmk} does not write its own log file 
+\tool{latexmk} does not write its own log file 
 and so there is no parameter in Table~\ref{tab:paramLatexmk} for a pattern 
 of warnings or errors. 
 
@@ -2638,13 +2638,13 @@ of warnings or errors.
   \midrule
   \endfirsthead%
   \bottomrule
-    \caption{\label{tab:paramLatexmk} The parameters for \texttt{latexmk} and related}
+    \caption{\label{tab:paramLatexmk} The parameters for \protect\tool{latexmk} and related}
   \endlastfoot%
-  \texttt{latexmkCommand}      & \texttt{latexmk}        \\
+  \texttt{latexmkCommand}      & \tool{latexmk}        \\
   \multicolumn2{|l|}{
   \begin{minipage}{0.95\linewidth}
     The latexmk command to create a pdf-file from a latex file and other files. 
-    Instead of the default value \texttt{latexmk} a wrapper is conceivable, 
+    Instead of the default value \tool{latexmk} a wrapper is conceivable, 
     a reimplementation seems quite unlikely *smile*. 
   \end{minipage}
   } \\

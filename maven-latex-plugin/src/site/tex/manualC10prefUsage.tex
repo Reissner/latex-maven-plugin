@@ -28,11 +28,11 @@ The preferred usage is defined as follows:
   \item The VS Code extension \texttt{james-yu.latex-workshop}, 
   which is installed by \texttt{instVScode4tex.sh} is used only with build recipe 
   \texttt{latexmk (latexmkrc)}. 
-  \item If \texttt{latexmk} is used, then with config file \texttt{.latexmkrc}, 
+  \item If \tool{latexmk} is used, then with config file \texttt{.latexmkrc}, 
   whereas \texttt{chktex} is definitely used, 
   and it is configured with config file \texttt{.chktexrc}. 
   Both config files are injected by \texttt{inj} described in Section~\ref{subsec:latChkRc}. 
-  \item Neither \texttt{latexmk} nor \texttt{chktex} is used with options. 
+  \item Neither \tool{latexmk} nor \texttt{chktex} is used with options. 
   \item The maven plugin, rather than the ant task. 
   \item Configuration is the default setting of this plugin. 
   In particular, the latex processor is \lualatex. 
@@ -199,20 +199,20 @@ and then the documentation can be compiled with old version \texttt{1.8.0}
 with the same result. 
 In a release \texttt{2.0.1}, version \texttt{1.8.0} can be replaced by \texttt{2.0.0}. 
 
-For version \texttt{2.1.0} it is planned, that this plugin can use \texttt{latexmk}, 
+For version \texttt{2.1.0} it is planned, that this plugin can use \tool{latexmk}, 
 and in the manual this is also described. 
-In \texttt{2.1.0-SNAPSHOT} the manual may be compiled using \texttt{latexmk}, 
-but nevertheless, in \texttt{2.1.0} the manual is still compiled without \texttt{latexmk}, 
+In \texttt{2.1.0-SNAPSHOT} the manual may be compiled using \tool{latexmk}, 
+but nevertheless, in \texttt{2.1.0} the manual is still compiled without \tool{latexmk}, 
 using release \texttt{2.0.0} for creating the manual for the site. 
-Only in \texttt{2.1.1}, also the manual is included in the site using \texttt{latexmk}. 
+Only in \texttt{2.1.1}, also the manual is included in the site using \tool{latexmk}. 
 
 For version \texttt{2.2.0} it is planned, to support \texttt{bib2gls} directly. 
-Observe that \texttt{2.1.0} supports can treat \texttt{bib2gls} via \texttt{latexmk}, 
+Observe that \texttt{2.1.0} supports can treat \texttt{bib2gls} via \tool{latexmk}, 
 but without all the monitoring \texttt{2.2.0} offers with direct support. 
 Of course, the manual describes direct support and 
 some \texttt{2.2.0-SNAPSHOT} is able to compile the manual using \texttt{bib2gls} directly. 
 Nevertheless, close to release for site creation, 
-\texttt{2.1.0} is used again relying on \texttt{latexmk} to invoke \texttt{bib2gls}. 
+\texttt{2.1.0} is used again relying on \tool{latexmk} to invoke \texttt{bib2gls}. 
 In \texttt{2.2.1} then \texttt{2.2.0} can be used for site creation invoking \texttt{bib2gls} directly. 
 
 
