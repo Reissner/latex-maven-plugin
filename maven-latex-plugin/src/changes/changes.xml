@@ -1036,6 +1036,11 @@ So the workaround is to modify pom.xml so that it works roughly.
 The details are in PdfMojoTest.java and the consequence for pom.xml is that chkDiff=true must be set -->
 
     <release version="2.1" date="2023-08-28" description="">
+      <action dev='reissner' type='fix'>
+        header.tex: patch for package listings: 
+        take into account that \makeatletter, \makeatother and \xpatchcmd 
+        don't work inside an argument
+      </action>
       <action dev='reissner' type='add'>
         for chkDiff allow general time stamps: before it was always 1970-01-01 
         and so either no date in productive PDF or checked PDF could not be productive. 

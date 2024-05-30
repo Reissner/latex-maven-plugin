@@ -1210,7 +1210,7 @@ and to rename the title so that it fits other lists as the list of figures.
 The other point is modifying \pkg{listings}' output to make it digestible for \texttt{latexmk}. 
 For details see Section~\ref{subsec:develLatexmk}. 
 
-\lstinputlisting[linerange={119-143},
+\lstinputlisting[linerange={119-156},
 language=tex, basicstyle=\scriptsize,
 float, captionpos=b, label={lst:fileIfExists}, 
 caption={A patch of the \texttt{listings} package }]%
@@ -1643,12 +1643,17 @@ The document may contain graphic files which must be precompiled by further tool
 which must be invoked a priori on the console. 
 For FIG files this is \texttt{fig2dev}. 
 This must be repeated as soon as a FIG file changes. 
+% This invocation must be repeated as soon as a FIG file changes\footnote%
+% {Typically this triggers a sequence of invocations of converters 
+% along files one depending on the other. }. 
 
 Then a latex converter like \lualatex{} must be invoked. 
 Typically, the latex converter must be invoked more than once 
 and besides the latex converter 
 some further auxiliary programs like \texttt{makeindex} must be run. 
 What to do is displayed on the console. 
+% Normally after invocation of an auxiliary program, 
+% the latex converter must be rerun at least once. 
 Each of the programs may fail. 
 Most of the programs write success messages and more detailed information 
 containing error messages, warnings or just information messages 
@@ -1683,7 +1688,9 @@ The best way to invoke \texttt{latexmk} for document development is
 According to~\cite{LatexMk23}, Section ``DESCRIPTION'', 
 the option \texttt{-pvc} is shorthand for ``preview continuously'' a kind of nonstop mode: 
 The PDF file, or whatsoever is created, 
-then a viewer is opened if not yet open 
+then a viewer is opened 
+%in the background 
+if not yet open 
 and then \texttt{latexmk} monitors changes of dependencies 
 and triggers a rebuild each time a change is detected. 
 Note that \texttt{latexmk} does not stop after finishing a compilation, 
@@ -1711,10 +1718,11 @@ before using the basic tools.
 
 
 Let us discuss the differences with this latex plugin: 
+%Let us discuss the differences between \texttt{latexmk} and this latex plugin: 
 First, the plugin runs within a maven process which introduces a lot of overhead. 
 So this cannot be as fast as \texttt{latexmk} is. 
 In addition, a maven plugin cannot open a viewer. 
-Moreover, the plugin is designed to build all latex main files 
+Moreover, the plugin is designed to build all latex main files %in a project 
 and not to focus on a single one. 
 In many cases, more than one output format shall be created. 
 The latter properties which are disadvantages in the context of document development, 
@@ -1755,16 +1763,28 @@ Note that this feature is just offered,
 but the user may also use his/her own file \texttt{.latexmkrc}. 
 
 There is a difference in the build process concerning mostly graphic files: 
+% Although the results shall be the same, 
+% there is a difference in the build process concerning mostly graphic files: 
 \texttt{latexmk} detects dependencies via the \texttt{-recorder} option of the latex generator 
 and creates or recreated what is new or changed. 
 This is more elegant than the idea of this plugin 
 which is based on detecting hard coded set of files 
 and tracing log files. 
+% replace 
 If there are a lot of graphic files 
 \texttt{latexmk} may be forced to run the latex generator frequently, 
 whereas this plugin first creates all graphic files and then invokes the latex generator. 
 Nevertheless, the results shall be the same. 
 In the long run, it is planned that this plugin is enabled to build using \texttt{latexmk}. 
+% On the other hand, if a lot of graphic files are present, 
+% \texttt{latexmk} is forced to run the latex generator frequently, 
+% interrupting the generator run for each graphic files to be generated, 
+% generating the graphic file and rerunning. 
+% In contrast, this plugin first creates all graphic files and then invokes the latex generator. 
+% Encapsulating graphic files into \cmd{IfFileExists} is not really elegant but prevents \texttt{latexmk} from frequent reruns. 
+% The \LaTeX{} sources of this manual use \cmd{IfFileExists} for a listing of a generated graphic file. 
+% Unlike for inclusion of graphic files for being interpreted, in case of a listing \cmd{IfFileExists} is mandatory 
+% and not only a means to speed up build with  \texttt{latexmk}. 
 
 It is possible to combine this plugin with \texttt{latexmk} to speed up \texttt{latexmk}: 
 %
@@ -1820,8 +1840,7 @@ There are two problems with this:
 This yields a huge number of runs for the converter 
 which is time-consuming 
 and there is at least one kind of inclusion which does not work that way: 
-inclusion with \cmd{lstinputlisting} 
-provided by \pkg{listings}. 
+inclusion with \cmd{lstinputlisting} provided by \pkg{listings}. 
 In fact, i have an email from J.~Hoffmann, author of \pkg{listings} 
 telling that there are more packages with the same problem. 
 To be checked: \pkg{fancyvrb} and \pkg{moreverb}. 

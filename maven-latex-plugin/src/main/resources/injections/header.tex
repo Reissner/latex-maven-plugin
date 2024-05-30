@@ -115,7 +115,18 @@
 %\usepackage[active]{srcltx}
 \usepackage{longtable}
 
+% this indirection is needed because \makeatletter, \makeatother and \xpatchcmd 
+% don't work inside an argument as discussed in  
+% https://tex.stackexchange.com/questions/719158/
+% does-ifpackageloadedtf-neutralize-xpatch
+\newif\iflistingsloaded
 \IfPackageLoadedTF{listings}{%
+  \listingsloadedtrue
+}{%
+  \listingsloadedfalse
+}
+
+\iflistingsloaded
   \renewcommand{\lstlistoflistings}{\begingroup
   %\tocsection
   %\tocchapter
@@ -125,6 +136,8 @@
   % this is a workaround for including listings with latexmk.. 
   % This can be fixed 
   % - as shown below 
+  % see https://tex.stackexchange.com/questions/685257/
+  % latexmkcan-include-files-created-during-the-latexmk-run-except-with-lstinp
   % - patch in package listings 
   % - patch in latexmk 
   % I would prefer the latter. 
@@ -139,7 +152,8 @@
     \typeout{File ending patch for \string\lst@MissingFileError\space failed.}%
   }
   \makeatother
-}{}% \IfPackageLoadedTF{listings}
+\fi
+
 
 \usepackage{fancyvrb}
 
