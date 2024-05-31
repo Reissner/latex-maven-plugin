@@ -44,9 +44,41 @@ public enum LatexmkUsage {
    * Note also that latexmk is not used to cleanup. 
    */
   // TBD: well: cleanup shall be done by latexmk in this case also. 
-  Fully;
+  Fully {
+    boolean preProcessInternally() {
+      return false;
+    }
+  };
 
+  /**
+   * Returns whether this kind of usage 
+   * triggers {@link Converter#Latexmk} at all. 
+   * This is true except for {@link #NotAtAll}. 
+   * 
+   * @return
+   *    whether this kind of usage 
+   *    triggers {@link Converter#Latexmk} at all. 
+   */
   boolean runLatexmk() {
+    return true;
+  }
+  // If false preprocessing is not performed. 
+  // This occurs only if latexmk is invoked. 
+  // Consequently it is also latexmk which performs graphic processing. 
+  /**
+   * Returns whether this kind of usage 
+   * performs preprocessing which is processing internally. 
+   * Preprocessing is processing logically done before compilation of latex files 
+   * can be completed. 
+   * Currently, this applies to graphic files. 
+   * If not, {@link Converter#Latexmk} creates the according files 
+   * in the course of its build process. 
+   * Processing is internal except for {@link #Fully}. 
+   * @return
+   *    whether this kind of usage 
+   *    performs preprocessing which is processing internally. 
+   */
+  boolean preProcessInternally() {
     return true;
   }
 }

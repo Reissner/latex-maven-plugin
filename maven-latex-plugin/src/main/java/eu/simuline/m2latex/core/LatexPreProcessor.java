@@ -304,6 +304,9 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
       String getSuffix() {
         return LatexPreProcessor.SUFFIX_TEX;
       }
+      boolean isToBePreprocessed() {
+        return false;
+      }
     },
     /**
      * Handler for .bib-files
@@ -326,6 +329,9 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
 
       String getSuffix() {
         return LatexPreProcessor.SUFFIX_BIB;
+      }
+      boolean isToBePreprocessed() {
+        return false;
       }
     };
 
@@ -464,6 +470,23 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
      * of the file type, this is the handler for.
      */
     abstract String getSuffix();
+
+    /**
+     * Returns whether this type of file is to be preprocessed. 
+     * This means processed prior to compilation of latex files. 
+     * As a consequence, this is false for {@link #tex} 
+     * because these files are compiled directly 
+     * and it is also false for {@link #bib} 
+     * because these files are either bibliography or glossary databases 
+     * and are thus processed after latex files. 
+     * Currently, this method returns true only for graphic files. 
+     * 
+     * @return
+     *    whether this type of file is to be preprocessed. 
+     */
+    boolean isToBePreprocessed() {
+      return true;
+    }
   } // enum SuffixHandler
 
   // FIXME: CAUTION with including pictures in xfig:
@@ -1296,11 +1319,16 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
    * and in subdirectories recursively:
    * <ul>
    * <li>
-   * those which are in various graphic formats incompatible with LaTeX
+   * if <code>doPreprocessingInternally</code> is set, 
+   * processes the types of files for which {@link SuffixHandler#isToBePreprocessed()} is set, 
+   * This applies to various graphic formats incompatible with LaTeX
    * are converted into formats which can be inputed or included directly
    * into a latex file.
    * <li>
-   * returns the set of descriptions of latex main files.
+   * returns the set of descriptions of latex main files and skips other TEX files.
+   * <li>skips files which are not compiled directly (which are all TEX files) 
+   * and which are not suitable for preprocessing. 
+   * Currently these are solelly BIB files. 
    * </ul>
    * <p>
    * Logging:
@@ -1320,6 +1348,9 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
    *    represents the tex source directory or a subdirectory.
    * @param node
    *    a node associated with <code>dir</code>.
+   * @param doPreprocessingInternally
+   *    whether preprocessing shall be done internally. 
+   *    If not, this is done, e.g. by {@link Converter#Latexmk}. 
    * @return
    *    the collection of descriptions of latex main files.
    * @throws BuildFailureException
@@ -1329,7 +1360,7 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
   // used in LatexProcessor.create()
   // and in LatexProcessor.processGraphics() only
   // where 'node' represents the tex source directory
-  Collection<LatexMainDesc> processGraphicsSelectMain(File dir, DirNode node)
+  Collection<LatexMainDesc> processGraphicsSelectMain(File dir, DirNode node, boolean doPreprocessingInternally)
       throws BuildFailureException {
 
     Collection<String> skippedSuffixes = new TreeSet<String>();
@@ -1338,12 +1369,12 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
       // may throw BuildFailureException TEX01,
       // may log EEX01, EEX02, EEX03,
       // WEX04, WEX05, WFU03, WPP02, EFU06
-      processGraphicsSelectMainRec(dir, node, skippedSuffixes, latexMainDescs);
+      processGraphicsSelectMainRec(dir, node, skippedSuffixes, latexMainDescs, doPreprocessingInternally);
     } else {
       // may throw BuildFailureException TEX01,
       // may log EEX01, EEX02, EEX03,
       // WEX04, WEX05, WFU03, WPP02, EFU07, EFU08, EFU09
-      processGraphicsSelectMain(dir, node, skippedSuffixes, latexMainDescs);
+      processGraphicsSelectMain(dir, node, skippedSuffixes, latexMainDescs, doPreprocessingInternally);
     }
 
     if (!skippedSuffixes.isEmpty()) {
@@ -1439,7 +1470,8 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
    */
   private void processGraphicsSelectMain(File dir, DirNode node,
       Collection<String> skippedSuffixes,
-      Collection<LatexMainDesc> latexMainDescs) throws BuildFailureException {
+      Collection<LatexMainDesc> latexMainDescs,
+      boolean doPreprocessingInternally) throws BuildFailureException {
 
     assert node.isValid();// i.e. node.regularFile != null
     // FIXME: processing of the various graphic files
@@ -1473,6 +1505,11 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
       // or schedule for later (latex main files)
       // or do nothing if no targets like bib-files
       // or tex-files to be inputted.
+
+      if (handler.isToBePreprocessed() && !doPreprocessingInternally) {
+        continue;
+      }
+      assert !handler.isToBePreprocessed() || doPreprocessingInternally;
 
       // may throw BuildFailureException TEX01,
       // may log EEX01, EEX02, EEX03, WEX04, WEX05
@@ -1531,9 +1568,9 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
    * but with recursion to subdirectories.
    */
   private void processGraphicsSelectMainRec(File dir, DirNode node,
-      Collection<String> skipped, Collection<LatexMainDesc> latexMainDescs)
+      Collection<String> skipped, Collection<LatexMainDesc> latexMainDescs, boolean processGrpFiles)
       throws BuildFailureException {
-    processGraphicsSelectMain(dir, node, skipped, latexMainDescs);
+    processGraphicsSelectMain(dir, node, skipped, latexMainDescs, processGrpFiles);
 
     // go on recursively with subdirectories
     for (Map.Entry<String, DirNode> entry : node.getSubdirs().entrySet()) {
@@ -1541,7 +1578,7 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
       // may log EEX01, EEX02, EEX03, WEX04, WEX05, WPP03
       // WFU03, WPP02, EFU06
       processGraphicsSelectMainRec(new File(dir, entry.getKey()),
-          entry.getValue(), skipped, latexMainDescs);
+          entry.getValue(), skipped, latexMainDescs, processGrpFiles);
     }
   }
 

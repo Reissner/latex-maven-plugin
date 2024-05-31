@@ -390,13 +390,15 @@ public class LatexProcessor extends AbstractLatexProcessor {
     DirNode node = new DirNode(texProcDir, this.fileUtils);
 
     try {
+
       // process graphics and determine latexMainFiles
       // may throw BuildFailureException TEX01,
       // log warning WFU03, WPP02, WPP03,
       // EEX01, EEX02, EEX03, WEX04, WEX05, EFU07, EFU08, 
       //    EFU09: if filtering a file fails.
       Collection<LatexMainDesc> latexMainDescs =
-          this.preProc.processGraphicsSelectMain(texProcDir, node);
+          this.preProc.processGraphicsSelectMain(texProcDir, node, 
+          this.settings.getLatexmkUsage().preProcessInternally());
 
       for (LatexMainDesc desc : latexMainDescs) {
         File texFile = desc.texFile;
@@ -664,7 +666,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
     // may throw BuildFailureException TEX01,
     // log warning WFU03, WPP02, WPP03,
     // EEX01, EEX02, EEX03, WEX04, WEX05, EFU07, EFU08, EFU09
-    this.preProc.processGraphicsSelectMain(texProcDir, node);
+    this.preProc.processGraphicsSelectMain(texProcDir, node, true);
   }
 
   // TBD: rework 
