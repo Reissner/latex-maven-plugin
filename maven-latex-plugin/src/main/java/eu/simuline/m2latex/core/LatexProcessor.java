@@ -251,8 +251,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
     Optional<String> targetsMagic =
         desc.groupMatch(LatexMainParameterNames.targetsMagic);
     if (targetsMagic.isPresent()) {
-      this.log.info("Found targets " + targetsMagic.get() + " for document '"
-          + desc.texFile + "' in magic comment. ");
+      this.log.info("Magic comment 'targets=" + targetsMagic.get() + "' overrides settings. ");
       return Settings.getTargets(targetsMagic.get(),
           TargetsContext.targetsMagic);
     }
@@ -390,7 +389,6 @@ public class LatexProcessor extends AbstractLatexProcessor {
     DirNode node = new DirNode(texProcDir, this.fileUtils);
 
     try {
-
       // process graphics and determine latexMainFiles
       // may throw BuildFailureException TEX01,
       // log warning WFU03, WPP02, WPP03,
@@ -417,8 +415,13 @@ public class LatexProcessor extends AbstractLatexProcessor {
         this.latex2PdfCmdMagic = desc
           .groupMatch(LatexMainParameterNames.programMagic);
         if (this.latex2PdfCmdMagic.isPresent()) {
-          this.log.info("Using " + this.latex2PdfCmdMagic.get()
-            + " to process '" + desc.texFile + "'. ");
+          // TBD: this comes before message congerting to pdf: file. 
+          // Better: 
+          // - processing file.. 
+          // - then targets 
+          if (!this.latex2PdfCmdMagic.get().equals(this.settings.getCommand(ConverterCategory.LaTeX))) {
+            this.log.info("Magic comment 'program=" + this.latex2PdfCmdMagic.get() + "' overrides settings.");
+          }
         }
 
         // may throw BuildFailureException TSS04
@@ -517,17 +520,21 @@ public class LatexProcessor extends AbstractLatexProcessor {
   * @see #buildLatexmkArguments(Settings, LatexMainDesc)
    */
   private boolean isChkDiff(LatexMainDesc desc) {
+    boolean chkDiffSetting = this.settings.isChkDiff();
     if (!desc.groupMatches(LatexMainParameterNames.chkDiffMagic)) {
-      return this.settings.isChkDiff();
+      // Here, result is according to setting 
+      return chkDiffSetting;
     }
     // Here, the magic comment overrides the settings 
     Optional<String> chkDiffValue = 
     desc.groupMatch(LatexMainParameterNames.chkDiffMagicVal);
-    if (chkDiffValue.isEmpty()) {
-      // Here, no value is given so, the default is true \
-      return true;
+    boolean chkDiff = chkDiffValue.isEmpty() 
+    ? true 
+    : Boolean.parseBoolean(chkDiffValue.get());
+    if (chkDiff != chkDiffSetting) {
+      this.log.info("Magic comment 'chkDiff=" + chkDiff + "' overrides setting.");
     }
-    return Boolean.parseBoolean(chkDiffValue.get());
+    return chkDiff;
   }
 
   /**
@@ -554,17 +561,20 @@ public class LatexProcessor extends AbstractLatexProcessor {
    */
   // TBD: generalize together with isChkDiff
   private boolean isCompileWithLatexmk(LatexMainDesc desc) {
+    boolean runLatexmkSetting = this.settings.getLatexmkUsage().runLatexmk();
     if (!desc.groupMatches(LatexMainParameterNames.latexmkMagic)) {
-      return this.settings.getLatexmkUsage().runLatexmk();
+      return runLatexmkSetting;
     }
     // Here, the magic comment overrides the settings 
     Optional<String> runLatexmkValue = 
     desc.groupMatch(LatexMainParameterNames.latexmkMagicVal);
-    if (runLatexmkValue.isEmpty()) {
-      // Here, no value is given so, the default is true 
-      return true;
+    boolean runLatexmk = (runLatexmkValue.isEmpty())
+    ? true
+    : Boolean.parseBoolean(runLatexmkValue.get());
+    if (runLatexmk != runLatexmkSetting) {
+      this.log.info("Magic comment 'latexmk="+runLatexmk+"' overrides settings. ");
     }
-    return Boolean.parseBoolean(runLatexmkValue.get());
+    return runLatexmk;
   }
 
   // TBD: rework 
@@ -1168,12 +1178,10 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
     // TBD: improve this in several respect. 
     if (isCompileWithLatexmk(desc)) {
-      this.log.info("Running latexmk bypassing direct compilation. ");
       // CAUTION: timestamp is not used directly 
       runLatexmk(desc, timestampOpt);
       return;
     }
-    this.log.info("Internal compilation without latexmk. ");
 
     LatexDev dev = this.settings.getPdfViaDvi();
 
