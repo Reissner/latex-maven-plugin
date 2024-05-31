@@ -168,7 +168,7 @@ so that the document class is matched.  -->
 (%\s*!\s*T[eE]X program\s*=\s*(?&lt;programMagic&gt;[^} ]+)\R)?
 (%\s*!\s*T[eE]X .*\R)*
 (%\s*!\s*LMP (?&lt;chkDiffMagic&gt;chkDiff)(=(?&lt;chkDiffMagicVal&gt;true|false))?\R)?
-(%\s*!\s*LMP (?&lt;latexmkMagic&gt;latexmk)\R)?
+(%\s*!\s*LMP (?&lt;latexmkMagic&gt;latexmk)(=(?&lt;latexmkMagicVal&gt;true|false))?\R)?
 (%\s*!\s*LMP targets=(?&lt;targetsMagic&gt;(\p{Lower}|,)+)\R)?
 (\s*(
 \\RequirePackage\s*(\[(\s|\w|[,=])*\])?\s*\{(\w|-)+\}\s*(\[(\d|[.-/])+\])?|
@@ -256,7 +256,7 @@ beamer,leaflet,scrlttr2:chk,pdf,txt
             by the magic comment 'latexmkMagic'. 
             The default is 'NotAtAll'. 
             We change for development of release 2.1 to test AsBackend and Fully-->
-            <latexmkUsage>NotAtAll</latexmkUsage>
+            <latexmkUsage>NotAtAll</latexmkUsage><!--NotAtAll AsBackend Fully-->
 
             <!-- Path to the TeX scripts or null. 
 In the latter case, the scripts must be on the system path. 

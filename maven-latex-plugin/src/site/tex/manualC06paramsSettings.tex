@@ -548,13 +548,16 @@ the magic comments are all optional, i.e. they need not match any part of the st
   globally as setting \texttt{targets} and \texttt{docClassesToTargets}, 
   both given in 
   Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen}. 
-  \item[latexmkMagic] 
+  \item[latexmkMagic,latexmkMagicVal] 
   whether \emph{for creating PDF files} \tool{latexmk} shall be used. 
   This is intended to run the build process with \tool{latexmk} 
   although the global setting \texttt{latexmkUsage} 
   given in Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen} 
-  may specify direct compilation 
-  without \tool{latexmk}. 
+  may specify direct compilation without \tool{latexmk}. 
+
+  The magic comment can take the form \texttt{\% LMP latexmkMagic=<bool>} 
+  or \texttt{\% LMP latexmkMagic} which is just short for \texttt{\% LMP latexmkMagic=true}. 
+
   \item[chkDiffMagic,chkDiffMagicVal]
   whether the \emph{created PDF file} shall be checked against an original 
   ensuring that it is correctly reproduced. 
@@ -586,7 +589,7 @@ caption={The default pattern of the latex main file in a form as in a pom config
   % (%\s*!\s*T[eE]X program\s*=\s*(?&lt;programMagic&gt;[^} ]+)\R)?
   % (%\s*!\s*T[eE]X .*\R)*
   % (%\s*!\s*LMP (?&lt;chkDiffMagic&gt;chkDiff)(=(?&lt;chkDiffMagicVal&gt;true|false))?\R)?
-  % (%\s*!\s*LMP (?&lt;latexmkMagic&gt;latexmk)\R)?
+  % (%\s*!\s*LMP (?&lt;latexmkMagic&gt;latexmk)(=(?&lt;latexmkMagicVal&gt;true|false))?\R)?
   % (%\s*!\s*LMP targets=(?&lt;targetsMagic&gt;(\p{Lower}|,)+)\R)?
   % (\s*(
   % \\RequirePackage\s*(\[(\s|\w|[,=])*\])?\s*\{(\w|-)+\}\s*(\[(\d|[.-/])+\])?|

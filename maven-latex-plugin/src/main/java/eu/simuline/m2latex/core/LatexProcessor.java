@@ -494,7 +494,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
   /**
    * Returns whether the pdf file under construction 
    * is going to be checked whether an original is reproduced. 
-   * If the magic comment <code>% LMP chkDiff...</code> is set, 
+   * If the magic comment <code>% !LMP chkDiff...</code> is set, 
    * it takes precedence over {@link Settings#isChkDiff()} 
    * which determines whether checks are performed 
    * only if there is no magic comment. 
@@ -508,10 +508,11 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * @param desc
    *   description of a TEX file. 
    * @return
-   *   whether {@link Settings#isChkDiff()} 
-   *   or {@link LatexMainDesc#groupMatches(LatexMainParameterNames)} 
-   *   applied to {@link LatexMainParameterNames#chkDiffMagic} is true. 
-   * @see #buildLatexmkArguments(Settings, LatexMainDesc)
+   *   whether the PDF file under construction  
+   *   is checked to reproduced the original  
+   *   This is determined via magic comment or, 
+   *   if not present, via settings. 
+  * @see #buildLatexmkArguments(Settings, LatexMainDesc)
    */
   private boolean isChkDiff(LatexMainDesc desc) {
     if (!desc.groupMatches(LatexMainParameterNames.chkDiffMagic)) {
@@ -525,6 +526,43 @@ public class LatexProcessor extends AbstractLatexProcessor {
       return true;
     }
     return Boolean.parseBoolean(chkDiffValue.get());
+  }
+
+  /**
+   * Returns whether the tex file under consideration 
+   * is going to be compiled using {@link Converter#Latexmk}. 
+   * If the magic comment <code>% !LMP latexmk..</code> is set, 
+   * it takes precedence over {@link Settings#getLatexmkUsage()} 
+   * which determines among other whether latexmk is used. 
+   * The magic comment has two variants: 
+   * besides the one with boolean values, 
+   * also one without value which defaults to boolean true value. 
+   * <p>
+   * This applies to all kinds of compilation, 
+   * except for latexmk 
+   * 
+   * @param desc
+   *   description of a TEX file. 
+   * @return
+   *   whether the tex file under consideration 
+   *   is going to be compiled using {@link Converter#Latexmk}. 
+   *   This is determined via magic comment or, 
+   *   if not present, via settings. 
+   * @see #processLatex2pdf(LatexMainDesc, Optional)
+   */
+  // TBD: generalize together with isChkDiff
+  private boolean isCompileWithLatexmk(LatexMainDesc desc) {
+    if (!desc.groupMatches(LatexMainParameterNames.latexmkMagic)) {
+      return this.settings.getLatexmkUsage().runLatexmk();
+    }
+    // Here, the magic comment overrides the settings 
+    Optional<String> runLatexmkValue = 
+    desc.groupMatch(LatexMainParameterNames.latexmkMagicVal);
+    if (runLatexmkValue.isEmpty()) {
+      // Here, no value is given so, the default is true 
+      return true;
+    }
+    return Boolean.parseBoolean(runLatexmkValue.get());
   }
 
   // TBD: rework 
@@ -1127,16 +1165,13 @@ public class LatexProcessor extends AbstractLatexProcessor {
     this.log.info("Converting into pdf:  LaTeX file '" + desc.texFile + "'. ");
 
     // TBD: improve this in several respect. 
-    if (this.settings.getLatexmkUsage().runLatexmk()
-      || desc.groupMatches(LatexMainParameterNames.latexmkMagic)) {
+    if (isCompileWithLatexmk(desc)) {
       this.log.info("Running latexmk bypassing direct compilation. ");
       // CAUTION: timestamp is not used directly 
       runLatexmk(desc, timestampOpt);
       return;
     }
-    this.log.info("No latexmk because usage=" 
-      + this.settings.getLatexmkUsage()
-      + " and no magic comment 'latexmk'. ");
+    this.log.info("Internal compilation without latexmk. ");
 
     LatexDev dev = this.settings.getPdfViaDvi();
 

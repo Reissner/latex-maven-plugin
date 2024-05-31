@@ -7,8 +7,10 @@ package eu.simuline.m2latex.core;
  * Currently, only one, {@link #docClass} must be matched by the pattern. 
  * Part of the names match parameters in a magic comment. 
  * These have the ending <code>Magic</code>. 
- * Currently, there are two examples for this, 
- * {@link #programMagic} and {@link #targetsMagic}. 
+ * Currently, {@link #chkDiffMagic} and {@link #latexmkMagic} 
+ * are special as they do not require values: 
+ * The boolean values {@link #chkDiffMagicVal} and {@link #latexmkMagicVal} 
+ * are optional and default to <code>true</code>. 
  */
 public enum LatexMainParameterNames {
 
@@ -44,6 +46,13 @@ public enum LatexMainParameterNames {
    * In case of {@link LatexmkUsage#Fully}, these are not preprocessed. 
    */
   latexmkMagic,
+
+  /**
+   * The name of the capturing group capturing the boolean value 
+   * for check described for {@link #latexmkMagic}. 
+   * Note that the value is optional and defaults to <code>true</code>. 
+   */
+  latexmkMagicVal,
 
   /**
    * The name of the capturing group 
