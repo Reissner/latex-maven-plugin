@@ -403,7 +403,7 @@ The following values for build strategy are allowed:
 \begin{description}
   \item[NotAtAll] \tool{latexmk} is not used at all. 
   \item[AsBackend] \tool{latexmk} is used as backend, 
-  i.e. graphic files are created as for goal \texttt{grp} 
+  i.e.\@ graphic files are created as for goal \texttt{grp} 
   as in strategy \texttt{NotAtAll} before \tool{latexmk} is invoked 
   on the individual \LaTeX{} main files. 
   \item[Fully] build is by applying \tool{latexmk} 
@@ -527,8 +527,8 @@ because the software asks for it.
 Distinguish between the pattern and the matching strings: 
 Whereas in the pattern all groups must be mentioned, 
 a string may match without matching the group. 
-Whereas \texttt{docClass} is mandatory, i.e. the according group matches, 
-the magic comments are all optional, i.e. they need not match any part of the string. 
+Whereas \texttt{docClass} is mandatory, i.e.\@ the according group matches, 
+the magic comments are all optional, i.e.\@ they need not match any part of the string. 
 
 \begin{description}
   \item[docClass]
@@ -548,25 +548,25 @@ the magic comments are all optional, i.e. they need not match any part of the st
   globally as setting \texttt{targets} and \texttt{docClassesToTargets}, 
   both given in 
   Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen}. 
-  \item[latexmkMagic,latexmkMagicVal] 
+  \item[latexmkMagic, latexmkMagicVal] 
   whether \emph{for creating PDF files} \tool{latexmk} shall be used. 
   This is intended to run the build process with \tool{latexmk} 
   although the global setting \texttt{latexmkUsage} 
   given in Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen} 
   may specify direct compilation without \tool{latexmk}. 
 
-  The magic comment can take the form \texttt{\% LMP latexmkMagic=<bool>} 
-  or \texttt{\% LMP latexmkMagic} which is just short for \texttt{\% LMP latexmkMagic=true}. 
+  The magic comment can take the form \texttt{\% !LMP latexmkMagic=<bool>} 
+  or \texttt{\% !LMP latexmkMagic} which is just short for \texttt{\% !LMP latexmkMagic=true}. 
 
-  \item[chkDiffMagic,chkDiffMagicVal]
+  \item[chkDiffMagic, chkDiffMagicVal]
   whether the \emph{created PDF file} shall be checked against an original 
   ensuring that it is correctly reproduced. 
   This is intended to control a check specific for this file 
   overwriting the general setting \texttt{chkDiff} 
   given in Table~\ref{tab:paramDiffPdf} on page~\pageref{tab:paramDiffPdf}. 
 
-  The magic comment can take the form \texttt{\% LMP chkDiff=<bool>} 
-  or \texttt{\% LMP chkDiff} which is just short for \texttt{\% LMP chkDiff=true}. 
+  The magic comment can take the form \texttt{\% !LMP chkDiff=<bool>} 
+  or \texttt{\% !LMP chkDiff} which is just short for \texttt{\% !LMP chkDiff=true}. 
 \end{description}
 
 The default pattern for identifying \LaTeX{} main files 
@@ -615,7 +615,7 @@ Let us trace through line by line:
   This is the behavior of the other tools also. 
   The other lines are to skip information from magic comments \texttt{\%~!TEX} 
   which are not needed. 
-  \item[5-7]
+  \item[5--7]
   These lines match magic comments of the form \texttt{\%~!LMP\dots} 
   which are specific for this software. 
   Like the above magic comments they are all optional, 
@@ -2620,13 +2620,13 @@ based on the parameter \texttt{\$latexmkUsage} described in Table~\ref{tab:param
 on page~\pageref{tab:paramGen}, 
 the build process can be delegated gradually to \tool{latexmk} 
 or an equivalent tool. 
-Table \ref{tab:paramLatexmk} lists the parameters controlling invocation. 
+Table~\ref{tab:paramLatexmk} lists the parameters controlling invocation. 
 Note that besides the options, which shall be used with care, 
 also the config file \texttt{.latexmkrc} goes into. 
 The details concerning the config file are described in~\cite{LatexMk23}, 
 Section ``CONFIGURATION/INITIALIZATION (RC) FILES''. 
 On the other hand, 
-as indicated in \cite{LatexMk23}, 
+as indicated in~\cite{LatexMk23}, 
 Section ``DEALING WITH ERRORS, PROBLEMS, ETC'', 
 \tool{latexmk} does not write its own log file 
 and so there is no parameter in Table~\ref{tab:paramLatexmk} for a pattern 
