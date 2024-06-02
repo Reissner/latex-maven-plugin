@@ -1035,7 +1035,24 @@ There is no way to configure and it is needed.
 So the workaround is to modify pom.xml so that it works roughly. 
 The details are in PdfMojoTest.java and the consequence for pom.xml is that chkDiff=true must be set -->
 
-    <release version="2.1" date="2023-08-28" description="">
+    <release version="2.1" date="2023-08-28" description="build with latexmk and generalized reproducibility">
+      <action dev='reissner' type='add'>
+        Systematic logging of infos in processing (after preprocessing)
+        Essentially, the new system reflects the structure of the program: 
+        - in outer loop visit all latex main files 
+        accordingly display the name of the latex main file to be 'processed' 
+        The word process is the same as used for graphic files in preprocessing. 
+        If a magic comment overwrites the compiler given by configuration: display an info message. 
+        The compiler covers more than one target. 
+        - inside first adapt the targets 
+        according to the document class  (see docClassesToTargets), if present magic comments. 
+        Log when setting targets is overwritten that way. 
+        - inner loop: pass through the targets 
+        For special targets (currently pdf only) 
+        log if usage of latexmk or chkdiff are overwritten by magic comments. 
+        Finally, notify if chkdiff succeeded so we know it has been performed. 
+        (else the build fails anyway) 
+      </action>
       <action dev='reissner' type='fix'>
         header.tex: patch for package listings: 
         take into account that \makeatletter, \makeatother and \xpatchcmd 

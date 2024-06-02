@@ -279,8 +279,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
     Set<Target> unreachableTargets = new TreeSet<Target>(targetSet);
     unreachableTargets.removeAll(possibleTargets);
     if (!unreachableTargets.isEmpty()) {
-      this.log.info("Skipping targets " + unreachableTargets + " for document '"
-          + desc.texFile + "'. ");
+      this.log.info("Skipping targets " + unreachableTargets + ". ");
     }
     Set<Target> reachableTargets = new TreeSet<Target>(targetSet);
     reachableTargets.retainAll(possibleTargets);
@@ -387,9 +386,10 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
     // constructor DirNode may log warning WFU01 Cannot read directory
     DirNode node = new DirNode(texProcDir, this.fileUtils);
-
     try {
-      // process graphics and determine latexMainFiles
+      // does two things at the same time 
+      // - determine latexMainFiles 
+      // - process graphics if preProcessInternally()
       // may throw BuildFailureException TEX01,
       // log warning WFU03, WPP02, WPP03,
       // EEX01, EEX02, EEX03, WEX04, WEX05, EFU07, EFU08, 
@@ -400,6 +400,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
       for (LatexMainDesc desc : latexMainDescs) {
         File texFile = desc.texFile;
+        this.log.info("Processing  LaTeX file '" + desc.texFile + "'. ");
+
         // throws BuildFailureException TFU01
         // if targetDir would be an existing non-directory
         File targetDir = this.fileUtils.getTargetDirectory(texFile, texDir,
@@ -412,10 +414,15 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
         Set<Target> targetsForBuild =
           getTargetsForBuild(desc, docClasses2Targets, targetSet);
+        // currently, this is the only magic comment applying to all targets 
+        // even that is not really true: htlatex vs xhtlatex 
+        // and targets like txt 
+        // but chkDiff and latexmk are specific for target pdf 
+        // and targets is more globally and a special case. 
         this.latex2PdfCmdMagic = desc
           .groupMatch(LatexMainParameterNames.programMagic);
         if (this.latex2PdfCmdMagic.isPresent()) {
-          // TBD: this comes before message congerting to pdf: file. 
+          // TBD: this comes before message converting to pdf: file. 
           // Better: 
           // - processing file.. 
           // - then targets 
@@ -475,7 +482,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
           // but this shall be clear also above before trying to copy to target folder 
           boolean coincide = runDiffPdf(pdfFileCmpOpt.get(), pdfFileAct);
           if (coincide) {
-            this.log.info("checked: coincides with expected artifact. ");
+            this.log.info("Checked result: coincides with expected artifact. ");
             continue;
           }
           throw new BuildFailureException(
@@ -1164,8 +1171,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
   void processLatex2dvi(LatexMainDesc desc, Optional<Long> timestampOpt)
       throws BuildFailureException {
-    this.log
-        .info("Converting into dvi/xdv:  LaTeX file '" + desc.texFile + "'. ");
+    this.log.info("Converting into dvi/xdv format. ");
     // may throw BuildFailureException TEX01,
     // log warning EEX01, EEX02, EEX03, WEX04, WEX05
     // WFU03, WFU04, WAP04, WLP03, WLP04
@@ -1174,7 +1180,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
   void processLatex2pdf(LatexMainDesc desc, Optional<Long> timestampOpt)
       throws BuildFailureException {
-    this.log.info("Converting into pdf:  LaTeX file '" + desc.texFile + "'. ");
+    this.log.info("Converting into pdf format. ");
 
     // TBD: improve this in several respect. 
     if (isCompileWithLatexmk(desc)) {
@@ -1314,7 +1320,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
   // whereas processing is done with htlatex and with xtlatex... no lualatex involved. 
   void processLatex2html(LatexMainDesc desc, Optional<Long> timestampOpt)
       throws BuildFailureException {
-    this.log.info("Converting into html: LaTeX file '" + desc.texFile + "'. ");
+    this.log.info("Converting into html format. ");
     // may throw BuildFailureException TEX01,
     // log warning EAP01, EAP02, WLP04, WLP05, WAP04, WLP02, WFU03, WFU04, 
     // EEX01, EEX02, EEX03, WEX04, WEX05
@@ -1359,7 +1365,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    */
   void processLatex2odt(LatexMainDesc desc, Optional<Long> timestampOpt)
       throws BuildFailureException {
-    this.log.info("Converting into odt:  LaTeX file '" + desc.texFile + "'. ");
+    this.log.info("Converting into odt format. ");
     // may throw BuildFailureException TEX01,
     // log warning EAP01, EAP02, WAP04, WLP02, WFU03, WFU04, WLP04, WLP05
     // EEX01, EEX02, EEX03, WEX04, WEX05
@@ -1406,8 +1412,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    */
   void processLatex2docx(LatexMainDesc desc, Optional<Long> timestampOpt)
       throws BuildFailureException {
-    this.log
-        .info("Converting into doc(x): LaTeX file '" + desc.texFile + "'. ");
+    this.log.info("Converting into doc(x) format. ");
     // may throw BuildFailureException TEX0,
     // log warning EAP01, EAP02, WAP04, WLP02, WFU03, WFU04, WLP04, WLP05
     // EEX01, EEX02, EEX03, WEX04, WEX05
@@ -1443,7 +1448,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * @see Target#rtf
    */
   void processLatex2rtf(LatexMainDesc desc) throws BuildFailureException {//, Optional<Long> timestamp
-    this.log.info("Converting into rtf:  LaTeX file '" + desc.texFile + "'. ");
+    this.log.info("Converting into rtf format. ");
     // may throw BuildFailureException TEX01,
     // log warning EEX01, EEX02, EEX03, WEX04, WEX05
     runLatex2rtf(desc.texFile);//, timestamp
@@ -1473,7 +1478,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    */
   void processLatex2txt(LatexMainDesc desc, Optional<Long> timestamp)
       throws BuildFailureException {
-    this.log.info("Converting into txt:  LaTeX file '" + desc.texFile + "'. ");
+    this.log.info("Converting into txt format. ");
     LatexDev dev = this.settings.getPdfViaDvi();
 
     // may throw BuildFailureException TEX01,
@@ -1507,7 +1512,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * @throws BuildFailureException
    *    <ul>
    *    <li>TMI01: if the stream to either the manifest file
-   *    or to a property file, either
+   *    or to a property file, either 
    *    {@LINK #VERSION_PROPS_FILE} or
    *    {@link MetaInfo.GitProperties#GIT_PROPS_FILE}
    *    could not be created.</li>
@@ -2503,7 +2508,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
   }
 
   void processCheck(LatexMainDesc desc) throws BuildFailureException {
-    this.log.info("Checking:  LaTeX file '" + desc.texFile + "'. ");
+    this.log.info("Checking source. ");
     runCheck(desc);
   }
 
