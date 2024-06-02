@@ -1036,6 +1036,12 @@ So the workaround is to modify pom.xml so that it works roughly.
 The details are in PdfMojoTest.java and the consequence for pom.xml is that chkDiff=true must be set -->
 
     <release version="2.1" date="2023-08-28" description="build with latexmk and generalized reproducibility">
+      <action dev='reissner' type='fix'>
+        logging: file are no longer absolute 
+        but relative to the project folder. 
+        This improves overview and is more secure, 
+        as the environment is no longer exposed. 
+      </action>
       <action dev='reissner' type='add'>
         Systematic logging of infos in processing (after preprocessing)
         Essentially, the new system reflects the structure of the program: 

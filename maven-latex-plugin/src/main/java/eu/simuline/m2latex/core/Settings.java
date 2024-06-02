@@ -138,7 +138,8 @@ public class Settings {
    * File for {@link #texSrcDirectory} based on {@link #baseDirectory}. 
    */
   private File texSrcDirectoryFile =
-      new File(this.baseDirectory, this.texSrcDirectory);
+    new File(this.texSrcDirectory);
+      //new File(this.baseDirectory, this.texSrcDirectory);
 
   /**
    * The latex source processing directory as a string 
@@ -2646,7 +2647,7 @@ public class Settings {
   public void setBaseDirectory(File baseDirectory) {
     this.baseDirectory = baseDirectory;
     this.texSrcDirectoryFile =
-        new File(this.baseDirectory, this.texSrcDirectory);
+        new File(this.texSrcDirectory);//this.baseDirectory, 
     this.texSrcProcDirectoryFile =
         new File(this.texSrcDirectoryFile, this.texSrcProcDirectory);
     this.texSrcProcDirectoryFile =
@@ -2679,7 +2680,7 @@ public class Settings {
   public void setTexSrcDirectory(String texSrcDirectory) {
     this.texSrcDirectory = texSrcDirectory;
     this.texSrcDirectoryFile =
-        new File(this.baseDirectory, this.texSrcDirectory);
+        new File(this.texSrcDirectory);//this.baseDirectory, 
     this.texSrcProcDirectoryFile =
         new File(this.texSrcDirectoryFile, this.texSrcProcDirectory);
   }

@@ -28,32 +28,34 @@ import org.junit.Test;
 public class SettingsTest {
 
 	@Test
-	public void testSettings() throws BuildFailureException {
-		Settings settings = new Settings();
+  public void testSettings() throws BuildFailureException {
+    Settings settings = new Settings();
 
-		// invoked from within maven in base directory with pom.xml 
-		File baseDirectory = new File(System.getProperty("user.dir"));
-		settings.setBaseDirectory(baseDirectory);
-		// mvn project has default file structure 
-		File targetDirectory = new File(baseDirectory, "target");
-		settings.setTargetDirectory(targetDirectory);
-		File targetSiteDirectory = new File(targetDirectory, "site");
-		settings.setTargetSiteDirectory(targetSiteDirectory);
+    // invoked from within maven in base directory with pom.xml 
+    File baseDirectory = new File(System.getProperty("user.dir"));
+    settings.setBaseDirectory(baseDirectory);
+    // mvn project has default file structure 
+    File targetDirectory = new File(baseDirectory, "target");
+    settings.setTargetDirectory(targetDirectory);
+    File targetSiteDirectory = new File(targetDirectory, "site");
+    settings.setTargetSiteDirectory(targetSiteDirectory);
 
-		// test getTexSrcDirectoryFile() and setTexSrcDirectory(...) 
-		new File(baseDirectory, Settings.SST).mkdir();
-		assertEquals(new File(baseDirectory, Settings.SST),
-				// may throw BuildFailureException
-				settings.getTexSrcDirectoryFile());
-		settings.setTexSrcDirectory("site");
-		settings.setBaseDirectory(targetDirectory);
-		// may throw BuildFailureException 
-		targetSiteDirectory.mkdir();
-		assertEquals(targetSiteDirectory, settings.getTexSrcDirectoryFile());
+    // test getTexSrcDirectoryFile() and setTexSrcDirectory(...) 
+    new File(baseDirectory, Settings.SST).mkdir();
+    //assertEquals(new File(baseDirectory, Settings.SST),
+    assertEquals(new File(Settings.SST),
+        // may throw BuildFailureException
+        settings.getTexSrcDirectoryFile());
+    settings.setBaseDirectory(targetDirectory);
+    targetSiteDirectory.mkdir();
+    settings.setTexSrcDirectory("target/site");
+    // may throw BuildFailureException 
 
-		// FIXME: Further tests required. 
+    assertEquals(targetSiteDirectory, settings.getTexSrcDirectoryFile().getAbsoluteFile());
 
-	}
+    // FIXME: Further tests required. 
+
+    }
 
 	public static void main(String[] args) throws Exception {
 		//Class<?> cls = SettingsTest.class
