@@ -702,16 +702,32 @@ class TexFileUtils {
     return false;
   }
 
+  /**
+   * Returns a descriptor for the match of regular expression <code>regex</code> 
+   * in file <code>file</code>. 
+   * Depending on whether <code>regex</code> starts with <code>\\A</code>, 
+   * matching refers to the beginning of the file, 
+   * else is linewise. 
+   * 
+   * @param file
+   *   a file to parse. 
+   * @param regex
+   *   a regular expression used to parse <code>file</code>. 
+   * @return
+   *   an object representing the match state of type {@ink FileMatch}. 
+   *   For details see the class documentation. 
+   *   If there is a match, the regular expression <code>regex</code> 
+   *   match some named groups from whic further pieces of information can be extracted. 
+   */
   FileMatch getMatchInFile(File file, String regex) {
     Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);//
     boolean fromStart = regex.startsWith("\\A");
     String lines = "";
 
     try {
-      // may throw FileNotFoundException < IOExcption 
-      FileReader fileReader = new FileReader(file);
+      // constructor of FileReader may throw FileNotFoundException < IOExcption 
       // BufferedReader for performance and to be able to read a line
-      BufferedReader bufferedReader = new BufferedReader(fileReader);
+      BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
       //CharBuffer chars = CharBuffer.allocate(1000);
       try {
         // may throw IOException 
@@ -742,7 +758,11 @@ class TexFileUtils {
             this.log.debug("Matched line: ;" + line + "'");
             return FileMatch.fileMatch(matcher);// as match result TBD: .toMatchResult()
           }
-        }
+        } // for 
+        // Here, the whole file has been read but no match 
+        // TBD: reimplement this: this is not performant: 
+        // If the pattern does not match, 
+        // this is detected not before the end of the file. 
         return FileMatch.noMatch();
       } catch (IOException ioe) {
         // Error/Warning must be issued by invoking method 
