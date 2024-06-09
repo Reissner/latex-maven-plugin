@@ -306,7 +306,7 @@ public class Settings {
   (%\\s*!\\s*LMP (?<latexmkMagic>latexmk)(=(?<latexmkMagicVal>true|false))?\\R)?\
   (%\\s*!\\s*LMP targets=(?<targetsMagic>(\\p{Lower}|,)+)\\R)?\
   (\\s*(\
-  \\\\RequirePackage\\s*(\\[(\\s|\\w|[,=])*\\])?\\s*\\{(\\w|-)+\\}\\s*(\\[(\\d|[.-/])+\\])?|\
+  \\\\RequirePackage\\s*(\\[(\\s|\\w|[,=])*\\])?\\s*\\{(\\w|-)+\\}\\s*(\\[(\\d|[-./])+\\])?|\
   \\\\PassOptionsToPackage\\s*\\{(\\s|\\w|[,=])*\\}\\s*\\{(\\w|-)+\\}|\
   \\\\newbool\\s*\\{\\w+\\}|\
   \\\\setbool\\s*\\{\\w+\\}\\{(true|false)\\}|\

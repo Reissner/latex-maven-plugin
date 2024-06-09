@@ -393,7 +393,7 @@ using magic comments as described in Section~\ref{subsec:sourcesLatex}.
   See parameter \texttt{mainFilesIncluded}. 
 \end{minipage}
 } \\
-\texttt{latexmkUsage}          &  NotAtAll        \\
+\texttt{latexmkUsage}          &  \texttt{NotAtAll}        \\
 \multicolumn2{|l|}{
 \begin{minipage}{0.95\linewidth}
 The extent to which \tool{latexmk} or to be more precise, 
@@ -592,7 +592,7 @@ caption={The default pattern of the latex main file in a form as in a pom config
   % (%\s*!\s*LMP (?&lt;latexmkMagic&gt;latexmk)(=(?&lt;latexmkMagicVal&gt;true|false))?\R)?
   % (%\s*!\s*LMP targets=(?&lt;targetsMagic&gt;(\p{Lower}|,)+)\R)?
   % (\s*(
-  % \\RequirePackage\s*(\[(\s|\w|[,=])*\])?\s*\{(\w|-)+\}\s*(\[(\d|[.-/])+\])?|
+  % \\RequirePackage\s*(\[(\s|\w|[,=])*\])?\s*\{(\w|-)+\}\s*(\[(\d|[-./])+\])?|
   % \\PassOptionsToPackage\s*\{(\s|\w|[,=])*\}\s*\{(\w|-)+\}|
   % \\newbool\s*\{\w+\}|
   % \\setbool\s*\{\w+\}\{(true|false)\}|
