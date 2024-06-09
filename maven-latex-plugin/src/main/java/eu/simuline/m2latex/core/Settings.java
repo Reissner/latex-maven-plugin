@@ -68,6 +68,21 @@ public class Settings {
   // static initializer 
 
   /**
+   * The name of the property of the parameter {@link InjectionMojo#injections}. 
+   */
+  public static final String PARAM_PROP = "latex.injections";
+
+  /**
+   * Pattern for names of parameters annotated {@link RuntimeParameter} 
+   * used in 
+   * {@link #filterInjection(InputStream,PrintStream,String,Injection)} 
+   * to filter resources for injection. 
+   */
+  private static final String PATTERN_CONFIG = "\\$\\{(\\w+)\\}";
+
+
+
+  /**
    * On unix <code>src/site/tex</code>, 
    * on other operating systems accordingly. 
    */
@@ -3352,11 +3367,6 @@ public class Settings {
   }
 
   /**
-   * The name of the property of the parameter {@link InjectionMojo#injections}. 
-   */
-  public static final String PARAM_PROP = "latex.injections";
-
-  /**
    * Returns the file associated with the resource <code>fileNameResource</code>. 
    *
    * @param fileNameResource
@@ -3372,14 +3382,6 @@ public class Settings {
     String dir = (System.getProperty(PARAM_PROP) == null) ? this.texSrcDirectory : ".";
     return new File(dir, fileNameResource);
   }
-
-  /**
-   * Pattern for names of parameters annotated {@link RuntimeParameter} 
-   * used in 
-   * {@link #filterInjection(InputStream,PrintStream,String,Injection)} 
-   * to filter resources for injection. 
-   */
-  private static final String PATTERN_CONFIG = "\\$\\{(\\w+)\\}";
 
   /**
    * Filters a resource given by <code>inStream</code> 
