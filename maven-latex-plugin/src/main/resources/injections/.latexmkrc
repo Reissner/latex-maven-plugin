@@ -36,14 +36,6 @@ use feature 'signatures';
 #use strict;
 #use warnings;
 
-# Used in general to transform string representations from pom to perl specific representations 
-# maybe there are alternative: yes for true and no for false. Clarify. 
-my %boolStrToVal = (true => 1, false => 0);
-
-# The following three is to determing PDF file to diff if chkDiff is set 
-my $baseDirectory='${baseDirectory}/';# trailing '/' for concatenation 
-my $texSrcDirectory='${texSrcDirectory}/';
-my $diffDirectory='${diffDirectory}/';
 
 sub parseFile($fileName) {
   # The pattern is used to read magic comments. 
@@ -90,6 +82,17 @@ sub parseFile($fileName) {
 
 use Cwd;
 use File::Spec::Functions;
+
+
+# Used in general to transform string representations from pom to perl specific representations 
+# maybe there are alternative: yes for true and no for false. Clarify. 
+my %boolStrToVal = (true => 1, false => 0);
+
+# The following three is to determing PDF file to diff if chkDiff is set 
+my $baseDirectory='${baseDirectory}/';# trailing '/' for concatenation 
+my $texSrcDirectory='${texSrcDirectory}/';
+my $diffDirectory='${diffDirectory}/';
+
 
 # TBD: not ideal foor pdfViaDvi=true: conversion dvi to pdf is needed only once at the end, 
 # whereas this method does conversion dvi to pdf each time also tex to dvi is performed. 
