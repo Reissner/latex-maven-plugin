@@ -84,14 +84,11 @@ use Cwd;
 use File::Spec::Functions;
 
 
-# Used in general to transform string representations from pom to perl specific representations 
+# transforms string representations from pom to perl specific representations 
 # maybe there are alternative: yes for true and no for false. Clarify. 
 my %boolStrToVal = (true => 1, false => 0);
 
-# The following three is to determing PDF file to diff if chkDiff is set 
-my $baseDirectory='${baseDirectory}/';# trailing '/' for concatenation 
-my $texSrcDirectory='${texSrcDirectory}/';
-my $diffDirectory='${diffDirectory}/';
+
 
 
 # TBD: not ideal foor pdfViaDvi=true: conversion dvi to pdf is needed only once at the end, 
@@ -110,10 +107,17 @@ sub mylatex($fileName, @opts) {
   my $timeEnv = "";
   my $epoch_timestamp;
   if ($chkDiffB) {
+    # The following is to determing PDF file to diff if chkDiff is set 
     my $pdfFileOrg=catfile(getcwd, "$fileName.pdf");
+
+    my $baseDirectory='${baseDirectory}/';# trailing '/' for concatenation 
+    my $texSrcDirectory='${texSrcDirectory}/';
+    my $diffDirectory='${diffDirectory}/';
+
     $pdfFileOrg =~ s/\Q$baseDirectory$texSrcDirectory//;
     my $pdfFileDiff = "$baseDirectory$diffDirectory$pdfFileOrg";
     die("File $pdfFileDiff to diff does not exist ") unless (-e $pdfFileDiff);
+
     $epoch_timestamp = int((stat($pdfFileDiff))[9]);# epoch time of last modification # TBD: avoid magic number 9 
     #print "epoch_timestamp: $epoch_timestamp";
     $timeEnv="SOURCE_DATE_EPOCH=$epoch_timestamp FORCE_SOURCE_DATE=1 ";
