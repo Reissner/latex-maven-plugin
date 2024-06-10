@@ -2097,27 +2097,27 @@ public class LatexProcessor extends AbstractLatexProcessor {
       LatexMainDesc desc) throws BuildFailureException {
 
     // running specific compiler given in magic comment 
-    Optional<String> programMagic =
-        desc.groupMatch(LatexMainParameterNames.programMagic);
+    // Optional<String> programMagic =
+    //     desc.groupMatch(LatexMainParameterNames.programMagic);
     List<String> addArgs = new ArrayList<String>();
-    if (programMagic.isPresent()) {
-      addArgs.add("-e");
-      addArgs.add("$programMagic=q/" + programMagic.get() + "/");
-    }
+    // if (programMagic.isPresent()) {
+    //   addArgs.add("-e");
+    //   addArgs.add("$programMagic=q/" + programMagic.get() + "/");
+    // }
 
     // running with specific time stamp if required in magic comment 
-    Optional<String> chkDiffMagic =
-        desc.groupMatch(LatexMainParameterNames.chkDiffMagic);
-    if (chkDiffMagic.isPresent()) {
-      addArgs.add("-e");
-      // isChkDiff implements the same except for latexmk 
-      Optional<String> chkDiffMagicValue =
-      desc.groupMatch(LatexMainParameterNames.chkDiffMagicVal);
-      String chkDiffMagicValueStr = chkDiffMagicValue.isPresent()
-      ? chkDiffMagic.get() 
-      : Boolean.TRUE.toString();// default=true if value not present 
-      addArgs.add("$chkDiffMagic=q/" + chkDiffMagicValueStr + "/");
-    }
+    // Optional<String> chkDiffMagic =
+    //     desc.groupMatch(LatexMainParameterNames.chkDiffMagic);
+    // if (chkDiffMagic.isPresent()) {
+    //   addArgs.add("-e");
+    //   // isChkDiff implements the same except for latexmk 
+    //   Optional<String> chkDiffMagicValue =
+    //   desc.groupMatch(LatexMainParameterNames.chkDiffMagicVal);
+    //   String chkDiffMagicValueStr = chkDiffMagicValue.isPresent()
+    //   ? chkDiffMagic.get() 
+    //   : Boolean.TRUE.toString();// default=true if value not present 
+    //   addArgs.add("$chkDiffMagic=q/" + chkDiffMagicValueStr + "/");
+    // }
 
     // create arguments, both from settings and 
     // the optional ones from magic comments 

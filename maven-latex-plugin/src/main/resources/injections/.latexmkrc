@@ -97,20 +97,16 @@ sub mylatex($fileName, @opts) {
 
   # This presupposes that latexmk is invoked with the filename without extension 
   ($programMagic, $chkDiffMagic) = parseFile("$fileName.tex");
- 
-  #my @args = @_;
-  # Possible preprocessing here
-  # the options given by the LaTeX-Builder are in ${latex2pdfOptions}, 
-  # the options passed by latexmk were in %O and are thus part of @args 
-  # the last part of @args is passed also by latexmk as %S
-  #print("args by latexmk: @args\n");
-  my $latexCommand = "${latex2pdfCommand}";
+
+  # override settings if magic comment is present 
+  my $latexCommand = ($programMagic ? $programMagic : "${latex2pdfCommand}");
+  my $chkDiffB     = ($chkDiffMagic ? $chkDiffMagic : "${chkDiff}");
+  $chkDiffB = $boolStrToVal{$chkDiffB};
+
   my $timeEnv = "";
   my $epoch_timestamp;
   # diff either by settings or by magic comment 
   #my $chkDiffB = ($boolStrToVal{'${chkDiff}'} or defined($chkDiffMagic));
-  my $chkDiffB = (defined($chkDiffMagic) ? $chkDiffMagic : "${chkDiff}");
-  $chkDiffB = $boolStrToVal{$chkDiffB};
   if ($chkDiffB) {
     my $pdfFileOrg=catfile(getcwd, "$fileName.pdf");
     $pdfFileOrg =~ s/\Q$baseDirectory$texSrcDirectory//;
@@ -120,11 +116,6 @@ sub mylatex($fileName, @opts) {
     $timeEnv="SOURCE_DATE_EPOCH=$epoch_timestamp FORCE_SOURCE_DATE=1 ";
   }
 
-  # $programMagic is set by invoking something like 
-  # latexmk -e '$programMagic=pdflatex'
-  if (defined($programMagic)) {
-    $latexCommand = $programMagic;
-  }
   my $pdfViaDvi = $boolStrToVal{'${pdfViaDvi}'};
   die "Error: Boolean expected but found '{$boolStrToVal}'. " unless exists($boolStrToVal{'${pdfViaDvi}'});
   # note that exactly one of the two options -no-pdf -output-format=dvi applies; 
