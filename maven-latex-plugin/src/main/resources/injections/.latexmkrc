@@ -50,32 +50,34 @@ my $patternLatexMainFile="${patternLatexMainFile}";
 print("patternLatexMainFile: \n$patternLatexMainFile");
 
 sub parseFile($fileName) {
-  open my $info, $fileName or die "Could not open $fileName: $!";
+  open my $info, $fileName or die "Could not open $fileName: '$!'";
+  # the lines read so far (each line with newline)
   my $lines = "";
-  while ( my $line = <$info> ) {
+  while (my $line = <$info>) {
     print "$line\n";
     $lines = "$lines$line";
-    if ( $line =~ $patternLatexMainFile ) {
+    if ($line =~ $patternLatexMainFile) {
       #print("line matches |$+{programMagic}|\n");
       print("line matches |$+{docClass}|\n");
       print("lines: \n$lines\n");
-      if ($lines =~ /$patternLatexMainFile/ ) {
-        print("preamble matches: \n");
-        print("programMagic=$+{programMagic}\n");
-        print("chkDiffMagic=$+{chkDiffMagic} value=$+{chkDiffMagicVal}\n");
-        print("latexmkMagic=$+{latexmkMagic} value=$+{latexmkMagicVal}\n");
-        print("targetsMagic=$+{targetsMagic}\n");
-        print("docClass: $+{docClass}\n");
-      } else {
-        print("preamble does not match\n");
+      close $info;
+      if ($lines !~ /$patternLatexMainFile/) {
+        die("$fileName is no latex main file: preamble does not match\n");
       }
-      last;
-    } else {
-      print("line does not match\n");
+      print("preamble matches: \n");
+      print("programMagic=$+{programMagic}\n");# interesting 
+      print("chkDiffMagic=$+{chkDiffMagic} value=$+{chkDiffMagicVal}\n");# interesting 
+      print("latexmkMagic=$+{latexmkMagic} value=$+{latexmkMagicVal}\n");
+      print("targetsMagic=$+{targetsMagic}\n");
+      print("docClass: $+{docClass}\n");
+      my $chkDiffMagic = ($+{chkDiffMagic} and not $+{chkDiffMagicVal})
+      ? 'true' : $+{chkDiffMagicVal};
+      return ($+{programMagic}, $chkDiffMagic)
     }
-    #last if $. == 5;
+    # Here, the line does not match: go on 
   }
   close $info;
+  die("$fileName is no latex main file: no line match\n");
 }
 
 #parseFile($ARGV[0]);
@@ -87,6 +89,9 @@ use File::Spec::Functions;
 # whereas this method does conversion dvi to pdf each time also tex to dvi is performed. 
 # Thus in the long run only run dvi2pdf; the rest is done with rules. 
 sub mylatex($fileName, @opts) {
+
+  # This presupposes that latexmk is invoked with the filename without extension 
+  ($programMagic, $chkDiffMagic) = parseFile("$fileName.tex");
  
   #my @args = @_;
   # Possible preprocessing here
