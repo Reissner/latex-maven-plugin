@@ -83,6 +83,22 @@ sub parseFile($fileName) {
 use Cwd;
 use File::Spec::Functions;
 
+sub getTimestamp($fileName) {
+  # The following is to determing PDF file to diff if chkDiff is set 
+  my $pdfFileOrg=catfile(getcwd, "$fileName.pdf");
+
+  my $baseDirectory='${baseDirectory}/';# trailing '/' for concatenation 
+  my $texSrcDirectory='${texSrcDirectory}/';
+  my $diffDirectory='${diffDirectory}/';
+
+  $pdfFileOrg =~ s/\Q$baseDirectory$texSrcDirectory//;
+  my $pdfFileDiff = "$baseDirectory$diffDirectory$pdfFileOrg";
+  die("File $pdfFileDiff to diff does not exist ") unless (-e $pdfFileDiff);
+  my $epoch_timestamp = int((stat($pdfFileDiff))[9]);# epoch time of last modification # TBD: avoid magic number 9 
+  
+  return $epoch_timestamp;
+}
+
 
 # TBD: not ideal foor pdfViaDvi=true: conversion dvi to pdf is needed only once at the end, 
 # whereas this method does conversion dvi to pdf each time also tex to dvi is performed. 
@@ -104,18 +120,18 @@ sub mylatex($fileName, @opts) {
   my $timeEnv = "";
   my $epoch_timestamp;
   if ($chkDiffB) {
-    # The following is to determing PDF file to diff if chkDiff is set 
-    my $pdfFileOrg=catfile(getcwd, "$fileName.pdf");
+    # # The following is to determing PDF file to diff if chkDiff is set 
+    # my $pdfFileOrg=catfile(getcwd, "$fileName.pdf");
 
-    my $baseDirectory='${baseDirectory}/';# trailing '/' for concatenation 
-    my $texSrcDirectory='${texSrcDirectory}/';
-    my $diffDirectory='${diffDirectory}/';
+    # my $baseDirectory='${baseDirectory}/';# trailing '/' for concatenation 
+    # my $texSrcDirectory='${texSrcDirectory}/';
+    # my $diffDirectory='${diffDirectory}/';
 
-    $pdfFileOrg =~ s/\Q$baseDirectory$texSrcDirectory//;
-    my $pdfFileDiff = "$baseDirectory$diffDirectory$pdfFileOrg";
-    die("File $pdfFileDiff to diff does not exist ") unless (-e $pdfFileDiff);
+    # $pdfFileOrg =~ s/\Q$baseDirectory$texSrcDirectory//;
+    # my $pdfFileDiff = "$baseDirectory$diffDirectory$pdfFileOrg";
+    # die("File $pdfFileDiff to diff does not exist ") unless (-e $pdfFileDiff);
 
-    $epoch_timestamp = int((stat($pdfFileDiff))[9]);# epoch time of last modification # TBD: avoid magic number 9 
+    $epoch_timestamp = getTimestamp($fileName);
     #print "epoch_timestamp: $epoch_timestamp";
     $timeEnv="SOURCE_DATE_EPOCH=$epoch_timestamp FORCE_SOURCE_DATE=1 ";
   }
