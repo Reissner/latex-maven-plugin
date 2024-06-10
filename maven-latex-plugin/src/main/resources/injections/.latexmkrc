@@ -45,18 +45,19 @@ my $baseDirectory='${baseDirectory}/';# trailing '/' for concatenation
 my $texSrcDirectory='${texSrcDirectory}/';
 my $diffDirectory='${diffDirectory}/';
 
-# The following is to be able to read magic comments. 
-my $patternLatexMainFile="${patternLatexMainFile}";
-print("patternLatexMainFile: \n$patternLatexMainFile");
-
 sub parseFile($fileName) {
-  open my $info, $fileName or die "Could not open $fileName: '$!'";
+  # The pattern is used to read magic comments. 
+  # Double quotes because the pattern contains single quotes; 
+  # no interpolation 
+  my $patternLatexMainFile="${patternLatexMainFile}";
+  print("patternLatexMainFile: \n$patternLatexMainFile\n");
+  open my $info, $fileName or die "Could not open $fileName: $!";
   # the lines read so far (each line with newline)
   my $lines = "";
   while (my $line = <$info>) {
     print "$line\n";
     $lines = "$lines$line";
-    if ($line =~ $patternLatexMainFile) {
+    if ($line =~ /$patternLatexMainFile/) {
       #print("line matches |$+{programMagic}|\n");
       #print("line matches |$+{docClass}|\n");
       #print("lines: \n$lines\n");
@@ -105,19 +106,17 @@ sub mylatex($fileName, @opts) {
 
   my $timeEnv = "";
   my $epoch_timestamp;
-  # diff either by settings or by magic comment 
-  #my $chkDiffB = ($boolStrToVal{'${chkDiff}'} or defined($chkDiffMagic));
   if ($chkDiffB) {
     my $pdfFileOrg=catfile(getcwd, "$fileName.pdf");
     $pdfFileOrg =~ s/\Q$baseDirectory$texSrcDirectory//;
     my $pdfFileDiff = "$baseDirectory$diffDirectory$pdfFileOrg";
+    die("File $pdfFileDiff to diff does not exist ") unless (-e $pdfFileDiff);
     $epoch_timestamp = int((stat($pdfFileDiff))[9]);# epoch time of last modification # TBD: avoid magic number 9 
     #print "epoch_timestamp: $epoch_timestamp";
     $timeEnv="SOURCE_DATE_EPOCH=$epoch_timestamp FORCE_SOURCE_DATE=1 ";
   }
 
   my $pdfViaDvi = $boolStrToVal{'${pdfViaDvi}'};
-  die "Error: Boolean expected but found '{$boolStrToVal}'. " unless exists($boolStrToVal{'${pdfViaDvi}'});
   # note that exactly one of the two options -no-pdf -output-format=dvi applies; 
   # the other is ignored. 
   # TBD: eliminate: xelatex emits a warning because -output-format is unknown 
