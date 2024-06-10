@@ -58,20 +58,25 @@ sub parseFile($fileName) {
     $lines = "$lines$line";
     if ($line =~ $patternLatexMainFile) {
       #print("line matches |$+{programMagic}|\n");
-      print("line matches |$+{docClass}|\n");
-      print("lines: \n$lines\n");
+      #print("line matches |$+{docClass}|\n");
+      #print("lines: \n$lines\n");
       close $info;
       if ($lines !~ /$patternLatexMainFile/) {
         die("$fileName is no latex main file: preamble does not match\n");
       }
       print("preamble matches: \n");
-      print("programMagic=$+{programMagic}\n");# interesting 
-      print("chkDiffMagic=$+{chkDiffMagic} value=$+{chkDiffMagicVal}\n");# interesting 
-      print("latexmkMagic=$+{latexmkMagic} value=$+{latexmkMagicVal}\n");
-      print("targetsMagic=$+{targetsMagic}\n");
+      {
+        no warnings;
+        print("programMagic=$+{programMagic}\n");# interesting 
+        print("chkDiffMagic=$+{chkDiffMagic} value=$+{chkDiffMagicVal}\n");# interesting 
+        print("latexmkMagic=$+{latexmkMagic} value=$+{latexmkMagicVal}\n");# intentionally ignored 
+        print("targetsMagic=$+{targetsMagic}\n");
+      }
       print("docClass: $+{docClass}\n");
+      # Make default value explicit 
       my $chkDiffMagic = ($+{chkDiffMagic} and not $+{chkDiffMagicVal})
       ? 'true' : $+{chkDiffMagicVal};
+      # return the magic comments relevant in this context 
       return ($+{programMagic}, $chkDiffMagic)
     }
     # Here, the line does not match: go on 
