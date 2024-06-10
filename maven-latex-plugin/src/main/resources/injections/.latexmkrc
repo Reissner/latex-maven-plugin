@@ -84,17 +84,14 @@ use Cwd;
 use File::Spec::Functions;
 
 
-# transforms string representations from pom to perl specific representations 
-# maybe there are alternative: yes for true and no for false. Clarify. 
-my %boolStrToVal = (true => 1, false => 0);
-
-
-
-
 # TBD: not ideal foor pdfViaDvi=true: conversion dvi to pdf is needed only once at the end, 
 # whereas this method does conversion dvi to pdf each time also tex to dvi is performed. 
 # Thus in the long run only run dvi2pdf; the rest is done with rules. 
 sub mylatex($fileName, @opts) {
+
+  # transforms string representations from pom to perl specific representations 
+  # maybe there are alternative: yes for true and no for false. Clarify. 
+  my %boolStrToVal = (true => 1, false => 0);
 
   # This presupposes that latexmk is invoked with the filename without extension 
   ($programMagic, $chkDiffMagic) = parseFile("$fileName.tex");
