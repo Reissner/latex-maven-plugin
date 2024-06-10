@@ -45,6 +45,41 @@ my $baseDirectory='${baseDirectory}/';# trailing '/' for concatenation
 my $texSrcDirectory='${texSrcDirectory}/';
 my $diffDirectory='${diffDirectory}/';
 
+# The following is to be able to read magic comments. 
+my $patternLatexMainFile="${patternLatexMainFile}";
+print("patternLatexMainFile: \n$patternLatexMainFile");
+
+sub parseFile($fileName) {
+  open my $info, $fileName or die "Could not open $fileName: $!";
+  my $lines = "";
+  while ( my $line = <$info> ) {
+    print "$line\n";
+    $lines = "$lines$line";
+    if ( $line =~ $patternLatexMainFile ) {
+      #print("line matches |$+{programMagic}|\n");
+      print("line matches |$+{docClass}|\n");
+      print("lines: \n$lines\n");
+      if ($lines =~ /$patternLatexMainFile/ ) {
+        print("preamble matches: \n");
+        print("programMagic=$+{programMagic}\n");
+        print("chkDiffMagic=$+{chkDiffMagic} value=$+{chkDiffMagicVal}\n");
+        print("latexmkMagic=$+{latexmkMagic} value=$+{latexmkMagicVal}\n");
+        print("targetsMagic=$+{targetsMagic}\n");
+        print("docClass: $+{docClass}\n");
+      } else {
+        print("preamble does not match\n");
+      }
+      last;
+    } else {
+      print("line does not match\n");
+    }
+    #last if $. == 5;
+  }
+  close $info;
+}
+
+#parseFile($ARGV[0]);
+
 use Cwd;
 use File::Spec::Functions;
 
