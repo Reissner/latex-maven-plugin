@@ -46,6 +46,9 @@ import com.florianingerl.util.regex.Pattern;
 
 // import java.lang.annotation.Annotation;
 
+
+import org.apache.commons.text.StringEscapeUtils;
+
 import org.apache.maven.plugins.annotations.Parameter;
 // import org.apache.maven.plugin.descriptor.Parameter;
 
@@ -3437,6 +3440,7 @@ public class Settings {
 
     // Read File Line By Line
     Matcher matcher;
+    String replacement;
 
     // throws IOExeption if an IO error occurs
     while ((strLine = bufReader.readLine()) != null) {
@@ -3456,7 +3460,16 @@ public class Settings {
         // System.out.println("val: |"+props.get(matcher.group(1))+"|");
         assert props.containsKey(matcher.group(1)) : "Key '" + matcher.group(1)
             + "' not found. ";
-        strLine = matcher.replaceFirst(props.get(matcher.group(1)));
+        replacement = props.get(matcher.group(1));
+        // TBD: Essentially, this is only appropriate for injection of .latexmkrc 
+        // Here also goes into that java escape and perl escape are the same. 
+        // What is needed is treatment depending on the language of the injection. 
+        // To that end, the language must be implemented as an enum. 
+        // the comment character tied to the injection directly, 
+        // must be tied to the language which is tied to the injection. 
+        replacement = StringEscapeUtils.escapeJava(replacement).replace("\\",  "\\\\");
+
+        strLine = matcher.replaceFirst(replacement);
 
         // filter next line 
       }
