@@ -1,0 +1,4 @@
+PWD /home/ernst/OpenSource/LatexMavenPluginGit/latex-maven-plugin/maven-latex-plugin/src/main/resources/docsCmp/testMagicComments
+INPUT /etc/texmf/web2c/texmf.cnf
+INPUT /usr/share/texmf/web2c/texmf.cnf
+INPUT /var/lib/texmf/web2c/pdftex/latex.fmt
