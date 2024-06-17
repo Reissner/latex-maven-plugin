@@ -1384,20 +1384,29 @@ Calling from project root
   mvn latex:inj -Dlatex.injections=ntlatex,vmdiff
 \end{Verbatim}
 %
-injects the according files 
-\texttt{ntlatex} and \href{\urlSite fromMain/ntlatex}{vmdiff}. 
+injects the according files \texttt{ntlatex} and \texttt{vmdiff}. 
 
-The injection, \texttt{ntlatex} 
+The injection \texttt{ntlatex} 
 injects the file \href{\urlSite fromMain/ntlatex}{ntlatex} 
-with \texttt{\$\{latex2pdfCommand\}} 
-replaced by the \LaTeX{} compiler specified in the configuration. 
-This is a \LaTeX{} compiler with timestamp 0 which guarantees reproducibility 
-under certain circumstances. 
+which runs the \LaTeX{} compiler as specified in the pom, or in the magic comments if present. 
+The latter override the former. 
+This invocation takes also processing time into account to guarantee reproducibility 
+if so configured. % TBD: in future also the timezone, but the details are tricky: reference 
+As \tool{latexmk} is, also \texttt{ntlatex} shall be independent of the configuration given by the pom. 
+This is realized in the same way, namely by encoding the configuration in the injection \texttt{.latexmkrc}. 
+The downside is, that \texttt{ntlatex} like \tool{latexmk} requies Perl to work. 
 For details see Section~\ref{sec:chkReprod} on reproducibility. 
 
 Complementary to this \texttt{vmdiff} is a diff tool for PDF files 
 combining visual equality checked with \texttt{diff-pdf-visually} 
-with equality of meta data checked via \texttt{pdfinfo}. 
+with equality of metadata checked via \texttt{pdfinfo} 
+if the files are visually the same. 
+It is realized as a bash script \href{\urlSite fromMain/ntlatex}{vmdiff} and requires no installation 
+except \texttt{diff-pdf-visually} and \texttt{pdfinfo}. 
+% TBD: clarify: elsewhere we also use exiftool for similar tasks. 
+% but the according output must be filtered a bit. 
+% There is a category for tools reading metadata, 
+% but it is not clear whether pdfinfo and exiftool belong to the same category in the long run. 
 
 \subsection{Script \texttt{(de)pythontexW} patching \texttt{(de)pythontex} }% chktex 36
 \label{subsec:pythontexW}
