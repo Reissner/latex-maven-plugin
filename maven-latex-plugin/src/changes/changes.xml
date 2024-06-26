@@ -1037,6 +1037,21 @@ The details are in PdfMojoTest.java and the consequence for pom.xml is that chkD
 
       <!-- TBD: document parameters pdfMetainfoCommand and pdfMetainfoOptions. -->
 
+      <!-- reproducibility check is based on the assumption, 
+       that two CreationTimes in raw format as specified in PDF2, Section 7.9.4 
+       are equal if and only if they are equal in string form. 
+       This is true only if there is no abbreviation and if timezone is given explicitly 
+       and if UTC is always represented as Z not as +00 or that like. 
+       Maybe one has to ask the compiler implementors to restrict specification accordinly. 
+       An alternative would be to parse time and display in canonical form. 
+       This shall be the long form and canonical forms shall be 1-1. 
+       
+       A way to implement this, is via exiftool which is able to write metadata. 
+       More performant is of course strict implementation of latex compiler. 
+       I think reproducibiliy is a good argument. 
+       Maybe even possible to talk to specifiers of PDF. 
+       -->
+
     <release version="2.1" date="2023-08-28" description="build with latexmk and generalized reproducibility">
       <action dev='reissner' type='fix'>
         logging: file are no longer absolute 
