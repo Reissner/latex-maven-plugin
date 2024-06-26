@@ -1199,8 +1199,33 @@ avoiding verbose output and backing up the output log-file. -->
       Thus <code>diff-pdf-visually</code> is not allowed, 
       because uses different return code: exchanging 1 and 2. 
       Thus usable for a wrapper only. -->
-
             <diffPdfCommand>diff</diffPdfCommand>
+
+
+            <!-- Command to retrieve metainfo from PDF files. 
+            Essentially, there are two possibilities, 
+            'exiftool' or 'pdfinfo' 
+            but currently this software is restricted to the latter. 
+            At time of this writing, only creation time is considered. 
+            Note that meta info CreationTime is not identical 
+            with creation time in a file system. 
+            
+            The default value is 'pdfinfo'.  -->
+            <pdfMetainfoCommand>pdfinfo</pdfMetainfoCommand>
+
+            <!-- The options for the command 'pdfMetainfoCommand' 
+            which is currently always 'pdfinfo'. 
+            At time of this writing, only creation time is considered. 
+            This software has little flexibility in treating various time formats, 
+            so it must be decided. 
+            Format offered by 'pdfinfo' 
+            most commonly known and easily converted to the required epoch time, 
+            is really according to ISO 8601. 
+            This motivates '-isodates' to be a mandatory option. 
+            Further options do not make sense, 
+            as currently only creation time is used. 
+            So '-isodates' is more than a mere default value. -->
+            <pdfMetainfoOptions>-isodates</pdfMetainfoOptions>
 
             <!-- The latexmk command to create a pdf-file from a latex file and other files. 
               The default value is <code>latexmk</code> there will be hardly a reason to change it. 

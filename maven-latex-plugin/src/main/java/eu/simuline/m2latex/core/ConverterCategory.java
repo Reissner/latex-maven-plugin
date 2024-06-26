@@ -108,6 +108,11 @@ enum ConverterCategory {
 			return "dvi2pdf";
 		}
 	},
+  MetaInfoPdf() {
+    String getExtName() {
+			return "pdfMetainfo";
+		}
+  },
 	MetaPost() {
 		String getExtName() {
 			return "metapost";

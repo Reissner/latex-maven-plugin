@@ -1921,6 +1921,108 @@ public class Settings {
   @Parameter(name = "diffPdfCommand", defaultValue = "diff")
   private String diffPdfCommand = "diff";
 
+  // an alternative would be exiftool. 
+  // Well, then no option is required but result is not strict ISO 8601 but maybe works anyway
+  // but one has to make the keys configurable: 
+  // | tool     | exiftool    | pdfinfo         |
+  // | -------- | ----------- | --------------- |
+  // |          | File Size   | File size       |
+  // |          | MIME Type   |                 |
+  // |          | PDF Version | PDF version     |
+  // |          | Linearized  | ---             |
+  // |          | Page Count  | Pages           |
+  // |          | Page Mode   | ---             |
+  // |          | Author      | Author          |
+  // |          | Title       | Title           |
+  // |          | Subject     | Subject         |
+  // |          | Creator     | Creator         |
+  // |          | Producer    | Producer        |
+  // |          | Keywords    | Keywords        |
+  // |          | Create Date | CreationDate    |
+  // |          | Modify Date | ModDate         |
+  // |          | ---         | Custom Metadata |
+  // |          | ---         | Metadata Stream |
+  // |          | ---         | Tagged          |
+  // |          | ---         | UserProperties  |
+  // |          | ---         | Suspects        |
+  // |          | ---         | Form            |
+  // |          | ---         | JavaScript      |
+  // |          | ---         | Encrypted       |
+  // |          | ---         | Page size       |
+  // |          | ---         | Page rot        |
+  // |          | ---         | Optimized       |
+  //
+  // Also form differs: 
+  // | tool     | key-value line                                         |
+  // | -------- | ------------------------------------------------------ |
+  // | exiftool | Modify Date                     : 2024:06:22 13:00:54Z |
+  // | pdfinfo  | ModDate:         2024-06-22T13:00:54Z                  |
+  // also observed in Keywords: , with blank vs ; without blanks 
+  // File sise in bytes or in kb
+  // The keys may vary, the location of the colon and also the value is not completely standardized. 
+
+
+
+
+  // TBD: eliminated hard coded keys and that like. 
+  // exiftool is based on a perl lib, both tools are cross platform 
+  // pdfinfo is in poppler and thus in texlive, so cross plattform 
+  // 
+  // To get ISO 8601 format, use 
+  // exiftool -dateformat %Y-%m-%dT%H:%M:%S%z xxx.pdf
+  // pdfinfo -isodates xxx.pdf is almost equivalent. 
+  // Uses Z for utc whereas exiftool uses +0000 
+  // also number of digits of timezone varies. 
+  // Note that the keys differ, 
+  // which prevents the author from supporting both, pdfinfo and exiftool. 
+  // I think, there are canonical keys, namely these specified by the PDF format. 
+  // To be maximally flexible, one can use a mapping 
+  // from the tool specific keys to those specified for pdf. 
+  // This software has to convert to epoch time, 
+  // to write into SOURCE_DATE_EPOCH. 
+  // exiftool can do this at once: exiftool -dateformat %s xxx.pdf
+
+  /**
+   * Command to retrieve metainfo from PDF files. 
+   * Essentially, there are two possibilities, 
+   * <code>exiftool</code> or <code>pdfinfo</code> 
+   * but currently this software is restricted to the latter. 
+   * At time of this writing, only creation time is considered. 
+   * Note that meta info CreationTime is not identical 
+   * with creation time in a file system. 
+   * 
+   * The default value is <code>pdfinfo</code>. 
+   */
+  @RuntimeParameter
+  @Parameter(name = "pdfMetainfoCommand", defaultValue = "pdfinfo")
+  private String pdfMetainfoCommand = "pdfinfo";
+
+  // although rawdates are stored as defined in {Pdf20}, Section~7.9.4, 
+  // we request isodates according to ISO 8601 
+  // for further processing and better human-readability. 
+  // The function relies on rawdates 
+  // because one and the same date has a unique representation. 
+  // doing without may work as well, but not so sure 
+
+  /**
+   * The options for the command {@link #pdfMetainfoCommand} 
+   * which is currently always <code>pdfinfo</code>. 
+   * At time of this writing, only creation time is considered. 
+   * This software has little flexibility in treating various time formats, 
+   * so it must be decided. 
+   * Format offered by <code>pdfinfo</code> 
+   * most commonly known and easily converted to the required epoch time, 
+   * is really according to ISO 8601. 
+   * This motivates <code>-isodates</code> to be a mandatory option. 
+   * Further options do not make sense, 
+   * as currently only creation time is used. 
+   * So <code>-isodates</code> is more than a mere default value. 
+   */
+  @RuntimeParameter
+  @Parameter(name = "pdfMetainfoOptions", defaultValue = "-isodates")
+  private String pdfMetainfoOptions = "-isodates";
+  
+
   /**
    * The latexmk command to create a pdf-file from a latex file and other files. 
    * The default value is <code>latexmk</code> there will be hardly a reason to change it. 
@@ -2648,6 +2750,14 @@ public class Settings {
     return getCommand(ConverterCategory.DiffPdf);
   }
 
+  public String getPdfMetainfoCommand() throws BuildFailureException {
+    return getCommand(ConverterCategory.MetaInfoPdf);
+  }
+
+  public String getPdfMetainfoOptions() {
+    return this.pdfMetainfoOptions;
+  }
+
   public String getLatexmkCommand() throws BuildFailureException {
     return getCommand(ConverterCategory.Latexmk);
   }
@@ -3299,6 +3409,14 @@ public class Settings {
 
   public void setDiffPdfCommand(String diffPdfCommand) {
     this.diffPdfCommand = diffPdfCommand;
+  }
+
+  public void setPdfMetainfoCommand(String pdfMetainfoCommand) {
+    this.pdfMetainfoCommand = pdfMetainfoCommand;
+  }
+
+  public void setPdfMetainfoOptions(String pdfMetainfoOptions) {
+    this.pdfMetainfoOptions = beautifyOptions(pdfMetainfoOptions);
   }
 
   public void setLatexmkCommand(String latexmkCommand) {

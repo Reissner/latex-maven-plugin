@@ -531,7 +531,7 @@ enum Converter {
 
     // TBD: make specific 
     ConverterCategory getCategory() {
-      return ConverterCategory.Unspecific;
+      return ConverterCategory.MetaInfoPdf;
     }
   },
   ExifTool {
@@ -556,6 +556,7 @@ enum Converter {
     }
 
     // TBD: make specific 
+    // could be PdfMetaInfo as pdfinfo 
     ConverterCategory getCategory() {
       return ConverterCategory.Unspecific;
     }
