@@ -37,7 +37,7 @@ use feature 'signatures';
 #use warnings;
 
 
-sub parseFile($fileName) {
+sub parseTexFile($fileName) {
   # The pattern is used to read magic comments. 
   # Double quotes because the pattern contains single quotes; 
   # no interpolation 
@@ -78,14 +78,18 @@ sub parseFile($fileName) {
   die("$fileName is no latex main file: no line match\n");
 }
 
-#parseFile($ARGV[0]);
+#parseTexFile($ARGV[0]);
 
 use Cwd;
 use File::Spec::Functions;
+use Capture::Tiny 'capture_stdout';
 
-sub getTimestamp($fileName) {
+use DateTime;
+use DateTime::Format::ISO8601;
+
+sub getTimestampDiff($fileName) {
   # The following is to determing PDF file to diff if chkDiff is set 
-  my $pdfFileOrg=catfile(getcwd, "$fileName.pdf");
+  my $pdfFileOrg=catfile(getcwd, $fileName);
 
   my $baseDirectory='${baseDirectory}/';# trailing '/' for concatenation 
   my $texSrcDirectory='${texSrcDirectory}/';
@@ -93,11 +97,38 @@ sub getTimestamp($fileName) {
 
   $pdfFileOrg =~ s/\Q$baseDirectory$texSrcDirectory//;
   my $pdfFileDiff = "$baseDirectory$diffDirectory$pdfFileOrg";
-  die("File $pdfFileDiff to diff does not exist ") unless (-e $pdfFileDiff);
+  if (!-e $pdfFileDiff) {
+    # Here, $epoch_timestamp is not defined 
+    return undef;
+  }
+  #die("File $pdfFileDiff to diff does not exist ") unless ;
   my $epoch_timestamp = int((stat($pdfFileDiff))[9]);# epoch time of last modification # TBD: avoid magic number 9 
-  
+
+  my $creationDateEpoch = getCreationTimeMetaEpoch($pdfFileDiff);
+  # my ($stdout, $res) = capture_stdout { system("${pdfMetainfoCommand} ${pdfMetainfoOptions} $pdfFileDiff") };
+  # print ("metainfo ok: $res\n");
+  # print ("metainfos: \n$stdout\n");
+  # $stdout =~ /CreationDate:\s*(?<creationDate>.*)\R/ or die("${pdfMetainfoCommand} did not get CreationDate. ");
+  # print ("CreationDate: $+{creationDate}");
+  # my $dt = DateTime::Format::ISO8601->parse_datetime($+{creationDate});
+  print("+++internal epoch time: $creationDateEpoch");
+  print("+++file     epoch time: $epoch_timestamp");
   return $epoch_timestamp;
 }
+
+sub getCreationTimeMetaEpoch($pdfFile) {
+  my ($stdout, $res) = capture_stdout { system("${pdfMetainfoCommand} ${pdfMetainfoOptions} $pdfFile") };
+  print ("metainfo ok: $res\n");
+  print ("metainfos: \n$stdout\n");
+  $stdout =~ /CreationDate:\s*(?<creationDate>.*)\R/ or die("${pdfMetainfoCommand} did not get CreationDate. ");
+  print ("CreationDate: $+{creationDate}");
+  my $dt = DateTime::Format::ISO8601->parse_datetime($+{creationDate});
+  my $creationDateEpoch=$dt->epoch();
+  print("internal epoch time: $creationDateEpoch");
+  return $creationDateEpoch;
+}
+
+
 
 
 # TBD: not ideal foor pdfViaDvi=true: conversion dvi to pdf is needed only once at the end, 
@@ -110,7 +141,7 @@ sub mylatex($fileName, @opts) {
   my %boolStrToVal = (true => 1, false => 0);
 
   # This presupposes that latexmk is invoked with the filename without extension 
-  ($programMagic, $chkDiffMagic) = parseFile("$fileName.tex");
+  ($programMagic, $chkDiffMagic) = parseTexFile("$fileName.tex");
 
   # override settings if magic comment is present 
   my $latexCommand = ($programMagic ? $programMagic : "${latex2pdfCommand}");
@@ -131,9 +162,19 @@ sub mylatex($fileName, @opts) {
     # my $pdfFileDiff = "$baseDirectory$diffDirectory$pdfFileOrg";
     # die("File $pdfFileDiff to diff does not exist ") unless (-e $pdfFileDiff);
 
-    $epoch_timestamp = getTimestamp($fileName);
-    #print "epoch_timestamp: $epoch_timestamp";
-    $timeEnv="SOURCE_DATE_EPOCH=$epoch_timestamp FORCE_SOURCE_DATE=1 ";
+    $epoch_timestamp = getTimestampDiff("$fileName.pdf");
+    if (defined($epoch_timestamp)) {
+      # Here, the reference file exists 
+      # For lualatex setting TZ=UTC is needed but FORCE_SOURCE_DATE is ignored 
+      # For pdflatex setting TZ=UTC is superfluous but FORCE_SOURCE_DATE is needed; 
+      # the same for xelatex  
+      $timeEnv="TZ=UTC SOURCE_DATE_EPOCH=$epoch_timestamp FORCE_SOURCE_DATE=1 ";
+    } else {
+      # Here, the reference PDF file does not exist, so local time but with GMT timezone 
+      $timeEnv="TZ=UTC ";
+    }
+    # in both cases note the trailing blank 
+    # The settings are required both for direct compilation into PDF and for compilation via DVI 
   }
 
   my $pdfViaDvi = $boolStrToVal{'${pdfViaDvi}'};
@@ -143,11 +184,17 @@ sub mylatex($fileName, @opts) {
   my $addArgs = $pdfViaDvi ? "-no-pdf -output-format=dvi " : "";
   my $res = system("$timeEnv$latexCommand ${latex2pdfOptions} $addArgs @opts $fileName");
   if ($pdfViaDvi) {
-    $res = $res or system("${dvi2pdfCommand} ${dvi2pdfOptions} $fileName");
+    # Note that $timeEnv is first of all suitable for the latex compiler. 
+    # strictly speaking FORCE_SOURCE_DATE is not needed; the other variables are needed 
+    # to set up 
+    $res = $res or system("$timeEnv${dvi2pdfCommand} ${dvi2pdfOptions} $fileName");
   }
   #print("invoke: ${latex2pdfCommand} ${latex2pdfOptions} @opts $fileName\n");
   #return system("${latex2pdfCommand} ${latex2pdfOptions} @opts $fileName");
   if ($chkDiffB) {
+    if (not defined($epoch_timestamp)) {
+      $epoch_timestamp=getCreationTimeMetaEpoch("$fileName.pdf");
+    }
     $res = $res or utime($epoch_timestamp, $epoch_timestamp, "$fileName.pdf");
   }
   return $res;
