@@ -551,11 +551,18 @@ This is mainly because of writing permissions.
   \end{minipage}
   } \\
   \texttt{\footnotesize TLP02} 
-  & \texttt{\footnotesize  No file '\$pdfFileCmp' to compare with artifact from '\$texFile'. }  \\
+  & \texttt{\footnotesize Add file '\$pdfFileCmp' to compare with artifact from '\$texFile'! }  \\
   \multicolumn2{|l|}{
   \begin{minipage}{0.95\linewidth}
   The PDF file '\$pdfFileCmp' expected for comparison with the PDF file created from '\$texFile' does not exist. 
   It is expected only if a diff check is configured according to \$chkDiff described in Section~\ref{sec:paramRepro}. 
+
+  This warning is normal if the document is added newly. 
+  Then just copy the created PDF file (maybe preserving modification time) after quality check. 
+  This warning is also normal if a document is actively modified. 
+  Then before building the file '\$pdfFileCmp' shall be removed before compilation 
+  to force this software to assign a new timestamp, e.g. into first page and metadata. 
+
   Currently, that kind of check can be performed for \texttt{pdf} files only. 
   \end{minipage}
   } \\
