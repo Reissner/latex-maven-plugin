@@ -965,17 +965,18 @@ Note that warnings can be declared as simple messages
 and thus cause neither a warning nor an error. 
 \end{minipage}
 } \\
-\texttt{\footnotesize WLP09} & \texttt{\footnotesize For file '\$texFile' targets are not restricted } \\
-                             & \texttt{\footnotesize by document class '\$docClass'. } \\
+\texttt{\footnotesize WLP09} & \texttt{\footnotesize For file '\$texFile' targets are neither specified by magic comment } \\
+                             & \texttt{\footnotesize nor restricted by document class '\$docClass'. } \\
  \multicolumn2{|l|}{
  \begin{minipage}{0.95\linewidth}
- Indicates that the latex main file \texttt{\$texFile} 
- has a document class other than one specified in parameter \texttt{docClassesToTargets} 
- described in Table~\ref{tab:paramGen}. 
+ Indicates that the latex main file \texttt{\$texFile} has neither a magic comment specifying the targets 
+ nor for the document class parameter \texttt{docClassesToTargets} 
+ described in Table~\ref{tab:paramGen} specifies the allowed targets. 
  Since no restriction on targets are known, 
  \texttt{\$texFile} is compiled for all targets given in \texttt{\$targets} 
  given also in Table~\ref{tab:paramGen}. 
- To avoid this warning, just add \texttt{\$docClass} to \texttt{docClassesToTargets}. 
+ To avoid this warning, just add \texttt{\$docClass} to \texttt{docClassesToTargets} 
+ or specify targets by magic comment. 
  \end{minipage}
  } \\
 \end{longtable}

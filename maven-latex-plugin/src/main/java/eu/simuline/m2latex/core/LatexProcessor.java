@@ -271,7 +271,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
     if (possibleTargets == null) {
       // Here, to docClass no restriction is attached 
       this.log.warn("WLP09: For file '" + desc.texFile
-          + "' targets are not restricted by document class '" + docClass
+          + "' targets are neither specified by magic comment nor restricted by document class '" + docClass
           + "'. ");
       return targetSet;
     }
