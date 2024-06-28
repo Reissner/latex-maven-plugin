@@ -1,6 +1,6 @@
 %\DocumentMetadata{uncompress}%pdfversion=1.7,
 \RequirePackage[l2tabu, orthodox]{nag}
-%\DocumentMetadata{uncompress}
+\DocumentMetadata{uncompress,xmp=true}%
 \documentclass[a4paper, english]{article}%scrartcl [12pt, a4paper]
 %\pdfvariable compresslevel 0
 %\pdfcompresslevel 0
@@ -21,6 +21,9 @@
 \usepackage{listings}
 
 \input{../header.tex}
+
+%\usepackage{hyperxmp}
+
 \input{../headerSuppressMetaPDF.tex}
 
 % allows description environments 
@@ -29,11 +32,11 @@
 
 \input{../buildParams.tex}
 
-\hypersetup{
+\hypersetup{%
   pdfinfo={
     Author      ={Ernst Reissner},
     Title       ={Special and common aspects of pdf/dvi/xdvi generators },
-    % Creator     ={unknown}, 
+    %Creator     ={unknown}, 
     % % LaTeX with hyperref; this is uniform for hyperref. 
     % % except for beamer class, then it is LaTeX with Beamer class
     % % else TeX for lua/pdflatex, but  XeTeX output 2023.12.06:0106 for xelatex 
@@ -44,7 +47,7 @@
     % % xdvipdfmx with version and that like for dvi or xelatex; 
     % % pdfTeX-1.40.25, LuaTeX-1.17.0 for pdf
     % % This shall be eliminated. 
-    % CreationDate={unknown},
+    CreationDate={unknown},
     % ModDate     ={unknown},
     % % these two are only overwritten to avoid wrong entry 
     % % when using \texttt{SOURCE\_DATE\_EPOCH=0 FORCE\_SOURCE\_DATE=1}
@@ -52,6 +55,7 @@
     Subject     ={pdf/dvi/xdvi generators},
     Keywords    ={LaTeX;pdflatex;xelatex;lualatex}
   }
+  %pdfsource   ={no latex main file}
 }
 %\usepackage{datetime2}% not with dvi
 
@@ -119,10 +123,11 @@ which should also be treated.
 We treat the options for \texlive{} in Section~\ref{sec:optionsTexlive} 
 and those for \miktex{} in Section~\ref{sec:optionsMiktex}. 
 
-The second subject is treatment of metadata available for PDF files. 
-The motivation here is privacy as part of security 
-and creation of reproducible documents, e.g.\@ for tests. 
-The results of our research is collected in Section~\ref{sec:metaPDF}. 
+The second subject is privacy as part of security 
+and reproducible builds of documents, e.g.\@ for tests. 
+The focus is here on PDF files and comprises besids visible data 
+also metadata. 
+The results of our research is collected in Section~\ref{sec:PDFreprSec}. 
 
 \section{The options for \texlive}\label{sec:optionsTexlive}
 
@@ -405,7 +410,7 @@ Set \texttt{dir} as the directory to write auxiliary files to. \\
 \texttt{-{}-trace[=tracestreams]}     & p&x&- & Enable trace messages. \\
 \texttt{-{}-trie-size=n}              & p&x&- & Set the amount of space for hyphenation patterns. \\
 \texttt{-{}-undump=name}              & p&x&l       & Use name as the name of the format to be used, \dots \\
-\texttt{-{}-utc}                        & -&-&l & Init time to UTC\footnote%
+\texttt{-{}-utc}                      & -&-&l & Init time to UTC\footnote%
    {The same as for \texlive. }.  \\
 \texttt{-{}-version}                  & p&x&l       & Show version information and exit\footnote%
 {The same as for \texlive. }. \\
@@ -486,13 +491,27 @@ These are always off.
 
 
 
-\section{Treatment of metadata for the PDF format}\label{sec:metaPDF}
+\section{Reproducibility and security for PDF documents created}\label{sec:PDFreprSec}
 
-\subsection{The tool chain}\label{subsec:toolchain}
+Of course reproducibility and security are general subjects not tied to a specific format like PDF, 
+but as a first step we undertake a discussion specific for PDF files. 
+This shall be extended step by step. 
 
-Whereas \xelatex{} always produces a XDV file internally as an intermediate step, 
-when creating a PDF file, with the option \texttt{-no-pdf} 
-one can eliminate creation of the PDF file and writing of the intermediate XDV file instead. 
+Reproducible builds are important for tests and for global cooperation. 
+For PDF files besides visible data also so-called metadata must be reproduced. 
+Security is mainly privacy here. 
+Also, besides visible data also metadata shall not expose private data. 
+
+
+To display metadata, we use \texttt{exiftool} and \texttt{pdfinfo}. 
+
+
+\subsection{The tool chains}\label{subsec:toolchain}
+
+Although \xelatex{} always produces a XDV file ias an intermediate step, 
+when creating a PDF file this is eliminated. 
+In contrast, with the option \texttt{-no-pdf} 
+one can eliminate creation of the PDF file and the XDV is not erased. 
 For conversion, of the XDV file to PDF, the option \texttt{-output-driver=CMD} 
 is used which defaults to the command \texttt{xdvipdfmx}. 
 Besides direct creation of a PDF file, 
@@ -519,15 +538,148 @@ As a consequence of the workflow of \xelatex,
 \cmd{ifpdf} provided by package \texttt{iftex} 
 always enters the \cmd{else} branch for \xelatex. 
 
-To display metadata, we use \texttt{exiftool} and \texttt{pdfinfo}. 
+Although this section focuses on PDF format, 
+of course the intermediate format DVI/XDV must be considered by need. 
+The visual appearance is roughly the same, so visual reproducibility of DVI/XDV 
+is almost equivalent with visual reproducibility of PDF, 
+but for metadata one has to distinguish cases where the \LaTeX{} compiler already creates metadata 
+and writes it into \cmd{special} commands in a DVI/XDV file, 
+whereas the PDF creator just includes this data from DVI/XDV 
+from cases where it is the PDF creator which creates metadata, like creation time. 
 
-\subsection{Dates, Times and Time zones}\label{subsec:dateTime}
+
+\subsection{Dates, times and time zones}\label{subsec:dateTime}
 
 Clearly, creation times affect reproducibility quite directly, 
 because usually the date is given in the head page of a document, 
 but it goes also into metadata both directly and indirectly. 
 
-Dates go into at least in the following aspects: in 
+Before discussing aspects of time in the context of PDF creation from \LaTeX, 
+
+
+\subsubsection{Date/time formats and time zones}\label{subsubsec:dateTimeZones}
+
+This section introduces date/time formats, time zones and conversions between. 
+
+The description is started with \emph{epoch time} 
+which is the most important although not well human-readable. 
+It is the number of seconds from start of computer time history, 
+which is agreed to be 
+%
+\begin{verbatim}
+  1970-01-01T00:00:00Z
+\end{verbatim}
+%
+i.e.\@ the point in time, where in timezone UTC (represented by the \texttt Z, zero deviation from UTC) 
+it was start of year 1970, i.e. date \texttt{1970--01--01} and midnight, time \texttt{00:00:00}. 
+It is called epoch time, although nothing special happened like Christs birth. 
+Zero and negative time is allowed. 
+Note, that this does not depend on a time zone, 
+but as human-readable time formats depend on the time zone, 
+conversion from and to epoch time must take time zone into account. 
+
+In fact, the above date is an example of a representation given by~\cite{ISO8601-1}. 
+More general, the timezone is either \texttt Z representing UTC 
+or some deviation from UTC for example with two digits for hours and two digits for minutes. 
+For example the same date as above in time zone two hours earlier (more east) than UTC writes 
+%
+\begin{verbatim}
+  1970-01-01T02:00:00+0200
+\end{verbatim}
+
+Among the standard environment variables in POSIX operating systems 
+is also \texttt{TZ} specifying the time zone 
+as described in \url{https://www.gnu.org/software/libc/manual/html_node/Standard-Environment.html}. 
+We only use the forms based on UTC like so: 
+%
+\begin{verbatim}
+  TZ=UTC, TZ=UTC-02
+\end{verbatim}
+%
+CAUTION: The number is understood as to be added to given time to get UTC, 
+so east of UTC has negative numbers. 
+This is the sign opposite to the representation given by ISO 8601 
+which is the offset to be added to UTC to get time given. 
+
+In Unix and similar operating systems, conversion can be done with \texttt{date}. 
+If a time is given with option \texttt{-d}, 
+this is converted into the format given by the format specifier which starts with \texttt{+}. 
+If no time is given, the current time is assumed. 
+%
+\begin{description}[style=nextline]
+  \item[\texttt{date}] 
+  yields the current date and time with timezone in current locale representation. 
+  The locale is given by the environment variable \texttt{LANG}. 
+  \item[\texttt{date +\%FT\%T\%z}] 
+  yields the current date and time 
+  in form given by ISO 8601 with date given by \texttt{\%F} followed by literal \texttt{T} 
+  followed by time \texttt{\%T} and finally the time zone given by \texttt{\%z}. 
+  \item[\texttt{date -d 'Apr 29 2024' +\%s}] 
+  converts human-readable date into epoch time specified by format \texttt{\%s} 
+  (seconds since 1970-01-01, i.e. epoch time). 
+  \textbf{Caution}: Many formats are recognized, but time zones are \emph{silently ignored}. 
+  For example, 
+  %
+  \begin{verbatim}
+    date -d '2024-06-20T12:03:00+03' +%s
+  \end{verbatim}
+  %
+  silently ignores the timezone \texttt{+03} 
+  and uses the current one which is \texttt{UTC+02}, because me the author is located in Germany. 
+  This can be seen, because the result does not depend on the time zone; 
+  you can use \texttt{+02} or \texttt{Z} signifying UTC or drop: 
+  the result is always \texttt{1718877780}. 
+  
+  To set the time zone, the variable \texttt{TZ} must be used like so: 
+  %
+  \begin{verbatim}
+    TZ=UTC-02 date -d '2024-06-20T12:03:00' +%s
+  \end{verbatim}
+  %
+  Note the sign difference between ISO 8601 representation and \texttt{TZ}. 
+  Since \texttt{UTC+02} is the timezone of the author, the result is still \texttt{1718877780}, 
+  but if using \texttt{TZ=UTC-03}, which is one hour east, 
+  it is one hour, i.e.~\@ \texttt{3600} seconds less which results in epoch time \texttt{1718874180}. 
+  \item[\texttt{date -d '@1718877780' +\%FT\%T\%z}] 
+  converts from epoch time (signified by leading \texttt{@}) into local time zone resulting in 
+  %
+  \begin{verbatim}
+    2024-06-20T12:03:00+0200
+  \end{verbatim}
+  %
+  Since the time zone of the author is currently \texttt{GTM+02}, or with minutes \texttt{GTM+0200}
+  this is what the resulting time string ends with. 
+  \item[\texttt{TZ=UTC-03 date -d '@1718877780' +\%FT\%T\%z}] 
+  converts from epoch time (signified by leading \texttt{@}) into time zone given by \texttt{TZ} resulting in 
+  %
+  \begin{verbatim}
+    2024-06-20T13:03:00+0300
+  \end{verbatim}
+  %
+  Compared with the result above, the time which is one hour later 
+  and this is reflected by the according time zone. 
+  Note again the sign contrary to the value of \texttt{TZ}. 
+\end{description}
+
+
+Finally, ~\cite{Pdf20}, Section~7.9.4 describes the encoding 
+of date/time with timezone in metadata of PDF files. 
+It is quite similar to the format given by ISO 8601-1. 
+Transformation is by dropping separators \texttt{--} and \texttt{:}, 
+prefixing \texttt{D:} and inserting \texttt{'} separating hours and minutes in time zone. 
+The above date/time writes as follows: 
+%
+\begin{verbatim}
+  D:20240620130300+03'00
+\end{verbatim}
+
+\subsubsection{Date, time and time zones in PDF files created from \LaTeX{} files}
+\label{subsubsec:dateTimeZoneTexPdf}
+
+
+
+When creating documents from \LaTeX, 
+date and time information go into at least in the following aspects: in 
 %
 \begin{itemize}
 \item 
@@ -556,20 +708,20 @@ yields both creation time and modification time of a file \texttt{xxx.pdf}:
 \end{description}
 %
 Both times comprise the date 
-are endowed with time zone information and are given in human-readable form. 
-Below we introduce the epoch time which is not human-readable is independent of the time zone 
-and is accessed with option in capital letters, 
-i.e.\@ \texttt{+\%W} and \texttt{+\%Y}, respectively. 
-We will see, that conversion from epoch time to other formats requires the timezone, 
-and so we introduce the time zone variable \texttt{TZ}. 
+are endowed with time zone information and are given in human-readable form, 
+although not precisely conform with ISO 8601-1. 
 The command \texttt{stat} assumes the local time zone by default, 
 but is sensitive to \texttt{TZ}: 
 %
 \begin{verbatim}
-  TZ=GMT stat -c +%w xxx.pdf
+  TZ=UTC stat -c +%w xxx.pdf
 \end{verbatim}
 %
-displays the result in UTC/GMT time zone. 
+displays the result in UTC time zone. 
+The according pieces of information in epoch time 
+are accessed with option in capital letters, 
+i.e.\@ \texttt{+\%W} and \texttt{+\%Y}, respectively. 
+\medskip
 
 
 As one would expect, the modification time is the time when the compiler finished writing. 
@@ -580,18 +732,16 @@ The first surprise with metadata \texttt{CreationDate} and \texttt{ModDate} is,
 that in fact it is not only date but comprises time and timezone as well, 
 much the same as the according file properties. 
 The form in which they are given in the PDF files 
-is specified in~\cite{Pdf20}, Section~7.9.4. 
+is described in Section~\ref{subsubsec:dateTimeZones}. 
 This is essentially accessible via 
 %
 \begin{verbatim}
   pdfinfo -rawdates xxx.pdf
 \end{verbatim}
 %
-The data is considered raw because it is displayed as is, 
-i.e.\@ as stored in the PDF file. 
+The data is considered raw because it is displayed as is, i.e.\@ as stored in the PDF file. 
 It is close to ISO 8824--1. 
-A bit more readable is date, time and timezone representation given by ISO 8601. 
-It is accessible via 
+Dates are also accessible in format specified in ISO 8601-1 via 
 %
 \begin{verbatim}
   pdfinfo -isodates xxx.pdf
@@ -599,6 +749,7 @@ It is accessible via
 
 The second surprise is, that the creation date and modification date given by metadata 
 do not coincide with the according file properties. 
+
 First, \xelatex{} is special in that by default, it provides \texttt{CreationDate} only, 
 whereas \lualatex{} and \pdflatex{} provide both. 
 The command \cmd{DocumentMetadata} forces \xelatex{} to display both times. 
@@ -608,14 +759,22 @@ even when overwriting an old one.
 The time when starting to overwrite seems to be the \texttt{CreationDate}. 
 Why the \texttt{ModDate} is the same and not the later time when writing is finished, 
 well\dots the reader may find an explanation him/herself. 
+An idea is that this is related to incremental updates described in \cite{Pdf20}, Section 7.5.6: 
+Instead of creating a PDF anew if a modification occurs, 
+it is advised to just append a description of the difference. 
+This update does not affect creation date but only modification date. 
+\LaTeX{} processors no not support incremental updates 
+and so compilation creates just a new PDF document. 
 
 Both, \xelatex{} and \pdflatex{} represent \texttt{CreationDate} and \texttt{ModDate} 
 with the local time zone which can be overwritten by \texttt{TZ}, and so does \lualatex{} by default. 
 In addition, \lualatex{} has an option \texttt{-{}-utc} 
 both for \texlive{} and for \miktex{} 
 described in Sections~\ref{sec:optionsTexlive} and~\ref{sec:optionsMiktex} 
-which forces metadata given in UTC/GMT zone 
+which forces metadata given in UTC zone, 
 overwriting internal timezone but also the value of \texttt{TZ} if provided. 
+\medskip
+
 
 Finally, we have to consider the visible date and time 
 displayed by commands like \cmd{date} or \cmd{time}, to be 
@@ -631,13 +790,16 @@ caption={Definition of \cmd{printdate} }]{latexEngines.tex}
 
 
 
+
+
+
 Time and date in the visible document, e.g.\@ by \cmd{DTMnow} 
 behave exactly as the date and time given by the metadata, 
 except that \xelatex{} does not display seconds in visible document 
 and does not make the time zone visible, 
 although metadata show that both pieces of information are available. 
 
-Note that as \lualatex{} represents metadata in UTC/GMT time if invoked with option \texttt{-{}-utc}, 
+Note that as \lualatex{} represents metadata in UTC time if invoked with option \texttt{-{}-utc}, 
 the same is true for visible date and time. 
 The time zone is made explicit. 
 Note that the variable \texttt{TZ} is treated as for metadata: 
@@ -649,87 +811,7 @@ Goes into representation, except for \lualatex{} invoked with option \texttt{-{}
 
 
 
-Besides raw dates given in PDF documents and ISO dates given by ISO 8601, 
-there is a third form of date/time: epoch time. 
-This is the number of seconds from start of computer time history, 
-which is agreed to be \texttt{1970--01--01 00:00:00Z}, 
-i.e.\@ the point in time, where in timezone UTC/GMT it was start of year 1970. 
-It is called epoch time, although nothing special happened like Christs birth. 
-Zero and negative time is allowed. 
-Note, that this does not depend on a time zone, 
-but conversion from and to epoch time must take time zone into account. 
 
-Among the standard environment variables in POSIX operating systems 
-is also \texttt{TZ} specifying the time zone 
-as described in \url{https://www.gnu.org/software/libc/manual/html_node/Standard-Environment.html}. 
-We only use the forms based on UTC/GMT like so: 
-%
-\begin{verbatim}
-  TZ=GMT, TZ=GMT-02
-\end{verbatim}
-%
-CAUTION: The number is understood as to be added to get UTC/GMT, 
-so east of UTC has negative numbers. 
-This is the sign opposite to the representation given by ISO 8601. 
-
-In Unix and similar operating systems, conversion can be done with \texttt{date}. 
-If a time is given with option \texttt{-d}, 
-this is converted into the format given by the format specifier which starts with \texttt{+}. 
-If no time is given, the current time is assumed. 
-%
-\begin{description}[style=nextline]
-  \item[\texttt{date}] 
-  yields the current date and time with timezone in current locale representation. 
-  The locale is given by the environment variable \texttt{LANG}. 
-  \item[\texttt{date +\%FT\%T\%z}] 
-  yields the current date and time 
-  in form given by ISO 8601 with date given by \texttt{\%F} followed by literal \texttt{T} 
-  followed by time \texttt{\%T} and finally the time zone given by \texttt{\%z}. 
-  \item[\texttt{date -d 'Apr 29 2024' +\%s}] 
-  converts human-readable date into epoch time specified by format \texttt{\%s} (seconds since 1970-01-01). 
-  Caution: Many formats are recognized, but time zones are \emph{silently ignored}. 
-  For example, 
-  %
-  \begin{verbatim}
-    date -d '2024-06-20T12:03:00+03' +%s
-  \end{verbatim}
-  %
-  silently ignores the timezone \texttt{+03} 
-  and uses the current one which is \texttt{GMT+02}, because me the author is located in Germany. 
-  This can be seen, because the result does not depend on the time zone; 
-  you can use \texttt{+02} or \texttt{Z} signifying UTC/GMT or drop: 
-  the result is always \texttt{1718877780}. 
-  
-  To set the time zone, the variable \texttt{TZ} must be used like so: 
-  %
-  \begin{verbatim}
-    TZ=GMT-02 date -d '2024-06-20T12:03:00' +%s
-  \end{verbatim}
-  %
-  Note the sign difference between ISO 8601 representation and \texttt{TZ}. 
-  Since \texttt{GMT+02} is the timezone of the author, the result is still \texttt{1718877780}, 
-  but if using \texttt{TZ=GMT-03}, which is one hour east, 
-  it is one hour, i.e.~\@ \texttt{3600} seconds less which results in epoch time \texttt{1718874180}. 
-  \item[\texttt{date -d '@1718877780' +\%FT\%T\%z}] 
-  converts from epoch time (signified by leading \texttt{@}) into local time zone resulting in 
-  %
-  \begin{verbatim}
-    2024-06-20T12:03:00+0200
-  \end{verbatim}
-  %
-  Since the time zone of the author is currently \texttt{GTM+02}, or with minutes \texttt{GTM+0200}
-  this is what the resulting time string ends with. 
-  \item[\texttt{TZ=GMT-03 date -d '@1718877780' +\%FT\%T\%z}] 
-  converts from epoch time (signified by leading \texttt{@}) into time zone given by \texttt{TZ} resulting in 
-  %
-  \begin{verbatim}
-    2024-06-20T13:03:00+0300
-  \end{verbatim}
-  %
-  Compared with the result above, the time which is one hour later 
-  and this is reflected by the according time zone. 
-  Note again the sign contrary to the value of \texttt{TZ}. 
-\end{description}
 
 The environment variable \texttt{SOURCE\_DATE\_EPOCH} 
 defined in \url{https://reproducible-builds.org/docs/source-date-epoch/}, 
@@ -741,7 +823,7 @@ it is specified, that the given epoch time is exactly what is written into the m
 It affects \LaTeX{} each compiler but in slightly different way. 
 
 For \pdflatex, the main description is in~\cite{PdfTexUsr24}, Chapter~2.
-An important detail is, that the time zone written into metadata is UTC/GMT. 
+An important detail is, that the time zone written into metadata is UTC. 
 Even if the timezone is given explicitly by \texttt{TZ}, it is ignored. 
 The time given by \texttt{SOURCE\_DATE\_EPOCH} affects metadata but also \cmd{DTMnow}. 
 To affect also primitives like \cmd{time}, 
@@ -749,37 +831,31 @@ one has to add \texttt{FORCE\_SOURCE\_DATE=1} in addition.
 Essentially, \xelatex{} behaves the same as described in\xelatex:~\cite{XeTexRef24}, Sections 8.3 and 8.5. 
 
 In contrast to this, as described in~\cite{LuaTexRef24}, Section 4.4, 
-\lualatex{} does honor \texttt{SOURCE\_DATE\_EPOCH} but not \texttt{FORCE\_SOURCE\_DATE}. 
+\lualatex{} does honor the environment variable \texttt{SOURCE\_DATE\_EPOCH} but not \texttt{FORCE\_SOURCE\_DATE}. 
 Instead, it acts as if \texttt{FORCE\_SOURCE\_DATE=1} is set implicitly: 
 Besides metadata, also visible date representations honor \texttt{SOURCE\_DATE\_EPOCH}, 
 be it \cmd{time} or \cmd{DTMnow}. 
 In contrast to \pdflatex{} and \xelatex, 
-which automatically display epoch time given by \texttt{SOURCE\_DATE\_EPOCH} in UTC/GMT, 
+which automatically display epoch time given by \texttt{SOURCE\_DATE\_EPOCH} in UTC, 
 \lualatex{} does so only if invoked with option \texttt{-{}-utc}. 
 Else \lualatex{} honors the current time zone 
 which may also be specified by \texttt{TZ}. 
 
 
-Both, \xelatex{} and \pdflatex{} record \texttt{CreationDate} and \texttt{ModDate} 
-in UTC/GMT, which is in contrast to the file properties. 
-It is also in contrast to \lualatex{} which seems to intend to use the local time zone by default. 
-At time of this writing there seems to be a bug leading to the wrong time zone 
+
+
+
+
+
+
+At time of this writing there seems to be a bug in \lualatex{} 
+leading to the wrong time zone 
 when the time is start of a full hour. 
-Deviation is one time zone only. 
-Both \xelatex{} and \pdflatex{} know about the local time zone, 
-but the author found no way to apply this to the metadata. 
-Conversely, \lualatex{} does this by default, but option \texttt{-{}-utc} 
-can force time zone UTC/GMT simulating \xelatex{} and \pdflatex. 
 
-
-It is maybe intuitive to believe that the metadata \texttt{CreationDate} 
-and \texttt{ModDate} are exactly the same. 
-What turns out is, that both are in fact date and time and comprise also the time zone. 
-What turns out is that \texttt{CreationDate} is the 
 
 
 Last thing: 
-latex compiler creating dvi/xdv and going on with \texttt{xdvipdvmx}. 
+Latex compiler creating DVI/XDV and going on with \texttt{xdvipdvmx}. 
 Of course, visible data are as with direct compilation and also file times are straightforward. 
 To get these data right, latex compiler must be invoked with the system variables 
 as for direct creation of PDF files. 
@@ -791,19 +867,113 @@ except date and time information.
 These are added by \texttt{xdvipdfmx}. 
 
 So, \texttt{SOURCE\_DATE\_EPOCH} and \texttt{TZ} but not \texttt{FORCE\_SOURCE\_DATE} 
-must be considered. 
+must be considered when invoking \texttt{xdvipdfmx} and that like. 
 If none of these are given, the current time with local time zone are used. 
 If \texttt{SOURCE\_DATE\_EPOCH} is not given, then \texttt{TZ} is honored, 
-but if \texttt{SOURCE\_DATE\_EPOCH} is given, then creation time is in UTC/GMT time zone, 
+but if \texttt{SOURCE\_DATE\_EPOCH} is given, then creation time is in UTC time zone, 
 ignoring \texttt{TZ}. 
 So \texttt{xdvipdfmx} behaves very much like \xelatex{} in direct compilation of PDF, 
 which is clear because it is by defaults \xelatex's PDF backend. 
-This behavior of \texttt{xdvipdgmx} coins time metadata even if used in conjunction with \lualatex, 
+This behavior of \texttt{xdvipdfmx} coins time metadata even if used in conjunction with \lualatex, 
 which is some argument to configure direction computation of PDF files with \lualatex 
 in a way that it fits the other compilers. 
 
 
 
+\subsection{Metadata in the PDF trailer and info dictionary}\label{subsec:trailerInfoDict}
+
+The root for metadata in PDF file is the trailer dictionary. 
+As described in~\cite{Pdf20}, Section 7.5.5, 
+it contains references to several other dictionaries, 
+the size and the \emph{trailer identifier} with key \texttt{ID}. 
+Among the references is that with key \texttt{Info} 
+to the \emph{document information dictionary} (DID) described in \cite{Pdf20}, Section 14.3.3. 
+The most important entries are \texttt{CreationDate} and \texttt{ModDate}; 
+the rest is deprecated with PDF version 2.0. 
+Still these entries are relevant for PDF versions 1.x. 
+For all entries in the document information dictionary including \texttt{CreationDate} and \texttt{ModDate} 
+there are replacements in the metadata streams described in~\cite{Pdf20}, Section 14.3.2. 
+To be more precise it is the XMP metadata, which is an XML format, described in~\cite{ISO16684-1}. 
+Frequently, the replacements allow a set of locales. 
+The latex compiler writes this if in the header of the TEX file 
+%
+\begin{verbatim}
+\DocumentMetadata{...}
+\end{verbatim}
+%
+is specified, even if the argument list is empty, because this signifies default \texttt{xmp=true}. 
+The result can be read through 
+%
+\begin{verbatim}
+  pdfinfo -meta xxx.pdf
+\end{verbatim}
+
+The keys of the document information dictionary (DID) 
+and their replacements as XMP are given in Table~\ref{tab:keysDID_XMP}. 
+Note that the keys for XMP have a prefixed namespace separated by \texttt{:}. 
+The table does not list all XMP keys specified in~\cite{ISO16684-1}, 
+but only those which are observed as created by a latex compiler. 
+Observe that the XMP keys with namespace \texttt{pdf} are not specified in~\cite{ISO16684-1}. 
+
+
+\begin{longtable}{|lll|}
+  \toprule
+  DID & XMP & remark \\
+  \midrule
+  \midrule
+  \endfirsthead%
+  \bottomrule
+  \caption{\label{tab:keysDID_XMP} Keys of DID and replacement by XMP}
+  \endlastfoot%
+  Title        & dc:title   & same\\
+  Author       & dc:creator & same \\
+  Subject      & dc:description & \\
+  Keywords     & dc:subject & not pdf:Keywords as specified \\
+  --           & dc:type & \\
+  --           & dc:language & \\
+  --           & dc:date & duplicate of CreationDate? \\
+  --           & dc:format & application/pdf \\
+  --           & dc:source & the latex main file \\
+  Creator      & xmp:CreatorTool & should be creator of tex source... \\
+  Producer     & pdf:Producer & \\
+  ---          & pdf:PDFVersion & \\
+  CreationDate & xmp:CreateDate & \\
+  ModDate      & xmp:ModifyDate & same as CreationDate? \\
+  ---          & xmp:MetadataDate & same as CreationDate? \\
+  Trapped      & pdf:Trapped & \\
+  ---          & xmpMM:DocumentID & \\
+  ---          & xmpMM:InstanceID & \\
+  %Special and common aspects of pdf/dvi/xdvi generators
+\end{longtable}
+
+So far, the only piece of data degrading security 
+is \texttt{dc:source}. 
+One may think of eliminating it using package \texttt{hyperxmp}, 
+described in~\cite{HyperXmpP}. 
+This is deferred because it collides with \cmd{DocumentMetadata}. 
+
+Besides a reference to the document information dictionary, 
+the trailer dictionary also contains the trailer identifier 
+described in \cite{Pdf20}, Section 7.5.5. 
+It indicates that not writing the trailer identifier or corrupting it is no good idea, 
+e.g. because it is needed for encryption or for uniquely identifying the document. 
+
+Details are given in \cite{Pdf20}, Section 14.4. 
+First, the identifier consists of two hashes, 
+the first of which depends on the newly created but unmodified document. 
+The notion behind is that of incremental updates described in \cite{Pdf20}, Section 7.5.6. 
+The first hash shall depend on the content of the file 
+at creation time and on \texttt{CreateDate}. 
+The second hash in contrast shall depend on content of the file after last incremental update 
+and on time of last update, i.e. on \texttt{ModDate}. 
+
+In the \LaTeX{} world incremental update is not supported 
+so that \texttt{CreateDate} and \texttt{ModDate} coincide 
+and so do the contents. 
+As a consequence, the two hashes of the trailer identifier coincide as well. 
+The last section of \cite{Pdf20}, Section 14.4 seems to indicate, 
+that the location of the PDF file may go into the trailer ID, 
+which would make it less reproducible. 
 
 
 \subsection{Reproducibility}\label{subsec:reprod}
@@ -822,30 +992,8 @@ Thus, it is plausible that, to obtain reproducibility, we invoke the compiler as
 
 The second result is, that creating the PDF file and the XDV file that way is reproducible. 
 
-Now it is time to see differences directly and thus switch off compression 
-which is done independent of the compiler by an according header 
-%
-\begin{verbatim}
-  \DocumentMetadata{uncompress}
-\end{verbatim}
-%
-described in~\cite{DocMetaDataSuppCode}, Section 2. 
-Seemingly, this writes additional info like meta info date 
-but also resurrects all other dates and also influences trailer identifier in a way, 
-that the document is no longer reproducible, 
-even when specifying \texttt{SOURCE\_DATE\_EPOCH=0 FORCE\_SOURCE\_DATE=1}. 
 
-This is about to be fixed, 
-but essentially, it is just an inconvenience. 
-% TBD: check whether really fixed. and then rework this section 
 
-Thus, we take refuge to switching off compression via 
-%
-\begin{verbatim}
-  \special{dvipdfmx:config z 0}
-\end{verbatim}
-%
-This is specific for \xelatex, but it keeps reproducibility. 
 
 It turns out, that this compression setting does not refer to the XDV file, 
 which seems always compressed, but solely to the PDF file. 
@@ -935,31 +1083,77 @@ Creating DVI files with \texttt{SOURCE\_DATE\_EPOCH=0 FORCE\_SOURCE\_DATE=1}
 yields reproducible results. 
 As expected, these settings are also necessary for translating DVI into PDF\@. 
 
+\subsection{Suppressing and overwriting meta info in a compiler specific way }
 
+For \lualatex{} \cite{LuaTexRef24}, Section 3.2.2 describes the variable \texttt{suppressoptionalinfo} 
+which specifies bitwise which pieces of metadata to be suppressed. 
+Among the \texttt{PTEX} entries, \texttt{PTEX.FullBanner} is unique as it refers to the top level document: 
+it is the first line of output in the log file. 
+For sake of privacy this shall be suppresed. 
+The other \texttt{PTEX} entries, 
+\texttt{PTEX.FileName}, \texttt{PTEX.PageNumber} and \texttt{PTEX.InfoDict} 
+refer to embedded PDF files. 
+The \texttt{InfoDict} has entries \texttt{Producer}, \texttt{Creator}, \texttt{CreationDate} ,\texttt{ModDate} 
+and \texttt{Trapped} and must be suppressed as well. 
+
+Also, \texttt{Creator} and \texttt{Producer} shall be suppressed. 
+Note that suppression of \texttt{Creator} is impossible when using package \texttt{hyperref}, 
+because it writes \texttt{LaTeX with hyperref} setting itself as creator. 
+To be safe that this piece of information is not exposed, 
+this meta info must be overwritten later. 
+Metadata \texttt{Trapped} is suppressed, although there are reasons 
+both for suppression and for leaving as is. 
+
+As described elsewhere, neither \texttt{CreationDate}, \texttt{ModDate} or \texttt{ID} shall be suppressed. 
+
+As described in \cite{PdfTexUsr24}, Section 4.2.3 and 4.2.4, \pdflatex can suppress only \texttt{PTEX} data 
+which must be done, and \texttt{CreationDate}, \texttt{ModDate} which must not be suppressed. 
+Finally, \xelatex cannot suppress any metadata. 
+\medskip 
+
+
+Meta info may be suppressed but also overwritten. 
+For \lualatex{} \cite{LuaTexRef24}, Section 3.2.2 shows how to overwrite the trailer ID. 
+In contrast, \pdflatex{} has many options to overwrite metadata 
+collected in \cite{PdfTexUsr24}, Section 4.2, among those also the trailer ID. 
+Neither of these are needed. 
+Finally, there is no official documentation on \xelatex{} for overwriting metadata 
+but internet sources show a way to overwrite the trailer ID: 
+%
+\begin{verbatim}
+\special{pdf:trailerid [
+  <00112233445566778899aabbccddeeff>
+   <00112233445566778899aabbccddeeff>
+]}
+\end{verbatim}
 
 
 
 \subsection{Security and Stability of Reproducibility}\label{subsec:securityRep}
 
-% delivery of timezone.. well. 
-% maybe this is also an issue as regards privacy, 
-% so maybe we shall do something agains, e.g. provide setting timestamp, 
-% with default value '' signifying local system timezone. 
-% It is definitively an issue if builds shall be reproducible. 
-% It shall not only be reproducible in another time but also in another timezone. 
-% Note the shit with summer/wintertime, where effectively timezone changes 
-% without moving location but also an aspect for international cooperation. 
-% This seems UTC/GTM time appropriate. 
-% Another point is stability of reproducibility. 
-% Only \lualatex offers other than UTC
+
+
+
+
 
 Security is here privacy. 
 Hiding information makes attacks more difficult. 
 Stability of reproducibility consists in stability as regards new versions of the same tools 
-in the tool chain and the aspect of change of a tool. 
+in the tool chain and the aspect of change of a tool or some other aspect of environment. 
+
+One aspect is the time zone. 
+As indicated in Section~\ref{subsubsec:dateTimeZoneTexPdf}, 
+reproducible PDF files must have \texttt{CreateDate} and \texttt{ModDate} 
+both in UTC time zone. 
+This supports both privacy, as the true time zone of the build facility is not accessible 
+and stability of reproducibility as a change of location of the build facility 
+or change of summer/winter time 
+may not corrupt reproducibility. 
+This feature supports international cooperation. 
 
 From Section~\ref{subsec:reprod} come the recommendation 
-to set the following pieces of information to unknown: 
+to set the following pieces of information to unknown., 
+This is done with hyperref package **** 
 %
 \begin{description}
   \item[Creator] This is uniformly \texttt{LaTeX with hyperref} 
@@ -975,56 +1169,45 @@ to set the following pieces of information to unknown:
   For creating PDF with \pdflatex{} or with \lualatex, 
   it is something like \texttt{pdfTeX-1.40.25} or \texttt{LuaTeX-1.18.0}. 
   This shall be hidden for sake of security and stability of reproducibility. 
-  \item[CreationDate] Note that despite its name, 
-  in fact it is both date and time and comprises also the timezone. 
-  Its format is specified in~\cite{Pdf20}, Section 7.9.4. 
-  Time zone comes at the end and UTC/GMT is represented by letter \texttt{Z}, 
-  where other time zones are specified by a signed offset. 
+  % \item[CreationDate] Note that despite its name, 
+  % in fact it is both date and time and comprises also the timezone. 
+  % Its format is specified in~\cite{Pdf20}, Section 7.9.4. 
+  % Time zone comes at the end and UTC is represented by letter \texttt{Z}, 
+  % where other time zones are specified by a signed offset. 
 
-  Whereas both \pdflatex{} and \xelatex{} always display creation time in UTC/GMT, 
-  \lualatex{} does so only if started with option \texttt{-{}-utc}. 
-  It sets the time zone to UTC/GMT time which also goes into the creation date. 
-  At time of this writing, \lualatex{} has a bug ending up with the wrong timezone 
-  if the time is midnight, 
-  as in 
-  %
-  \begin{verbatim}
-    SOURCE_DATE_EPOCH=0 FORCE_SOURCE_DATE=1 lualatex testProgram
-  \end{verbatim}
+  % Whereas both \pdflatex{} and \xelatex{} always display creation time in UTC, 
+  % \lualatex{} does so only if started with option \texttt{-{}-utc}. 
+  % It sets the time zone to UTC time which also goes into the creation date. 
+  % At time of this writing, \lualatex{} has a bug ending up with the wrong timezone 
+  % if the time is midnight, 
+  % as in 
+  % %
+  % \begin{verbatim}
+  %   SOURCE_DATE_EPOCH=0 FORCE_SOURCE_DATE=1 lualatex testProgram
+  % \end{verbatim}
 
-  This can be worked around by something like 
-  %
-  \begin{verbatim}
-    SOURCE_DATE_EPOCH=0 FORCE_SOURCE_DATE=1 TZ=GMT-02 lualatex testProgram
-  \end{verbatim}
+  % This can be worked around by something like 
+  % %
+  % \begin{verbatim}
+  %   SOURCE_DATE_EPOCH=0 FORCE_SOURCE_DATE=1 TZ=UTC-02 lualatex testProgram
+  % \end{verbatim}
 
-  Note that the variable \texttt{TZ} uses negative sign for zones east of GMT 
-  which is inverse to the raw format used in metadata. 
+  % Note that the variable \texttt{TZ} uses negative sign for zones east of UTC 
+  % which is inverse to the raw format used in metadata. 
   
-  It is wrong if using \texttt{SOURCE\_DATE\_EPOCH=0 FORCE\_SOURCE\_DATE=1} 
-  and shall thus be hidden. 
-  \item[ModDate] 
-  Note that \xelatex{} is unique in that it does not write \texttt{ModDate}, 
-  except \cmd{DocumentMetadata} is in the header of the document. 
-  It is really the same as \texttt{CreationDate}. 
+  % It is wrong if using \texttt{SOURCE\_DATE\_EPOCH=0 FORCE\_SOURCE\_DATE=1} 
+  % and shall thus be hidden. 
+  % \item[ModDate] 
+  % Note that \xelatex{} is unique in that it does not write \texttt{ModDate}, 
+  % except \cmd{DocumentMetadata} is in the header of the document. 
+  % It is really the same as \texttt{CreationDate}. 
   \item[PTEX.Fullbanner] is not written by \xelatex, 
   but for both \lualatex{} and \pdflatex. 
   It can be suppressed in a compiler specific way, 
   but not through \texttt{hyperref}. 
   The banner exposes tools, versions and distributions. 
   Thus, it shall not be exposed for sake of security and stability of reproducibility. 
-  \item[trailer identifier]
-  Suppressing this is not necessary for reproducibility. 
-  It is just independence of the DVI/XDV to PDF converter 
-  and thus a matter of stability of reproducibility. 
-  It has only a very weak aspect of security. 
-  
-  The downside is that, 
-  even without setting \texttt{SOURCE\_DATE\_EPOCH=0 FORCE\_SOURCE\_DATE=1}, 
-  created PDF files stop to be individual for each creation run 
-  as is intended for PDF files. 
-  We decided that the date offers enough individuality 
-  to refrain from the trailer identifier. 
+ 
 \end{description}
 
 All these pieces of information 
@@ -1050,56 +1233,51 @@ Some details are given in the
 manual for \texttt{xdvipdfmx},~\cite{DviPdfMx}, Section 4.1.1. 
 
 
-\subsection{Reproducibility revisited}\label{subsec:reprod2}
 
-The next question is, 
-whether the setting \texttt{SOURCE\_DATE\_EPOCH=0 FORCE\_SOURCE\_DATE=1} 
-is really needed for reproducibility, 
-if both \texttt{CreationDate} and \texttt{ModDate} are suppressed. 
-The answer is yes, because date and time go into the trailer identifier, 
-whether they are stored somewhere or not. 
-It is the intention of the trailer identifier to make PDFs distinguishable 
-when they stem from another build run even if the conditions are the same. 
-To turn it the other way round, the trailer identifier 
-is to corrupt reproducibility. 
-Since it is implemented through a time stamp, 
-setting \texttt{SOURCE\_DATE\_EPOCH=0 FORCE\_SOURCE\_DATE=1} 
-fixes the trailer identifier. 
-If we refrain from this setting, 
-still the trailer identifier can be set explicitly 
-and this must be done to ensure reproducibility. 
-As indicated in Section~\ref{subsec:securityRep}, 
-for \xelatex, even the creator may contain date and time information 
-and shall thus be eliminated. 
+\subsection{Miscellaneous}\label{subsec:misc}
 
-If a document contains a date inserted via command \cmd{date}, 
-and the date is given by \cmd{today}, 
-then this is only reproducible 
-with setting \texttt{SOURCE\_DATE\_EPOCH} to some fixed value and \texttt{FORCE\_SOURCE\_DATE=1}. 
-Even without \cmd{date\{\cmd{today}\}}, \xelatex{} seems to use hashes depending on time 
-corrupting reproducibility. 
-To be more precise, creation of XDV is reproducible, 
-whereas conversion to PDF is not. 
-So, for sake of uniformity and stability of reproducibility, 
-these settings \texttt{SOURCE\_DATE\_EPOCH=0 FORCE\_SOURCE\_DATE=1} are heavily recommended, 
-both for the \LaTeX{} compiler and for the converter DVI/XDV to PDF\@. 
+\subsubsection{The command \cmd{DocumentMetadata}}\label{subsubsec:docMeta}
 
-If reproducibility is only required for tests, 
-then the date can be given; it is just neglected for tests. 
-For productive documents the date is important. 
-If reproducibility is an issue for productive documents, the date cannot be given. 
+One of the subjects is the command \cmd{DocumentMetadata} 
+described in~\cite{DocMetaDataSuppCode}, Section 2. 
+We used it as 
+%
+\begin{verbatim}
+\DocumentMetadata{uncompress}
+\end{verbatim}
+%
+to avoid compression of the created PDF file, mainly for debugging, 
+but it is significant even with empty argument list, 
+e.g. it forces \xelatex{} displaying \texttt{ModDate} in addition to \texttt{CreationDate}. 
+Another effect, which can be considered a bug is, 
+that overwriting of meta info by command \cmd{hypersetup} offered by package \texttt{hyperref} 
+does not work anymore. 
+This applies e.g. to dates but also to creator and producer. 
+This bug does not corrupt reproducibility but security. 
 
-\subsection{Security revisited}\label{subsec:security2}
+Another effect comes into the game because \cmd{DocumentMetadata} 
+has default value \texttt{xmp=true} which means that XMP metadata 
+described in~\cite{ISO16684-1} is written. 
+This is an XML format and can be retrieved through 
+%
+\begin{verbatim}
+  pdfinfo -meta xxx.pdf
+\end{verbatim}
 
-Both \lualatex{} and \pdflatex{} write the filename in \texttt{PTEX.FileName}. 
-This is a security issue, 
-whereas the number of pages, \texttt{PTEX.PageNumber} is not. 
-It is also useful. 
+Seemingly, this does not corrupt reproducibility but may be considered to degrade security. 
+Partially, it is a surrogate for the document information dictionary 
+as described in Section~\ref{subsec:trailerInfoDict}. 
 
-For the \texttt{trapped} setting, the author wonders for \pdflatex, 
-how \texttt{hyperref} can switch this individually, whereas the compiler specific setting 
-allows only setting to \texttt{unknown} 
-in conjunction with other settings. 
+Readers who refuse using \cmd{DocumentMetadata} and  use use \xelatex{} 
+may take refuge to switching off compression via 
+%
+\begin{verbatim}
+  \special{dvipdfmx:config z 0}
+\end{verbatim}
+
+\subsubsection{Manipulating the trailer identifier}\label{subsubsec:trailerId}
+
+
 
 
 \section{To be clarified}\label{sec:TBC}

@@ -43,8 +43,8 @@
       % + 32 % CreationDate % do not suppress: needed for reproducibility check 
       % + 64 % ModDate      % do not suppress: needed for reproducibility check 
       + 128 % Producer      % suppress for privacy/security 
-      + 256 % Trapped       % well: TBD: check what xelatex and pdflatex do 
-      % + 512 % ID          % no need to suppress trailerid: makes an individual of the PDF
+      + 256 % Trapped       % xelatex no info and pdflatex does have info
+      % + 512 % ID          % don't suppress trailerid: makes an individual of the PDF and needed to encrypt
       % according to \cite{Pdf20}, Section 7.5.5, the trailer ID is mandatory from PDF2.0 on. 
       % Also, consequences of absence are listed, e.g. encryption. 
       % Missing is a specification on what the trailer ID may depend. 
@@ -64,7 +64,7 @@
 
         % omit CreationDate and ModDate keys.
         % not before pdfTeX 3.14159265-2.6-1.40.17
-        % the following two see pdftex user manual, \cite{PdfTexUsr24}, Section 4.2
+        % the following two see pdftex user manual, \cite{PdfTexUsr24}, Section 4.2.4
         \pdfinfoomitdate=0 % turn 0 explicitly because /CreationDate and /ModDate are needed for reproducibility check 
         % we do even more for security reasons 
         \pdfsuppressptexinfo=-1
@@ -129,7 +129,8 @@
     % This is recommended for tests, because else we cannot give a \date 
     % This is no longer recommended: leaving these alive is a value. 
     % In contrary, these entries are needed to reach reproducibility
-    }
+    }%,
+    %pdfsource   ={no latex main file}
 }
 
 
