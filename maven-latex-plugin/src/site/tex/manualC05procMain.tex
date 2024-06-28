@@ -1,5 +1,4 @@
 
-% !TEX root = manualLMP.tex
 \chapter{Processing of \LaTeX{} Main Files}\label{chap:latexMainConversions}
 
 Given graphics in formats includable in TEX files, 
@@ -959,9 +958,10 @@ Details are given in Section~\ref{chap:tests}.
 Currently, reproducibility checks are supported for PDF files only. 
 % TBD: change that 
 The problem with PDF files is, that besides visible contents 
-they contain also meta-data (see~\cite{Pdf17}, Section 14.3), 
+they contain also metadata (see~\cite{Pdf17} or~\cite{Pdf20}, each Section 14.3), 
 which depends on the run of the conversion. 
-For example the timestamp of conversion goes into and so do many more aspects. 
+For example the timestamp and the timezone of conversion goes into 
+and derived from these other values. 
 
 There are two strategies to deal with the problem: 
 %
@@ -973,90 +973,96 @@ There are two strategies to deal with the problem:
   This is easily done with a fixed installation 
   but tends to break with update of tools. 
   % TBD: allow own version check. 
-  Also, at time of this writing, 
-  the different latex engines cannot be treated uniformly. 
+  % Also, at time of this writing, 
+  % the different latex engines cannot be treated uniformly. 
   % TBD: a feature request to hyperref is already posted. 
   % let us keep an eye on that. 
   \item 
   Use diff tools implementing a weaker notion of equivalence, 
   in a sense visibility equivalence of some degree. 
   One approach is the script \texttt{vmdiff} 
-  described in Section~\ref{subsec:pythontexW}. 
+  described in Section~\ref{subsec:pythontexW} 
+  which combines visibility equivalence 
+  with equivalence of part of metadata. 
 \end{itemize}%
 
-We support both approaches, but the first one is the preferred one 
-in the sense understood in Chapter~\ref{chap:tests}. 
-As described in much detail in~\cite{LatexGen}, Section 4, 
-essentially, there are two ways to make the build process reproducible. 
+Since the first one works very well, it is the one we describe here, 
+but it is always possible to configure a diff tool with a weaker equivalence check. 
 
-The simpler and again the preferred one, 
-is by setting the system time to a fixed value. 
-If the document contains a date created by \cmd{today}, 
-then this is according to the fixed value and thus wrong value. 
-We use reproducibility in that sense only for tests; thus this is acceptable. 
-If the PDF files are intended to be published, the date must be correct. 
-The idea is, to recompile with the correct date for publishing. 
-Then for tests a pom checking equality is used, 
-and for publishing another pom without this check. 
-The system time is manipulated only when performing equality tests. 
+The first question is, whether reproducibility is requested. 
+It is, if there is according magic comment in the latex main file requires this 
+as described in Section~\ref{subsubsec:openingMagComm}. 
+If there is no such magic comment is present, if the setting \texttt{chkDiff} specifies so. 
+If in this section settings are given without explicit reference, 
+they are described in Table~\ref{tab:paramDiffPdf} on page~\pageref{tab:paramDiffPdf} 
+in Section~\ref{sec:paramRepro}. 
 
-Of course, other techniques are also conceivable, 
-but this is the one implemented at time of this writing. 
-One alternative would be to refrain from having a current date, 
-but some date changing not so frequently. 
-Still meta-data includes the trailer identifier 
-which is based on system time set. 
-As described in Section~\ref{subsec:headerSuppressMetaPDF}, 
-we could include a header suppressing a sufficient amount of meta-data, 
-at least the trailer identifier. 
-Then the resulting PDF files are reproducible, 
-provided \lualatex{} or \pdflatex{} is used, but not for \xelatex. 
-This lack of uniformity alone makes this approach inferior, 
-so we do not use for creating this manual. 
+Since date and time both visible and in the metadata of a PDF document 
+is given relative to a timezone, 
+for reproducible builds compilers must run with a fixed timezone 
+and, as reproducibility shall not break if changing a timezone 
+or if the country running the build changes between daylight saving time and standard time, 
+we chose a uniform timezone namely UTC. 
 
-What we do use is the header providing privacy, 
-to make it part of the preferred usage. 
+If a latex main file is already under reproducibility control, 
+then there is an according original PDF file in \texttt{diffDirectory} or in a subfolder 
+to be compared with a newly created PDF file 
+which occurs in a subfolder of the TEX source directory \texttt{texSrcDirectory} 
+described in Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen}. 
+The PDF file for comparison has the same path relative to \texttt{diffDirectory} 
+as the created PDF file relative to \texttt{texSrcDirectory}. 
 
-% Thus, a reproducibility check is advisable as described below. 
-% It is just by comparing the newly created PDF with an older version 
-% and the date shall be the modification date of this older version. 
-% The details are not yet implemented. 
-% %TBD do that 
-% Then the date shall be 
+First \texttt{pdfMetainfoCommand} is used 
+to extract metadata \texttt{CreationTime} from the original PDF file. 
+This comprises time and timezone which is UTC. 
 
-% The first one imposes requirements on the TEX source file. 
-% It excludes that one displays a creation date changing each run. 
-% For this manual, we replaced the creation date by a ``version date''. 
-% A date can be only date of check in of a version control system or that like. 
-% As an alternative, one could also refrain from using dates altogether. 
-% In the \cmd{date} command 
-% one could display also other pieces of information identifying the document. 
+The compilation to create the new PDF file is run in an environment 
+with that timezone and with that creation time. 
+In addition, there is an environment variable forcing 
+that the timestamp does not only affect metadata but also visual data of the PDF file 
+to be created, 
+as e.g. typically the date at the front page. 
+Note that if the PDF file is created from TEX files via DVI/XDV files, 
+both converters need the appropriate environment. 
 
-But the visible date is not all we have to care about. 
-Section~\ref{subsec:headerSuppressMetaPDF} describes a header which eliminates a lot of metadata 
-and to replace with adequate one. 
-There is metadata which can be eliminated in a uniform way for all latex engines 
-using the package \texttt{hyperref} which the author generally advises. 
-Using \texttt{hyperref} with \cmd{hypersetup} 
-one can set metadata such as author, title, subject and keyword 
-as described in~\cite{HyperTextP}, Section 5.8. 
-Here we eliminate creation date and modification date for sake of reproducibility, 
-and we also eliminate the producer for security reason. 
+After creating the new PDF file with this environment, 
+coincidence with the original PDF file is checked 
+using the tool given by setting \texttt{diffPdfCommand} described in Table~\ref{tab:paramDiffPdf}. 
+If the actual artifact does not coincide with predefined one 
+according to the chosen diff tool, 
+a build exception is thrown as specified in Table~\ref{tab:TLP}. 
+\medskip
 
-Besides the date and time, there is another piece of metadata, the \texttt{trailerid}, 
-which is to ensure that each run of a \LaTeX{} to PDF compiler runs 
-different PDF files are produced. 
-This identifier can only be set in a way specific for the \LaTeX{} compiler. 
-Caution: \xelatex{} causes \cmd{ifpdf} to enter always the \texttt{else} branch. 
-Note that for \xelatex{} further techniques are required to reach reproducibility. 
-% TBD: make this more specific. 
-Except for \xelatex, the header described in Section~\ref{subsec:headerSuppressMetaPDF} 
-is a means to eliminate all information 
-making the document reproducible also without \pkg{hyperref}, 
-but this applies only to newer versions. 
-Besides code the listing provides a lot of documentation. 
-In that for \pdflatex{} also the package \pkg{pdfprivacy} described in~\cite{PdfPriv} is mentioned 
-as a convenient alternative. 
+
+If a latex main file is not already under reproducibility control, 
+then no original PDF file exists. 
+In this case, the environment for compilation only ensures the timezone UTC. 
+Then the created PDF file is copies at proper place into \texttt{diffDirectory} 
+-- that's all for setting a document under reproducibility control. 
+
+Finally, if a latex main f8ile file is under reproducibility control 
+but is to be changed in a way that also the according PDF file is affected, 
+then before compilation just the original PDF file is deleted, 
+and the workflow is as setting under reproducibility control. 
+\medskip
+
+
+In this context it must be mentioned, 
+that this software comes with a header to suppress metadata 
+as described in Section~\ref{subsec:headerSuppressMetaPDF}. 
+Reproducibility is guaranteed with the full set of metadata or with somehow reduced metadata. 
+The only piece of information needed for reproducibility is \texttt{CreationDate} 
+and this is preserved by the header. 
+Removing this also has severe consequences. 
+On the other hand, removing metadata may stabilize reproducibility 
+as this is true for the banner which identifies the latex compiler and its version 
+and consequently breaks reproducibility in any version change. 
+Details to reproducibility with a focus on meta data are given in ~\cite{LatexGen}, Section 4. 
+
+
+
+
+
 
 If a user renounces independence of the engine and sticks to \pdflatex{} only, 
 the package \texttt{hyperref} 
@@ -1079,19 +1085,6 @@ and adapt the code to the engine.
 
 
 
-Now that we have described how to ensure reproducible PDF artifacts, 
-just by designing the TEX source appropriately, 
-we have to explain how to check that a newly created artifact 
-coincides with a blueprint provided a priori. 
-First, note that currently such a check is performed 
-only if the result is in PDF format. 
-Even then the check is performed only if configured so. 
-Then the actual artifacts are compared to predefined artifacts 
-using the configured diff-tool. 
-If the actual artifacts do not coincide with predefined ones 
-according to the chosen diff tool, 
-a build exception is thrown as specified in Table~\ref{tab:TLP}. 
-The configurations related with diff check are collected in Section~\ref{sec:paramRepro}. 
 
 
 \section{Alternative build process with \protect\tool{latexmk}}\label{sec:latexmk}%\protect\tool{latexmk}
