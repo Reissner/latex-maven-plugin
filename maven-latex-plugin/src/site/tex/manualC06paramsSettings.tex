@@ -2584,6 +2584,7 @@ ranging from byte equivalence to some kind of visual equivalence.
 		using the diff command given by \texttt{\$diffPdfCommand}. 
     If this is set, the system time is set to $0$ indicating 1970--01--01. 
 		Note that currently, only pdf files are checked. 
+    % TBD: correct the information on epoch time 
 
     This setting can be overwritten for individual latex main files 
     by the magic comment \texttt{chkDiffMagic} 
@@ -2606,6 +2607,35 @@ ranging from byte equivalence to some kind of visual equivalence.
     Alternatives are \texttt{diff-pdf} and \texttt{diff-pdf-visually} 
     both implementing a visual diff. 
     Note that unlike for other tools, no options can be passed in this case explicitly. 
+  \end{minipage}
+  } \\
+  \texttt{pdfMetainfoCommand}      & \texttt{pdfinfo}  \\
+  \multicolumn2{|l|}{
+  \begin{minipage}{0.95\linewidth}
+    Command to retrieve metainfo from PDF files. 
+    Essentially, there are two possibilities, 
+    \texttt{exiftool} or \texttt{pdfinfo} 
+    but currently this software is restricted to the latter. 
+    At time of this writing, only creation time is considered. 
+    Note that meta info \texttt{CreationTime} is not identical 
+    with creation time in a file system.  
+  \end{minipage}
+  } \\
+  \texttt{pdfMetainfoOptions}      & \texttt{-isodates}  \\
+  \multicolumn2{|l|}{
+  \begin{minipage}{0.95\linewidth}
+    The options for the command \texttt{\$pdfMetainfoCommand} 
+    which is currently always \texttt{pdfinfo}. 
+    At time of this writing, only creation time is considered. 
+    This software has little flexibility in treating various time formats, 
+    so it must be decided. 
+    Format offered by \texttt{pdfinfo} 
+    most commonly known and easily converted to the required epoch time, 
+    is really according to ISO 8601. 
+    This motivates \texttt{-isodates} to be a mandatory option. 
+    Further options do not make sense, 
+    as currently only creation time is used. 
+    So \texttt{-isodates} is more than a mere default value.
   \end{minipage}
   } \\
 \end{longtable}
