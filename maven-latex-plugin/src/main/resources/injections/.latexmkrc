@@ -111,9 +111,9 @@ sub getTimestampDiff($fileName) {
   # $stdout =~ /CreationDate:\s*(?<creationDate>.*)\R/ or die("${pdfMetainfoCommand} did not get CreationDate. ");
   # print ("CreationDate: $+{creationDate}");
   # my $dt = DateTime::Format::ISO8601->parse_datetime($+{creationDate});
-  print("+++internal epoch time: $creationDateEpoch");
-  print("+++file     epoch time: $epoch_timestamp");
-  return $epoch_timestamp;
+  print("+++meta epoch time: $creationDateEpoch\n");
+  print("+++file epoch time: $epoch_timestamp\n");
+  return $creationDateEpoch;
 }
 
 sub getCreationTimeMetaEpoch($pdfFile) {
@@ -121,14 +121,12 @@ sub getCreationTimeMetaEpoch($pdfFile) {
   print ("metainfo ok: $res\n");
   print ("metainfos: \n$stdout\n");
   $stdout =~ /CreationDate:\s*(?<creationDate>.*)\R/ or die("${pdfMetainfoCommand} did not get CreationDate. ");
-  print ("CreationDate: $+{creationDate}");
+  print ("CreationDate: $+{creationDate}\n");
   my $dt = DateTime::Format::ISO8601->parse_datetime($+{creationDate});
   my $creationDateEpoch=$dt->epoch();
-  print("internal epoch time: $creationDateEpoch");
+  print("internal epoch time: $creationDateEpoch\n");
   return $creationDateEpoch;
 }
-
-
 
 
 # TBD: not ideal foor pdfViaDvi=true: conversion dvi to pdf is needed only once at the end, 
@@ -482,26 +480,26 @@ $clean_ext .= " pythontex-files-%R/* pythontex-files-%R";
 $extra_rule_spec{'pythontex'} = [ 'internal', '', 'mypythontex', "%R.pytxcode", "pythontex-files-%R/%R.pytxmcr", "%R", 1 ];
 
 sub mypythontex {
-   my $result_dir = $aux_dir1."pythontex-files-$$Pbase";
-   my $ret = Run_subst( $pythontex, 2 );
-   rdb_add_generated( glob "$result_dir/*" );
-   #my $fh = new FileHandle $$Pdest, "r";
-   open( my $fh, "<", $$Pdest );
-   if ($fh) {
-      print "path: $ENV{PATH}";
-      while (<$fh>) {
-         if ( /^%PythonTeX dependency:\s+'([^']+)';/ ) {
-	     print "Found pythontex dependency '$1'\n";
-             rdb_ensure_file( $rule, $aux_dir1.$1 );
-	 }
+  my $result_dir = $aux_dir1 . "pythontex-files-$$Pbase";
+  my $ret        = Run_subst( $pythontex, 2 );
+  rdb_add_generated( glob "$result_dir/*" );
+
+  #my $fh = new FileHandle $$Pdest, "r";
+  open( my $fh, "<", $$Pdest );
+  if ($fh) {
+    print "path: $ENV{PATH}";
+    while (<$fh>) {
+      if (/^%PythonTeX dependency:\s+'([^']+)';/) {
+        print "Found pythontex dependency '$1'\n";
+        rdb_ensure_file( $rule, $aux_dir1 . $1 );
       }
-      undef $fh;
-   }
-   else {
-       warn "mypythontex: I could not read '$$Pdest'\n",
-            "  to check dependencies\n";
-   }
-   return $ret;
+    }
+    undef $fh;
+  } else {
+    warn "mypythontex: I could not read '$$Pdest'\n",
+         "  to check dependencies\n";
+  }
+  return $ret;
 }
 
 
