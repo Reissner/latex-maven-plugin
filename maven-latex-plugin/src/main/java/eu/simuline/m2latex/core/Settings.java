@@ -1923,34 +1923,38 @@ public class Settings {
 
   // an alternative would be exiftool. 
   // Well, then no option is required but result is not strict ISO 8601 but maybe works anyway
-  // but one has to make the keys configurable: 
-  // | tool     | exiftool    | pdfinfo         |
-  // | -------- | ----------- | --------------- |
+  // but one has to make the keys configurable, because they depend on the tool 
+  // On the other hand, PDF specification 2.0 expands also on keys and deprecation 
+  // | tool     | exiftool    | pdfinfo         | PDF2.0 spec    | location | 
+  // | -------- | ----------- | --------------- | -------------- | -------- |
+  // |          | Title       | Title           | Title          | 14.3.3   |
+  // |          | Author      | Author          | Author         | 14.3.3   |
+  // |          | Subject     | Subject         | Subject        | 14.3.3   |
+  // |          | Keywords    | Keywords        | Keywords       | 14.3.3   |
+  // |          | Creator     | Creator         | Creator        | 14.3.3   |
+  // |          | Producer    | Producer        | Producer       | 14.3.3   |
+  // |          | Create Date | CreationDate    | CreationDate   | 14.3.3   |
+  // |          | Modify Date | ModDate         | ModDate        | 14.3.3   |
+  // |          | ?           | ?               | Trapped        | 14.3.3   |
+  // |          | ?           | ?               | Marked         | 14.7.1   |
+  // |          | ---         | UserProperties  | UserProperties | 14.7.1   |
+  // |          | ---         | Suspects        | Suspects       | 14.7.1   |
   // |          | File Size   | File size       |
   // |          | MIME Type   |                 |
   // |          | PDF Version | PDF version     |
   // |          | Linearized  | ---             |
-  // |          | Page Count  | Pages           |
   // |          | Page Mode   | ---             |
-  // |          | Author      | Author          |
-  // |          | Title       | Title           |
-  // |          | Subject     | Subject         |
-  // |          | Creator     | Creator         |
-  // |          | Producer    | Producer        |
-  // |          | Keywords    | Keywords        |
-  // |          | Create Date | CreationDate    |
-  // |          | Modify Date | ModDate         |
   // |          | ---         | Custom Metadata |
   // |          | ---         | Metadata Stream |
   // |          | ---         | Tagged          |
-  // |          | ---         | UserProperties  |
-  // |          | ---         | Suspects        |
+
   // |          | ---         | Form            |
-  // |          | ---         | JavaScript      |
+  // |          | ---         | JavaScript      | JavaScript     |  7.7.4 |
+  // |          | Page Count  | Pages           | Pages          |  7.7.4 |
   // |          | ---         | Encrypted       |
   // |          | ---         | Page size       |
   // |          | ---         | Page rot        |
-  // |          | ---         | Optimized       |
+  // |          | ---         | Optimized       | not mentioned |---|
   //
   // Also form differs: 
   // | tool     | key-value line                                         |
