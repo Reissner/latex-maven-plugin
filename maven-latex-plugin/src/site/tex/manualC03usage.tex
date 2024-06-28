@@ -128,6 +128,12 @@ That way one can check whether the pattern is matched.
 We could have decided that these files are compiled with or without warning, 
 but this would lead to a technique is that it is inconvenient and not well maintainable. 
 
+
+\subsubsection{On openings neglecting (magic) comments}\label{subsubsec:openingNoMagComm}
+
+This section contains material both specific for supported document classes 
+and general information but magic comments are deferred to Section~\ref{subsubsec:openingMagComm}. 
+
 This software is tested for document classes 
 %
 \begin{itemize}
@@ -313,13 +319,18 @@ Beamer documents may specify accordingly \texttt{aspectratio}.
 All this must be allowed for \LaTeX{} main files. 
 
 
+\subsubsection{Magic comments}\label{subsubsec:openingMagComm}
+
 It also makes sense to allow comments also in openings, 
 i.e.\@ text from unescaped \texttt{\%} to the end of the line, 
 and also magic comments. 
 A magic comment, as all comments, is ignored by the \LaTeX{} compilers 
 but give hints to more high level tools 
 like IDEs or build tools like this \LaTeX{} builder. 
-Typically, it is a comment comprising a whole line and starting with \texttt{\%~!}, 
+It is the mechanism to treat a document in a specific way 
+so magic comments override the general settings. 
+
+Typically, a magic comment comprises a whole line and starts with \texttt{\%~!}, 
 maybe followed by an identifier of the tool it refers to 
 or by an identifier referring to TEX files in general. 
 For example latex workshop and \TeX{}shop support the magic comment \texttt{\%~!TEX root} 
@@ -689,26 +700,26 @@ The mapping from document classes to allowed targets
 is given in setting \texttt{docClassesToTargets} given in 
 Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen}. 
 This parameter restricts the targets given in parameter \texttt{targets}. 
-As explained in detail in  Section~\ref{subsec:sourcesLatex}, 
+As explained in detail in Section~\ref{subsubsec:openingMagComm}, 
 if a document class cannot be identified by the command \texttt{documentclass} 
 or the outdated \texttt{documentstyle}, 
 it can be specified by a magic comment directly. 
 
 Finally, the targets can be specified individually for each latex main file 
-using a magic comment as described in Section~\ref{subsec:sourcesLatex}. 
+using a magic comment as described in Section~\ref{subsubsec:openingMagComm}. 
 A target specification in a magic comment overwrites all settings in 
 \texttt{targets} and in \texttt{docClassesToTargets}. 
 If a magic comment specifies the targets directly, 
 the document class need not be known. 
 In particular, a magic comment only specifying targets identifies already a \LaTeX{} main file 
-as specified in Section~\ref{subsec:sourcesLatex}. 
+as specified in Section~\ref{subsubsec:openingMagComm}. 
 
 As a magic comment can be used 
 to specify the target formats for a latex main file individually, 
-Section~\ref{subsec:sourcesLatex} shows 
+Section~\ref{subsubsec:openingMagComm} shows 
 how to specify the latex converter to be used for this file 
 overwriting the general setting \texttt{latex2pdfCommand} in the pom 
-given in Table~\ref{tab:paramLatex2pdf} on page~\pageref{subsec:sourcesLatex}. 
+given in Table~\ref{tab:paramLatex2pdf} on page~\pageref{tab:paramLatex2pdf}. 
 
 % The code shows that allowed is only what is defined in enum Target. 
 % Thus chk, which is a goal, is not output format. 
@@ -959,8 +970,8 @@ according to the function of the files injected:
   and also of DVI/XDV which is an important intermediate format. 
 
   The packages are loaded with minimum options, 
-  but these can be modified outside thie headers by \cmd{PassOptionsToPackage} 
-  as described in Section~\ref{subsec:sourcesLatex}. 
+  but these can be modified outside the headers by \cmd{PassOptionsToPackage} 
+  as described in Section~\ref{subsubsec:openingNoMagComm}. 
   \item
   Script files which are intended to run by the user 
   supporting the automatic build process ``from outside''

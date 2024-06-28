@@ -263,7 +263,7 @@ but depending on the document class, there may be further restrictions
 given by setting '\texttt{\$docClassesToTargets}'. 
 Currently, only the class \texttt{beamer} used for presentations has restrictions. 
 Moreover, these targets may be overwritten for individual \LaTeX{} main files 
-using magic comments as described in Section~\ref{subsec:sourcesLatex}. 
+using magic comments as described in Section~\ref{subsubsec:openingNoMagComm}. 
 
 %The default value is '\texttt{chk, pdf, html}'. 
 \end{minipage}
@@ -351,7 +351,7 @@ CAUTION\@: Due to a
 setting this to the empty string is ignored. 
 
 CAUTION\@: This setting is ignored, if targets are specified for individual \LaTeX{} main files 
-using magic comments as described in Section~\ref{subsec:sourcesLatex}. 
+using magic comments as described in Section~\ref{subsubsec:openingMagComm}. 
 \end{minipage}
 } \\
 \texttt{mainFilesIncluded}          &  empty string        \\
@@ -1221,7 +1221,7 @@ The \LaTeX{} command to create above all a PDF-file with.
 Further formats are DVI and XDV and also other formats based on these. 
 Expected values are \lualatex, \xelatex{} and \pdflatex. 
 CAUTION\@: This setting may be overwritten for individual \LaTeX{} main files 
-using magic comments as described in Section~\ref{subsec:sourcesLatex}. 
+using magic comments as described in Section~\ref{subsubsec:openingMagComm}. 
 
 Note that for \xelatex{} dvi mode 
 (creating xdv-files instead of DVI-files) is not supported, 
