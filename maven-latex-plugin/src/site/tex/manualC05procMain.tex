@@ -1047,39 +1047,109 @@ and the workflow is as setting under reproducibility control.
 \medskip
 
 
-In this context it must be mentioned, 
-that this software comes with a header to suppress metadata 
-as described in Section~\ref{subsec:headerSuppressMetaPDF}. 
-Reproducibility is guaranteed with the full set of metadata or with somehow reduced metadata. 
+Reproducibility is affected or even supported by various injections 
+as defined in Section~\ref{sec:injFiles}. 
+First, the generic header described in Section~\ref{subsec:header} 
+affects metadata, above all because it loads the package \pkg{hyperref}. 
+Part of this metadata is overwritten by another header 
+described in Section~\ref{subsec:headerSuppressMetaPDF}, 
+to improve security and privacy, 
+but enough metadata remains to keep up reproducibility. 
+Reproducibility is guaranteed with the full set of metadata 
+or with somehow reduced metadata. 
 The only piece of information needed for reproducibility is \texttt{CreationDate} 
-and this is preserved by the header. 
-Removing this also has severe consequences. 
+and this is preserved by the headers. 
+Removing this also has severe consequences 
+so that we can assume it is preser4ved. 
 On the other hand, removing metadata may stabilize reproducibility 
 as this is true for the banner which identifies the latex compiler and its version 
 and consequently breaks reproducibility in any version change. 
-Details to reproducibility with a focus on meta data are given in ~\cite{LatexGen}, Section 4. 
+Details to reproducibility with a focus on metadata are given in ~\cite{LatexGen}, Section 4. 
+
+Obviously, reproducibility checks cause work 
+when putting a document under check, 
+i.e. in the end phase of document development 
+as defined in Section~\ref{sec:devel}
+or if the source document changes, i.e. again in document development 
+or if the output PDF changes unintended, 
+normally although the sources did not change, 
+which triggers again document development. 
+
+This \LaTeX{} builder is not the tool for document development. 
+Instead, Section~\ref{subsec:develLatexmk} suggests to use \tool{latexmk} for, 
+and describes how \tool{latexmk} is integrated in this \LaTeX{} builder: 
+This builder writes a config file \texttt{.latexmkrc} 
+reflecting the settings of this software, at least to some extent. 
+The config file \texttt{.latexmkrc} is again written as an injection 
+and is described in Section~\ref{subsec:latChkRc}. 
+It supports reproducibility checks even reading magic comments, 
+checking existence of original PDF file 
+and reading its timestamp if the PDF file is present. 
+Creation of the new PDF file takes timestamp and timezone into account. 
+
+Two further injections may be helpful in the context of reproducibility checks, 
+both described in Section~\ref{subsec:ntlatexVmdiff}: 
+\tool{ntlatex} to create a PDF file and \tool{vmdiff} 
+realizing a weaker variant of diffing tool as described above: 
+It checks for visual equality and equality of metadata. 
+% TBD: maybe not true: only in trailer directory of the PDF. 
+\medskip
 
 
+For updating metadata only, we suggest the following technique: 
+Keep the original PDF file in \texttt{diffDirectory} 
+and check with \tool{vmdiff} that visually, the PDf file remains the same 
+and that the correct metadata is updated. 
+Of course, a new timestamp is wanted. 
+So in a second step, the original PDF file is deleted, 
+compilation is repeated, e.g. by \tool{ntlatex} and copied into \texttt{diffDirectory}. 
+\medskip
 
 
+There are rare occasions where the timestamp shall be set explicitly. 
+This is not possible directly as it is read off from the original PDF file. 
+We suggest to use \texttt{exiftool} to modify the \textttt{CreationDate} 
+of the original PDF file in \texttt{diffDirectory} before compilation. 
+This is done by something like
+%
+\begin{verbatim}
+  exiftool -PDF:CreateDate=2020-01-01T00:01:02Z xxx.pdf 
+\end{verbatim}
+
+One may check with \texttt{pdfinfo}, that this works. 
+Two important details are not so obvious: 
+%
+\begin{itemize}
+\item
+Not only the given metadata is changed but also all metadata depending on it, 
+in this case the trailer ID. 
+This is to keep the PDF file consistent. 
+\item 
+The metadata is not really overwritten, but it is hidden by new metadata. 
+In fact, \texttt{exiftool} uses incremental update specified for the PDF format, 
+adding a layer describing the modification. 
+All modifications done can also be undone by 
+%
+\begin{verbatim}
+  exiftool -PDF-update:All= xxx.pdf
+\end{verbatim}
+%
+unless the PDF file has been linearized. 
+\LaTeX{} to PDF compilers always create linearized PDF files and never update incrementally. 
+\end{itemize}
 
 
-If a user renounces independence of the engine and sticks to \pdflatex{} only, 
-the package \texttt{hyperref} 
-could be replaced by specific commands. 
-Also, using the package \texttt{iftex} one can detect the used engine 
-via the macros \cmd{ifLuaTeX}, \cmd{ifXeTeX} 
-and \cmd{ifPDFTeX} as illustrated in \texttt{headerSuppressMetaPDF.tex} 
-described in Section~\ref{subsec:headerSuppressMetaPDF}
-and adapt the code to the engine. 
-
-% TBD: clarify: does hyperref replace the engine specific settings? 
-% I think no, because of the trailerid, it does not, so iftex is always needed. 
-% For pdftex I seem to do twice and once is sufficient. 
-% I have the impression some things i do not for reproducibility 
-% but I do for security. 
-% All in all, we need additional research to write this section in a competent way. 
-
+To know that changing metadata is done by incremental update is important, 
+insofar as a PDF file with modified timestamp and timezone  
+differs from a PDF file compiled directly with the given timestamp and timezone; 
+it is shorter. 
+So, updating the timestamp of the PDF file in \texttt{diffDirectory} 
+does not yield a PDF file which is reproduced. 
+Compilation leads to another PDF file and only the updated timestamp is reproduced. 
+This compiled PDF file is reproduced, so 
+copying it the into \texttt{diffDirectory} solves the problem: 
+Compilation yields a PDF file with the correct timestamp and timezone, 
+and it coincides with the PDF file in \texttt{diffDirectory}. 
 
 
 

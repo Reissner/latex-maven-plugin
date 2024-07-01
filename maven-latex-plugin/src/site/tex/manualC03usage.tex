@@ -1,5 +1,3 @@
-% !TEX root = manualLMP.tex
-
 \chapter{Usage of Plugin and Task}\label{chap:usage}
 
 % TBD: in the long run: plugin, task and standalone, or as a dependency
@@ -1088,9 +1086,21 @@ Ideally, the injected \texttt{.latexmkrc} is adapted to the current settings of 
 and so invoking \tool{latexmk} invoked with its configuration file 
 behaves like this latex plugin. 
 Currently, not all possible settings of this plugin 
-are taken into account in the \texttt{.latexmkrc}. 
-Nevertheless, for the default settings, 
+are taken into account in the \texttt{.latexmkrc}, 
+but the magic comments in the source files described in Section~\ref{subsubsec:openingMagComm} 
+are read and taken into account as far as this makes sense. 
+
+For default settings, maybe partially overwritten by magic comments, 
 this maven plugin and \tool{latexmk} create the same PDF files. 
+This is true even for this manual. 
+In particular, the graphic formats 
+described in Chapter~\ref{chap:GraphConversions} are supported. 
+So are bibliographies, indices and glossaries and also material computed by \tool{pythontex} 
+as described in Chapter~\ref{chap:latexMainConversions}, 
+but without reflecting all options and patters to supervise log files. 
+Also, reproducibility check is supported including magic comments and all parameters. 
+% TBD: what about chk? 
+% what about dvi/xdv? read the manual of latexmk
 
 At time of this writing, \texttt{.latexmkrc} works for various \LaTeX{} generators 
 but is only usable to create PDF files. 
@@ -1395,18 +1405,31 @@ Calling from project root
   mvn latex:inj -Dlatex.injections=ntlatex,vmdiff
 \end{Verbatim}
 %
-injects the according files \texttt{ntlatex} and \texttt{vmdiff}. 
+injects the according files \texttt{ntlatex} and \texttt{vmdiff} in the root directory. 
 
 The injection \texttt{ntlatex} 
 injects the file \href{\urlSite fromMain/ntlatex}{ntlatex} 
-which runs the \LaTeX{} compiler as specified in the pom, or in the magic comments if present. 
-The latter override the former. 
-This invocation takes also processing time into account to guarantee reproducibility 
-if so configured. % TBD: in future also the timezone, but the details are tricky: reference 
-As \tool{latexmk} is, also \texttt{ntlatex} shall be independent of the configuration given by the pom. 
-This is realized in the same way, namely by encoding the configuration in the injection \texttt{.latexmkrc}. 
-The downside is, that \texttt{ntlatex} like \tool{latexmk} requies Perl to work. 
+which runs the \LaTeX{} compiler specified in the pom, or in the magic comments if present, 
+to create a PDF file. 
+As usual, magic comments override configuration in the pom. 
+Also, it takes into account whether the PDF file is created via intermediate DVI/XDV files or not, 
+depending on the configuration. 
+
+This invocation takes also processing time and the timezone into account 
+to guarantee reproducibility if so configured. 
+As \tool{latexmk} is, also \tool{ntlatex} shall be independent 
+of the configuration given by the pom. 
+This is realized in the same way, 
+namely by encoding the configuration in the injection \texttt{.latexmkrc}. 
+The downside is, that \tool{ntlatex} like \tool{latexmk} requires Perl to work. 
 For details see Section~\ref{sec:chkReprod} on reproducibility. 
+
+But if \tool{ntlatex} so close to \tool{latexmk}, 
+why is it needed in addition? 
+It is because \tool{latexmk} won't recompile, if the expected PDF file exist already 
+and no sources changed. 
+So \tool{ntlatex} is needed to force recompilation. 
+\medskip
 
 Complementary to this \texttt{vmdiff} is a diff tool for PDF files 
 combining visual equality checked with \texttt{diff-pdf-visually} 
@@ -1657,20 +1680,22 @@ eliminates additional AUX files tied to included sections.
 
 \subsection{The build tool \tool{latexmk}}\label{subsec:develLatexmk}
 
-Essentially, it is possible to compile latex files only with editor, viewer and a console. 
+Essentially, it is possible to compile latex files 
+only with editor, viewer and a console. 
 Let us collect the challenges. 
-The document may contain graphic files which must be precompiled by further tools 
+The document may contain graphic files 
+which must be precompiled by further tools 
 which must be invoked a priori on the console. 
 For FIG files this is \texttt{fig2dev}. 
 This invocation must be repeated as soon as a FIG file changes\footnote%
-{Typically this triggers a sequence of invocations of converters 
+{Typically, this triggers a sequence of invocations of converters 
 along files one depending on the other. }. 
 
 Then a latex converter like \lualatex{} must be invoked. 
 Typically, the latex converter must be invoked more than once 
 and besides the latex converter 
 some further auxiliary programs like \texttt{makeindex} must be run. 
-The console displays indications to the user what action take next. 
+The console displays indications to the user what action to be taken next. 
 Normally after invocation of an auxiliary program, 
 the latex converter must be rerun at least once. 
 Each of the programs may fail. 
@@ -1680,7 +1705,8 @@ on the console and in their respective log files.
 Potentially, these influence the actions the user must take next. 
 \smallskip
 
-What is needed is a tool for orchestration\index{orchestration} of the basic tools: 
+What is needed, is a tool for orchestration\index{orchestration} 
+of the basic tools: 
 Orchestration means invoking more basic tools in a reasonable order 
 and supervising the results, at least success and to react appropriately. 
 This frees the user from deciding 
@@ -1696,9 +1722,11 @@ except that it does not care about warnings.
 
 If something goes wrong, and it is not clear what, 
 it is typically a good idea to fall back to the more basic tools. 
-A great point with \tool{latexmk} is, that this is possible without any problem, 
+A great point with \tool{latexmk} is, 
+that this is possible without any problem, 
 and it is as simple to switch back from basic tools to \tool{latexmk}. 
-This is what we mean saying that \tool{latexmk} \emph{integrates} the basic tools. 
+This is what we mean saying that \tool{latexmk} 
+\emph{integrates} the basic tools. 
 
 The best way to invoke \tool{latexmk} for document development is 
 %
@@ -1707,7 +1735,8 @@ The best way to invoke \tool{latexmk} for document development is
 \end{Verbatim}
 
 According to~\cite{LatexMk23}, Section ``DESCRIPTION'', 
-the option \texttt{-pvc} is shorthand for ``preview continuously'' a kind of nonstop mode: 
+the option \texttt{-pvc} is shorthand for ``preview continuously'', 
+a kind of nonstop mode: 
 The PDF file, or whatsoever is created, 
 then a viewer is opened in the background 
 if not yet open 

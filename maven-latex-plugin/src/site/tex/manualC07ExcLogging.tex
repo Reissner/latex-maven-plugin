@@ -541,29 +541,33 @@ This is mainly because of writing permissions.
   & \texttt{\footnotesize Artifact '\$pdfFileAct' from '\$texFile' could not be reproduced. }  \\
   \multicolumn2{|l|}{
   \begin{minipage}{0.95\linewidth}
-  Processing \$texFile' yields \$pdfFileAct which is not ``alike'' the stored version. 
-  Currently, that kind of check can be performed for \texttt{pdf} files only. 
-  Also the diff check is executed only if parameter \$chkDiff described in Section~\ref{sec:paramRepro} is set. 
-  Then the diff command \$diffPdfCommand is performed to determine whether the artifacts are equivalent
+  Processing \texttt{\$texFile} yields \texttt{\$pdfFileAct} which is not ``alike'' the stored version. 
+  Currently, that kind of check can be performed for PDF files only. 
+  Also, the diff check is executed only if parameter \texttt{\$chkDiff} 
+  described in Section~\ref{sec:paramRepro} is set. 
+  Then the diff command \texttt{\$diffPdfCommand} is performed 
+  to determine whether the artifacts are equivalent
   in the sense given by the diff command. 
   The concrete meaning of that equivalence 
   may range from strict equivalence to some kind of visual equivalence. 
   \end{minipage}
   } \\
   \texttt{\footnotesize TLP02} 
-  & \texttt{\footnotesize Add file '\$pdfFileCmp' to compare with artifact from '\$texFile'! }  \\
+  & \texttt{\footnotesize Add file '\$pdfFileCmp' to compare with artifact '\$pdfFileAct'! }  \\
   \multicolumn2{|l|}{
   \begin{minipage}{0.95\linewidth}
-  The PDF file '\$pdfFileCmp' expected for comparison with the PDF file created from '\$texFile' does not exist. 
-  It is expected only if a diff check is configured according to \$chkDiff described in Section~\ref{sec:paramRepro}. 
+  The PDF file \texttt{\$pdfFileCmp} expected for comparison with the PDF file \texttt{\$pdfFileAct} 
+  created from a \LaTeX{} main file does not exist. 
+  It is expected only if a diff check is configured 
+  according to \texttt{\$chkDiff} described in Section~\ref{sec:paramRepro}. 
 
   This warning is normal if the document is added newly. 
   Then just copy the created PDF file (maybe preserving modification time) after quality check. 
   This warning is also normal if a document is actively modified. 
-  Then before building the file '\$pdfFileCmp' shall be removed before compilation 
+  Then before building the file \texttt{\$pdfFileCmp} shall be removed before compilation 
   to force this software to assign a new timestamp, e.g. into first page and metadata. 
 
-  Currently, that kind of check can be performed for \texttt{pdf} files only. 
+  Currently, that kind of check can be performed for PDF files only. 
   \end{minipage}
   } \\
   \texttt{\footnotesize TLP03} 
@@ -838,6 +842,9 @@ FIXME
 & \texttt{\footnotesize Could not assign timestamp to target file \$file. } \\
 \multicolumn2{|l|}{
 \begin{minipage}{0.95\linewidth}
+Currently NOT USED! 
+
+The former explanation was as follows
 If either the parameter '\$chkDiff' described in Table~\ref{tab:paramDiffPdf} 
 on page~\pageref{tab:paramDiffPdf} is set 
 or the magic comment \texttt{chkDiff} 
