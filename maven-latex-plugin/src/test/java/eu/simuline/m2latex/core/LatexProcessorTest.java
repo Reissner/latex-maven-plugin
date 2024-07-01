@@ -204,7 +204,7 @@ public class LatexProcessorTest {
 
 		mockProcessLatex2pdf(false, false, false);
 
-		this.processor.processLatex2pdf(this.desc, Optional.empty());// means no timestamp for diff 
+		this.processor.processLatex2pdf(this.desc);
 		verifyProcessLatex2pdf(false, false, false);
 		verifyNoMoreInteractions(this.executor);
 		verifyNoMoreInteractions(this.fileUtils);
@@ -217,7 +217,7 @@ public class LatexProcessorTest {
 
 		mockProcessLatex2pdf(true, false, false);
 
-		this.processor.processLatex2pdf(this.desc, Optional.empty());// means no timestamp for diff 
+		this.processor.processLatex2pdf(this.desc);
 		verifyProcessLatex2pdf(true, false, false);
 		verifyNoMoreInteractions(this.executor);
 		verifyNoMoreInteractions(this.fileUtils);
@@ -229,7 +229,7 @@ public class LatexProcessorTest {
 	public void testProcessLatex2html() throws BuildFailureException {
 
 		mockProcessLatex2html(false, false, false);
-		this.processor.processLatex2html(this.desc, Optional.empty());// means no timestamp for diff 
+		this.processor.processLatex2html(this.desc);
 
 		verifyProcessLatex2html(false, false, false);
 		verifyNoMoreInteractions(this.executor);
@@ -545,7 +545,7 @@ public class LatexProcessorTest {
 		//	this.inOrder.verify(this.fileUtils)
 		//	    .replaceSuffix(this.texFile, LatexProcessor.SUFFIX_BBL);
 		this.inOrder.verify(this.executor)
-				.execute(eq(WORKING_DIR), isNull(),
+				.executeEnvR0(eq(WORKING_DIR), isNull(),
 						eq(this.settings.getCommand(ConverterCategory.BibTeX)),
 						aryEq(LatexProcessor.buildArguments(
 								this.settings.getBibtexOptions(), this.auxFile)),
@@ -616,7 +616,7 @@ public class LatexProcessorTest {
 		assert false;
 
 		this.inOrder.verify(this.executor)
-				.execute(eq(WORKING_DIR), isNull(),
+				.executeEnvR0(eq(WORKING_DIR), isNull(),
 						eq(this.settings.getCommand(ConverterCategory.MakeIndex)),
 						aryEq(LatexProcessor.buildArguments(
 								this.settings.getMakeIndexOptions(), this.idxFile)),
@@ -657,7 +657,7 @@ public class LatexProcessorTest {
 		}
 		assert false;
 
-		this.inOrder.verify(this.executor).execute(eq(WORKING_DIR), isNull(),
+		this.inOrder.verify(this.executor).executeEnvR0(eq(WORKING_DIR), isNull(),
 				eq(this.settings.getCommand(ConverterCategory.MakeGlossaries)),
 				aryEq(LatexProcessor.buildArguments(
 						this.settings.getMakeGlossariesOptions(), this.xxxFile)),
@@ -690,7 +690,7 @@ public class LatexProcessorTest {
 
 		// FIXME: should work also in order. 
 		//this.inOrder.
-		verify(this.executor, atLeastOnce()).execute(eq(WORKING_DIR), isNull(),
+		verify(this.executor, atLeastOnce()).executeEnvR0(eq(WORKING_DIR), isNull(),
 				eq(this.settings.getCommand(ConverterCategory.LaTeX)),/// TBD: LatexProcessor.getLatex2pdfCommand()
 				aryEq(LatexProcessor.buildLatexArguments(this.settings,
 						this.settings.getPdfViaDvi(), this.texFile, false)),
@@ -729,7 +729,7 @@ public class LatexProcessorTest {
 		// TBD: replace by according test
 		//	this.inOrder.verify(this.fileUtils)
 		//	    .replaceSuffix(this.texFile, LatexProcessor.SUFFIX_HTML);
-		this.inOrder.verify(this.executor).execute(eq(WORKING_DIR), isNull(),
+		this.inOrder.verify(this.executor).executeEnvR0(eq(WORKING_DIR), isNull(),
 				eq(this.settings.getTex4htCommand()),
 				aryEq(
 						LatexProcessor.buildHtlatexArguments(this.settings, this.texFile)),

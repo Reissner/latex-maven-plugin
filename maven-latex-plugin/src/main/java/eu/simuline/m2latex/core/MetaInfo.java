@@ -952,7 +952,7 @@ public class MetaInfo {
 			//System.setIn(new ByteArrayInputStream("\u0004\n".getBytes()));
 			cmd = conv.getCommand();
 
-      CmdResult resultWhich = this.executor.execute(TexFileUtils.getEmptyIdx().getParentFile(),
+      CmdResult resultWhich = this.executor.executeEmptyEnv(TexFileUtils.getEmptyIdx().getParentFile(),
                     null,
                     CMD_WHICH,
                     CommandExecutor.ReturnCodeChecker.Never,

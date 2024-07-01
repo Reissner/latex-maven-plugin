@@ -1070,7 +1070,7 @@ enum Converter {
    *    </ul>
    */
   String getVersionInfo(CommandExecutor executor) throws BuildFailureException {
-    return executor.execute(TexFileUtils.getEmptyIdx().getParentFile(), null,
+    return executor.executeEnvR0(TexFileUtils.getEmptyIdx().getParentFile(), null,
         getCommand(), new String[] {getVersionOption()}).output;
   }
 

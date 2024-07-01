@@ -25,9 +25,6 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.attribute.FileTime;
 
-import java.text.SimpleDateFormat;
-
-import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -80,7 +77,7 @@ class CommandExecutor {
 
   /**
    * The way return codes are checked: Not at all, if nonzero and special treatments. 
-   * This is used in {@link CommandExecutor#execute(File, File, String, ReturnCodeChecker, String[])} 
+   * This is used in {@link CommandExecutor#executeEnvR0(File, File, String, ReturnCodeChecker, String[])} 
    * to decide whether the return code shall indicate that execution failed. 
    * TBD: shall be part of category 
    */
@@ -143,39 +140,73 @@ class CommandExecutor {
 
 
   /**
-   * Maps names of environment variables to values. 
-   * Currently sets <code>SOURCE_DATE_EPOCH</code> 
-   * to the number of seconds since 1970-01-01 midnight 
-   * and <code>FORCE_SOURCE_DATE=1</code> 
-   * forcing that setting. 
-   * <p>
-   * This is used to run commands at system time 
-   * given by the target file which is the base for reproducibility. 
+   * Represents an environment used to reproduce a given PDF file 
+   * consisting of 
+   * <ul>
+   * <li><code>SOURCE_DATE_EPOCH</code>, 
+   * which is set to the timestamp of the PDF file to be reproduced 
+   * before the environment is used. 
+   * That way, the resulting PDF file obtains the same timestamp. 
+   * <li><code>FORCE_SOURCE_DATE</code> which is set to <code>1</code> 
+   * forcing certain compilers to use <code>SOURCE_DATE_EPOCH</code> 
+   * also for visual data, not only for metadata, 
+   * <li><code>TZ</code>, the current timezone set to <code>UTC</code>, 
+   * which is the timezone of the PDF file to be reproduced. 
+   * </ul>
+   * 
+   * This environment is relevant for compilation into PDF, 
+   * whether via DVI/XDV or directly. 
+   * In the first case, it is applied in both steps. 
+   * 
+   * @see #ENV_TIMEZONE
+   * @see #DATE_EPOCH
+  */
+  // before using this, key DATE_EPOCH with according value is put 
+  private static final Map<String, String> ENV_TIMESTAMP_FORCE_TZ;
+
+  // this one is immutable 
+  /**
+   * Represents an environment used to create a PDF file 
+   * which is later to be reproduced 
+   * but does nto yet reproduce another PDF file. 
+   * Thus it defines the timezone <code>UTC</code> 
+   * without specifying a timestamp or how to use it. 
+   * 
+   * @see #ENV_TIMESTAMP_FORCE_TZ
    */
-  private static final Map<String, String> TIMESTAMP_ENV;
+  private static final Map<String, String> ENV_TIMEZONE;
+
+  // this one is immutable 
+  /**
+   * Represents the empty environment. 
+   */
+  private static final Map<String, String> ENV_EMPTY;
 
   /**
-   * The key for {@link #TIMESTAMP_ENV} 
+   * The key for {@link #ENV_TIMESTAMP_FORCE_TZ} 
    * to set <code>SOURCE_DATE_EPOCH</code> 
    */
   private static final String DATE_EPOCH = "SOURCE_DATE_EPOCH";
 
   static {
-    TIMESTAMP_ENV = new TreeMap<String, String>();
-    TIMESTAMP_ENV.put("FORCE_SOURCE_DATE","1");
+    ENV_TIMESTAMP_FORCE_TZ = new TreeMap<String, String>();
+    ENV_TIMESTAMP_FORCE_TZ.put("FORCE_SOURCE_DATE","1");
+    ENV_TIMESTAMP_FORCE_TZ.put("TZ","utc");
+
+    ENV_TIMEZONE = new TreeMap<String, String>();
+    ENV_TIMEZONE.put("TZ","utc");
+
+    ENV_EMPTY = new TreeMap<String, String>();
   }
 
-  /**
-   * Indicates the optional timestamp for the next invocation of 
-   * {@link #execute(File, File, String, ReturnCodeChecker, String[])}. 
-   * If a timestamp is given, 
-   * the next invocation is done with environment given by {@link #TIMESTAMP_ENV}; 
-   * else without this environment. 
-   * Initially, no timestamp is given. 
+  /*
+   * The environment for the next command execution 
+   * {@link # execute(File, File, String, String[], File...)}
    */
-  private Optional<Long> timestampOpt;
+  private Map<String, String> env;
 
   private final LogWrapper log;
+
 
   /**
    * Creates an executor with the given logger 
@@ -186,8 +217,23 @@ class CommandExecutor {
    *    the current logger. 
    */
   CommandExecutor(LogWrapper log) {
-    this.timestampOpt = Optional.empty();
+    envReset();
     this.log = log;
+  }
+
+
+
+  void envReset() {
+    this.env = ENV_EMPTY;
+  }
+  
+  void envUtc() {
+    this.env = ENV_TIMEZONE;
+  }
+
+  void envSetTimestamp(long timestampSec) {
+    ENV_TIMESTAMP_FORCE_TZ.put(DATE_EPOCH, Long.toString(timestampSec));
+    this.env = ENV_TIMESTAMP_FORCE_TZ;
   }
 
   /**
@@ -254,22 +300,21 @@ class CommandExecutor {
    *    on the process to be executed thrown by {@link Process#waitFor()}. 
    *    </ul>
    */
-  CmdResult execute(File workingDir,
+  CmdResult executeEnvR0(File workingDir,
                     File pathToExecutable,
                     String command,
                     String[] args,
                     File... resFiles) throws BuildFailureException {
-    return execute(workingDir, pathToExecutable, command, 
-          ReturnCodeChecker.IsNonZero, args, resFiles);
+    return execute(workingDir, pathToExecutable, this.env,
+          command, ReturnCodeChecker.IsNonZero, args, resFiles);
   }
-
 
   /**
    * Executes <code>command</code> in <code>workingDir</code>
    * with list of arguments given by <code>args</code> 
    * and logs if after execution the result file <code>resFile</code> does not exist. 
    * CAUTION: In contrast to 
-   * {@link #execute(File,File,String,String[],File...)}, 
+   * {@link #executeEnvR0(File,File,String,String[],File...)}, 
    * It is not checked that the result files are updated 
    * and it is just one result file neglecting log files and that like. 
    * This method is suited to build tools updateing only by need 
@@ -328,7 +373,7 @@ class CommandExecutor {
                          String command,
                          String[] args,
                          File resFile) throws BuildFailureException {
-    CmdResult res = execute(workingDir, pathToExecutable, command, args);
+    CmdResult res = executeEnvR0(workingDir, pathToExecutable, command, args);
     existsOrErr(command, resFile);
     return res;
   }
@@ -407,12 +452,13 @@ class CommandExecutor {
    *    on the process to be executed thrown by {@link Process#waitFor()}. 
    *    </ul>
    */
-  CmdResult execute(File workingDir,
-                    File pathToExecutable,
-                    String command,
-                    ReturnCodeChecker checker,
-                    String[] args,
-                    File... resFiles) throws BuildFailureException {
+  private CmdResult execute(File workingDir,
+                            File pathToExecutable,
+                            Map<String,String> env,
+                            String command,
+                            ReturnCodeChecker checker,
+                            String[] args,
+                            File... resFiles) throws BuildFailureException {
     // analyze old result files 
     //assert resFile.length > 0;
 
@@ -458,7 +504,7 @@ class CommandExecutor {
     // Proper execution 
     // may throw BuildFailureException TEX01, log warning EEX01 
     CmdResult res =
-        execute(workingDir, pathToExecutable, command, checker, args);
+        execute(workingDir, pathToExecutable, env, command, checker, args);
 
     // may log EEX02, EEX03, WEX04 
     for (int idx = 0; idx < resFiles.length; idx++) {
@@ -468,6 +514,23 @@ class CommandExecutor {
 
     return res;
   }
+
+  CmdResult executeEmptyEnv(File workingDir,
+                            File pathToExecutable,
+                            String command,
+                            ReturnCodeChecker checker,
+                            String[] args,
+                            File... resFiles) throws BuildFailureException {
+    return execute(workingDir, pathToExecutable, ENV_EMPTY, 
+        command, checker, args, resFiles);
+  }
+
+  // CmdResult executeEmptyEnvR0(File workingDir, File pathToExecutable,
+  //     String command, String[] args, File... resFiles)
+  //     throws BuildFailureException {
+  //   return execute(workingDir, pathToExecutable, ENV_EMPTY, command,
+  //       CommandExecutor.ReturnCodeChecker.IsNonZero, args, resFiles);
+  // }
 
   /**
    * Returns the time of modification of this file or <code>null</code> if not readable. 
@@ -584,35 +647,9 @@ class CommandExecutor {
     return true;
   }
 
-  // TBD: rework: whether present or not. 
-  /**
-   * Selects a timestamp in <em>milliseconds</em> since 1970-01-01 for the next command execution 
-   * by invoking with environment variables according to {@link #TIMESTAMP_ENV} 
-   * which is in <em>seconds</em> since  since 1970-01-01. 
-   * The execution happens by 
-   * direct or indirect invocation of 
-   * {@link #execute(File, File, String, ReturnCodeChecker, String[])}. 
-   * After executing a command, 
-   * the execution method reverts to execution in system time, i.e. without specified timestamp. 
-   * <p>
-   * The method {@link #setTimestamp(Optional)} is used to execute a latex compiler 
-   * a DVI/XDV to PDF converter or a tool like <code>latexmk</code>. 
-   * Invocation is always via 
-   * {@link #execute(File, File, String, String[], File...)}. 
-   * 
-   * @param timestampOpt
-   *    an optional which is either empty or wraps a timestamp in milliseconds since 1970-01-01. 
-   * 
-   * @see LatexProcessor#runLatex2dev(LatexMainDesc, LatexDev, Optional)
-   * @see LatexProcessor#runLatexmk(LatexMainDesc, Optional)
-   * @see LatexProcessor#runDvi2pdf(LatexMainDesc, Optional)
-   */
-  void setTimestamp(Optional<Long> timestampOpt) {
-    this.timestampOpt =timestampOpt;
-  }
-
   /**
    * Execute <code>command</code> with arguments <code>args</code> 
+   * in the environment <code>env</code> 
    * in the working directory <code>workingDir</code> 
    * and return the output. 
    * Here, <code>pathToExecutable</code> is the path 
@@ -635,9 +672,12 @@ class CommandExecutor {
    * @param pathToExecutable
    *    the path to the executable <code>command</code>. 
    *    This may be <code>null</code> if <code>command</code> 
-   *    is on the execution path 
+   *    is on the execution path. 
+   * @param env
+   *    the environment, i.e. the set of environment variables 
+   *    the command below is to be executed. 
    * @param command
-   *    the name of the program to be executed 
+   *    the name of the program to be executed. 
    * @param checker
    *    the checker for the return code 
    *    which decides whether an execution error EEX01 has to be logged. 
@@ -666,6 +706,7 @@ class CommandExecutor {
    */
   private CmdResult execute(File workingDir,
                             File pathToExecutable,
+                            Map<String,String> env,
                             String command,
                             ReturnCodeChecker checker,
                             String[] args) throws BuildFailureException {
@@ -673,18 +714,8 @@ class CommandExecutor {
     String executable = new File(pathToExecutable, command).getPath();
     Commandline cl = new Commandline(executable);
     cl.getShell().setQuotedArgumentsEnabled(true);
-    if (this.timestampOpt.isPresent()) {
-      this.log.info("Run with timestamp "
-        + new SimpleDateFormat("yyyy MM dd HH:mm:ss").format(new Date(timestampOpt.get()))
-        + "(" + this.timestampOpt.get()+ "ms)");
-      // the epoch time in timeStampOpt is in ms, 
-      // whereas in environment variable DATE_EPOCH it is in s 
-      // Note that division is implicitly rounded to 0 
-      TIMESTAMP_ENV.put(DATE_EPOCH, Long.toString(this.timestampOpt.get()/1000));
-      for (Map.Entry<String, String> entry : TIMESTAMP_ENV.entrySet()) {
-        cl.addEnvironment(entry.getKey(), entry.getValue());
-      }
-      this.timestampOpt = Optional.empty();
+    for (Map.Entry<String, String> entry : env.entrySet()) {
+      cl.addEnvironment(entry.getKey(), entry.getValue());
     }
     cl.addArguments(args);
     if (workingDir != null) {

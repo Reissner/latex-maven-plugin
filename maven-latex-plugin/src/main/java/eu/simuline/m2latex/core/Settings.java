@@ -441,6 +441,7 @@ public class Settings {
   @Parameter(name = "texPath", defaultValue = "null")
   private File texPath = null;
 
+  // TBD: update documentation 
   /**
    * Indicates whether after creating artifacts 
    * and copying them to the output directory {@link #outputDirectoryFile} 
@@ -1922,39 +1923,77 @@ public class Settings {
   private String diffPdfCommand = "diff";
 
   // an alternative would be exiftool. 
+  // The naive output turns out to be very much misleading: 
+  // exiftool xxx.pdf 
+  // has output reminding of pdfinfo xxx.pdf 
+  // but the existence of many dates and slight differences in the names of the tags should warn us. 
+  // We shall use instead: 
+  // exiftool -X xxx.pdf 
+  // which yields an xml representation. 
+  // The advantage of this is, that tags are endowed with namespaces and can thus be easily distinguished. 
+  // For example we have PDF:CreateDate and XMP-xmp:CreateDate
+  // The technique to identify pieces of information with those by pdfinfo 
+  // is by modifying: 
+  // exiftool -PDF:CreateDate=2020-01-01T00:01:02Z xxx.pdf 
+  // and reading in pdfinfo -rawdates xxx.pdf to see what is really written: it is CreationDate. 
+  // Similarly we find out, that 
+  // exiftool -PDF:ModifyDate=2020-02-28T00:01:02Z xxx.pdf 
+  // affects ModDate: strange, not the same key. 
+  //
+  // Strange, these are not the dates displayed by 
+  // exiftool xxx.pdf
+  // because they are unchanged. 
+  // This is misleading as they have similar keys. 
+  // 
+  // exiftool performs changes as an incremental update, 
+  // i.e. the old versions are not eliminated, but hidden by the new entries. 
+  // An update affects also all entries which depend on the one explicitly changed. 
+  // This is important to know, 
+  // because changing CreationDate after compilation is not the same as direct compilation with that timestamp. 
+  // The original values can be recovered. 
+  // exiftool -PDF-update:All= manualLMP.pdf
+  // To make this permanent, use linearization (use qpdf not exiftool): 
+  //   #!/usr/bin/env bash
+  // # Strip metadata and re-linearise:
+  // exiftool -all= -overwrite_original "$1"
+  // mv "$1" /tmp/temp.pdf
+  // qpdf --linearize /tmp/temp.pdf "$1"
+
+
   // Well, then no option is required but result is not strict ISO 8601 but maybe works anyway
   // but one has to make the keys configurable, because they depend on the tool 
   // On the other hand, PDF specification 2.0 expands also on keys and deprecation 
-  // | tool     | exiftool    | pdfinfo         | PDF2.0 spec    | location | 
-  // | -------- | ----------- | --------------- | -------------- | -------- |
-  // |          | Title       | Title           | Title          | 14.3.3   |
-  // |          | Author      | Author          | Author         | 14.3.3   |
-  // |          | Subject     | Subject         | Subject        | 14.3.3   |
-  // |          | Keywords    | Keywords        | Keywords       | 14.3.3   |
-  // |          | Creator     | Creator         | Creator        | 14.3.3   |
-  // |          | Producer    | Producer        | Producer       | 14.3.3   |
-  // |          | Create Date | CreationDate    | CreationDate   | 14.3.3   |
-  // |          | Modify Date | ModDate         | ModDate        | 14.3.3   |
-  // |          | ?           | ?               | Trapped        | 14.3.3   |
-  // |          | ?           | ?               | Marked         | 14.7.1   |
-  // |          | ---         | UserProperties  | UserProperties | 14.7.1   |
-  // |          | ---         | Suspects        | Suspects       | 14.7.1   |
-  // |          | File Size   | File size       |
-  // |          | MIME Type   |                 |
-  // |          | PDF Version | PDF version     |
-  // |          | Linearized  | ---             |
-  // |          | Page Mode   | ---             |
-  // |          | ---         | Custom Metadata |
-  // |          | ---         | Metadata Stream |
-  // |          | ---         | Tagged          |
+  // | tool     | exiftool -X    | pdfinfo -meta  | pdfinfo         | PDF2.0 spec    | location | 
+  // | -------- | -------------- | -------------- | --------------- | -------------- | -------- |
+  // |          | PDF:Title      |                | Title           | Title          | 14.3.3   |
+  // |          | PDF:Author     |                | Author          | Author         | 14.3.3   |
+  // |          | PDF:Subject    |                | Subject         | Subject        | 14.3.3   |
+  // |          | PDF:Keywords   |                | Keywords        | Keywords       | 14.3.3   |
+  // |          | PDF:Creator    |                | Creator         | Creator        | 14.3.3   |
+  // |          | PDF:Producer   | pdf:Producer   | Producer        | Producer       | 14.3.3   |
+  // |          | PDF:CreateDate |                | CreationDate    | CreationDate   | 14.3.3   |
+  // |          | PDF:ModifyDate |                | ModDate         | ModDate        | 14.3.3   |
+  // |          | ?              |                | ?               | Trapped        | 14.3.3   |
+  // |          | ?              |                | ?               | Marked         | 14.7.1   |
+  // |          | ---            |                | UserProperties  | UserProperties | 14.7.1   |
+  // |          | ---            |                | Suspects        | Suspects       | 14.7.1   |
+  // |          | File Size      |                | File size       |
+  // |          | MIME Type      |                |
+  // |          | PDF:PDFVersion | pdf:PDFVersion | PDF version     |
+  // |          | PDF:Linearized |                | ---             |
+  // |          | PDF:PageMode   |                | ---             |
+  // |          | ---            |                | Custom Metadata |
+  // |          | ---            |                | Metadata Stream |
+  // |          | ---            |                | Tagged          |
 
-  // |          | ---         | Form            |
-  // |          | ---         | JavaScript      | JavaScript     |  7.7.4 |
-  // |          | Page Count  | Pages           | Pages          |  7.7.4 |
-  // |          | ---         | Encrypted       |
-  // |          | ---         | Page size       |
-  // |          | ---         | Page rot        |
-  // |          | ---         | Optimized       | not mentioned |---|
+  // |          | ---            |                | Form            |
+  // |          | ---            |                | JavaScript      | JavaScript     |  7.7.4 |
+  // |          | PDF:PageCount  |                | Pages           | Pages          |  7.7.4 |
+  // |          | PDF:Language 
+  // |          | ---            |                | Encrypted       |
+  // |          | ---            |                | Page size       |
+  // |          | ---            |                | Page rot        |
+  // |          | ---            |                | Optimized       | not mentioned |---|
   //
   // Also form differs: 
   // | tool     | key-value line                                         |
@@ -1964,6 +2003,66 @@ public class Settings {
   // also observed in Keywords: , with blank vs ; without blanks 
   // File sise in bytes or in kb
   // The keys may vary, the location of the colon and also the value is not completely standardized. 
+
+  // Strange with exiftool: 
+  // $ exiftool -CreateDate manualLMP.pdf % yields
+  // Create Date                     : 2024:06:30 21:11:54Z
+  // so on the one hand, one can access any metadata with the internal name, 
+  // but the return key may be different from the access key 
+  // like 'Create Date' differs from 'CreateDate'. 
+  // If it is only about blanks, then one could filter eliminating all blanks. 
+  // not only leading and trailing ones. 
+  // But as seen above, there are more complicated cases like ModDate 
+  // so an explicit mapping is needed. 
+  // exiftool -S and -S are without blanks in the key 
+  // 
+  // This can be changed: 
+  //  $ exiftool -T -CreateDate manualLMP.pdf %yields 
+  // 2024:06:30 21:11:54Z
+  // without (wrong) key 
+  // $ exiftool -X -CreateDate manualLMP.pdf  %yields 
+  // <?xml version='1.0' encoding='UTF-8'?>
+  // <rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+
+  // <rdf:Description rdf:about='manualLMP.pdf'
+  //   xmlns:et='http://ns.exiftool.org/1.0/' et:toolkit='Image::ExifTool 12.87'
+  //   xmlns:PDF='http://ns.exiftool.org/PDF/PDF/1.0/'>
+  //  <PDF:CreateDate>2024:06:30 21:11:54Z</PDF:CreateDate>
+  // </rdf:Description>
+  // </rdf:RDF>
+  // This is a bit lengthy, but the key is correct. 
+  //
+  // Also ISO 6801 can be realized almost: 
+  // $ exiftool -d %Y-%m-%dT%H:%M:%S%z -T -CreateDate manualLMP.pdf % yields 
+  // 2024-06-30T21:11:54+0000
+  // This is sensible, except for UTC where we want Z. 
+  // The problem is that -0000 is equivalent also, 
+  // but what we need is really canonical forms 
+  // so that string equality is really time/timezone equality. 
+  // $ exiftool -CreateDate -s -iso manualLMP.pdf % yields 
+  // CreateDate                      : 2024:06:30 21:11:54Z
+
+  // To override creation date: 
+  // exiftool -CreateDate=2000-01-01T00:00:00Z manualLMP.pdf
+  // but this is only an incremental update overwriting the original date 
+  // undoing this is by 
+  // exiftool -PDF-update:All= manualLMP.pdf
+  // To make this permanent, use linearization (use qpdf not exiftool): 
+//   #!/usr/bin/env bash
+// # Strip metadata and re-linearise:
+// exiftool -all= -overwrite_original "$1"
+// mv "$1" /tmp/temp.pdf
+// qpdf --linearize /tmp/temp.pdf "$1"
+
+// only changing creation date of the original pdf allows to create a new pdf with given creation time. 
+// THis is not equivalent with the original anyway, 
+// for various reasons, e.g. ModDate is not changed as well also trailder ID. 
+// Another reason: incremental, reversible change, 
+// which is not what is done by latex compilers. 
+  
+
+
+
 
 
 

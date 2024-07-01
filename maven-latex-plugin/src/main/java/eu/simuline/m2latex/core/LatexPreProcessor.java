@@ -599,7 +599,7 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
         + figFile.getName() + "'. ");
     // may throw BuildFailureException TEX01,
     // may log EEX01, EEX02, EEX03, WEX04, WEX05
-    this.executor.execute(figFile.getParentFile(),
+    this.executor.executeEnvR0(figFile.getParentFile(),
         this.settings.getTexPath(), // ****
         command,
         args,
@@ -758,7 +758,7 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
         + figFile.getName() + "'. ");
     // may throw BuildFailureException TEX01,
     // may log EEX01, EEX02, EEX03, WEX04, WEX05
-    this.executor.execute(figFile.getParentFile(),
+    this.executor.executeEnvR0(figFile.getParentFile(),
         this.settings.getTexPath(), // ****
         command,
         args,
@@ -910,7 +910,7 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
         "Running " + command + " -e...  on '" + gpFile.getName() + "'. ");
     // may throw BuildFailureException TEX01,
     // may log EEX01, EEX02, EEX03, WEX04, WEX05
-    this.executor.execute(gpFile.getParentFile(), // workingDir
+    this.executor.executeEnvR0(gpFile.getParentFile(), // workingDir
         this.settings.getTexPath(), // ****
         command, args, grpFile, ptxFile);
     // }
@@ -940,7 +940,7 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
   private void runMetapost2mps(File mpFile) throws BuildFailureException {
     this.log.info("Processing metapost-file '" + mpFile + "'. ");
     String command = this.settings.getCommand(ConverterCategory.MetaPost);
-    File workingDir = mpFile.getParentFile();
+    //File workingDir = mpFile.getParentFile();
     // for more information just type mpost --help
     String[] args = buildArguments(this.settings.getMetapostOptions(), mpFile);
     this.log.debug("Running " + command + " on '" + mpFile.getName() + "'. ");
@@ -949,7 +949,7 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
 
     // may throw BuildFailureException TEX01,
     // may log EEX01, EEX02, EEX03, WEX04, WEX05
-    this.executor.execute(workingDir,
+    this.executor.executeEnvR0(mpFile.getParentFile(), //workingDir,
         this.settings.getTexPath(), // ****
         command,
         args,
@@ -1054,7 +1054,7 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
     this.log.debug("Running " + command + " on '" + svgFile.getName() + "'. ");
     // may throw BuildFailureException TEX01,
     // may log EEX01, EEX02, EEX03, WEX04, WEX05
-    this.executor.execute(svgFile.getParentFile(),
+    this.executor.executeEnvR0(svgFile.getParentFile(),
         this.settings.getTexPath(), // ****
         command,
         args,
@@ -1122,7 +1122,7 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
         .debug("Running " + command + " twice on '" + file.getName() + "'. ");
     // may throw BuildFailureException TEX01,
     // may log EEX01, EEX02, EEX03, WEX04, WEX05
-    this.executor.execute(workingDir, this.settings.getTexPath(), //****
+    this.executor.executeEnvR0(workingDir, this.settings.getTexPath(), //****
         command, args, resFile);
 
     // Creation of .bb files for driver dvipdfm
@@ -1130,7 +1130,7 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
     args[0] = "-m";
     resFile = TexFileUtils.replaceSuffix(file, SUFFIX_BB);
 
-    this.executor.execute(workingDir, this.settings.getTexPath(), //****
+    this.executor.executeEnvR0(workingDir, this.settings.getTexPath(), //****
         command, args, resFile);
   }
 

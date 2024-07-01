@@ -35,7 +35,6 @@ import java.nio.file.Path;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -404,32 +403,16 @@ class TexFileUtils {
     destFile.setLastModified(srcFile.lastModified());
   }
 
-  /**
-   * Sets the modification time of <code>file</code> if it exists, 
-   * to the timestamp wrapped by <code>timestampOpt</code> if any, 
-   * with a precision offered by the underlying system. 
-   * Else takes no action. 
-   * 
-   * Logging: 
-   * WFU04: Cannot assign timestamp 
-   * 
-   * @param file
-   *    the file to be endowed with the timestamp given by <code>timestampOpt</code> if not empty. 
-   * @param timestampOpt
-   *    requires a timestamp if not empty. 
-   */
-  // invoked by runLatex2dev, runDvi2Pdf, but not in runLatexmk 
-  void setModificationTime(File file, Optional<Long> timestampOpt) {
-    if (!file.exists() || timestampOpt.isEmpty()) {
-      // in the first case, in the call hierarchy given, there was already another warning 
-      // in the second case, the modification time shall not be set 
-      return;
-    }
-    boolean success = file.setLastModified(timestampOpt.get());
-    if (!success) {
-      this.log.warn("WFU04: Could not assign timestamp to target file " + file + ". ");
-    }
-  }
+ 
+// TBD: eliminate WFU04
+  // void setModificationTimeS(File file, long timestampSec) {
+  //   boolean success = file.setLastModified(timestampSec * 1000);
+  //   if (!success) {
+  //     this.log.warn(
+  //         "WFU04: Could not assign timestamp to target file " + file + ". ");
+  //   }
+  // }
+
 
   /**
    * The default buffer size ({@value}) to use for 
