@@ -1035,6 +1035,85 @@ There is no way to configure and it is needed.
 So the workaround is to modify pom.xml so that it works roughly. 
 The details are in PdfMojoTest.java and the consequence for pom.xml is that chkDiff=true must be set -->
 
+<!-- bug? goal clean does not terminate with modified .latexmkrc file. -->
+
+<!-- bug in header.tex: hyperlinks in index do not work. -->
+
+<!-- eliminate warnings of chktex: 
+ see https://tex.stackexchange.com/questions/719624/chktex-warning-unable-to-open-the-tex-file-1 -->
+
+
+<!-- describe somewhere that a file can be deactivated as latex main file 
+by adding a comment or just by using the empty target magic comment. 
+The latter shall be tested beforehand. 
+It is a good alternative to with the settings \texttt{mainFilesExcluded} or \texttt{mainFilesIncluded}. 
+Please have a look where these two are used and add the possibility with magic comments there. 
+Also in \texttt{mainFilesExcluded} add a hint to the magic comment: 
+it can be frustrating if the file is not processed and it is not known why. 
+Better even: indicate that targets are overwritten.. make a check. -->
+
+
+<!-- perl -e '$a=("test"=~/(?<v>rest)|test/);print(defined($+{v}))' -->
+
+<!-- for speedup TexFileTuils.getMatchInFile: 
+ if tex file is no latex main file, the whole file is parsed. 
+ To avoid wrap all of the file in a CharSequence. 
+ A weaker solution is to check match linewise first. 
+ -->
+
+ <!-- currently in .latexmkrc preamble is matched against patterLatexMainFile linewise 
+  If match, we know that the whole preamble shall match. 
+  This requires a special form of the pattern which must be documented. 
+  On the other hand, maybe it is a good idea to refrain from this algorithm: 
+  the java side does not use either which is slow. 
+  But it is slowest when applying to a non-latex main file, which does not occur with perl. 
+  In java we have a better solution implementing a CharSequence based on the file. -->
+
+  <!-- document somewhere that with our .latexmkrc latexmk cannot be invoked as latexmk name.tex, 
+   but must do withouth extension. -->
+
+   <!-- https://www.xpdfreader.com/download.html offers command line tools for various OS. 
+    This is a general thing to do: provide also for mac and windoofs. 
+    linux tar shows the tools: 
+    pdfdetach, pdffonts, pdfimages, **pdfinfo**, **pdftohtml**, pdftopng, pdftoppm, pdftops, pdftotext 
+    
+    On pdftohtml one shall give some research. 
+
+    pdfinfo will be very important for reproducibility of dated documents. 
+    Thus is is very important, almost mandatory, that the tools needed are cross platform. 
+    Also a question is, what of all that is in the typical tex distributions. 
+
+
+    The alternative is exiftool. 
+    https://exiftool.org/install.html shows that it is cross platform as well. 
+
+    Neither of these tools are in texforlive. 
+    -->
+
+    <!-- ISO20, Section 7.9.4 Dates define raw dates as displayed by pdfinfo -rawdates xxx.pdf. 
+     This is used for metadata CreationDate and for ModDate
+     This must be used to reach reproducibility instead of the file modification date. 
+     The problem is that this must be parsed from output of pdfinfo. 
+     It must be parsed from java for direct processing and by perl for processing via latexmk. 
+     Maybe there is no java class and/or no perl code for that. 
+     
+     If so, one may use pdfinfo -isodate which displays in iso8601 format. 
+     But this is possible only, if the two formats are equivalent. 
+     
+     to parse iso in java see: 
+     https://docs.oracle.com/javase/tutorial/datetime/overview/index.html 
+     to parse iso in perl maybe good is: 
+     https://stackoverflow.com/questions/95492/how-do-i-convert-a-date-time-to-epoch-time-unix-time-seconds-since-1970-in-per 
+     maybe better: 
+     https://metacpan.org/pod/Date::Parse
+    Use $time = str2time($date);
+     -->
+
+     <!-- latexmk jobname withouth .tex. 
+      Both variants shall be possible: latexmk jobname and latexmk jobname.tex -->
+
+      <!-- evaluate whether package datetime2 shall be included in the general header. -->
+
       <!-- TBD: document parameters pdfMetainfoCommand and pdfMetainfoOptions. -->
 
       <!-- reproducibility check is based on the assumption, 
@@ -1052,7 +1131,71 @@ The details are in PdfMojoTest.java and the consequence for pom.xml is that chkD
        Maybe even possible to talk to specifiers of PDF. 
        -->
 
+       <!-- rework latexEngines.tex -->
+
+       <!-- We had a case where it was convenient to have the Fullbanner in the metadata not erased: 
+        it shows the version of the latex compiler, the kind of compiler, even if luatex or luahbtex, 
+        the distribution with year. 
+        One must analyze whether it is desirable to keep this kind of information. 
+        On the one hand, if the compiler version changes or the compiler changes, 
+        one can better detect the reason of other changes. 
+        On the other hand, very few pieces of information are stored in the PDF artifact to detect reasons for change. 
+        Also shall this be in the PDF? 
+        What about other formats? 
+        Maybe better to have separate mechanisms including e.g. version of packages and so on. 
+        On the other hand, other tools do write that kind of information.  -->
+
+        <!-- Even if no injection is specified in the pom, when cleaning there is a warning 
+         that the injection, e.g. .latexmkrc cannot be erased because not written. 
+         I wonder how to avoid this. 
+         Maybe in case of injection write a file mentioning all injections. 
+         If this file is missing: no delete of files. 
+         If this file is present: delete only the files which are specified in that file. -->
+
+         <!-- discussion: lmodern package in header? -->
+
+         <!-- as regards environments related with timestamps: 
+          in latexmk only latex compiler and dvi/xdv to pdf are endowed with environments. 
+          all other converters, e.g. for graphics are not. 
+          When invoking from java, policy is different: 
+          only meta-commands, to analyze not directly part of the build. 
+          
+          This must be unified. 
+          In fact, we need only for reproducibility 
+          and so one shall wait until more targets are included. 
+          Also some artifacts carry a timestamp. If no environment, this is inconsistent. 
+          We must analyze. 
+          -->
+
     <release version="2.1" date="2023-08-28" description="build with latexmk and generalized reproducibility">
+      <action dev='reissner' type='add'>
+        reproducibility check based on metadata CreateDate of PDF files. 
+        This includes also putting documents under repro check. 
+        CreateDate must be always in timezone UTC. 
+        This works also from within latexmk. 
+        To that end, injection latexmkrc is extended considerably, 
+        for example reading magic comments. 
+      </action>
+      <action dev='reissner' type='add'>
+        Injection latexmkrc can now read magic comments and extract information from the opening. 
+        This makes document development with settings specific for individual documents very convenient. 
+      </action>
+      <action dev='reissner' type='add'>
+        added parameter latexmkUsage on usage of latexmk: 
+        NotAtAll, AsBackend, Fully
+        added parameters latexmkCommand and latexmkOptions
+      </action>
+      <action dev='reissner' type='add'>
+        added magic comment latexmk
+        and generalized magic comment chkDiff into chkDiff=true|false, 
+        where old chkDiff is short foro chkDiff=true. 
+      </action>
+      <action dev='reissner' type='fix'>
+        In documentation added command \tool preparing a tools glossary. 
+      </action>
+      <action dev='reissner' type='fix'>
+        from bibliography extracted bib on tools. 
+      </action>
       <action dev='reissner' type='fix'>
         logging: file are no longer absolute 
         but relative to the project folder. 
@@ -1081,9 +1224,33 @@ The details are in PdfMojoTest.java and the consequence for pom.xml is that chkD
         take into account that \makeatletter, \makeatother and \xpatchcmd 
         don't work inside an argument
       </action>
+      <action dev='reissner' type='fix'>
+        latexmk may be correct even if target is not updated. 
+        This is very special. 
+      </action>
+      <action dev='reissner' type='fix'>
+        corrected default value for setting 'diffDirectory'
+      </action>
       <action dev='reissner' type='add'>
-        for chkDiff allow general time stamps: before it was always 1970-01-01 
+        for chkDiff allow general time stamps: before, it was always 1970-01-01 
         and so either no date in productive PDF or checked PDF could not be productive. 
+        The timestamp is used for running the latex compiler, 
+        and dvi2pdf converter, but also to set the modification time. 
+
+        The new feature is that if a pdf is present for comparison, 
+        the modification time of this 
+        is used as compilation time and the resulting PDF is touched with that time. 
+        If nothing present to compare, compiler is run with system time 
+        and no explicit touch of resulting pdf is done. 
+
+        This is also possible when running latexmk. 
+        This affects above all the injection of .latexmkrc. 
+      </action>
+      <action dev='reissner' type='add'>
+        warning WFU04 if impossible to change a timestamp
+      </action>
+      <action dev='reissner' type='update'>
+        Versions of tools: gnuplot, exiftool, python
       </action>
     </release>
 
