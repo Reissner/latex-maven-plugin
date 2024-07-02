@@ -406,8 +406,7 @@ sub run_makeglossaries {
     if ( $silent ) {
         # system "makeglossaries -q '$base_name'"; #unix
         system "makeglossaries", "-q", "$base_name"; #windows
-    }
-    else {
+    } else {
         # system "makeglossaries '$base_name'"; #unix
         system "makeglossaries", "$base_name"; #windows
     };
@@ -477,17 +476,19 @@ push @generated_exts, "depytx", "dplg";
 
 $clean_ext .= " pythontex-files-%R/* pythontex-files-%R";
 #$extra_rule_spec{'pythontex'}  = [ 'internal', '', 'mypythontex', "%Y%R.pytxcode", "%Ypythontex-files-%R/%R.pytxmcr", "%R", 1 ];
-$extra_rule_spec{'pythontex'} = [ 'internal', '', 'mypythontex', "%R.pytxcode", "pythontex-files-%R/%R.pytxmcr", "%R", 1 ];
+$extra_rule_spec{'pythontex'} = [
+  'internal', '', 'mypythontex', "%R.pytxcode", "pythontex-files-%R/%R.pytxmcr", "%R", 1
+  ];
 
 sub mypythontex {
   my $result_dir = $aux_dir1 . "pythontex-files-$$Pbase";
-  my $ret        = Run_subst( $pythontex, 2 );
-  rdb_add_generated( glob "$result_dir/*" );
+  my $ret        = Run_subst($pythontex, 2);
+  rdb_add_generated(glob "$result_dir/*");
 
-  #my $fh = new FileHandle $$Pdest, "r";
-  open( my $fh, "<", $$Pdest );
+  my $fh = new FileHandle $$Pdest, "r";
+  #open( my $fh, "<", $$Pdest );
   if ($fh) {
-    print "path: $ENV{PATH}";
+    #print "path: $ENV{PATH}";
     while (<$fh>) {
       if (/^%PythonTeX dependency:\s+'([^']+)';/) {
         print "Found pythontex dependency '$1'\n";
