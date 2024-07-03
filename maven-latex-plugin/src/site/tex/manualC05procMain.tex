@@ -1171,6 +1171,12 @@ Is content is immaterial.
 
 This section is on running the build process of \LaTeX{} main files 
 with \tool{latexmk} or equivalent. 
+Currently, that way only PDF files can be created. 
+% TBD: at least DVI/XDV is possible as well 
+% and also chk are possible. 
+% what if magic comment specifies another target but a build using latexmk? 
+% This shall be a warning. 
+% currently, just setting latexmk is ignored. 
 Although the functionality is readily explained, 
 the intention is not so obvious: 
 In Section~\ref{subsec:develLatexmk} 
@@ -1182,7 +1188,7 @@ Section~\ref{subsec:latChkRc} describes that this \LaTeX{} builder
 can write its own configuration as 
 a config file \texttt{.latexmkrc} for \tool{latexmk} 
 so that builds with \tool{latexmk} are in line 
-with final builds by this \LaTeX{} builder itself. 
+with final builds by this \LaTeX{} builder itself internally. 
 
 So running \tool{latexmk} from within this \LaTeX{} builder 
 seems superfluous at first sight. 
@@ -1195,8 +1201,24 @@ their invocation can be implemented directly in \texttt{.latexmkrc}.
 Since this \LaTeX{} builder writes a single \texttt{.latexmkrc} 
 in the root directory \texttt{texSrcDirectory}, 
 which must be made available in each subfolder by adding a link, 
-the config \texttt{.latexmkrc} by his \LaTeX{} builder 
+the config \texttt{.latexmkrc} by this \LaTeX{} builder 
 may be replaced by a hand-crafted config file for each folder separately. 
+
+Another advantage being able to run \tool{latexmk} from within this builder: 
+It is conceivable, that the artifacts created in the course of document development 
+using \tool{latexmk} cannot be reproduced by this builder. 
+Most likely because \texttt{.latexmkrc} does not reimplement the internal functionality properly. 
+Invoking \tool{latexmk} in a final build reduces this risk to a minimum. 
+
+Further motivations for integrating latexmk in this builder, in particular for individual files: 
+there are cases where the build process of latexmk works, 
+but not the internal build process of this builder. 
+Integrating latexmk offers the strengths of latexmk. 
+Note that there are also cases where the built-in build process of this builder is mightier than that of latexmk. 
+Another reason for integrating latexmk here is the use case of source distribution: 
+The document(s) may be passed to someone as the source, not as a target, like PDF. 
+It is not clear that the 'customer' uses this latex builder, but maybe (s)he uses latexmk. 
+In this case it makes sense to check, whether the document can be built with latexmk alone. 
 
 Having explained this, the question arises 
 why this \LaTeX{} builder does not in general rely on \tool{latexmk} 
@@ -1214,7 +1236,7 @@ whereas this \LaTeX{} builder first builds the graphic files globally
 (\tool{latexmk} detects last) 
 before for each \LaTeX{} main file is compiled. 
 So this \LaTeX{} builder combines ``forward discovery'' and backwards discovery. 
-Pure  backward discovery is more elegant 
+Pure backward discovery is more elegant 
 but as the \LaTeX{} compiler stops at each graphic file not present 
 before creating it and rerunning the \LaTeX{} main file, 
 it may result in excessive reruns if there are many created graphics in the document. 
@@ -1227,28 +1249,28 @@ not at all, fully or as backend where \tool{latexmk} is invoked
 after graphic files have been created with an internal process. 
 As a rule, \tool{latexmk} shall be used as much as required and as little as possible. 
 
-This shows also that it is a good thing 
+This shows also, that it is a good thing 
 to be able to activate \tool{latexmk} in individual \LaTeX{} main files 
-which is realized with magic comments. % TBD: reference 
-XXXXXX Reference to according section required. XXXXXXXX 
+which is realized with the magic comment \texttt{latexmk}. 
+It can take the form \texttt{latexmk=false}, \texttt{latexmk=true} or just \texttt{latexmk} 
+which is the short form of the latter. 
+Magic comments are described in Section~\ref{subsubsec:openingMagComm}. 
+In general, they overwrite settings. 
+Here, the situation is a bit more complicated. 
 Whereas \texttt{\$latexmkUsage} allows three levels of usage, 
 the magic comment can choose to use \tool{latexmk} or not. 
+If \tool{latexmk} shall be used due to the magic comment, 
+then it is used to compile the TEX file in any case, 
+but it compiles graphic files only, if \texttt{\$latexmkUsage} takes the value \texttt{NotAtAll}. 
+If \tool{latexmk} shall not be used due to the magic comment, 
+then it will never compile the TEX file itself, 
+and if \texttt{\$latexmkUsage} takes the value \texttt{Fully}, 
+all required graphic files must be compiled for some reason, 
+e.g. there is none to be compiled. 
+\medskip
 
-The graphic files are preprocessed except if \texttt{\$latexmkUsage} is set to \texttt{Fully}. 
-The magic comment results in a warning 
-if it does not change whether \tool{latexmk} 
-is invoked or not compared to when it is absent. 
-% TBD: this must change: magic comments overwrite the setings, this is a general rule. 
 
-% further motivations for integrating latexmk in this builder, in particular for individual files: 
-% there are cases where the build process of latexmk works, 
-% but not the internal build process of this builder. 
-% Integrating latexmk offers the strengths of latexmk. 
-% Note that there are also cases where the builtin build process of this builder is mightier than that of latexmk. 
-% Another reason for integrating latexmk here is the use case of source distribution: 
-% The document(s) may be passed to someone as the source, not as a target, like PDF. 
-% It is not clear that the 'customer' uses this latex builder, but maybe (s)he uses latexmk. 
-% In this case it makes sense to check, whether the document can be built with latexmk alone. 
+
 
 % special: latexmk does not update pdf regularly provoking EEX03 false positive 
 % We must find a way to prevent this. 
@@ -1256,15 +1278,14 @@ is invoked or not compared to when it is absent.
 % It can be checked for update of files only if they were not present before. 
 % One could remove pdf before running, but that way an advantage gets lost: 
 % that latexmk does not compile anything if all is up to date. %
-% touch --date=@1714338620 twoPagerArt.pdf where the number after @ is the epoch time in seconds 
-% date -d @1234567890 convert epoch time in seconds into human readable format 
-% date -d "Apr 29 2024" +%s convert human readable date into epoch time 
-% stat -c%Y file returns epoch time of file in seconds 
-% cp -p copy keeping the modification time 
-% latexmk -e '$chkDiffMagic="chkDiff"' manualLMP to compile with diff 
-% latexmk -e '$programMagic="pdflatex"' manualLMP to compile with pdflatex 
-% the latter two can be combined also 
 
+
+By the way, invoking \tool{latexmk} from within this software is the same as invoking manually. 
+Both are based on \texttt{.latexmkrc}. 
+The features supported are described in Section!\ref{subsec:latChkRc}. 
+Among those are the supported targets, 
+reading magic comments independently from internal implementations 
+and support for reproducibility checks. 
 
 
 % this is only for goal pdf 
@@ -1277,15 +1298,11 @@ is invoked or not compared to when it is absent.
 % This could be done globally if \texttt{\$latexmkUsage} is not NotAtAll. 
 % Also specifically if triggered by a magic comment. 
 
-% currently, preprocessing of graphic files is done in any case, 
-% although specified differently. 
-
 % make a note that still the return codes of latexmk are recorded resulting in EEX01 
 % and also the presence of a pdf is monitored triggering EEC03 if not updated. 
 % also the manual shows how to convert warnings into errors. 
 
-% make a note: special for latexmk: may not touch pdf file although all ok: 
-% return code is still 0 
+
 
 % latexmk is never used for cleanup with latexmk -c or latexmk -C 
 
@@ -1293,12 +1310,7 @@ is invoked or not compared to when it is absent.
 % - target: currently, latexmk is applied only to pdf creation. 
 %           the target is determined on a higher level, so it is taken into account 
 % - program: taken into account. 
-% - latexmk: this magic comment shall be added, 
-%            because in many cases latexmk is only wanted for individual latex main files. 
-%            It is only to switch latexmk usage on
-%            There is some interference with latexmkUsage: 
-%            - no effect for Fully and AsBackend 
-%            - For NotAtAll, graphics are created already. 
+
 
 
 
@@ -1322,8 +1334,6 @@ is invoked or not compared to when it is absent.
 % as well. 
 % That way all converters are invoked with the same environment variables. 
 % The deceicive ones are xxxlatex and dvipdf 
-% It may be a good idea to provide ntlatexmk analogous to ntlatex as an injection. 
-% Adapt documentation accordinly. 
 
 
 
@@ -1338,10 +1348,6 @@ is invoked or not compared to when it is absent.
 % for this project the setting chkDiff=true holds 
 % so the magic comment must be checked outside the project. 
 
-% Idea: for reproduction check do not use epoque time 0 in general 
-% but use timestamp of original. 
-% This requires a more sophisiticated script ntlatex 
-% and some additional code on java side. 
 
 
 
