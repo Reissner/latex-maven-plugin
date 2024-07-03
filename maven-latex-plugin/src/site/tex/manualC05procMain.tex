@@ -1060,7 +1060,7 @@ or with somehow reduced metadata.
 The only piece of information needed for reproducibility is \texttt{CreationDate} 
 and this is preserved by the headers. 
 Removing this also has severe consequences 
-so that we can assume it is preser4ved. 
+so that we can assume it is preserved. 
 On the other hand, removing metadata may stabilize reproducibility 
 as this is true for the banner which identifies the latex compiler and its version 
 and consequently breaks reproducibility in any version change. 
@@ -1070,10 +1070,10 @@ Obviously, reproducibility checks cause work
 when putting a document under check, 
 i.e. in the end phase of document development 
 as defined in Section~\ref{sec:devel}
-or if the source document changes, i.e. again in document development 
-or if the output PDF changes unintended, 
-normally although the sources did not change, 
-which triggers again document development. 
+or if the source document changes, i.e. if document development is entered again, 
+or if the output PDF changes unintended 
+normally, although the sources did not change in an obvious way, 
+which triggers again document development searching the cause of the change in the sources. 
 
 This \LaTeX{} builder is not the tool for document development. 
 Instead, Section~\ref{subsec:develLatexmk} suggests to use \tool{latexmk} for, 
@@ -1115,8 +1115,14 @@ This is done by something like
 \begin{verbatim}
   exiftool -PDF:CreateDate=2020-01-01T00:01:02Z xxx.pdf 
 \end{verbatim}
+%
+Here, the option \texttt{PDF:CreateDate} is in fact the name of the tag to be written. 
+Note that the timezone must be UTC represented by the \texttt Z 
+signifying zero time offset compared to UTC. 
+The attentive reader may wonder why the option is \texttt{PDF:CreateDate} instead of \texttt{CreationDate}. 
+One may check with \texttt{pdfinfo}, that really \texttt{CreationDate} is modified. 
+Note that \tool{exiftool} writes the original PDF file into \texttt{xxx.pdf_original}
 
-One may check with \texttt{pdfinfo}, that this works. 
 Two important details are not so obvious: 
 %
 \begin{itemize}
@@ -1148,11 +1154,14 @@ does not yield a PDF file which is reproduced.
 Compilation leads to another PDF file and only the updated timestamp is reproduced. 
 This compiled PDF file is reproduced, so 
 copying it the into \texttt{diffDirectory} solves the problem: 
-Compilation yields a PDF file with the correct timestamp and timezone, 
+Next compilation yields a PDF file with the correct timestamp and timezone, 
 and it coincides with the PDF file in \texttt{diffDirectory}. 
 
-
-
+When subjecting a document under reproduction control with a predefined timestamp, 
+then initially there is no original PDF file. 
+One could place any PDF file in \texttt{diffDirectory}, 
+overwrite the timestamp and timezone by \tool{exiftool}. 
+Is content is immaterial. 
 
 
 
