@@ -28,15 +28,45 @@ The preferred usage is defined as follows:
   \item The VS Code extension \texttt{james-yu.latex-workshop}, 
   which is installed by \texttt{instVScode4tex.sh} is used only with build recipe 
   \texttt{latexmk (latexmkrc)}. 
+  \item The maven plugin, rather than the ant task. 
+  \item Configuration is the default setting of this plugin. 
+  In particular, the latex processor is \lualatex. 
   \item If \tool{latexmk} is used, then with config file \texttt{.latexmkrc}, 
   whereas \texttt{chktex} is definitely used, 
   and it is configured with config file \texttt{.chktexrc}. 
   Both config files are injected by \texttt{inj} described in Section~\ref{subsec:latChkRc}. 
-  \item Neither \tool{latexmk} nor \texttt{chktex} is used with options. 
-  \item The maven plugin, rather than the ant task. 
-  \item Configuration is the default setting of this plugin. 
-  In particular, the latex processor is \lualatex. 
-  \item Document classes according to preferred usage 
+  \item Neither \tool{latexmk} nor \texttt{chktex} run from the command line is used with options. 
+  This is the default option list for \tool{latexmk} but not for \texttt{chktex}. 
+  % TBD: seems contradictuous. 
+  \item Compilation with \tool{latexmk} but not by setting which is by default 
+  %
+  \begin{verbatim}
+    <latexmkUsage>NotAtAll</latexmkUsage>
+  \end{verbatim}
+  %
+  but activated by the magic comment 
+  %
+  \begin{verbatim}
+    % !LMP latexmk
+  \end{verbatim}
+  \item Reproducibility checks both by setting although is by default 
+  %
+  \begin{verbatim}
+    <chkDiff>false</chkDiff>
+  \end{verbatim}
+  %
+  and also activated by the magic comment 
+  %
+  \begin{verbatim}
+    % !LMP chkDiff
+  \end{verbatim}
+  %
+  Note that this is exceptional in that the preferred usage deviates from the defaults: 
+  Tests are based on reproducibility check setting \texttt{chkDiff} to true 
+  and there are many internal projects where reproducibility checks are selectively triggered 
+  by the magic comment. 
+  % TBD: in the long run we need another test concept. 
+  \item Document classes according to preferred usage which is by default 
   are \texttt{book}, \texttt{article}, 
   \texttt{beamer}, \texttt{leaflet}, \texttt{scrlttr2} and \texttt{minimal}. 
   For beamer documents, preferred usage are both, the presentation and the handout 
@@ -68,11 +98,6 @@ The preferred usage is defined as follows:
   \item Tools must be used with accepted version, 
   in the sense that \texttt{mvn latex:vrs} does not emit a warning. 
   \item The output format is PDF\@. 
-  \item The support of reproducible PDF files and here of the first kind: 
-  Reproducibility does not only refer to the visible aspects of the PDF file, 
-  but also to meta-data. 
-  \item Reproducibility is reached by manipulating the system time, 
-  although as an alternative method also suppressing writing meta-info into the PDF file is supported. 
   \item 
   Security issues are addressed by including a header described in Section~\ref{subsec:headerSuppressMetaPDF}. 
 \end{itemize}
