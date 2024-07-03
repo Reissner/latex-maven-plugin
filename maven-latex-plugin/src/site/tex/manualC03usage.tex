@@ -1091,7 +1091,7 @@ but the magic comments in the source files described in Section~\ref{subsubsec:o
 are read and taken into account as far as this makes sense. 
 
 For default settings, maybe partially overwritten by magic comments, 
-this maven plugin and \tool{latexmk} create the same PDF files. 
+this maven plugin and \tool{latexmk} create the same target files. 
 This is true even for this manual. 
 In particular, the graphic formats 
 described in Chapter~\ref{chap:GraphConversions} are supported. 
@@ -1103,9 +1103,14 @@ Also, reproducibility check is supported including magic comments and all parame
 % what about dvi/xdv? read the manual of latexmk
 
 At time of this writing, \texttt{.latexmkrc} works for various \LaTeX{} generators 
-but is only usable to create PDF files. 
+but supports target \texttt{pdf} only, 
+although in the long run also \texttt{chk} and \texttt{dvi} could be useful. 
+Still, creation of PDF files is supported in both variants, via DVI/XDV or directly. 
+Compilation via \tool{latexmk} is based on code in \texttt{.latexmkrc} 
+and this mimics a wide range of functionality offered by this tool. 
+Among these also build for reproducibility checks as described in Section~\ref{sec:chkReprod}
 
-Accordingly, a sensible config file \texttt{.chktexrc} mainly depends on the packages loaded. 
+A sensible config file \texttt{.chktexrc} mainly depends on the packages loaded. 
 In Section~\ref{subsec:header} we suggest injecting also a header file \texttt{header.tex} 
 loading packages. 
 The config file \texttt{.chktexrc} is adapted to the header file \texttt{header.tex}. 
@@ -1154,7 +1159,7 @@ Thus, goal \texttt{inj} has default phase \texttt{validate}.
 As described in~\cite{LatexMk23}, 
 Section~``CONFIGURATION/INITIALIZATION (RC) FILES'', 
 there are various configuration files \texttt{latexmkrc} or \texttt{.latexmkrc}, 
-among these a global one, a local one referring to the enclosing folder 
+among these a global one, a local one referring to the enclosing folder, 
 and finally one specified by the command line option \texttt{-r} 
 which is described in~\cite{LatexMk23}, 
 Section~``LATEXMK OPTIONS AND ARGUMENTS ON COMMAND LINE''. 
