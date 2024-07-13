@@ -1002,7 +1002,7 @@ is given relative to a timezone,
 for reproducible builds compilers must run with a fixed timezone 
 and, as reproducibility shall not break if changing a timezone 
 or if the country running the build changes between daylight saving time and standard time, 
-we chose a uniform timezone namely UTC. 
+we chose a uniform timezone namely UTC\@. 
 
 If a latex main file is already under reproducibility control, 
 then there is an according original PDF file in \texttt{diffDirectory} or in a subfolder 
@@ -1014,14 +1014,14 @@ as the created PDF file relative to \texttt{texSrcDirectory}.
 
 First \texttt{pdfMetainfoCommand} is used 
 to extract metadata \texttt{CreationTime} from the original PDF file. 
-This comprises time and timezone which is UTC. 
+This comprises time and timezone which is UTC\@. 
 
 The compilation to create the new PDF file is run in an environment 
 with that timezone and with that creation time. 
 In addition, there is an environment variable forcing 
 that the timestamp does not only affect metadata but also visual data of the PDF file 
 to be created, 
-as e.g. typically the date at the front page. 
+as e.g.\@ typically the date at the front page. 
 Note that if the PDF file is created from TEX files via DVI/XDV files, 
 both converters need the appropriate environment. 
 
@@ -1036,7 +1036,7 @@ a build exception is thrown as specified in Table~\ref{tab:TLP}.
 
 If a latex main file is not already under reproducibility control, 
 then no original PDF file exists. 
-In this case, the environment for compilation only ensures the timezone UTC. 
+In this case, the environment for compilation only ensures the timezone UTC\@. 
 Then the created PDF file is copies at proper place into \texttt{diffDirectory} 
 -- that's all for setting a document under reproducibility control. 
 
@@ -1064,13 +1064,13 @@ so that we can assume it is preserved.
 On the other hand, removing metadata may stabilize reproducibility 
 as this is true for the banner which identifies the latex compiler and its version 
 and consequently breaks reproducibility in any version change. 
-Details to reproducibility with a focus on metadata are given in ~\cite{LatexGen}, Section 4. 
+Details to reproducibility with a focus on metadata are given in~\cite{LatexGen}, Section 4. 
 
 Obviously, reproducibility checks cause work 
 when putting a document under check, 
-i.e. in the end phase of document development 
+i.e.\@ in the end phase of document development 
 as defined in Section~\ref{sec:devel}
-or if the source document changes, i.e. if document development is entered again, 
+or if the source document changes, i.e.\@ if document development is entered again, 
 or if the output PDF changes unintended 
 normally, although the sources did not change in an obvious way, 
 which triggers again document development searching the cause of the change in the sources. 
@@ -1102,7 +1102,7 @@ and check with \tool{vmdiff} that visually, the PDf file remains the same
 and that the correct metadata is updated. 
 Of course, a new timestamp is wanted. 
 So in a second step, the original PDF file is deleted, 
-compilation is repeated, e.g. by \tool{ntlatex} and copied into \texttt{diffDirectory}. 
+compilation is repeated, e.g.\@ by \tool{ntlatex} and copied into \texttt{diffDirectory}. 
 \medskip
 
 
@@ -1118,17 +1118,17 @@ This is done by something like
 %
 Here, the option \texttt{PDF:CreateDate} is in fact the name of the tag to be written. 
 Note that the timezone must be UTC represented by the \texttt Z 
-signifying zero time offset compared to UTC. 
+signifying zero time offset compared to UTC\@. 
 The attentive reader may wonder why the option is \texttt{PDF:CreateDate} instead of \texttt{CreationDate}. 
 One may check with \texttt{pdfinfo}, that really \texttt{CreationDate} is modified. 
-Note that \tool{exiftool} writes the original PDF file into \texttt{xxx.pdf_original}
+Note that \tool{exiftool} writes the original PDF file into \texttt{xxx.pdf\_original}
 
 Two important details are not so obvious: 
 %
 \begin{itemize}
 \item
 Not only the given metadata is changed but also all metadata depending on it, 
-in this case the trailer ID. 
+in this case the trailer ID\@. 
 This is to keep the PDF file consistent. 
 \item 
 The metadata is not really overwritten, but it is hidden by new metadata. 
@@ -1210,15 +1210,22 @@ using \tool{latexmk} cannot be reproduced by this builder.
 Most likely because \texttt{.latexmkrc} does not reimplement the internal functionality properly. 
 Invoking \tool{latexmk} in a final build reduces this risk to a minimum. 
 
-Further motivations for integrating latexmk in this builder, in particular for individual files: 
+Further motivations for integrating latexmk in this builder, 
+in particular for individual files: 
 there are cases where the build process of latexmk works, 
 but not the internal build process of this builder. 
 Integrating latexmk offers the strengths of latexmk. 
-Note that there are also cases where the built-in build process of this builder is mightier than that of latexmk. 
-Another reason for integrating latexmk here is the use case of source distribution: 
-The document(s) may be passed to someone as the source, not as a target, like PDF. 
-It is not clear that the 'customer' uses this latex builder, but maybe (s)he uses latexmk. 
-In this case it makes sense to check, whether the document can be built with latexmk alone. 
+Note that there are also cases 
+where the built-in build process of this builder 
+is mightier than that of latexmk. 
+Another reason for integrating latexmk here, 
+is the use case of source distribution: 
+The document(s) may be passed to someone as the source, % chktex 36
+not as a target, like PDF\@. 
+It is not clear that the ``customer'' uses this latex builder, 
+but maybe (s)he uses latexmk. % chktex 36
+In this case it makes sense to check, 
+whether the document can be built with latexmk alone. 
 
 Having explained this, the question arises 
 why this \LaTeX{} builder does not in general rely on \tool{latexmk} 
@@ -1266,7 +1273,7 @@ If \tool{latexmk} shall not be used due to the magic comment,
 then it will never compile the TEX file itself, 
 and if \texttt{\$latexmkUsage} takes the value \texttt{Fully}, 
 all required graphic files must be compiled for some reason, 
-e.g. there is none to be compiled. 
+e.g.\@ there is none to be compiled. 
 \medskip
 
 
