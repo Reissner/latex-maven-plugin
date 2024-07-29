@@ -1169,38 +1169,46 @@ Better even: indicate that targets are overwritten.. make a check. -->
 
     <release version="2.1" date="2023-08-28" description="build with latexmk and generalized reproducibility">
       <action dev='reissner' type='add'>
-        reproducibility check based on metadata CreateDate of PDF files. 
-        This includes also putting documents under repro check. 
-        CreateDate must be always in timezone UTC. 
-        This works also from within latexmk. 
-        To that end, injection latexmkrc is extended considerably, 
-        for example reading magic comments. 
-      </action>
-      <action dev='reissner' type='add'>
-        Injection latexmkrc can now read magic comments and extract information from the opening. 
-        This makes document development with settings specific for individual documents very convenient. 
-      </action>
-      <action dev='reissner' type='add'>
         added parameter latexmkUsage on usage of latexmk: 
         NotAtAll, AsBackend, Fully
-        added parameters latexmkCommand and latexmkOptions
+        added parameters latexmkCommand and latexmkOptions. 
+
+        All this is fully functional and integrates well with document development with latexmk
       </action>
       <action dev='reissner' type='add'>
-        added magic comment latexmk
-        and generalized magic comment chkDiff into chkDiff=true|false, 
-        where old chkDiff is short foro chkDiff=true. 
+        added magic comment latexmk with latexmk short for latexmk=true but also latexmk=false is possible. 
+        Generalized magic comment chkDiff into chkDiff=true|false, 
+        where old chkDiff is short for chkDiff=true. 
       </action>
-      <action dev='reissner' type='fix'>
-        In documentation added command \tool preparing a tools glossary. 
+      <action dev='reissner' type='add'>
+        Injection .latexmkrc can now read magic comments and extract information from the opening. 
+        For example it reads chkDiff and program (compiler). 
+        This is used when invoking latexmk from this builder 
+        but also if invoking manually for document development. 
+        For example latexmk reading magic comments in comfortable when initiating reproducibiltiy checks. 
+        latexmk knows whether to create reproducible or not. 
+        Magic comments override settings in the pom and allow individual treatment of each document. 
       </action>
-      <action dev='reissner' type='fix'>
-        from bibliography extracted bib on tools. 
+      <action dev='reissner' type='add'>
+        Unlike before when reproducibiliby checks worked only for files with restricted metadata, 
+        as e.g. data had to be always 1970-01-01, 
+        the only restriction is now the timezone UTC. 
+        This is a useful restriction as it allows reproducibility in time and space. 
+
+        The concept behind is that when an original PDF is present, 
+        the new PDF is compiled with the enviroment variables setting timestamp/timezone read from the original PDF 
+        ensuring that timezone is UTC. 
+        A third setting ensures that timestamp affects both metadata and visible data. 
+
+        This works also from within latexmk. 
+        To that end, injection latexmkrc is extended considerably, 
+        for example reading magic comments of TEX files but also metadata from PDF files. 
       </action>
-      <action dev='reissner' type='fix'>
-        logging: file are no longer absolute 
-        but relative to the project folder. 
-        This improves overview and is more secure, 
-        as the environment is no longer exposed. 
+      <action dev='reissner' type='add'>
+        reimplemented ntlatex which has functionality like invoking latexmk: 
+        - now adapts to the settings without need to reinstall. 
+        - reads magic comments 
+        This is now important as latexmk may not recompile in any case wanted. 
       </action>
       <action dev='reissner' type='add'>
         Systematic logging of infos in processing (after preprocessing)
@@ -1219,6 +1227,19 @@ Better even: indicate that targets are overwritten.. make a check. -->
         Finally, notify if chkdiff succeeded so we know it has been performed. 
         (else the build fails anyway) 
       </action>
+
+      <action dev='reissner' type='fix'>
+        In documentation added command \tool preparing a tools glossary. 
+      </action>
+      <action dev='reissner' type='add'>
+        from bibliography extracted bib on tools. 
+      </action>
+      <action dev='reissner' type='fix'>
+        logging: file are no longer absolute 
+        but relative to the project folder. 
+        This improves overview and is more secure, 
+        as the environment is no longer exposed. 
+      </action>
       <action dev='reissner' type='fix'>
         header.tex: patch for package listings: 
         take into account that \makeatletter, \makeatother and \xpatchcmd 
@@ -1226,31 +1247,17 @@ Better even: indicate that targets are overwritten.. make a check. -->
       </action>
       <action dev='reissner' type='fix'>
         latexmk may be correct even if target is not updated. 
-        This is very special. 
+        Took this into account as this is very special. 
+        Note also that ntlatex has been generalized accordingly. 
       </action>
       <action dev='reissner' type='fix'>
         corrected default value for setting 'diffDirectory'
       </action>
-      <action dev='reissner' type='add'>
-        for chkDiff allow general time stamps: before, it was always 1970-01-01 
-        and so either no date in productive PDF or checked PDF could not be productive. 
-        The timestamp is used for running the latex compiler, 
-        and dvi2pdf converter, but also to set the modification time. 
-
-        The new feature is that if a pdf is present for comparison, 
-        the modification time of this 
-        is used as compilation time and the resulting PDF is touched with that time. 
-        If nothing present to compare, compiler is run with system time 
-        and no explicit touch of resulting pdf is done. 
-
-        This is also possible when running latexmk. 
-        This affects above all the injection of .latexmkrc. 
-      </action>
-      <action dev='reissner' type='add'>
-        warning WFU04 if impossible to change a timestamp
+      <action dev='reissner' type='fix'>
+        vmdiff: finds differences in both visual content and important metadata. 
       </action>
       <action dev='reissner' type='update'>
-        Versions of tools: gnuplot, exiftool, python
+        Versions of tools: gnuplot, exiftool, python, ...
       </action>
     </release>
 
