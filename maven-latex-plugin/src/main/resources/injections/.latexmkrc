@@ -27,7 +27,7 @@ $pdf_mode = 4;# specifies creation of pdf via lualatex
 # so may be duplicated, but no disadvantage 
 # %O is the options (additional options passed by latexmk)
 # %S source file (maybe %A and %B more appropriate: without ending)
-#$lualatex = "${latex2pdfCommand} ${latex2pdfOptions} %O %S";
+#$lualatex = "${getLatex2pdfCommand()} ${latex2pdfOptions} %O %S";
 $lualatex = "internal mylatex %A %O";
 
 # superfluous for perl >=5.36 according to documentation, but does not work for me (perl 5.38?)
@@ -105,10 +105,10 @@ sub getTimestampDiff($fileName) {
   my $epoch_timestamp = int((stat($pdfFileDiff))[9]);# epoch time of last modification # TBD: avoid magic number 9 
 
   my $creationDateEpoch = getCreationTimeMetaEpoch($pdfFileDiff);
-  # my ($stdout, $res) = capture_stdout { system("${pdfMetainfoCommand} ${pdfMetainfoOptions} $pdfFileDiff") };
+  # my ($stdout, $res) = capture_stdout { system("${getPdfMetainfoCommand()} ${pdfMetainfoOptions} $pdfFileDiff") };
   # print ("metainfo ok: $res\n");
   # print ("metainfos: \n$stdout\n");
-  # $stdout =~ /CreationDate:\s*(?<creationDate>.*)\R/ or die("${pdfMetainfoCommand} did not get CreationDate. ");
+  # $stdout =~ /CreationDate:\s*(?<creationDate>.*)\R/ or die("${getPdfMetainfoCommand()} did not get CreationDate. ");
   # print ("CreationDate: $+{creationDate}");
   # my $dt = DateTime::Format::ISO8601->parse_datetime($+{creationDate});
   print("+++meta epoch time: $creationDateEpoch\n");
@@ -117,10 +117,10 @@ sub getTimestampDiff($fileName) {
 }
 
 sub getCreationTimeMetaEpoch($pdfFile) {
-  my ($stdout, $res) = capture_stdout { system("${pdfMetainfoCommand} ${pdfMetainfoOptions} $pdfFile") };
+  my ($stdout, $res) = capture_stdout { system("${getPdfMetainfoCommand()} ${pdfMetainfoOptions} $pdfFile") };
   print ("metainfo ok: $res\n");
   print ("metainfos: \n$stdout\n");
-  $stdout =~ /CreationDate:\s*(?<creationDate>.*)\R/ or die("${pdfMetainfoCommand} did not get CreationDate. ");
+  $stdout =~ /CreationDate:\s*(?<creationDate>.*)\R/ or die("${getPdfMetainfoCommand()} did not get CreationDate. ");
   print ("CreationDate: $+{creationDate}\n");
   my $dt = DateTime::Format::ISO8601->parse_datetime($+{creationDate});
   my $creationDateEpoch=$dt->epoch();
@@ -142,7 +142,7 @@ sub mylatex($fileName, @opts) {
   ($programMagic, $chkDiffMagic) = parseTexFile("$fileName.tex");
 
   # override settings if magic comment is present 
-  my $latexCommand = ($programMagic ? $programMagic : "${latex2pdfCommand}");
+  my $latexCommand = ($programMagic ? $programMagic : "${getLatex2pdfCommand()}");
   my $chkDiffB     = ($chkDiffMagic ? $chkDiffMagic : "${chkDiff}");
   $chkDiffB = $boolStrToVal{$chkDiffB};
 
@@ -185,10 +185,10 @@ sub mylatex($fileName, @opts) {
     # Note that $timeEnv is first of all suitable for the latex compiler. 
     # strictly speaking FORCE_SOURCE_DATE is not needed; the other variables are needed 
     # to set up 
-    $res = $res or system("$timeEnv${dvi2pdfCommand} ${dvi2pdfOptions} $fileName");
+    $res = $res or system("$timeEnv${getDvi2pdfCommand()} ${dvi2pdfOptions} $fileName");
   }
-  #print("invoke: ${latex2pdfCommand} ${latex2pdfOptions} @opts $fileName\n");
-  #return system("${latex2pdfCommand} ${latex2pdfOptions} @opts $fileName");
+  #print("invoke: ${getLatex2pdfCommand()} ${latex2pdfOptions} @opts $fileName\n");
+  #return system("${getLatex2pdfCommand()} ${latex2pdfOptions} @opts $fileName");
   if ($chkDiffB) {
     if (not defined($epoch_timestamp)) {
       $epoch_timestamp=getCreationTimeMetaEpoch("$fileName.pdf");
@@ -290,9 +290,9 @@ sub fig2dev {
   #fig2dev -L pdftex   <fig2devGenOptions> <fig2devPdfEpsOptions>        xxx.fig xxx.pdf   
   #fig2dev -L pdftex_t <fig2devGenOptions> <fig2devPtxOptions>    -p xxx xxx.fig xxx.ptx
 
-  my $ret1 = system(qq/${fig2devCommand} -L  pstex   ${fig2devGenOptions} ${fig2devPdfEpsOptions}       $file.fig $file.eps/);
-  my $ret2 = system(qq/${fig2devCommand} -L pdftex   ${fig2devGenOptions} ${fig2devPdfEpsOptions}       $file.fig $file.pdf/);
-  my $ret3 = system(qq/${fig2devCommand} -L pdftex_t ${fig2devGenOptions} ${fig2devPtxOptions} -p $file $file.fig $file.ptx/);
+  my $ret1 = system(qq/${getFig2devCommand()} -L  pstex   ${fig2devGenOptions} ${fig2devPdfEpsOptions}       $file.fig $file.eps/);
+  my $ret2 = system(qq/${getFig2devCommand()} -L pdftex   ${fig2devGenOptions} ${fig2devPdfEpsOptions}       $file.fig $file.pdf/);
+  my $ret3 = system(qq/${getFig2devCommand()} -L pdftex_t ${fig2devGenOptions} ${fig2devPtxOptions} -p $file $file.fig $file.ptx/);
 
   return ($ret1 or $ret2 or $ret3);
 }
@@ -305,7 +305,7 @@ sub gnuplot {
   rdb_add_generated("$file.ptx", "$file.pdf", "$file.eps");
   # here in the java code no quoting occurs 
   #my $gnuplotOptionsQ = quote(qq/${gnuplotOptions}/);
-  my $ret1 = system(qq/${gnuplotCommand} -e "set terminal cairolatex pdf ${gnuplotOptions};\
+  my $ret1 = system(qq/${getGnuplotCommand()} -e "set terminal cairolatex pdf ${gnuplotOptions};\
             set output '$file.ptx';\
             load '$file.gp'"/);
   # my $ret2 = system("gnuplot -e \"set terminal cairolatex eps ${gnuplotOptions};\
@@ -325,7 +325,7 @@ sub mpost {
   pushd($path);
   my $metapostOptionsQ = quote(qq/${metapostOptions}/);
   #print "quoted: $metapostOptionsQ\n";
-  my $return = system(qq/${metapostCommand} $metapostOptionsQ $name/);
+  my $return = system(qq/${getMetapostCommand()} $metapostOptionsQ $name/);
   popd();
   return $return;
 }
@@ -336,7 +336,7 @@ sub inkscape {
   my $file = $_[0];
   print("create from $file.svg\n");
   rdb_add_generated("$file.ptx", "$file.pdf");
-  my $ret1 = system(qq/${svg2devCommand} --export-filename=$file.pdf ${svg2devOptions} $file.svg/);
+  my $ret1 = system(qq/${getSvg2devCommand()} --export-filename=$file.pdf ${svg2devOptions} $file.svg/);
   #my $ret2 = system("inkscape --export-filename=$file.eps -D --export-latex $file.svg ");
   #use File::Copy;
   # This works only for pdf, not for eps. 
