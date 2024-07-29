@@ -26,6 +26,8 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import java.util.List;
@@ -48,7 +50,7 @@ import com.florianingerl.util.regex.Pattern;
 
 
 import org.apache.commons.text.StringEscapeUtils;
-
+import org.apache.maven.execution.BuildFailure;
 import org.apache.maven.plugins.annotations.Parameter;
 // import org.apache.maven.plugin.descriptor.Parameter;
 
@@ -76,12 +78,34 @@ public class Settings {
   public static final String PARAM_PROP = "latex.injections";
 
   /**
-   * Pattern for names of parameters annotated {@link RuntimeParameter} 
+   * Name of the group in {@link #PATTERN_CONFIG} 
+   * holding name of parameter or of getter method. 
+   */
+  private static final String GRP_NAME = "name";
+
+  /**
+   * Name of he group in {@link #PATTERN_CONFIG} 
+   * holding <code>()</code> after name 
+   * which, if present 
+   * indicates that the name refers to a method; 
+   * else it refers to a field. 
+   */
+  private static final String GRP_METHOD = "method";
+
+
+  /**
+   * Pattern for names of parameters and getter methods 
+   * annotated {@link RuntimeParameter} 
    * used in 
    * {@link #filterInjection(InputStream,PrintStream,String,Injection)} 
    * to filter resources for injection. 
+   * It contains two groups, one, named {@link #GRP_NAME} holding the name, 
+   * either of a field or of a method 
+   * and the other, optional group named {@link #GRP_METHOD} holding <code>()</code> 
+   * indicating a method rather than a field. 
    */
-  private static final String PATTERN_CONFIG = "\\$\\{(\\w+)\\}";
+  private static final String PATTERN_CONFIG =
+    "\\$\\{(?<" + GRP_NAME + ">\\w+)(?<" + GRP_METHOD + ">\\(\\))?\\}";
 
 
 
@@ -2557,6 +2581,7 @@ public class Settings {
   }
 
   // for ant task only 
+  @RuntimeParameter
   public String getFig2devCommand() throws BuildFailureException {
     return getCommand(ConverterCategory.Fig2Dev);
   }
@@ -2574,6 +2599,7 @@ public class Settings {
   }
 
   // for ant task only 
+  @RuntimeParameter
   public String getGnuplotCommand() throws BuildFailureException {
     return getCommand(ConverterCategory.Gnuplot2Dev);
   }
@@ -2583,6 +2609,7 @@ public class Settings {
   }
 
   // for ant task only 
+  @RuntimeParameter
   public String getMetapostCommand() throws BuildFailureException {
     return getCommand(ConverterCategory.MetaPost);
   }
@@ -2605,6 +2632,7 @@ public class Settings {
   }
 
   // for ant task only 
+  @RuntimeParameter
   public String getSvg2devCommand() throws BuildFailureException {
     return getCommand(ConverterCategory.Svg2Dev);
   }
@@ -2618,12 +2646,18 @@ public class Settings {
   }
 
   // for ant task only 
+  @RuntimeParameter
   public String getEbbCommand() throws BuildFailureException {
     return getCommand(ConverterCategory.EbbCmd);
   }
 
   public String getEbbOptions() {
     return this.ebbOptions;
+  }
+
+  @RuntimeParameter
+  public String getLatex2pdfCommand() throws BuildFailureException {
+    return getCommand(ConverterCategory.LaTeX);
   }
 
 
@@ -2652,6 +2686,10 @@ public class Settings {
     return LatexDev.devViaDvi(this.pdfViaDvi);
   }
 
+  @RuntimeParameter
+  public String getDvi2pdfCommand() throws BuildFailureException {
+    return getCommand(ConverterCategory.Dvi2Pdf);
+  }
 
   public String getDvi2pdfOptions() {
     return this.dvi2pdfOptions;
@@ -2705,6 +2743,7 @@ public class Settings {
   }
 
   // for ant task only 
+  @RuntimeParameter
   public String getBibtexCommand() throws BuildFailureException {
     return getCommand(ConverterCategory.BibTeX);
   }
@@ -2722,6 +2761,7 @@ public class Settings {
   }
 
   // for ant task only 
+  @RuntimeParameter
   public String getMakeIndexCommand() throws BuildFailureException {
     return getCommand(ConverterCategory.MakeIndex);
   }
@@ -2743,6 +2783,7 @@ public class Settings {
   }
 
   // for ant task only 
+  @RuntimeParameter
   public String getSplitIndexCommand() throws BuildFailureException {
     return getCommand(ConverterCategory.SplitIndex);
   }
@@ -2752,6 +2793,7 @@ public class Settings {
   }
 
   // for ant task only 
+  @RuntimeParameter
   public String getMakeGlossariesCommand() throws BuildFailureException {
     return getCommand(ConverterCategory.MakeGlossaries);
   }
@@ -2774,6 +2816,7 @@ public class Settings {
   }
 
   // for ant task only 
+  @RuntimeParameter
   public String getPythontexCommand() throws BuildFailureException {
     return getCommand(ConverterCategory.Pythontex);
   }
@@ -2791,6 +2834,7 @@ public class Settings {
   }
 
   // TBD: check category . shall be replaced by getCommand(ConverterCategory)
+  //@RuntimeParameter
   public String getTex4htCommand() {
     //Converter conv = Converter.cmd2Conv(this.tex4htCommand, ConverterCategory.LaTeX2Html);
     // TBD: check: this has two categories: tex2html and tex2odt 
@@ -2814,6 +2858,7 @@ public class Settings {
   }
 
   // for ant task only 
+  //@RuntimeParameter
   public String getLatex2rtfCommand() throws BuildFailureException {
     return getCommand(ConverterCategory.LaTeX2Rtf);
   }
@@ -2822,6 +2867,7 @@ public class Settings {
     return this.latex2rtfOptions;
   }
 
+  //@RuntimeParameter
   public String getOdt2docCommand() throws BuildFailureException {
     return getCommand(ConverterCategory.Odt2Doc);
   }
@@ -2840,6 +2886,7 @@ public class Settings {
   }
 
   // for ant task only 
+  // @RuntimeParameter
   public String getChkTexCommand() throws BuildFailureException {
     return getCommand(ConverterCategory.LatexChk);
   }
@@ -2849,10 +2896,12 @@ public class Settings {
   }
 
   // for ant task only if needed TBD
+  //@RuntimeParameter
   public String getDiffPdfCommand() throws BuildFailureException {
     return getCommand(ConverterCategory.DiffPdf);
   }
 
+  @RuntimeParameter
   public String getPdfMetainfoCommand() throws BuildFailureException {
     return getCommand(ConverterCategory.MetaInfoPdf);
   }
@@ -2861,6 +2910,7 @@ public class Settings {
     return this.pdfMetainfoOptions;
   }
 
+  //@RuntimeParameter
   public String getLatexmkCommand() throws BuildFailureException {
     return getCommand(ConverterCategory.Latexmk);
   }
@@ -3541,15 +3591,18 @@ public class Settings {
    * while performing check of names. 
    * Currently it is checked that the parameter is private and not static. 
    * 
-   * The ordering of the parameters is the ordering of the according fields in the class. 
+   * The ordering of the parameters in the returned map 
+   * is the ordering of the according fields in the class. 
    * To that end, we use {@link LinkedHashMap}. 
+   * This is important when using this method for the {@link #toString()} method. 
    * 
    * @return
    *   A map from names of parameters to their current values as a string. 
    *   If <code>null</code> use the string 'null'. 
+   *   Order is as fields are declared. 
    */
   public Map<String, String> getProperties() {
-    // keys are never null, but values may be null
+    // keys are never null, but values may be null 
     Map<String, String> res = new LinkedHashMap<String, String>();
     Field[] fields = this.getClass().getDeclaredFields();
     String name;
@@ -3569,9 +3622,9 @@ public class Settings {
       if (Modifier.isStatic(mod)) {
         continue;
       }
-      assert !Modifier.isStatic(mod) : "found parameter which is static. ";
-      assert !Modifier.isFinal(mod) : "found parameter which is final. ";
-      assert Modifier.isPrivate(mod) : "found parameter which is not private. ";
+      assert !Modifier.isStatic(mod) : "found static parameter. ";
+      assert !Modifier.isFinal(mod) : "found final parameter. ";
+      assert Modifier.isPrivate(mod) : "found non-private parameter. ";
 
       name = field.getName();
       //assert annot.name().equals(name) : "Parameter name shall be fieldname. ";
@@ -3586,7 +3639,68 @@ public class Settings {
         throw new IllegalStateException(
             "Illegal access to field '" + name + "' although set accessible. ");
       }
-    }
+    } // for 
+    return res;
+  }
+
+  /**
+   * Returns the getter methods defined in this class used for injection
+   * as a map from their names to their return values. 
+   * Getter methods, i.e. methods without parameters, 
+   * are marked by annotations of type {@link Parameter}. 
+   * Since this is not runtime visible, 
+   * we mark parameters with another annotation, {@link RuntimeParameter}. 
+   * Currently, their names are the names of the methods. 
+   * There is one case where the default value is <code>null</code>. 
+   * The string representation is 'null'. 
+   * In the long run, the {@link RuntimeParameter} shall be added automatically 
+   * while performing check of names. 
+   * Currently it is checked that the method has no parameters and not static. 
+   * 
+   * The ordering of the getter methods in the returned map 
+   * is the ordering of the according methods in the class. 
+   * To that end, we use {@link LinkedHashMap}. 
+   * 
+   * @return
+   *   A map from names of methods to their current return values as a string. 
+   *   If <code>null</code> use the string 'null'. 
+   *   Ordering is as methods are declared. 
+   */
+  // some potential in unification: Member unifying Field and Method 
+  public Map<String, String> getMethodsNoParams() {
+    Map<String, String> res = new LinkedHashMap<String, String>();
+    Method[] methods = this.getClass().getDeclaredMethods();//.getMethods();
+    String name;
+    Object value;
+    int mod;
+    for (Method method : methods) {
+      RuntimeParameter annot = method.getAnnotation(RuntimeParameter.class);
+      if (annot == null) {
+        // Here, the field is no parameter. 
+        continue;
+      }
+      mod = method.getModifiers();
+      assert method.getParameterTypes().length == 0 : "found getter with parameter. ";
+      assert !Modifier.isStatic(mod) : "found static getter. ";
+
+      name = method.getName();
+      method.setAccessible(true);
+
+      try {
+        value = method.invoke(this);
+        res.put(name, value == null ? null : value.toString());
+      } catch (IllegalArgumentException iare) {
+        throw new IllegalStateException(
+            "Found no method '" + name + "()' in setting. ");
+      } catch (IllegalAccessException iace) {
+        throw new IllegalStateException(
+            "Illegal access to method '" + name + "' although set accessible. ");
+      } catch (InvocationTargetException ite) {
+        throw new IllegalStateException(
+            "Invocation of method '" + name + "()' caused exception. ", ite);
+      }
+    } // for 
+
     return res;
   }
 
@@ -3637,14 +3751,17 @@ public class Settings {
    * @throws IOException
    *   May occur if reading a line but not if writing a line. 
    */
-  public void filterInjection(InputStream inStream, PrintStream writer,
-      String version, Injection inj) throws IOException {//
+  public void filterInjection(InputStream inStream,
+                              PrintStream writer,
+                              String version,
+                              Injection inj) throws IOException {//
     BufferedReader bufReader =
         new BufferedReader(new InputStreamReader(inStream));
 
     // pattern for parameter 
     Pattern pattern = Pattern.compile(PATTERN_CONFIG);
     Map<String, String> props = this.getProperties();
+    Map<String, String> getters = this.getMethodsNoParams();
 
     String strLine;
     if (inj.hasShebang()) {
@@ -3677,11 +3794,20 @@ public class Settings {
 
         // group zero is the whole, and it is not in the goup count 
         // System.out.println("line: |"+strLine+"|");
-        // System.out.println("key: |"+matcher.group(1)+"|");
-        // System.out.println("val: |"+props.get(matcher.group(1))+"|");
-        assert props.containsKey(matcher.group(1)) : "Key '" + matcher.group(1)
+        // System.out.println("key: |"+matcher.group(GRP_NAME)+"|");
+        // System.out.println("val: |"+props.get(matcher.group(GRP_NAME))+"|");
+        assert props.containsKey(matcher.group(GRP_NAME)) : "Key '" + matcher.group(GRP_NAME)
             + "' not found. ";
-        replacement = props.get(matcher.group(1));
+            System.out.println("grp: "+matcher.group(GRP_NAME));
+        if (matcher.group(GRP_METHOD) == null) {
+          // Here, we have the content of a field 
+          replacement = props.get(matcher.group(GRP_NAME));
+        } else {
+          // Here, we have the result of a getter method 
+          assert false;
+          replacement = getters.get(matcher.group(GRP_NAME));
+        }
+  
         // TBD: Essentially, this is only appropriate for injection of .latexmkrc 
         // Here also goes into that java escape and perl escape are the same. 
         // What is needed is treatment depending on the language of the injection. 
@@ -3693,8 +3819,8 @@ public class Settings {
         strLine = matcher.replaceFirst(replacement);
 
         // filter next line 
-      }
-    }
+      } // while true
+    } // while ((strLine = bufReader.readLine()) != null)
 
     // flush and close the streams 
     writer.flush();
