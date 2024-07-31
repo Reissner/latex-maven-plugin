@@ -257,7 +257,10 @@ public enum Injection {
    * 
    * @return
    *   whether this file must be filtered before being injected. 
-   *   This is <code>false</code>, except for {@link Injection#latexmkrc}. 
+   *   This is <code>false</code>, except for {@link Injection#latexmkrc} 
+   *   for which it is vital 
+   *   and for {@link Injection#headerGrp} and {@link #headerSuppressMetaPDF} 
+   * in view of future configurability. 
    */
   boolean doFilter() {
     return false;
