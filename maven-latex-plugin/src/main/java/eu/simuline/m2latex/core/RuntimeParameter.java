@@ -19,10 +19,10 @@ import org.apache.maven.plugins.annotations.Parameter;
  * it is also possible to endow methods without parameter with this annotation. 
  * That way, data can be read if statically available (fields)
  * or dynamically computed (methods). 
- * This annotation is used in {@link Mojo}s and in {@link Setting}s. 
- * For use of {@link RuntimeParameter}s see {@link Setting#getProperties()}. 
- * Besides for {@link Setting#toString()} 
- * which use fields only, they go into injections by {@link Setting#getProperties()}. 
+ * This annotation is used in {@link Mojo}s and in {@link Settings}. 
+ * For use of {@link RuntimeParameter}s see {@link Settings#getProperties()}. 
+ * Besides for {@link Settings#toString()} 
+ * which use fields only, they go into injections by {@link Settings#getProperties()}. 
  */
 @Retention(value=RetentionPolicy.RUNTIME)
 @Documented // to make the annotation occur in api docs 

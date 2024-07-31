@@ -33,8 +33,8 @@ import java.util.TreeSet;
 /**
  * The latex pre-processor is for preprocessing graphic files
  * in formats which cannot be included directly into a latex-file
- * and in finding the latex main files
- * which is done in {@link #processGraphicsSelectMain(File, DirNode)}
+ * and in finding the latex main files which is done in 
+ * {@link #processGraphicsSelectMain(File, DirNode, boolean)}
  * and in clearing the created files from the latex source directory
  * in {@link #clearCreated(File)}.
  */
@@ -550,7 +550,7 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
    *    returned by {@link Settings#getFig2devCommand()} failed.
    *    This is invoked twice: once for creating the pdf-file
    *    and once for creating the pdf_t-file.
-   * @see #processGraphicsSelectMain(File, DirNode)
+   * @see #processGraphicsSelectMain(File, DirNode, boolean)
    */
   // used in fig.procSrc(File, LatexPreProcessor) only
   private void runFig2Dev(File figFile) throws BuildFailureException {
@@ -877,7 +877,7 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
    * @throws BuildFailureException
    *    TEX01 if invocation of the ptx/pdf-conversion built-in
    *    in gnuplot fails.
-   * @see #processGraphicsSelectMain(File, DirNode)
+   * @see #processGraphicsSelectMain(File, DirNode, boolean)
    */
   // used in gp.procSrc(File, LatexPreProcessor) only
   private void runGnuplot2Dev(File gpFile) throws BuildFailureException {
@@ -934,7 +934,7 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
    *    the metapost file to be processed.
    * @throws BuildFailureException
    *    TEX01 if invocation of the mpost command failed.
-   * @see #processGraphicsSelectMain(File, DirNode)
+   * @see #processGraphicsSelectMain(File, DirNode, boolean)
    */
   // used in mp.procSrc(File, LatexPreProcessor) only
   private void runMetapost2mps(File mpFile) throws BuildFailureException {
@@ -1018,7 +1018,7 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
    * @throws BuildFailureException
    *    TEX01 if invocation of the ptx/pdf-conversion built-in
    *    in svg2dev fails.
-   * @see #processGraphicsSelectMain(File, DirNode)
+   * @see #processGraphicsSelectMain(File, DirNode, boolean)
    */
   // used in svg.procSrc(File, LatexPreProcessor) only
   private void runSvg2Dev(File svgFile) throws BuildFailureException {
@@ -1355,7 +1355,7 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
    *    the collection of descriptions of latex main files.
    * @throws BuildFailureException
    *    TEX01 invoking
-   * {@link #processGraphicsSelectMain(File, DirNode, Collection, Collection)}
+   * {@link #processGraphicsSelectMain(File,DirNode,Collection,Collection,boolean)}
    */
   // used in LatexProcessor.create()
   // and in LatexProcessor.processGraphics() only
@@ -1564,11 +1564,12 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
 
   /**
    * Like
-   * {@link #processGraphicsSelectMain(File,DirNode,Collection,Collection)}
+   * {@link #processGraphicsSelectMain(File,DirNode,Collection,Collection,boolean)}
    * but with recursion to subdirectories.
    */
   private void processGraphicsSelectMainRec(File dir, DirNode node,
-      Collection<String> skipped, Collection<LatexMainDesc> latexMainDescs, boolean processGrpFiles)
+      Collection<String> skipped, Collection<LatexMainDesc> latexMainDescs,
+      boolean processGrpFiles)
       throws BuildFailureException {
     processGraphicsSelectMain(dir, node, skipped, latexMainDescs, processGrpFiles);
 

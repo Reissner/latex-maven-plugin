@@ -305,7 +305,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * This consists in reading the parameters 
    * via {@link ParameterAdapter#initialize()} 
    * processing graphic-files 
-   * via {@link LatexPreProcessor#processGraphicsSelectMain(File, DirNode)} 
+   * via {@link LatexPreProcessor#processGraphicsSelectMain(File, DirNode, boolean)} 
    * and processing the tex main files 
    * via {@link Target#processSource(LatexProcessor, LatexMainDesc)}. 
    * If a diff-tool for the target format is available

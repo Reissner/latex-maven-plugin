@@ -77,7 +77,8 @@ class CommandExecutor {
 
   /**
    * The way return codes are checked: Not at all, if nonzero and special treatments. 
-   * This is used in {@link CommandExecutor#executeEnvR0(File, File, String, ReturnCodeChecker, String[])} 
+   * This is used in 
+   * {@link CommandExecutor#executeEnvR0(File, File, String, String[], File...)} 
    * to decide whether the return code shall indicate that execution failed. 
    * TBD: shall be part of category 
    */
@@ -210,8 +211,7 @@ class CommandExecutor {
 
   /**
    * Creates an executor with the given logger 
-   * and initial invocation without given timestamp 
-   * (see {@link #timestampOpt}). 
+   * and empty environment {@link #ENV_EMPTY}. 
    *
    * @param log
    *    the current logger. 
@@ -237,18 +237,16 @@ class CommandExecutor {
   }
 
   /**
-   * Executes <code>command</code> in <code>workingDir</code>
+   * Executes <code>command</code> in <code>workingDir</code> 
+   * in the environment given by {@link #env}
    * with list of arguments given by <code>args</code> 
    * and logs if one of the expected target files 
    * given by <code>resFile</code> is not newly created, 
    * i.e. if it does not exist or is not updated. 
    * This is a convenience method of 
-   * {@link #execute(File, File, String, ReturnCodeChecker, String[], File... )}, 
+   * {@link #execute(File, File, Map<String,String>, String, ReturnCodeChecker, String[], File... )}, 
    * where the boolean signifies whether the return code is checked. 
    * This is set to <code>true</code> in this method. 
-   * <p>
-   * Supports timeless execution as described in 
-   * {@link #execute(File, File, String, ReturnCodeChecker, String[], File...)}. 
    * <p>
    * Logging: 
    * <ul>
@@ -380,14 +378,12 @@ class CommandExecutor {
 
   /**
    * Executes <code>command</code> in <code>workingDir</code>
+   * in the environment <code>env</code> 
    * with list of arguments given by <code>args</code> 
    * checking the return value via <code>checker</code> 
    * and logs a warning if one of the expected target files 
    * given by <code>resFiles</code> is not guaranteed to be newly created, 
    * or be updated. 
-   * <p>
-   * Supports timeless execution as described in 
-   * {@link #execute(File, File, String, ReturnCodeChecker, String[], File...)}. 
    * <p>
    * Logging: 
    * <ul>
@@ -420,6 +416,9 @@ class CommandExecutor {
    *    the path to the executable <code>command</code>. 
    *    This may be <code>null</code> if <code>command</code> 
    *    is on the execution path 
+   * @param env
+   *    the environment, i.e. the set of environment variables 
+   *    the command below is to be executed. 
    * @param command
    *    the name of the program to be executed 
    * @param args
@@ -515,6 +514,7 @@ class CommandExecutor {
     return res;
   }
 
+  // execution with environment given by {@link #ENV_EMPTY}
   CmdResult executeEmptyEnv(File workingDir,
                             File pathToExecutable,
                             String command,
@@ -583,7 +583,7 @@ class CommandExecutor {
    * by the command named <code>command</code> and 
    * emits a warning <code>EEX03</code> if it has not been updated. 
    * It is invoked only by 
-   * {@link #execute(File, File, String, ReturnCodeChecker, String[], File[])} 
+   * {@link #execute(File, File, Map<String,String>, String, ReturnCodeChecker, String[], File[])} 
    * after the command has been invoked. 
    * The file <code>target</code> is updated if it exists and 
    * either did not exist before according to <code>existedBefore</code> 
@@ -654,12 +654,6 @@ class CommandExecutor {
    * and return the output. 
    * Here, <code>pathToExecutable</code> is the path 
    * to the executable. It may be null. 
-   * <p>
-   * If {@link #timestampOpt} is set by {@link #setTimestamp(Optional)}, 
-   * before invocation of this method, 
-   * the environment given by {@link #TIMESTAMP_ENV} is set 
-   * ensuring timeless execution. 
-   * As a side effect, {@link #timestampOpt} is reset again. 
    * <p>
    * Logging: 
    * EEX01 for return code other than 0. 
