@@ -2628,7 +2628,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
     // File clgFile = TexFileUtils.replaceSuffix(texFile, SUFFIX_CLG);
     String command = this.settings.getCommand(ConverterCategory.DiffPdf);
     this.log.debug("Running " + command + " diffing '" + pdfFileCmp.getName()
-        + "' and '" + pdfFileAct.getName() + "''. ");
+        + "' and '" + pdfFileAct.getName() + "'. ");
     // String[] args = buildChkTexArguments(this.settings.getChkTexOptions(),
     // texFile,
     // clgFile);
