@@ -1194,6 +1194,12 @@ Better even: indicate that targets are overwritten.. make a check. -->
         that the parameter is `name:category` but what is needed is `name` returned by the getter. 
       </action>
       <action dev='reissner' type='add'>
+        Feature that for filtering injections not only fields annotated @RuntimeParameters (parameters), 
+        but also getter methods (i.e. methods without parameters) annotated @RuntimeParameters. 
+        Apply this to injection latexmkrc fixes the problem with filtering names of commands without a category 
+        (see the according fix). 
+      </action>
+      <action dev='reissner' type='add'>
         added parameter latexmkUsage on usage of latexmk: 
         NotAtAll, AsBackend, Fully
         added parameters latexmkCommand and latexmkOptions. 
