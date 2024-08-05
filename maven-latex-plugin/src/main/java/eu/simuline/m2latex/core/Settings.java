@@ -492,6 +492,7 @@ public class Settings {
   @Parameter(name = "cleanUp", defaultValue = "true")
   private boolean cleanUp = true;
 
+  // TBD: pythontex-files-T$T occurs here but also in parameter 
   /**
    * This pattern is applied to file names 
    * and matching shall accept all the files 
@@ -1566,6 +1567,7 @@ public class Settings {
 
   /**
    * The Pythontex command which creates a folder <code>pythontex-files-xxx</code> 
+   * given by {@link #prefixPytexOutFolder} 
    * with various files inside 
    * from a pytxcode-file (invoked without file ending) 
    * and logging in a plg-file. 
@@ -2849,6 +2851,10 @@ public class Settings {
     return this.patternWarnPyTex;
   }
 
+  public String getPrefixPytexOutFolder() {
+    return this.prefixPytexOutFolder;
+  }
+
   // TBD: check category . shall be replaced by getCommand(ConverterCategory)
   //@RuntimeParameter
   public String getTex4htCommand() {
@@ -3493,6 +3499,10 @@ public class Settings {
   public void setPatternWarnPyTex(String patternWarnPyTex) {
     this.patternWarnPyTex =
         patternWarnPyTex.replaceAll("(\t|\n| )+", " ").trim();
+  }
+
+  public void setPrefixPytexOutFolder(String prefixPytexOutFolder) {
+    this.prefixPytexOutFolder = prefixPytexOutFolder;
   }
 
   // defines patternReRunMakeGlossaries element with text in ant 
