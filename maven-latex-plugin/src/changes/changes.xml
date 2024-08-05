@@ -1188,6 +1188,11 @@ Better even: indicate that targets are overwritten.. make a check. -->
       patternCreatedFromLatexMain and -->
 
     <release version="2.1" date="2023-08-28" description="build with latexmk and generalized reproducibility">
+      <action dev='reissner' type='fix'>
+        Using getter methods for filtering command names in injections instead of parameters directly, 
+        fixes the problem for commands without category, 
+        that the parameter is `name:category` but what is needed is `name` returned by the getter. 
+      </action>
       <action dev='reissner' type='add'>
         added parameter latexmkUsage on usage of latexmk: 
         NotAtAll, AsBackend, Fully
