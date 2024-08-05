@@ -468,7 +468,9 @@ sub run_bib2gls {
 
 
 
-
+# The following code from John Collins is complementary to code in 
+# changes/PythonTeXdep
+# This code shall not be erased, it may only be deactivated. 
 $pythontex = 'pythontexW %R';#'pythontexW %O %R';
 push @generated_exts, "pytxcode", "plg";
 push @generated_exts, "depytx", "dplg";

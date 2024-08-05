@@ -1167,6 +1167,23 @@ Better even: indicate that targets are overwritten.. make a check. -->
           We must analyze. 
           -->
 
+    <!-- pythontex as such does not record dependencies of computations, 
+     typically data files. 
+     Folder PythonTeXdep contains code which adresses this issue. 
+     This is transmitted from John Collins, author of latexmk, 
+     which he worked out in conjunction with Goeffrey Poore, 
+     author of pythontex. 
+     In conjunction with complementary code in .latexmkrc 
+     (also copied into this software), latexmk recognizes dependencies 
+     and reruns certain auxiliary software. 
+     
+     In my opinion, this code shall be included 
+     in the latex package pythontex. 
+     
+     Currently, we dont take this into account. 
+     Thus pythontex shall consistently update its data files. 
+     When changing initial data files 
+     it must be ensured that pythontex is rerun -->
     <release version="2.1" date="2023-08-28" description="build with latexmk and generalized reproducibility">
       <action dev='reissner' type='add'>
         added parameter latexmkUsage on usage of latexmk: 
