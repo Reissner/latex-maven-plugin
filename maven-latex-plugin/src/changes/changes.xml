@@ -1184,6 +1184,9 @@ Better even: indicate that targets are overwritten.. make a check. -->
      Thus pythontex shall consistently update its data files. 
      When changing initial data files 
      it must be ensured that pythontex is rerun -->
+     <!-- pythontex-files occurs literally in parameters 
+      patternCreatedFromLatexMain and -->
+
     <release version="2.1" date="2023-08-28" description="build with latexmk and generalized reproducibility">
       <action dev='reissner' type='add'>
         added parameter latexmkUsage on usage of latexmk: 

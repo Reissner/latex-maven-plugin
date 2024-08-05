@@ -953,6 +953,7 @@ and notify the developer of this plugin of the bug. -->
             </patternReRunMakeGlossaries>
 
             <!-- The Pythontex command which creates a folder 'pythontex-files-xxx' 
+              given by 'prefixPytexOutFolder' 
               with various files inside 
               from a 'pytxcode'-file (invoked without file ending) 
               and logging in a 'plg'-file. 
@@ -991,6 +992,18 @@ and notify the developer of this plugin of the bug. -->
               (note the space and the brackets).
               If this is not appropriate, please modify and notify the developer of this plugin. -->
             <patternWarnPyTex>(PythonTeX:  .+ -|    - Current: ) [0-9]+ error\(s\), [1-9][0-9]* warning\(s\)</patternWarnPyTex>
+
+            <!-- This is readonly: neither the package nor the tool pythontex can change this. 
+                 CAUTION: the default also occurs in parameter patternCreatedFromLatexMain -->
+            <!-- The prefix of the name of the folder written by 'pythontexCommand'. 
+             The full name of that folder is this prefix 
+             followed by the jobname of the latex main file, 
+             i.e. the filename without ending. 
+             
+             CAUTION: This is readonly, 
+             because in both, the pythontex tool and the according latex package 
+             this prefix is hardcoded at time of this writing.  -->
+            <prefixPytexOutFolder>pythontex-files-</prefixPytexOutFolder>
 
             <!-- The Depythontex command invoked with no file ending 
               to create a file 'xxx.depytx.tex' filefrom a tex-file, 

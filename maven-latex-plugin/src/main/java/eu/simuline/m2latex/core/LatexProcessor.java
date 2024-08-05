@@ -538,7 +538,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
     } finally {
       if (this.settings.isCleanUp()) {
         // may log warning WFU01, EFU05
-        this.fileUtils.cleanUp(node, texProcDir);
+        this.fileUtils.cleanUp(node, texProcDir, this.settings.getPrefixPytexOutFolder());
       }
       this.log.debug(this.settings.isCleanUp() ? ("cleanup: " + texProcDir)
           : "No cleanup");
@@ -2026,7 +2026,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
         buildArguments(this.settings.getPythontexOptions(), desc.xxxFile);
 
     File outFolder = TexFileUtils
-        .replacePrefix(TexFileUtils.PREFIX_PYTEX_OUT_FOLDER, desc.xxxFile);
+        .replacePrefix(this.settings.getPrefixPytexOutFolder(), desc.xxxFile);
     String repOutFileName = desc.xxxFile.getName() + SUFFIX_PYTXMCR;
     File repOutFile = new File(outFolder, repOutFileName);
     if (repOutFile.exists()) {

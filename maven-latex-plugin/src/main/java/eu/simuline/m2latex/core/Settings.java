@@ -1630,6 +1630,22 @@ public class Settings {
   private String patternWarnPyTex =
       "(PythonTeX:  .+ -|    - Current: ) [0-9]+ error\\(s\\), [1-9][0-9]* warning\\(s\\)";
 
+  // This is readonly: neither the package nor the tool pythontex can change this. 
+  // CAUTION: the default also occurs in parameter patternCreatedFromLatexMain
+  /**
+   * The prefix of the name of the folder written by {@link #pythontexCommand}. 
+   * The full name of that folder is this prefix 
+   * followed by the jobname of the latex main file, 
+   * i.e. the filename without ending. 
+   * 
+   * CAUTION: This is readonly, 
+   * because in both, the pythontex tool and the according latex package 
+   * this prefix is hardcoded at time of this writing. 
+   */
+  @RuntimeParameter
+  @Parameter(name = "pythontex-files-", defaultValue = "pythontex-files-",readonly = true)
+  private String prefixPytexOutFolder = "pythontex-files-";
+
   /**
    * The Depythontex command invoked with no file ending 
    * to create a file <code>xxx.depytx.tex</code> file

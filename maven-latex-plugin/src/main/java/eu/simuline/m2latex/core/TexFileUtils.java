@@ -55,11 +55,6 @@ class TexFileUtils {
 
   private final static String PATTERN_INS_LATEX_MAIN = "T\\$T";
 
-  // TBD: make configurable 
-  // folder created by auxiliary program pythontex 
-  // holding all its output files by default 
-  final static String PREFIX_PYTEX_OUT_FOLDER = "pythontex-files-";
-
   private final LogWrapper log;
 
   TexFileUtils(LogWrapper log) {
@@ -954,13 +949,15 @@ class TexFileUtils {
    *    
    * @param texDir
    *    
+   * @param pytexPrefixOutFolder
+   *    for checks only. 
    */
   // used in LatexProcessor.create() only 
   // FIXME: warn if deletion failed. 
-  void cleanUp(DirNode orgNode, File texDir) {
+  void cleanUp(DirNode orgNode, File texDir, String pytexPrefixOutFolder) {
     // constructor DirNode may log warning WFU01 Cannot read directory 
     // cleanUpRec may log warning EFU05 Cannot delete... 
-    cleanUpRec(texDir, orgNode, new DirNode(texDir, this));
+    cleanUpRec(texDir, orgNode, new DirNode(texDir, this), pytexPrefixOutFolder);
   }
 
   /**
@@ -984,7 +981,7 @@ class TexFileUtils {
    *    This is the latex source directory or a subdirectory. 
    */
   // used in cleanUp only 
-  private void cleanUpRec(File dir, DirNode origNode, DirNode currNode) {
+  private void cleanUpRec(File dir, DirNode origNode, DirNode currNode, String pytexPrefixOutFolder) {
     Set<String> origSubdirs = origNode.getSubdirs().keySet();
     Set<String> currSubdirs =
         new TreeSet<String>(currNode.getSubdirs().keySet());
@@ -992,7 +989,7 @@ class TexFileUtils {
     assert containsAll;
     currSubdirs.removeAll(origSubdirs);
     Set<String> diffSet = currSubdirs;
-    String regex = PREFIX_PYTEX_OUT_FOLDER + ".+";// represents file name
+    String regex = pytexPrefixOutFolder + ".+";// represents file name
     for (String name : diffSet) {
       assert name.matches(regex);
       System.out.println("del: " + new File(dir, name));
@@ -1002,7 +999,7 @@ class TexFileUtils {
     for (String key : origNode.getSubdirs().keySet()) {
       file = new File(dir, key);
       cleanUpRec(file, origNode.getSubdirs().get(key),
-          currNode.getSubdirs().get(key));
+          currNode.getSubdirs().get(key), pytexPrefixOutFolder);
     }
     Collection<String> currFileNames = currNode.getRegularFileNames();
     currFileNames.removeAll(origNode.getRegularFileNames());

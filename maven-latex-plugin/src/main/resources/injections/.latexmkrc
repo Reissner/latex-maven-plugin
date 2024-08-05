@@ -437,7 +437,8 @@ sub run_makeglossaries {
 push @generated_exts, 'glstex', 'glg';
 
 add_cus_dep('aux', 'glstex', 0, 'run_bib2gls');
-
+# Explanation can be found in 
+# https://tex.stackexchange.com/questions/400325/latexmkrc-for-bib2gls
 sub run_bib2gls {
   if ( $silent ) {
     my $ret = system "bib2gls --silent --group $_[0]";
@@ -471,18 +472,24 @@ sub run_bib2gls {
 # The following code from John Collins is complementary to code in 
 # changes/PythonTeXdep
 # This code shall not be erased, it may only be deactivated. 
-$pythontex = 'pythontexW %R';#'pythontexW %O %R';
+#$pythontex = 'pythontexW %R';#'pythontexW %O %R';
+$pythontex = '${getPythontexCommand()} ${pythontexOptions} %R';#'pythontexW %O %R';
+
 push @generated_exts, "pytxcode", "plg";
 push @generated_exts, "depytx", "dplg";
 
-$clean_ext .= " pythontex-files-%R/* pythontex-files-%R";
-#$extra_rule_spec{'pythontex'}  = [ 'internal', '', 'mypythontex', "%Y%R.pytxcode", "%Ypythontex-files-%R/%R.pytxmcr", "%R", 1 ];
+$clean_ext .= " ${prefixPytexOutFolder}%R/* ${prefixPytexOutFolder}%R";
+#$extra_rule_spec{'pythontex'}  = [ 'internal', '', 'mypythontex', "%Y%R.pytxcode", "%Y${prefixPytexOutFolder}-%R/%R.pytxmcr", "%R", 1 ];
 $extra_rule_spec{'pythontex'} = [
-  'internal', '', 'mypythontex', "%R.pytxcode", "pythontex-files-%R/%R.pytxmcr", "%R", 1
+  'internal', '', 'mypythontex', "%R.pytxcode", "${prefixPytexOutFolder}%R/%R.pytxmcr", "%R", 1
   ];
 
+# Explanation for PythonTeX dependency 
+# can be found in changes/PythonTeXdep 
+# In fact, to make this work, 
+# the code provided there must be included in package pythontex
 sub mypythontex {
-  my $result_dir = $aux_dir1 . "pythontex-files-$$Pbase";
+  my $result_dir = $aux_dir1 . "${prefixPytexOutFolder}$$Pbase";
   my $ret        = Run_subst($pythontex, 2);
   rdb_add_generated(glob "$result_dir/*");
 
