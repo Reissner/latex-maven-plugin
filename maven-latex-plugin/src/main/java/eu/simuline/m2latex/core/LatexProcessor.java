@@ -1645,7 +1645,6 @@ public class LatexProcessor extends AbstractLatexProcessor {
   // maybe better: eliminate altogether
   private boolean runMakeIndexByNeed(LatexMainDesc desc)
       throws BuildFailureException {
-
     // raw index file written by latex2dev 
     boolean needRun = desc.idxFile.exists();
     this.log.debug("MakeIndex run required? " + needRun);
@@ -1661,8 +1660,11 @@ public class LatexProcessor extends AbstractLatexProcessor {
             + "'; skip creation of index. ");
         return false;
       }
+    } else {
+      return false;// needRun
     }
-    assert (explIdxIdent != null) == needRun;
+    assert needRun;
+    //assert (explIdxIdent != null) == needRun;
     // Here, explIdxIdent contains the explicit identifiers of all indices
     // The identifier idx may be missing or not.
 
@@ -1709,8 +1711,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
     // idxFilesExtInDir == null
     // Then the check for option split cannot be done.
 
-    assert (explIdxIdent != null) == needRun;
     if (idxFilesExtInDir != null && idxFilesExtInDir.length > 0) {
+      //assert needRun;
       // Here, idxFilesExtInDir contains the idx-files \jobname-xxx.idx
       //if (!needRun || explIdxIdent.isEmpty()) {
       if (explIdxIdent == null || explIdxIdent.isEmpty()) {
@@ -1727,24 +1729,20 @@ public class LatexProcessor extends AbstractLatexProcessor {
       }
     }
 
-    //if (needRun) {
-    if (explIdxIdent != null) {
-      // Here, runMakeIndex or runSplitIndex must be performed
-
-      // check whether more than one index has to be created
-      if (explIdxIdent.isEmpty()) {
-        // may throw BuildFailureException TEX01
-        // may log warnings EEX01, EEX02, EEX03, WEX04, WEX05,
-        // EAP01, EAP02, WAP03, WAP04, WFU03
-        runMakeIndex(desc);
-      } else {
-        // may throw BuildFailureException TEX01
-        // may log warnings EEX01, EEX02, EEX03, WEX04, WEX05,
-        // EAP01, EAP02, WAP03, WAP04, WFU03
-        runSplitIndex(desc, explIdxIdent);
-      }
+    // check whether more than one index has to be created
+    if (explIdxIdent.isEmpty()) {
+      // may throw BuildFailureException TEX01
+      // may log warnings EEX01, EEX02, EEX03, WEX04, WEX05,
+      // EAP01, EAP02, WAP03, WAP04, WFU03
+      runMakeIndex(desc);
+    } else {
+      // may throw BuildFailureException TEX01
+      // may log warnings EEX01, EEX02, EEX03, WEX04, WEX05,
+      // EAP01, EAP02, WAP03, WAP04, WFU03
+      runSplitIndex(desc, explIdxIdent);
     }
-    return needRun;
+
+    return true;
   }
 
   /**
