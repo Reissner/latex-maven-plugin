@@ -1582,7 +1582,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    */
   private boolean runBibtexByNeed(LatexMainDesc desc)
       throws BuildFailureException {
-    File auxFile = desc.withSuffix(SUFFIX_AUX);
+    File auxFile = desc.withSuffix(Auxiliary.Bib.extension());
     String command = this.settings.getCommand(ConverterCategory.BibTeX);
     if (!needRun(false, command, auxFile, PATTERN_NEED_BIBTEX_RUN)) {
       return false;
@@ -1654,7 +1654,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
   private boolean makeIndexByNeed(LatexMainDesc desc)
       throws BuildFailureException {
     // raw index file written by latex2dev 
-    boolean needRun = desc.idxFile.exists();
+    boolean needRun = desc.withSuffix(Auxiliary.Idx.extension()).exists();
     this.log.debug("MakeIndex run required? " + needRun);
     if (!needRun) {
       return false;
@@ -2002,7 +2002,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
       throws BuildFailureException {
 
     // raw glossaries file created by pdflatex
-    boolean needRun = desc.gloFile.exists();
+    boolean needRun = desc.withSuffix(Auxiliary.Glo.extension()).exists();
     this.log.debug("MakeGlossaries run required? " + needRun);
     if (!needRun) {
       return false;
@@ -2065,9 +2065,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
   private boolean runPythontexByNeed(LatexMainDesc desc)
       throws BuildFailureException {
 
-    // raw index file written by latex2dev 
-    File pycFile = desc.withSuffix(SUFFIX_PYC);
-    boolean needRun = pycFile.exists();
+    boolean needRun = desc.withSuffix(Auxiliary.Pyt.extension()).exists();
     this.log.debug("Pythontex run required? " + needRun);
     if (!needRun) {
       return false;
