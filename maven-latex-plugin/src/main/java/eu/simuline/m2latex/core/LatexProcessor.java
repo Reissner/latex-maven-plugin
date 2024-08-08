@@ -863,7 +863,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * in the according methods
    * {@link #runLatex2dev(LatexMainDesc, LatexDev)},
    * {@link #runBibtexByNeed(LatexMainDesc)},
-   * {@link #runMakeIndexByNeed(LatexMainDesc)} and
+   * {@link #makeIndexByNeed(LatexMainDesc)} and
    * {@link #runMakeGlossaryByNeed(LatexMainDesc)}.
    * <p>
    * Logging:
@@ -938,7 +938,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
     // may both throw BuildFailureException, both TEX01
     // may both log warnings EEX01, EEX02, EEX03, WEX04, WEX05,
     // EAP01, EAP02, WLP04, WLP05, WAP03, WAP04, WFU03
-    boolean hasIdxGls = runMakeIndexByNeed(desc) | runMakeGlossaryByNeed(desc);
+    boolean hasIdxGls = makeIndexByNeed(desc) | runMakeGlossaryByNeed(desc);
     boolean hasPyCode = runPythontexByNeed(desc);
 
     // rerun LaTeX at least once 
@@ -1075,7 +1075,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
         // may throw BuildFailureException TEX01
         // may log warnings EEX01, EEX02, EEX03, WEX04, WEX05,
         // EAP01, EAP02, WLP04, WLP05, WAP03, WAP04, WFU03
-        runMakeIndexByNeed(desc);
+        makeIndexByNeed(desc);
       }
 
       // may throw BuildFailureException TEX01
@@ -1632,7 +1632,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    *     the description of a latex main file <code>dviFile</code>
    *     including the idx-file MakeIndex is to be run on.
    * @return
-   *     whether MakeIndex had been run.
+   *     whether MakeIndex had been run, possibly via splitindex. 
    *     Equivalently, whether LaTeX has to be rerun because of MakeIndex.
    * @throws BuildFailureException
    *      TEX01 if invocation of the makeindex command
@@ -1643,11 +1643,15 @@ public class LatexProcessor extends AbstractLatexProcessor {
   // Suggestion: runMakeIndexInitByNeed
   // Other methods accordingly.
   // maybe better: eliminate altogether
-  private boolean runMakeIndexByNeed(LatexMainDesc desc)
+  private boolean makeIndexByNeed(LatexMainDesc desc)
       throws BuildFailureException {
     // raw index file written by latex2dev 
     boolean needRun = desc.idxFile.exists();
     this.log.debug("MakeIndex run required? " + needRun);
+    if (!needRun) {
+      return false;
+    }
+    assert needRun;
 
     // determine the explicit given identifiers of indices
     Collection<String> explIdxIdent = null;
