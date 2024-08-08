@@ -1654,20 +1654,14 @@ public class LatexProcessor extends AbstractLatexProcessor {
     assert needRun;
 
     // determine the explicit given identifiers of indices
-    Collection<String> explIdxIdent = null;
-    if (needRun) {
-      explIdxIdent =
-          this.fileUtils.collectMatches(desc.idxFile, IDX_EXPL, GRP_IDENT_IDX);
-      if (explIdxIdent == null) {
-        this.log.warn("WLP04: Cannot read idx file '" 
-            + desc.idxFile.getName()
-            + "'; skip creation of index. ");
-        return false;
-      }
-    } else {
-      return false;// needRun
+    Collection<String> explIdxIdent =
+        this.fileUtils.collectMatches(desc.idxFile, IDX_EXPL, GRP_IDENT_IDX);
+    if (explIdxIdent == null) {
+      this.log.warn("WLP04: Cannot read idx file '" + desc.idxFile.getName()
+          + "'; skip creation of index. ");
+      return false;
     }
-    assert needRun;
+
     //assert (explIdxIdent != null) == needRun;
     // Here, explIdxIdent contains the explicit identifiers of all indices
     // The identifier idx may be missing or not.
