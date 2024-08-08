@@ -2015,7 +2015,19 @@ resp.\@ \texttt{pythontexW} via \texttt{\$mpythontexCommand}.
 If this is not appropriate, please modify and notify the developer of this plugin. 
 \end{minipage}
 } \\
-\end{longtable}
+\texttt{prefixPytexOutFolder}    & \texttt{pythontex-files-} \\
+\multicolumn2{|l|}{
+\begin{minipage}{0.95\linewidth}
+The prefix of the name of the folder written by \texttt{\$pythontexCommand}. 
+The full name of that folder is this prefix 
+followed by the jobname of the latex main file, 
+i.e. the filename without ending. 
+ 
+CAUTION: This is readonly, 
+because in both, the pythontex tool and the according latex package 
+this prefix is hardcoded at time of this writing. 
+\end{minipage}
+} \\\end{longtable}
 
 \begin{longtable}{|ll|}
   \toprule
