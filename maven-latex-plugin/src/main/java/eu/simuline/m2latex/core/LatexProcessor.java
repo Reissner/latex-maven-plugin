@@ -1606,10 +1606,11 @@ public class LatexProcessor extends AbstractLatexProcessor {
   /**
    * Runs the MakeIndex command
    * given by {@link Settings#getMakeIndexCommand()}
-   * on the idx-file corresponding with <code>texFile</code>
+   * on an idx-file corresponding with <code>texFile</code>
    * in the directory containing <code>texFile</code>
    * provided that the existence of an idx-file indicates
-   * that an index shall be created.
+   * that an index shall be created. 
+   * If it exists, delegates to {@link #runMakeSplitIndex(LatexMainDesc)}. 
    * <p>
    * Note that {@link Settings#getMakeIndexCommand()}
    * is invoked either directly, or, in case of a multiple index,
@@ -1633,7 +1634,14 @@ public class LatexProcessor extends AbstractLatexProcessor {
    *     including the idx-file MakeIndex is to be run on.
    * @return
    *     whether MakeIndex had been run, possibly via splitindex. 
-   *     Equivalently, whether LaTeX has to be rerun because of MakeIndex.
+   *     <ul>
+   *     <li><code>false</code> if the idx-file does not exist 
+   *     <li>the return value of {@link #runMakeSplitIndex(LatexMainDesc)}
+   *     if it exists. 
+   *     </ul>
+   *     Equivalently: if the idx-file exists and is readble 
+   *     so that {@link #runMakeSplitIndex(LatexMainDesc)} can decide 
+   *     whether to split the index. 
    * @throws BuildFailureException
    *      TEX01 if invocation of the makeindex command
    *      returned by
@@ -1651,7 +1659,51 @@ public class LatexProcessor extends AbstractLatexProcessor {
     if (!needRun) {
       return false;
     }
-    assert needRun;
+    return runMakeSplitIndex(desc);
+  }
+
+  /**
+   * Runs the MakeIndex command
+   * given by {@link Settings#getMakeIndexCommand()}
+   * on the idx-file corresponding with <code>texFile</code> which is assumed to exist.
+   * <p>
+   * Note that {@link Settings#getMakeIndexCommand()}
+   * is invoked either directly, or, in case of a multiple index,
+   * via {@link Settings#getSplitIndexCommand()}. 
+   * To decide whether splitting is required, 
+   * the idx-file must be read. 
+   * If this is not possible, warning WLP04 is emitted 
+   * indicating that the index is not created. 
+   * This is the only case where the return value is <code>false</code>. 
+   * <p>
+   * Logging:
+   * <ul>
+   * <li>WLP04: Cannot read idx file; skip creation of index
+   * <li>WLP05: Use package 'splitidx' without option 'split'
+   * <li>EAP01: Running <code>makeindex</code> failed. For details...
+   * <li>EAP02: Running <code>makeindex</code> failed. No log file
+   * <li>WAP03: Running <code>makeindex</code> emitted warnings.
+   * <li>WAP04: .ilg-file is not readable.
+   * <li>WFU03: cannot close .ilg-file
+   * <li>EEX01, EEX02, EEX03, WEX04, WEX05:
+   * if running the makeindex command failed.
+   * </ul>
+   *
+   * @param desc
+   *     the description of a latex main file <code>dviFile</code>
+   *     including the idx-file MakeIndex is to be run on.
+   * @return
+   *     whether MakeIndex had been run, possibly via splitindex. 
+   *     This is done, except if the idx-file is not readable 
+   *     and so it cannot be decided whether to invoke makeindex or splitindex. 
+   *     In this case the warning WLP04 is emitted. 
+   * @throws BuildFailureException
+   *      TEX01 if invocation of the makeindex command
+   *      returned by
+   *      {@link Settings#getMakeIndexCommand()} failed.
+   */
+  private boolean runMakeSplitIndex(LatexMainDesc desc)
+    throws BuildFailureException {
 
     // determine the explicit given identifiers of indices
     Collection<String> explIdxIdent =
@@ -1955,7 +2007,12 @@ public class LatexProcessor extends AbstractLatexProcessor {
     if (!needRun) {
       return false;
     }
+    runMakeGlossary(desc);
+    return true;
+  } // runMakeGlossaryByNeed
 
+  private void runMakeGlossary(LatexMainDesc desc) 
+    throws BuildFailureException {
     // file name without ending: parameter for makeglossaries
     File xxxFile = desc.xxxFile;
     String command = this.settings.getCommand(ConverterCategory.MakeGlossaries);
@@ -1975,8 +2032,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
     // may log warnings WFU03, WAP03, WAP04
     logWarns(glgFile, command, this.settings.getPatternWarnMakeIndex() + "|"
         + this.settings.getPatternWarnXindy());
-    return true;
-  }
+  } // runMakeGlossary
 
   /**
    * Runs the PythonTeX command given by {@link Settings#getPythontexCommand()}
@@ -2016,8 +2072,15 @@ public class LatexProcessor extends AbstractLatexProcessor {
     if (!needRun) {
       return false;
     }
+    runPythontex(desc);
+    return true;
+  } // runPythontexByNeed
+
+  private void runPythontex(LatexMainDesc desc)
+      throws BuildFailureException {
+    File xxxFile = desc.xxxFile;
     String command = this.settings.getCommand(ConverterCategory.Pythontex);
-    this.log.debug("Running " + command + " on '" + pycFile.getName() + "'. ");
+    this.log.debug("Running " + command + " on '" + xxxFile.getName() + "'. ");
     String[] args =
         buildArguments(this.settings.getPythontexOptions(), desc.xxxFile);
 
@@ -2052,8 +2115,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
     logErrs(logFile, command, this.settings.getPatternErrPyTex());
     // may log warnings WFU03, WAP03, WAP04
     logWarns(logFile, command, this.settings.getPatternWarnPyTex());
-    return true;
-  } // runPythontexByNeed
+  } // runPythontex
 
   /**
    * Runs the latexmk command given by {@link Settings#getLatexmkCommand()}
