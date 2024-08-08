@@ -3822,15 +3822,15 @@ public class Settings {
         // System.out.println("line: |"+strLine+"|");
         // System.out.println("key: |"+matcher.group(GRP_NAME)+"|");
         // System.out.println("val: |"+props.get(matcher.group(GRP_NAME))+"|");
-        assert props.containsKey(matcher.group(GRP_NAME)) : "Key '" + matcher.group(GRP_NAME)
-            + "' not found. ";
-            System.out.println("grp: "+matcher.group(GRP_NAME));
         if (matcher.group(GRP_METHOD) == null) {
           // Here, we have the content of a field 
+          assert props.containsKey(matcher.group(GRP_NAME)) : "Key '"
+              + matcher.group(GRP_NAME) + "' not found. ";
           replacement = props.get(matcher.group(GRP_NAME));
         } else {
           // Here, we have the result of a getter method 
-          assert false;
+          assert getters.containsKey(matcher.group(GRP_NAME)) : "Key '"
+              + matcher.group(GRP_NAME) + "' not found. ";
           replacement = getters.get(matcher.group(GRP_NAME));
         }
   

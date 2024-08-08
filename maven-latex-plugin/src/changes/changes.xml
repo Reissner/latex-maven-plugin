@@ -1187,7 +1187,15 @@ Better even: indicate that targets are overwritten.. make a check. -->
      <!-- pythontex-files occurs literally in parameters 
       patternCreatedFromLatexMain and -->
 
+    <!-- in TexFileUtils.deleteX an assertion does not work safely, 
+     when building with assertions enabled. 
+     The codepoint is documented there. -->
+
     <release version="2.1" date="2023-08-28" description="build with latexmk and generalized reproducibility">
+      <action dev='reissner' type='fix'>
+        Tried with enabled assertions through export MAVEN_OPTS="-ea"
+        Fixed certain points in code, deactivated and documented others in backlog. 
+      </action>
       <action dev='reissner' type='fix'>
         Using getter methods for filtering command names in injections instead of parameters directly, 
         fixes the problem for commands without category, 

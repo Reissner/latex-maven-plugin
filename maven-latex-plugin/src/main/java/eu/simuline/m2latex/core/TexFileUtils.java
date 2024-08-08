@@ -695,7 +695,7 @@ class TexFileUtils {
    *   an object representing the match state of type {@ink FileMatch}. 
    *   For details see the class documentation. 
    *   If there is a match, the regular expression <code>regex</code> 
-   *   match some named groups from whic further pieces of information can be extracted. 
+   *   match some named groups from which further pieces of information can be extracted. 
    */
   FileMatch getMatchInFile(File file, String regex) {
     Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);//
@@ -875,9 +875,10 @@ class TexFileUtils {
       return;
     }
     for (File delFile : found) {
+      //System.out.println("delFile: "+delFile);
       // FIXME: not true for clear target. 
       // Required: cleanup in order reverse to creation. 
-      assert delFile.exists();
+      //assert delFile.exists();
       if (filter.accept(delFile)) {
         assert delFile.exists() && (!delFile.isDirectory()
             || allowsDirs) : "Expected existing (regular) file " + delFile;
