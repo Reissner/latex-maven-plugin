@@ -112,16 +112,12 @@ public class LatexProcessor extends AbstractLatexProcessor {
   // log file created by makeindex
   final static String SUFFIX_ILG = TexFileUtils.SUFFIX_ILG;
 
-  // unsorted and not unified glossary created by latex
-  final static String SUFFIX_GLO = ".glo";
   // sorted and unified glossary created by makeindex
   final static String SUFFIX_GLS = ".gls";
   // logging file for makeindex used with glossaries
   final static String SUFFIX_GLG = ".glg";
 
-  // file created by package pythontex 
-  // containing code sections and settings 
-  final static String SUFFIX_PYC = ".pytxcode";
+
   // logging file for pythontex written by pythontexW
   final static String SUFFIX_PLG = ".plg";
 
