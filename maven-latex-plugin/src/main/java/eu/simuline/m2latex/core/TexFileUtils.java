@@ -788,36 +788,28 @@ class TexFileUtils {
     Collection<String> res = new TreeSet<String>();
     Pattern pattern = Pattern.compile(regex);
 
-    try {
-      // may throw FileNotFoundException < IOExcption 
-      FileReader fileReader = new FileReader(file);
+    // may throw FileNotFoundException < IOExcption 
+    try (FileReader fileReader = new FileReader(file)) {
       // BufferedReader for performance 
       BufferedReader bufferedReader = new BufferedReader(fileReader);
 
-      try {
-        // readLine may throw IOException 
-        Matcher matcher;
-        for (String line = bufferedReader.readLine(); line != null;
-            // readLine may thr. IOException
-            line = bufferedReader.readLine()) {
+      Matcher matcher;
 
-          matcher = pattern.matcher(line);
-          if (matcher.find()) {
-            // Here, a match has been found 
-            res.add(matcher.group(idxGroup));
-          }
-        } // for 
+      // readLine may throw IOException 
+      for (String line = bufferedReader.readLine();
+          line != null;
+          // readLine may throw IOException
+          line = bufferedReader.readLine()) {
 
-        return res;
-      } catch (IOException ioe) {
-        // Error/Warning must be issued by invoking method 
-        return null;
-      } finally {
-        // Here, an IOException may have occurred 
-        // may log warning WFU03
-        closeQuietly(bufferedReader);
-      }
-    } catch (FileNotFoundException ffe) {
+        matcher = pattern.matcher(line);
+        if (matcher.find()) {
+          // Here, a match has been found 
+          res.add(matcher.group(idxGroup));
+        }
+      } // for 
+
+      return res;
+    } catch (IOException ioe) {
       // Error/Warning must be issued by invoking method 
       return null;
     }
