@@ -27,6 +27,7 @@ import java.time.Instant;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -83,6 +84,14 @@ import eu.simuline.m2latex.mojo.CfgLatexMojo;
  */
 public class LatexProcessor extends AbstractLatexProcessor {
 
+
+  // BibTeX only reads \bibcite, \bibstyle, \bibdata and \@input commands. – 
+  // egreg
+  // Commented Mar 22, 2014 at 21:03
+  // possibly, this is sufficient to detect need to run bibtex, 
+  // but obviously, if backreferences are possible, 
+  // for rerun check this is not sufficient: at least \@input required. 
+  // TBD: clarify whether backreferences are possible. 
   static final String PATTERN_NEED_BIBTEX_RUN = "^\\\\bibdata";
 
   // Note that two \\ represent a single \ in the string.
@@ -147,7 +156,9 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * with explicit identifier of the index.
    * If not explicitly given, this is just <code>idx</code>.
    * Note that this regular expression has three groups
-   * as in the specification of <code>splitindex</code>.
+   * as in the specification of <code>splitindex</code>. 
+   * 
+   * @see #GRP_IDENT_IDX
    */
   private final static String IDX_EXPL = "^(\\\\indexentry)\\[([^]]*)\\](.*)$";
 
@@ -926,6 +937,24 @@ public class LatexProcessor extends AbstractLatexProcessor {
     runLatex2dev(desc, dev);
     //File texFile = desc.texFile;
 
+    Map<Auxiliary, FileId> aux2fileId = new EnumMap<>(Auxiliary.class);
+    // need not be a file with ending aux, but is source for an auxiliary process 
+    File auxFile;
+    boolean posterioryEntryInToc = false;
+    int minNumRunsAfter = 0;
+    for (Auxiliary aux : Auxiliary.values()) {
+      //auxFile = TexFileUtils.appendSuffix(desc.xxxFile, aux.extension());
+      auxFile = desc.withSuffix(aux.extension());
+      assert !auxFile.isDirectory();
+      if (!aux.doesFitAuxiliary(auxFile)) {
+        continue;
+      }
+      aux2fileId.put(aux, new FileId(auxFile));
+      posterioryEntryInToc = aux.mayBeEntryInToc();
+      minNumRunsAfter = Math.max(minNumRunsAfter,aux.numRunsAfter());
+    } // for 
+    assert minNumRunsAfter >= 0 && minNumRunsAfter <= 2;
+
     // create bibliography, index and glossary by need
     // may throw BuildFailureException TEX01
     // may log warnings EEX01, EEX02, EEX03, WEX04, WEX05,
@@ -940,6 +969,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
     // rerun LaTeX at least once 
     // if bibtex or makeindex or makeindex or pythontex had been run
     // or if a toc, a lof, a lot, a lol or an out exists. 
+    assert hasBib == (minNumRunsAfter == 2) : "hasBib="+hasBib+" minNumRunsAfter="+minNumRunsAfter;
     if (hasBib) {
       // one run to include the bibliography from xxx.bbl into the pdf
       // and the labels into the aux file
@@ -950,8 +980,14 @@ public class LatexProcessor extends AbstractLatexProcessor {
       // Also the remaining cases don't need more than two runs. 
       return 2;
     }
+    assert minNumRunsAfter < 2;
 
     boolean hasToc = desc.withSuffix(SUFFIX_TOC).exists();
+    if (hasToc && posterioryEntryInToc) {
+      minNumRunsAfter = Math.max(minNumRunsAfter,2);
+    }
+
+    assert hasIdxGls == posterioryEntryInToc;
     if (hasIdxGls) {
       // Here, an index or a glossary exists
       // This requires at least one LaTeX run.
@@ -959,17 +995,26 @@ public class LatexProcessor extends AbstractLatexProcessor {
       // if one of these has to be included in a toc,
       // a second run is needed. 
       // Also the remaining cases don't need more than two runs. 
+      assert minNumRunsAfter == (hasToc ? 2 : 1);
       return hasToc ? 2 : 1;
     }
     // Here, no bib, index or glossary exists.
     // The result is either 0 or 1,
     // depending on whether a toc, lof or lot exists
 
-    boolean needLatexReRun =
-        hasToc || hasPyCode || desc.withSuffix(SUFFIX_LOF).exists()
-            || desc.withSuffix(SUFFIX_LOT).exists()
-            || desc.withSuffix(SUFFIX_LOL).exists();
+    if (hasToc
+    || desc.withSuffix(SUFFIX_LOF).exists()
+    || desc.withSuffix(SUFFIX_LOT).exists()
+    || desc.withSuffix(SUFFIX_LOL).exists()) {
+      minNumRunsAfter = Math.max(minNumRunsAfter,1);
+    }
 
+    boolean needLatexReRun = hasPyCode 
+        || hasToc
+        || desc.withSuffix(SUFFIX_LOF).exists()
+        || desc.withSuffix(SUFFIX_LOT).exists()
+        || desc.withSuffix(SUFFIX_LOL).exists();
+    assert minNumRunsAfter == (needLatexReRun ? 1 : 0);
     return needLatexReRun ? 1 : 0;
   }
 
@@ -1123,7 +1168,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
   // used in processLatex2devCore and in runBibtexByNeed only
   // TBD: eliminate Converter again and replace by ConverterCategory
   // including also the rerun pattern.
-  private boolean needRun(boolean another, String cmdStr, File logAuxFile,
+  boolean needRun(boolean another, String cmdStr, File logAuxFile,
       String pattern) {
     // may log warning WFU03: cannot close
     FileMatch fileMatch = this.fileUtils.getMatchInFile(logAuxFile, pattern);
@@ -1578,14 +1623,19 @@ public class LatexProcessor extends AbstractLatexProcessor {
    */
   private boolean runBibtexByNeed(LatexMainDesc desc)
       throws BuildFailureException {
-    File auxFile = desc.withSuffix(Auxiliary.Bib.extension());
+    File auxFile = desc.withSuffix(Auxiliary.BibTex.extension());
+    // TBD: eliminated needRun and command 
     String command = this.settings.getCommand(ConverterCategory.BibTeX);
     if (!needRun(false, command, auxFile, PATTERN_NEED_BIBTEX_RUN)) {
       return false;
     }
+    return runBibtex(desc);
+  }
 
-    this.log.debug("Running " + command + " on '" + auxFile.getName() + "'. ");
-    String[] args = buildArguments(this.settings.getBibtexOptions(), auxFile);
+  boolean runBibtex(LatexMainDesc desc) throws BuildFailureException {
+    String command = this.settings.getCommand(ConverterCategory.BibTeX);
+    this.log.debug("Running " + command + " on '" + desc.xxxFile.getName() + "'. ");
+    String[] args = buildArguments(this.settings.getBibtexOptions(), desc.xxxFile);
     // may throw BuildFailureException TEX01,
     // may log warning EEX01, EEX02, EEX03, WEX04, WEX05
     this.executor.executeEnvR0(desc.parentDir, // workingDir
@@ -1698,19 +1748,19 @@ public class LatexProcessor extends AbstractLatexProcessor {
    *      returned by
    *      {@link Settings#getMakeIndexCommand()} failed.
    */
-  private boolean runMakeSplitIndex(LatexMainDesc desc)
+  boolean runMakeSplitIndex(LatexMainDesc desc)
     throws BuildFailureException {
 
     // determine the explicit given identifiers of indices
-    Collection<String> explIdxIdent =
+    final Collection<String> explIdxIdent =
         this.fileUtils.collectMatches(desc.idxFile, IDX_EXPL, GRP_IDENT_IDX);
     if (explIdxIdent == null) {
       this.log.warn("WLP04: Cannot read idx file '" + desc.idxFile.getName()
           + "'; skip creation of index. ");
       return false;
     }
+    assert explIdxIdent != null;
 
-    //assert (explIdxIdent != null) == needRun;
     // Here, explIdxIdent contains the explicit identifiers of all indices
     // The identifier idx may be missing or not.
 
@@ -1758,10 +1808,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
     // Then the check for option split cannot be done.
 
     if (idxFilesExtInDir != null && idxFilesExtInDir.length > 0) {
-      //assert needRun;
       // Here, idxFilesExtInDir contains the idx-files \jobname-xxx.idx
-      //if (!needRun || explIdxIdent.isEmpty()) {
-      if (explIdxIdent == null || explIdxIdent.isEmpty()) {
+      if (explIdxIdent.isEmpty()) {
         // Here, either \jobname.idx does not exist at all
         // or does not contain an entry \indexentry[yyy]{...}{..}
 
@@ -1817,11 +1865,14 @@ public class LatexProcessor extends AbstractLatexProcessor {
   private void runMakeIndex(LatexMainDesc desc) throws BuildFailureException {
 
     String command = this.settings.getCommand(ConverterCategory.MakeIndex);
-    File idxFile = desc.idxFile;
-    this.log.debug("Running " + command + " on '" + idxFile.getName() + "'. ");
+    // File idxFile = desc.idxFile;
+    // this.log.debug("Running " + command + " on '" + idxFile.getName() + "'. ");
+    // String[] args =
+    //     buildArguments(this.settings.getMakeIndexOptions(), idxFile);
+    File xxxFile = desc.xxxFile;
+    this.log.debug("Running " + command + " on '" + xxxFile.getName() + "'. ");
     String[] args =
-        buildArguments(this.settings.getMakeIndexOptions(), idxFile);
-    // may throw BuildFailureException TEX01,
+        buildArguments(this.settings.getMakeIndexOptions(), xxxFile); // may throw BuildFailureException TEX01,
     // may log warning EEX01, EEX02, EEX03, WEX04, WEX05
     this.executor.executeEnvR0(desc.parentDir, // workingDir
         this.settings.getTexPath(), command, args, desc.indFile);
@@ -1897,9 +1948,13 @@ public class LatexProcessor extends AbstractLatexProcessor {
       throws BuildFailureException {
 
     String splitInxCmd = this.settings.getCommand(ConverterCategory.SplitIndex);
-    File idxFile = desc.idxFile;
+    // File idxFile = desc.idxFile;
+    // this.log
+    //     .debug("Running " + splitInxCmd + " on '" + idxFile.getName() + "'. ");
+    // // buildArguments(this.settings.getMakeIndexOptions(), idxFile);
+    //File idxFile = desc.idxFile;
     this.log
-        .debug("Running " + splitInxCmd + " on '" + idxFile.getName() + "'. ");
+        .debug("Running " + splitInxCmd + " on '" + desc.xxxFile.getName() + "'. ");
     // buildArguments(this.settings.getMakeIndexOptions(), idxFile);
     String[] argsDefault = new String[] {
         "-m " + this.settings.getCommand(ConverterCategory.MakeIndex),
@@ -2003,11 +2058,10 @@ public class LatexProcessor extends AbstractLatexProcessor {
     if (!needRun) {
       return false;
     }
-    runMakeGlossary(desc);
-    return true;
+    return runMakeGlossary(desc);
   } // runMakeGlossaryByNeed
 
-  private void runMakeGlossary(LatexMainDesc desc) 
+  boolean runMakeGlossary(LatexMainDesc desc) 
     throws BuildFailureException {
     // file name without ending: parameter for makeglossaries
     File xxxFile = desc.xxxFile;
@@ -2028,7 +2082,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
     // may log warnings WFU03, WAP03, WAP04
     logWarns(glgFile, command, this.settings.getPatternWarnMakeIndex() + "|"
         + this.settings.getPatternWarnXindy());
-  } // runMakeGlossary
+        return true;
+      } // runMakeGlossary
 
   /**
    * Runs the PythonTeX command given by {@link Settings#getPythontexCommand()}
@@ -2066,11 +2121,11 @@ public class LatexProcessor extends AbstractLatexProcessor {
     if (!needRun) {
       return false;
     }
-    runPythontex(desc);
-    return true;
+    return runPythontex(desc);
+
   } // runPythontexByNeed
 
-  private void runPythontex(LatexMainDesc desc)
+  boolean runPythontex(LatexMainDesc desc)
       throws BuildFailureException {
     File xxxFile = desc.xxxFile;
     String command = this.settings.getCommand(ConverterCategory.Pythontex);
@@ -2109,6 +2164,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
     logErrs(logFile, command, this.settings.getPatternErrPyTex());
     // may log warnings WFU03, WAP03, WAP04
     logWarns(logFile, command, this.settings.getPatternWarnPyTex());
+    return true;
   } // runPythontex
 
   /**
