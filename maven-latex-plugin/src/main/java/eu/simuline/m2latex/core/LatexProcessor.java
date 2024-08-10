@@ -980,11 +980,18 @@ public class LatexProcessor extends AbstractLatexProcessor {
       // Also the remaining cases don't need more than two runs. 
       return 2;
     }
-    assert minNumRunsAfter < 2;
+    //assert minNumRunsAfter < 2;
 
     boolean hasToc = desc.withSuffix(SUFFIX_TOC).exists();
     if (hasToc && posterioryEntryInToc) {
       minNumRunsAfter = Math.max(minNumRunsAfter,2);
+    }
+
+    if (hasToc
+    || desc.withSuffix(SUFFIX_LOF).exists()
+    || desc.withSuffix(SUFFIX_LOT).exists()
+    || desc.withSuffix(SUFFIX_LOL).exists()) {
+      minNumRunsAfter = Math.max(minNumRunsAfter,1);
     }
 
     assert hasIdxGls == posterioryEntryInToc;
@@ -996,18 +1003,21 @@ public class LatexProcessor extends AbstractLatexProcessor {
       // a second run is needed. 
       // Also the remaining cases don't need more than two runs. 
       assert minNumRunsAfter == (hasToc ? 2 : 1);
-      return hasToc ? 2 : 1;
+      return minNumRunsAfter;
     }
     // Here, no bib, index or glossary exists.
     // The result is either 0 or 1,
     // depending on whether a toc, lof or lot exists
 
-    if (hasToc
-    || desc.withSuffix(SUFFIX_LOF).exists()
-    || desc.withSuffix(SUFFIX_LOT).exists()
-    || desc.withSuffix(SUFFIX_LOL).exists()) {
-      minNumRunsAfter = Math.max(minNumRunsAfter,1);
-    }
+
+
+    
+    // if (hasToc
+    // || desc.withSuffix(SUFFIX_LOF).exists()
+    // || desc.withSuffix(SUFFIX_LOT).exists()
+    // || desc.withSuffix(SUFFIX_LOL).exists()) {
+    //   minNumRunsAfter = Math.max(minNumRunsAfter,1);
+    // }
 
     boolean needLatexReRun = hasPyCode 
         || hasToc
@@ -1015,7 +1025,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
         || desc.withSuffix(SUFFIX_LOT).exists()
         || desc.withSuffix(SUFFIX_LOL).exists();
     assert minNumRunsAfter == (needLatexReRun ? 1 : 0);
-    return needLatexReRun ? 1 : 0;
+    return minNumRunsAfter;
   }
 
   /**
