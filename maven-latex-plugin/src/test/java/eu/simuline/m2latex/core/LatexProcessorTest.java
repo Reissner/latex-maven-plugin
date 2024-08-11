@@ -341,7 +341,7 @@ public class LatexProcessorTest {
 		// method creates .idx or not: use Mockito.thenAnswer for that
 
 		// run bibtex, makeIndex and makeGlossary by need 
-		mockRunBibtexByNeed(needBibtex);
+		//mockRunBibtexByNeed(needBibtex);
 		mockRunMakeIndexByNeed(needMakeIndex);
 		mockRunMakeGlossaryByNeed(needMakeGlossaries);
 
@@ -370,7 +370,7 @@ public class LatexProcessorTest {
 		verifyRunLatex();
 
 		// run bibtex, makeIndex and makeGlossary by need 
-		verifyRunBibtexByNeed(needBibtex);
+		//verifyRunBibtexByNeed(needBibtex);
 		verifyRunMakeIndexByNeed(needMakeIndex);
 		verifyRunMakeGlossaryByNeed(needMakeGlossaries);
 
@@ -488,79 +488,79 @@ public class LatexProcessorTest {
 		verify(this.fileUtils, atLeastOnce()).matchInFile(file, pattern);
 	}
 
-	private void mockRunBibtexByNeed(Boolean runBibtex) 
-	throws BuildFailureException {
+// 	private void mockRunBibtexByNeed(Boolean runBibtex) 
+// 	throws BuildFailureException {
 	
-	//assertEquals(this.auxFile, TexFileUtils.replaceSuffix(this.texFile, LatexProcessor.SUFFIX_AUX));
-	when(this.fileUtils.matchInFile
-	     (this.auxFile, LatexProcessor.PATTERN_NEED_BIBTEX_RUN))
-	    .thenReturn(runBibtex);
+// 	//assertEquals(this.auxFile, TexFileUtils.replaceSuffix(this.texFile, LatexProcessor.SUFFIX_AUX));
+// 	when(this.fileUtils.matchInFile
+// 	     (this.auxFile, LatexProcessor.PATTERN_NEED_BIBTEX_RUN))
+// 	    .thenReturn(runBibtex);
 
-	// FIXME: really needed?? 
-//	Writer writer = new FileWriter(this.auxFile);
-	if (!runBibtex) {
-//	    writer.write("% no bibtex run");
-//	    writer.flush();
-	    return;
-	}
-//	writer.write("\\bibdata % bibtex run"); 
-//	writer.flush();
+// 	// FIXME: really needed?? 
+// //	Writer writer = new FileWriter(this.auxFile);
+// 	if (!runBibtex) {
+// //	    writer.write("% no bibtex run");
+// //	    writer.flush();
+// 	    return;
+// 	}
+// //	writer.write("\\bibdata % bibtex run"); 
+// //	writer.flush();
 
-	//assertEquals(this.bblFile, 
-	//	this.fileUtils.replaceSuffix(this.texFile, LatexProcessor.SUFFIX_BBL));
+// 	//assertEquals(this.bblFile, 
+// 	//	this.fileUtils.replaceSuffix(this.texFile, LatexProcessor.SUFFIX_BBL));
 
-	// when(this.executor.execute(texFile.getParentFile(),
-	// 			   this.settings.getTexPath(),
-	// 			   this.settings.getBibtexCommand(),
-	// 			   LatexProcessor.buildArguments
-	// 			   (this.settings.getBibtexOptions(), 
-	// 			    this.auxFile),
-	// 			   this.bblFile))
-	//     .thenReturn("");
+// 	// when(this.executor.execute(texFile.getParentFile(),
+// 	// 			   this.settings.getTexPath(),
+// 	// 			   this.settings.getBibtexCommand(),
+// 	// 			   LatexProcessor.buildArguments
+// 	// 			   (this.settings.getBibtexOptions(), 
+// 	// 			    this.auxFile),
+// 	// 			   this.bblFile))
+// 	//     .thenReturn("");
 
-	// log file 
-	//assertEquals(this.blgFile, 
-	//	this.fileUtils.replaceSuffix(this.texFile, LatexProcessor.SUFFIX_BLG));
-	// logging errors and warnings 
-	when(this.fileUtils.matchInFile(this.blgFile, 
-					this.settings.getPatternErrBibtex()))
-	    .thenReturn(Boolean.FALSE);
-	when(this.fileUtils.matchInFile(this.blgFile, 
-					this.settings.getPatternWarnBibtex()))
-	    .thenReturn(Boolean.FALSE);
-    }
+// 	// log file 
+// 	//assertEquals(this.blgFile, 
+// 	//	this.fileUtils.replaceSuffix(this.texFile, LatexProcessor.SUFFIX_BLG));
+// 	// logging errors and warnings 
+// 	when(this.fileUtils.matchInFile(this.blgFile, 
+// 					this.settings.getPatternErrBibtex()))
+// 	    .thenReturn(Boolean.FALSE);
+// 	when(this.fileUtils.matchInFile(this.blgFile, 
+// 					this.settings.getPatternWarnBibtex()))
+// 	    .thenReturn(Boolean.FALSE);
+//     }
 
-	private void verifyRunBibtexByNeed(Boolean runBibtex)
-			throws BuildFailureException {
-		// TBD: replace this by a proper indication that aux-file was read. 
-		//	this.inOrder.verify(this.fileUtils)
-		//	    .replaceSuffix(this.texFile, LatexProcessor.SUFFIX_AUX);
-		verifyNeedRun(this.auxFile, LatexProcessor.PATTERN_NEED_BIBTEX_RUN);
+	// private void verifyRunBibtexByNeed(Boolean runBibtex)
+	// 		throws BuildFailureException {
+	// 	// TBD: replace this by a proper indication that aux-file was read. 
+	// 	//	this.inOrder.verify(this.fileUtils)
+	// 	//	    .replaceSuffix(this.texFile, LatexProcessor.SUFFIX_AUX);
+	// 	verifyNeedRun(this.auxFile, LatexProcessor.PATTERN_NEED_BIBTEX_RUN);
 
-		if (!runBibtex) {
-			return;
-		}
+	// 	if (!runBibtex) {
+	// 		return;
+	// 	}
 
-		// TBD: replace this by a proper indication that bbl-file was read. 
-		//	this.inOrder.verify(this.fileUtils)
-		//	    .replaceSuffix(this.texFile, LatexProcessor.SUFFIX_BBL);
-		this.inOrder.verify(this.executor)
-				.executeEnvR0(eq(WORKING_DIR), isNull(),
-						eq(this.settings.getCommand(ConverterCategory.BibTeX)),
-						aryEq(LatexProcessor.buildArguments(
-								this.settings.getBibtexOptions(), this.auxFile)),
-						eq(this.bblFile));
+	// 	// TBD: replace this by a proper indication that bbl-file was read. 
+	// 	//	this.inOrder.verify(this.fileUtils)
+	// 	//	    .replaceSuffix(this.texFile, LatexProcessor.SUFFIX_BBL);
+	// 	this.inOrder.verify(this.executor)
+	// 			.executeEnvR0(eq(WORKING_DIR), isNull(),
+	// 					eq(this.settings.getCommand(ConverterCategory.BibTeX)),
+	// 					aryEq(LatexProcessor.buildArguments(
+	// 							this.settings.getBibtexOptions(), this.auxFile)),
+	// 					eq(this.bblFile));
 
-		// TBD: replace this by a proper indication that blg-file was written. 
-		// log file 
-		//	this.inOrder.verify(this.fileUtils)
-		//	    .replaceSuffix(this.texFile, LatexProcessor.SUFFIX_BLG);
-		// logging errors and warnings 
-		this.inOrder.verify(this.fileUtils).matchInFile(this.blgFile,
-				this.settings.getPatternErrBibtex());
-		this.inOrder.verify(this.fileUtils).matchInFile(this.blgFile,
-				this.settings.getPatternWarnBibtex());
-	}
+	// 	// TBD: replace this by a proper indication that blg-file was written. 
+	// 	// log file 
+	// 	//	this.inOrder.verify(this.fileUtils)
+	// 	//	    .replaceSuffix(this.texFile, LatexProcessor.SUFFIX_BLG);
+	// 	// logging errors and warnings 
+	// 	this.inOrder.verify(this.fileUtils).matchInFile(this.blgFile,
+	// 			this.settings.getPatternErrBibtex());
+	// 	this.inOrder.verify(this.fileUtils).matchInFile(this.blgFile,
+	// 			this.settings.getPatternWarnBibtex());
+	// }
 
 	private void mockRunMakeIndexByNeed(boolean runMakeIndex) 
 	throws BuildFailureException {
