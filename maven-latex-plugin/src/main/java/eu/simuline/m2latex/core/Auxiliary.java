@@ -43,14 +43,12 @@ enum Auxiliary {
         return false;
       }
 
-      Pattern pattern = Pattern.compile(PATTERN_NEED_BIBTEX_RUN);//
-      try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-        for (String line = bufferedReader.readLine();
-            line != null;
+      try (BufferedReader bufferedReader =
+          new BufferedReader(new FileReader(file))) {
+        for (String line = bufferedReader.readLine(); line != null;
             // readLine may thr. IOException
             line = bufferedReader.readLine()) {
-          Matcher matcher = pattern.matcher(line);
-          if (matcher.find()) {
+          if (PATTERN_NEED_BIBTEX_RUN.matcher(line).find()) {
             return true;
           }
         } // for 
@@ -68,6 +66,34 @@ enum Auxiliary {
     boolean process(LatexMainDesc desc, LatexProcessor proc)
         throws BuildFailureException {
       return proc.runBibtex(desc);
+    }
+
+    boolean update(File file, MessageDigest md) {
+      //System.out.println("update:Bibtex");
+      File parent = file.getParentFile();
+      String inFile;
+      try (BufferedReader bufferedReader =
+          new BufferedReader(new FileReader(file))) {
+        for (String line = bufferedReader.readLine(); line != null;
+            // readLine may thr. IOException
+            line = bufferedReader.readLine()) {
+          if (PATTERN_BIBTEX.matcher(line).find()) {
+            //System.out.println("update direct:"+line);
+            md.update(line.getBytes());
+            continue;
+          }
+          Matcher matcher = PATTERN_INPUT.matcher(line);
+          if (matcher.find()) {
+            inFile = matcher.group(GRP_INPUT);
+            assert inFile.endsWith(this.extension());
+            //System.out.println("update into:"+new File(parent, inFile));
+            update(new File(parent, inFile), md);
+          }
+        }
+        return true;
+      } catch (IOException e) {
+        return false;
+      }
     }
   },
   // /**
@@ -121,6 +147,41 @@ enum Auxiliary {
     }
   };
 
+  // maybe this is bad performance, scanning twice 
+  /**
+   * The pattern signifying bibdata 
+   * indicating that <code>bibtex</code> must be run. 
+   */
+  private static final Pattern PATTERN_NEED_BIBTEX_RUN =
+      Pattern.compile("^\\\\bibdata");
+
+  // filename with .aux
+  /**
+   * The pattern for iputting another AUX file 
+   * with a group with name {@link #GRP_INPUT} 
+   * comprising the name of the file with ending. 
+   * 
+   */
+  private static final Pattern PATTERN_INPUT =
+      Pattern.compile("^\\\\@input\\{(?<fileName>.*)\\}");
+
+  /**
+   * The name of the group in pattern {@link #PATTERN_INPUT} 
+   * comprising the filename with ending. 
+   */
+  private static final String GRP_INPUT = "fileName";
+
+  /**
+   * The pattern of the aux file 
+   * read by <code>bibtex</code>. 
+   * This does not include 
+   * the pattern {@link #PATTERN_INPUT} 
+   * for inputting other aux files. 
+   * In fact only those patterns contributing to hashing. 
+   */
+  static final Pattern PATTERN_BIBTEX =
+      Pattern.compile("^\\\\(citation|bibstyle|bibdata)");
+
   /**
    * The file extension <code>.ext</code> triggering the action. 
    * If <code>xxx.tex</code> is the latex main file, 
@@ -156,15 +217,17 @@ enum Auxiliary {
   abstract boolean process(LatexMainDesc desc, LatexProcessor proc)
       throws BuildFailureException;
 
+  // overwritten for bibtex and one time also for bib2gls
   boolean update(File file, MessageDigest md) {
-    try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+    //System.out.println("update:gen");
+    try (BufferedReader bufferedReader =
+        new BufferedReader(new FileReader(file))) {
       for (String line = bufferedReader.readLine(); line != null;
           // readLine may thr. IOException
           line = bufferedReader.readLine()) {
         md.update(line.getBytes());
       }
       return true;
-      //firstHash = new String(md.digest());
     } catch (IOException e) {
       return false;
     }
