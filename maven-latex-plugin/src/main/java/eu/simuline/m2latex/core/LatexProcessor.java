@@ -937,7 +937,6 @@ public class LatexProcessor extends AbstractLatexProcessor {
     runLatex2dev(desc, dev);
     //File texFile = desc.texFile;
 
-    Map<Auxiliary, FileId> aux2fileId = new EnumMap<>(Auxiliary.class);
     // need not be a file with ending aux, but is source for an auxiliary process 
     File auxFile;
     boolean posterioryEntryInToc = false;
@@ -949,38 +948,25 @@ public class LatexProcessor extends AbstractLatexProcessor {
       if (!aux.doesFitAuxiliary(auxFile)) {
         continue;
       }
-      aux2fileId.put(aux, new FileId(auxFile));
+      // TBC: can additional keys occur later? 
+      desc.aux2fileId.put(aux, new FileId(auxFile));
       posterioryEntryInToc = aux.mayBeEntryInToc();
+      aux.process(desc, this);
       minNumRunsAfter = Math.max(minNumRunsAfter,aux.numRunsAfter());
     } // for 
     assert minNumRunsAfter >= 0 && minNumRunsAfter <= 2;
 
-    // create bibliography, index and glossary by need
-    // may throw BuildFailureException TEX01
-    // may log warnings EEX01, EEX02, EEX03, WEX04, WEX05,
-    // EAP01, EAP02, WAP03, WAP04, WLP02, WFU03
-    boolean hasBib = runBibtexByNeed(desc);
-    // may both throw BuildFailureException, both TEX01
-    // may both log warnings EEX01, EEX02, EEX03, WEX04, WEX05,
-    // EAP01, EAP02, WLP04, WLP05, WAP03, WAP04, WFU03
-    boolean hasIdxGls = makeIndexByNeed(desc) | runMakeGlossaryByNeed(desc);
-    boolean hasPyCode = runPythontexByNeed(desc);
+    // // create bibliography, index and glossary by need
+    // // may throw BuildFailureException TEX01
+    // // may log warnings EEX01, EEX02, EEX03, WEX04, WEX05,
+    // // EAP01, EAP02, WAP03, WAP04, WLP02, WFU03
+    // boolean hasBib = runBibtex(desc);
+    // // may both throw BuildFailureException, both TEX01
+    // // may both log warnings EEX01, EEX02, EEX03, WEX04, WEX05,
+    // // EAP01, EAP02, WLP04, WLP05, WAP03, WAP04, WFU03
+    // boolean hasIdxGls = makeIndex(desc) | runMakeGlossary(desc);
+    // boolean hasPyCode = runPythontex(desc);
 
-    // rerun LaTeX at least once 
-    // if bibtex or makeindex or makeindex or pythontex had been run
-    // or if a toc, a lof, a lot, a lol or an out exists. 
-    assert hasBib == (minNumRunsAfter == 2) : "hasBib="+hasBib+" minNumRunsAfter="+minNumRunsAfter;
-    if (hasBib) {
-      // one run to include the bibliography from xxx.bbl into the pdf
-      // and the labels into the aux file
-      // and another run to put the labels from the aux file
-      // to the locations of the \cite commands.
-
-      // This suffices also to include a bib in a toc
-      // Also the remaining cases don't need more than two runs. 
-      return 2;
-    }
-    //assert minNumRunsAfter < 2;
 
     boolean hasToc = desc.withSuffix(SUFFIX_TOC).exists();
     if (hasToc && posterioryEntryInToc) {
@@ -994,37 +980,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
       minNumRunsAfter = Math.max(minNumRunsAfter,1);
     }
 
-    assert hasIdxGls == posterioryEntryInToc;
-    if (hasIdxGls) {
-      // Here, an index or a glossary exists
-      // This requires at least one LaTeX run.
 
-      // if one of these has to be included in a toc,
-      // a second run is needed. 
-      // Also the remaining cases don't need more than two runs. 
-      assert minNumRunsAfter == (hasToc ? 2 : 1);
-      return minNumRunsAfter;
-    }
-    // Here, no bib, index or glossary exists.
-    // The result is either 0 or 1,
-    // depending on whether a toc, lof or lot exists
-
-
-
-    
-    // if (hasToc
-    // || desc.withSuffix(SUFFIX_LOF).exists()
-    // || desc.withSuffix(SUFFIX_LOT).exists()
-    // || desc.withSuffix(SUFFIX_LOL).exists()) {
-    //   minNumRunsAfter = Math.max(minNumRunsAfter,1);
-    // }
-
-    boolean needLatexReRun = hasPyCode 
-        || hasToc
-        || desc.withSuffix(SUFFIX_LOF).exists()
-        || desc.withSuffix(SUFFIX_LOT).exists()
-        || desc.withSuffix(SUFFIX_LOL).exists();
-    assert minNumRunsAfter == (needLatexReRun ? 1 : 0);
     return minNumRunsAfter;
   }
 
@@ -1103,31 +1059,31 @@ public class LatexProcessor extends AbstractLatexProcessor {
     }
     assert numLatexReRuns == 0 || numLatexReRuns == 1;
 
-    // rerun latex by need patternRerunMakeIndex
-    boolean needMakeIndexReRun;
     boolean needLatexReRun = (numLatexReRuns == 1) 
     || needRun(true, latexCmd,
         desc.logFile, this.settings.getPatternReRunLatex());
 
     int maxNumReruns = this.settings.getMaxNumReRunsLatex();
     for (int num = 0; maxNumReruns == -1 || num < maxNumReruns; num++) {
-      needMakeIndexReRun =
-          needRun(true, this.settings.getCommand(ConverterCategory.MakeIndex),
-              desc.logFile, this.settings.getPatternReRunMakeIndex());
-      // FIXME: superfluous since pattern rerunfileckeck
-      // triggering makeindex also fits rerun of LaTeX
-      needLatexReRun |= needMakeIndexReRun;
+      FileId fileId;
+      for (Auxiliary aux : desc.aux2fileId.keySet()) {
+        System.out.println("----------AUX: "+aux);
+        fileId = new FileId(desc.withSuffix(aux.extension()));
+
+        if (desc.aux2fileId.get(aux).equals(fileId)) {
+          continue;
+        }
+        System.out.println("rerun!!!!");
+        desc.aux2fileId.put(aux, fileId);
+        aux.process(desc, this);
+        needLatexReRun = true;
+      }
+
       if (!needLatexReRun) {
         return;
       }
       this.log.debug("Latex must be rerun. ");
-      if (needMakeIndexReRun) {
-        // FIXME: not by need
-        // may throw BuildFailureException TEX01
-        // may log warnings EEX01, EEX02, EEX03, WEX04, WEX05,
-        // EAP01, EAP02, WLP04, WLP05, WAP03, WAP04, WFU03
-        makeIndexByNeed(desc);
-      }
+
 
       // may throw BuildFailureException TEX01
       // may log warnings EEX01, EEX02, EEX03, WEX04, WEX05,
