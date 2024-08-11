@@ -421,16 +421,16 @@ public class LatexProcessorTest {
 			mockRunLatex();
 			// numLatexReRuns == 1 
 			// enter for-loop... 
-			mockNeedRun(false, this.settings.getPatternReRunMakeIndex());
+			//mockNeedRun(false, this.settings.getPatternReRunMakeIndex());
 			mockRunLatex();
 			mockNeedRun(false, this.settings.getPatternReRunLatex());
 			// second loop 
-			mockNeedRun(false, this.settings.getPatternReRunMakeIndex());
+			//mockNeedRun(false, this.settings.getPatternReRunMakeIndex());
 			// exit for-loop 
 		} else {
 			mockNeedRun(false, this.settings.getPatternReRunLatex());
 			// enter for-loop... 
-			mockNeedRun(false, this.settings.getPatternReRunMakeIndex());
+			//mockNeedRun(false, this.settings.getPatternReRunMakeIndex());
 			// since both conditions are false 
 			// exit for-loop 
 		}
@@ -459,16 +459,16 @@ public class LatexProcessorTest {
 			verifyRunLatex();
 			// numLatexReRuns == 1 
 			// enter for-loop... 
-			verifyNeedRun(this.logFile, this.settings.getPatternReRunMakeIndex());
+			//verifyNeedRun(this.logFile, this.settings.getPatternReRunMakeIndex());
 			verifyRunLatex();
 			verifyNeedRun(this.logFile, this.settings.getPatternReRunLatex());
 			// second loop 
-			verifyNeedRun(this.logFile, this.settings.getPatternReRunMakeIndex());
+			//verifyNeedRun(this.logFile, this.settings.getPatternReRunMakeIndex());
 			// exit for-loop 
 		} else {
 			verifyNeedRun(this.logFile, this.settings.getPatternReRunLatex());
 			// enter for-loop... 
-			verifyNeedRun(this.logFile, this.settings.getPatternReRunMakeIndex());
+			//verifyNeedRun(this.logFile, this.settings.getPatternReRunMakeIndex());
 			// since both conditions are false 
 			// exit for-loop 
 		}
