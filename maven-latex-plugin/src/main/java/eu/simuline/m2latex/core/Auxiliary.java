@@ -39,15 +39,14 @@ enum Auxiliary {
     }
 
     boolean doesFitAuxiliary(File file) {
-      boolean exists = file.exists();
-      if (!exists) {
+      if (!file.exists()) {
         return false;
       }
 
-      Pattern pattern = Pattern.compile(LatexProcessor.PATTERN_NEED_BIBTEX_RUN,
-                                        Pattern.MULTILINE);//
+      Pattern pattern = Pattern.compile(PATTERN_NEED_BIBTEX_RUN);//
       try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-        for (String line = bufferedReader.readLine(); line != null;
+        for (String line = bufferedReader.readLine();
+            line != null;
             // readLine may thr. IOException
             line = bufferedReader.readLine()) {
           Matcher matcher = pattern.matcher(line);

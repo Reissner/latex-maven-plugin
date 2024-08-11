@@ -85,14 +85,7 @@ import eu.simuline.m2latex.mojo.CfgLatexMojo;
 public class LatexProcessor extends AbstractLatexProcessor {
 
 
-  // BibTeX only reads \bibcite, \bibstyle, \bibdata and \@input commands. – 
-  // egreg
-  // Commented Mar 22, 2014 at 21:03
-  // possibly, this is sufficient to detect need to run bibtex, 
-  // but obviously, if backreferences are possible, 
-  // for rerun check this is not sufficient: at least \@input required. 
-  // TBD: clarify whether backreferences are possible. 
-  static final String PATTERN_NEED_BIBTEX_RUN = "^\\\\bibdata";
+
 
   // Note that two \\ represent a single \ in the string.
   // Thus \\\\ represents '\\' in the pattern,
