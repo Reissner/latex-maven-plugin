@@ -3,9 +3,10 @@ package eu.simuline.m2latex.core;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+
+import java.security.MessageDigest;
 
 import com.florianingerl.util.regex.Matcher;
 import com.florianingerl.util.regex.Pattern;
@@ -156,4 +157,17 @@ enum Auxiliary {
   abstract boolean process(LatexMainDesc desc, LatexProcessor proc)
       throws BuildFailureException;
 
+  boolean update(File file, MessageDigest md) {
+    try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+      for (String line = bufferedReader.readLine(); line != null;
+          // readLine may thr. IOException
+          line = bufferedReader.readLine()) {
+        md.update(line.getBytes());
+      }
+      return true;
+      //firstHash = new String(md.digest());
+    } catch (IOException e) {
+      return false;
+    }
+  }
 }

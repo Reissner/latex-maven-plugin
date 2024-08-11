@@ -949,7 +949,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
         continue;
       }
       // TBC: can additional keys occur later? 
-      desc.aux2fileId.put(aux, new FileId(auxFile));
+      desc.aux2fileId.put(aux, new FileId(auxFile, aux));
       posterioryEntryInToc = aux.mayBeEntryInToc();
       aux.process(desc, this);
       minNumRunsAfter = Math.max(minNumRunsAfter,aux.numRunsAfter());
@@ -1068,7 +1068,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
       FileId fileId;
       for (Auxiliary aux : desc.aux2fileId.keySet()) {
         System.out.println("----------AUX: "+aux);
-        fileId = new FileId(desc.withSuffix(aux.extension()));
+        fileId = new FileId(desc.withSuffix(aux.extension()), aux);
 
         if (desc.aux2fileId.get(aux).equals(fileId)) {
           continue;

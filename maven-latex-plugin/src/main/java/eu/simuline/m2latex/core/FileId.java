@@ -30,13 +30,13 @@ public class FileId {
   final long length;
   final String hash;
 
-  FileId(File file) {
+  FileId(File file, Auxiliary aux) {
     assert !file.isDirectory();
     this.length = file.length();
 
     try {
       MessageDigest md = MessageDigest.getInstance("MD5");
-      if (update(file, md)) {
+      if (aux.update(file, md)) {
         this.hash = new String(md.digest());
       } else {
         // TBD: add warning 
@@ -61,19 +61,7 @@ public class FileId {
     }
   }
 
-  boolean update(File file, MessageDigest md) {
-    try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-      for (String line = bufferedReader.readLine(); line != null;
-          // readLine may thr. IOException
-          line = bufferedReader.readLine()) {
-        md.update(line.getBytes());
-      }
-      return true;
-      //firstHash = new String(md.digest());
-    } catch (IOException e) {
-      return false;
-    }
-  }
+
 
 
 
