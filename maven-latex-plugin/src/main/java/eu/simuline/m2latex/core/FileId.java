@@ -42,7 +42,7 @@ public class FileId {
         while ((nread = fis.read(dataBytes)) != -1) {
           md.update(dataBytes, 0, nread);
         }
-        firstHash = md.toString();
+        firstHash = new String(md.digest());
       } catch (IOException e) {
         // TBD: add warning 
         firstHash = "";
