@@ -45,14 +45,27 @@ public class FileId {
         firstHash = new String(md.digest());
       } catch (IOException e) {
         // TBD: add warning 
+        System.out.println("EMPTY HASH IO");
         firstHash = "";
       }
     } catch (NoSuchAlgorithmException nsae) {
       // TBD: emit warning 
-      firstHash = "";
+      throw new IllegalStateException("Algorithm should be known. ");
     }
     this.hash = firstHash;
   }
 
+  public boolean equals(Object obj) {
+    if (!(obj instanceof FileId)) {
+      return false;
+    }
+    FileId other = (FileId)obj;
+    return this.length == other.length
+      && this.hash.equals(other.hash);
+  }
+
+  public String toString() {
+    return this.hash + " " + this.length;
+  }
 }
 
