@@ -1,7 +1,9 @@
 package eu.simuline.m2latex.core;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -32,28 +34,48 @@ public class FileId {
     assert !file.isDirectory();
     this.length = file.length();
 
-    String firstHash = null;
     try {
       MessageDigest md = MessageDigest.getInstance("MD5");
-      try (FileInputStream fis = new FileInputStream(file)) {
-        byte[] dataBytes = new byte[1024];
-
-        int nread = 0;
-        while ((nread = fis.read(dataBytes)) != -1) {
-          md.update(dataBytes, 0, nread);
-        }
-        firstHash = new String(md.digest());
-      } catch (IOException e) {
+      if (update(file, md)) {
+        this.hash = new String(md.digest());
+      } else {
         // TBD: add warning 
         System.out.println("EMPTY HASH IO");
-        firstHash = "";
+        this.hash = "";
       }
+      // try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+      //   for (String line = bufferedReader.readLine(); line != null;
+      //       // readLine may thr. IOException
+      //       line = bufferedReader.readLine()) {
+      //     md.update(line.getBytes());
+      //   }
+      //   firstHash = new String(md.digest());
+      // } catch (IOException e) {
+      //   // TBD: add warning 
+      //   System.out.println("EMPTY HASH IO");
+      //   firstHash = "";
+      // }
     } catch (NoSuchAlgorithmException nsae) {
       // TBD: emit warning 
       throw new IllegalStateException("Algorithm should be known. ");
     }
-    this.hash = firstHash;
   }
+
+  boolean update(File file, MessageDigest md) {
+    try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+      for (String line = bufferedReader.readLine(); line != null;
+          // readLine may thr. IOException
+          line = bufferedReader.readLine()) {
+        md.update(line.getBytes());
+      }
+      return true;
+      //firstHash = new String(md.digest());
+    } catch (IOException e) {
+      return false;
+    }
+  }
+
+
 
   public boolean equals(Object obj) {
     if (!(obj instanceof FileId)) {
