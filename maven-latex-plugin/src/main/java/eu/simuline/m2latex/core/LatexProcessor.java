@@ -1558,46 +1558,6 @@ public class LatexProcessor extends AbstractLatexProcessor {
     return this.metaInfo.printMetaInfo(includeVersionInfo, convertersExcluded);
   }
 
-  /**
-   * Runs the BibTeX command given by {@link Settings#getBibtexCommand()}
-   * on the aux-file corresponding with <code>texFile</code>
-   * in the directory containing <code>texFile</code>
-   * provided an according pattern in the aux-file indicates
-   * that a bibliography shall be created.
-   * <p>
-   * Logging:
-   * <ul>
-   * <li>EAP01: Running <code>bibtex</code> failed. For details...
-   * <li>EAP02: Running <code>bibtex</code> failed. No log file
-   * <li>WAP03: Running <code>bibtex</code> emitted warnings.
-   * <li>WAP04: if <code>logFile</code> is not readable.
-   * <li>WLP02: Cannot read log file: run required?
-   * <li>WFU03: cannot close
-   * <li>EEX01, EEX02, EEX03, WEX04, WEX05:
-   * if running the BibTeX command failed.
-   * </ul>
-   *
-   * @param desc
-   *     the description of a latex main file <code>dviFile</code>
-   *     including the idx-file MakeIndex is to be run on.
-   * @return
-   *     whether BibTeX has been run.
-   *     Equivalently, whether LaTeX has to be rerun because of BibTeX.
-   * @throws BuildFailureException
-   *     TEX01 if invocation of the BibTeX command
-   *     returned by {@link Settings#getBibtexCommand()} failed.
-   */
-  private boolean runBibtexByNeed(LatexMainDesc desc)
-      throws BuildFailureException {
-    File auxFile = desc.withSuffix(Auxiliary.BibTex.extension());
-    // TBD: eliminated needRun and command 
-    String command = this.settings.getCommand(ConverterCategory.BibTeX);
-    if (!needRun(false, command, auxFile, PATTERN_NEED_BIBTEX_RUN)) {
-      return false;
-    }
-    return runBibtex(desc);
-  }
-
   boolean runBibtex(LatexMainDesc desc) throws BuildFailureException {
     String command = this.settings.getCommand(ConverterCategory.BibTeX);
     this.log.debug("Running " + command + " on '" + desc.xxxFile.getName() + "'. ");
@@ -1615,64 +1575,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
     return true;
   }
 
-  /**
-   * Runs the MakeIndex command
-   * given by {@link Settings#getMakeIndexCommand()}
-   * on an idx-file corresponding with <code>texFile</code>
-   * in the directory containing <code>texFile</code>
-   * provided that the existence of an idx-file indicates
-   * that an index shall be created. 
-   * If it exists, delegates to {@link #runMakeSplitIndex(LatexMainDesc)}. 
-   * <p>
-   * Note that {@link Settings#getMakeIndexCommand()}
-   * is invoked either directly, or, in case of a multiple index,
-   * via {@link Settings#getSplitIndexCommand()}.
-   * <p>
-   * Logging:
-   * <ul>
-   * <li>WLP04: Cannot read idx file; skip creation of index
-   * <li>WLP05: Use package 'splitidx' without option 'split'
-   * <li>EAP01: Running <code>makeindex</code> failed. For details...
-   * <li>EAP02: Running <code>makeindex</code> failed. No log file
-   * <li>WAP03: Running <code>makeindex</code> emitted warnings.
-   * <li>WAP04: .ilg-file is not readable.
-   * <li>WFU03: cannot close .ilg-file
-   * <li>EEX01, EEX02, EEX03, WEX04, WEX05:
-   * if running the makeindex command failed.
-   * </ul>
-   *
-   * @param desc
-   *     the description of a latex main file <code>dviFile</code>
-   *     including the idx-file MakeIndex is to be run on.
-   * @return
-   *     whether MakeIndex had been run, possibly via splitindex. 
-   *     <ul>
-   *     <li><code>false</code> if the idx-file does not exist 
-   *     <li>the return value of {@link #runMakeSplitIndex(LatexMainDesc)}
-   *     if it exists. 
-   *     </ul>
-   *     Equivalently: if the idx-file exists and is readble 
-   *     so that {@link #runMakeSplitIndex(LatexMainDesc)} can decide 
-   *     whether to split the index. 
-   * @throws BuildFailureException
-   *      TEX01 if invocation of the makeindex command
-   *      returned by
-   *      {@link Settings#getMakeIndexCommand()} failed.
-   */
-  // FIXME: bad name since now there are reruns.
-  // Suggestion: runMakeIndexInitByNeed
-  // Other methods accordingly.
-  // maybe better: eliminate altogether
-  private boolean makeIndexByNeed(LatexMainDesc desc)
-      throws BuildFailureException {
-    // raw index file written by latex2dev 
-    boolean needRun = desc.withSuffix(Auxiliary.Idx.extension()).exists();
-    this.log.debug("MakeIndex run required? " + needRun);
-    if (!needRun) {
-      return false;
-    }
-    return runMakeSplitIndex(desc);
-  }
+
 
   /**
    * Runs the MakeIndex command
@@ -1981,51 +1884,6 @@ public class LatexProcessor extends AbstractLatexProcessor {
           this.settings.getPatternWarnMakeIndex());
     }
   }
-
-  /**
-   * Runs the MakeGlossaries command
-   * given by {@link Settings#getMakeGlossariesCommand()}
-   * on the aux-file corresponding with <code>texFile</code>
-   * in the directory containing <code>texFile</code>
-   * provided that the existence of an glo-file indicates
-   * that a glossary shall be created.
-   * The MakeGlossaries command is just a wrapper
-   * arround the programs <code>makeindex</code> and <code>xindy</code>.
-   * <p>
-   * Logging:
-   * <ul>
-   * <li>EAP01: Running <code>makeglossaries</code> failed. For details...
-   * <li>EAP02 Running <code>makeglossaries</code> failed. No log file
-   * <li>WAP03: Running <code>makeglossaries</code> emitted warnings.
-   * <li>WAP04: .glg-file is not readable.
-   * <li>WFU03: cannot close .glg-file
-   * <li>EEX01, EEX02, EEX03, WEX04, WEX05:
-   * if running the makeglossaries command failed.
-   * </ul>
-   *
-   * @param desc
-   *     the description of a latex main file <code>texFile</code>
-   *     including the idx-file MakeGlossaries is to be run on.
-   * @return
-   *     whether MakeGlossaries had been run.
-   *     Equivalently,
-   *     whether LaTeX has to be rerun because of MakeGlossaries.
-   * @throws BuildFailureException
-   *     TEX01 if invocation of the makeglossaries command
-   *     returned by
-   *     {@link Settings#getMakeGlossariesCommand()} failed.
-   */
-  private boolean runMakeGlossaryByNeed(LatexMainDesc desc)
-      throws BuildFailureException {
-
-    // raw glossaries file created by pdflatex
-    boolean needRun = desc.withSuffix(Auxiliary.Glo.extension()).exists();
-    this.log.debug("MakeGlossaries run required? " + needRun);
-    if (!needRun) {
-      return false;
-    }
-    return runMakeGlossary(desc);
-  } // runMakeGlossaryByNeed
 
   boolean runMakeGlossary(LatexMainDesc desc) 
     throws BuildFailureException {
