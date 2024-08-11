@@ -1,7 +1,8 @@
 package eu.simuline.m2latex.core;
 
 import java.io.File;
-
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Optional;
 
 import com.florianingerl.util.regex.MatchResult;
@@ -23,12 +24,13 @@ class LatexMainDesc implements Comparable<LatexMainDesc> {
   final File ilgFile;
 
   final File glsFile;
-  final File gloFile;
   final File glgFile;
 
   final File xxxFile;
 
   final File parentDir;
+
+  final Map<Auxiliary, FileId> aux2fileId;
 
 
   private final MatchResult matchRes;
@@ -78,9 +80,9 @@ class LatexMainDesc implements Comparable<LatexMainDesc> {
     this.ilgFile = withSuffix(LatexProcessor.SUFFIX_ILG);
 
     this.glsFile = withSuffix(LatexProcessor.SUFFIX_GLS);
-    this.gloFile = withSuffix(LatexProcessor.SUFFIX_GLO);
     this.glgFile = withSuffix(LatexProcessor.SUFFIX_GLG);
     this.parentDir = this.texFile.getParentFile();
+    this.aux2fileId = new EnumMap<>(Auxiliary.class);
   }
 
   /**
