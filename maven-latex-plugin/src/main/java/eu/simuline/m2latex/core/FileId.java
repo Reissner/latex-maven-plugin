@@ -43,27 +43,11 @@ public class FileId {
         System.out.println("EMPTY HASH IO");
         this.hash = "";
       }
-      // try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-      //   for (String line = bufferedReader.readLine(); line != null;
-      //       // readLine may thr. IOException
-      //       line = bufferedReader.readLine()) {
-      //     md.update(line.getBytes());
-      //   }
-      //   firstHash = new String(md.digest());
-      // } catch (IOException e) {
-      //   // TBD: add warning 
-      //   System.out.println("EMPTY HASH IO");
-      //   firstHash = "";
-      // }
     } catch (NoSuchAlgorithmException nsae) {
       // TBD: emit warning 
       throw new IllegalStateException("Algorithm should be known. ");
     }
   }
-
-
-
-
 
   public boolean equals(Object obj) {
     if (!(obj instanceof FileId)) {
