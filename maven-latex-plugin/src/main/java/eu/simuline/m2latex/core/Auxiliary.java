@@ -7,20 +7,68 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import java.security.MessageDigest;
-
+import java.util.concurrent.atomic.AtomicInteger;
 import com.florianingerl.util.regex.Matcher;
 import com.florianingerl.util.regex.Pattern;
 
 
 /**
  * Very bad name: 
- * Represents some aspect of postprocessing. 
+ * Represents some aspect of postprocessing 
+ * performed in {@link LatexProcessor#processLatex2devCore(LatexMainDesc, LatexDev)}. 
  * No it is auxiliary processing, 
  * because it is alternating auxiliary tools and latex compiler. 
  * <p>
- * Note that bibliography created by bibtex may be altered also 
- * by subsequent calls of a latex compiler or of an auxiliary program 
+ * Auxiliary processing consists of two parts: 
+ * <ul>
+ * <li>the run of a latex compiler, typically via a package loaded, 
+ * writes (into) a file. 
+ * This may be a specific file or a file common for more auxiliary processings. 
+ * At time of this writing this is the AUX file. 
+ * In that case, the latex run writes lines into the file 
+ * which are specific for the auxiliary processing. 
+ * <li>the subsequent run of an auxiliary program, 
+ * triggered if that specific file is present, 
+ * or if the specific lines in a common file are present. 
+ * The auxiliary program reads the lines of that file 
+ * and writes some file, typically another one, 
+ * which is read by the next run of the latex compiler. 
+ * </ul>
+ * 
+ * As described above, the initial run of the latex compiler 
+ * writes (lines into) a file, 
+ * the presence of which triggers invocation of the corresponding auxiliary program 
+ * which writes some file which is read by the next run of the latex compiler. 
+ * If the compiler writes a different file, 
+ * of course the auxiliary program must be rerun and so on. 
+ * There are really cases where this does not terminate 
+ * so to ensure termination a maximal number of runs of the latex compiler is specified. 
+ * <p>
+ * Creating a bibliography with <code>bibtex</code> or equivalent, 
+ * is one of the auxiliary processings {@link #BibTex}. 
+ * It is a bit special in that the latex compiler does not need a special package 
+ * to write the bibliographical information into the AUX file. 
+ * The auxiliary program <code>bibtex</code> or that like extracts and sorts the entries 
+ * into a BBL file which is read back by the latex compiler 
+ * to create the bibliography. 
+ * CAUTION: the lines of the AUX file read by <code>bibtex</code> 
+ * may be altered by subsequent calls of a latex compiler or of an auxiliary program 
  * as shown by https://tex.stackexchange.com/questions/724138/is-backreference-possible-with-bibtex-maybe-in-conjunction-with-biblatex. 
+ * <p>
+ * At time of this writing, bibliography with package <code>biblatex</code> 
+ * in conjunction with auxiliary program <code>biber</code> is not yet supported. 
+ * <p>
+ * Writing an index is only supported via package <code>idxindex</code> 
+ * and auxiliary program <code>makeindex</code>. 
+ * This includes <code>splitindex</code> for multiple indices 
+ * invoking <code>makeindex</code> internally. 
+ * This is {@link #Idx}. 
+ * Clearly a subsequent run of the latex compiler changes the index 
+ * if the index entry moves to another page number. 
+ * <p>
+ * At time of this writing, indices with package <code>???</code> 
+ * in conjunction with auxiliary program <code>xindy</code> is not yet supported. 
+ * 
  */
 enum Auxiliary {
 
@@ -68,7 +116,7 @@ enum Auxiliary {
       return proc.runBibtex(desc);
     }
 
-    boolean update(File file, MessageDigest md) {
+    boolean update(File file, MessageDigest md, AtomicInteger numLines) {
       //System.out.println("update:Bibtex");
       File parent = file.getParentFile();
       String inFile;
@@ -80,6 +128,7 @@ enum Auxiliary {
           if (PATTERN_BIBTEX.matcher(line).find()) {
             //System.out.println("update direct:"+line);
             md.update(line.getBytes());
+            numLines.incrementAndGet();
             continue;
           }
           Matcher matcher = PATTERN_INPUT.matcher(line);
@@ -87,7 +136,7 @@ enum Auxiliary {
             inFile = matcher.group(GRP_INPUT);
             assert inFile.endsWith(this.extension());
             //System.out.println("update into:"+new File(parent, inFile));
-            update(new File(parent, inFile), md);
+            update(new File(parent, inFile), md, numLines);
           }
         }
         return true;
@@ -218,7 +267,21 @@ enum Auxiliary {
       throws BuildFailureException;
 
   // overwritten for bibtex and one time also for bib2gls
-  boolean update(File file, MessageDigest md) {
+  /**
+   * Updates <code>md</code> and <code>md</code>
+   * 
+   * @param file
+   *   a text file written by the part of the {@link Auxiliary} 
+   *   given by the run of the latex compiler 
+   *   and at least partially read by the corresponding auxiliary program. 
+   * @param md
+   *    The hash over the lines in <code>file</code> 
+   *    read by the auxiliary program. 
+   * @param numLines
+   *   The number of lines in <code>file</code> read by the auxiliary program. 
+   * @return
+   */
+  boolean update(File file, MessageDigest md, AtomicInteger numLines) {
     //System.out.println("update:gen");
     try (BufferedReader bufferedReader =
         new BufferedReader(new FileReader(file))) {
