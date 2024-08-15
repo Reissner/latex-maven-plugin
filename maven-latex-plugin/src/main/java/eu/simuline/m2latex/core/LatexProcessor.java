@@ -935,7 +935,6 @@ public class LatexProcessor extends AbstractLatexProcessor {
     boolean posterioryEntryInToc = false;
     int minNumRunsAfter = 0;
     for (Auxiliary aux : Auxiliary.values()) {
-      //auxFile = TexFileUtils.appendSuffix(desc.xxxFile, aux.extension());
       auxFile = desc.withSuffix(aux.extension());
       assert !auxFile.isDirectory();
       if (!aux.doesFitAuxiliary(auxFile)) {
@@ -972,7 +971,6 @@ public class LatexProcessor extends AbstractLatexProcessor {
     || desc.withSuffix(SUFFIX_LOL).exists()) {
       minNumRunsAfter = Math.max(minNumRunsAfter,1);
     }
-
 
     return minNumRunsAfter;
   }
