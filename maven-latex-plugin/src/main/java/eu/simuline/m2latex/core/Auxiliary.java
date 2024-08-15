@@ -116,7 +116,8 @@ enum Auxiliary {
       return proc.runBibtex(desc);
     }
 
-    boolean update(File file, MessageDigest md, AtomicInteger numLines) {
+    void update(File file, MessageDigest md, AtomicInteger numLines)
+        throws IOException {
       //System.out.println("update:Bibtex");
       File parent = file.getParentFile();
       String inFile;
@@ -126,7 +127,6 @@ enum Auxiliary {
             // readLine may thr. IOException
             line = bufferedReader.readLine()) {
           if (PATTERN_BIBTEX.matcher(line).find()) {
-            //System.out.println("update direct:"+line);
             md.update(line.getBytes());
             numLines.incrementAndGet();
             continue;
@@ -135,14 +135,9 @@ enum Auxiliary {
           if (matcher.find()) {
             inFile = matcher.group(GRP_INPUT);
             assert inFile.endsWith(this.extension());
-            //System.out.println("update into:"+new File(parent, inFile));
-            // BUG: if this returns false, an exception is hidden. 
             update(new File(parent, inFile), md, numLines);
           }
         }
-        return true;
-      } catch (IOException e) {
-        return false;
       }
     }
   },
@@ -280,9 +275,9 @@ enum Auxiliary {
    *    read by the auxiliary program. 
    * @param numLines
    *   The number of lines in <code>file</code> read by the auxiliary program. 
-   * @return
    */
-  boolean update(File file, MessageDigest md, AtomicInteger numLines) {
+  void update(File file, MessageDigest md, AtomicInteger numLines)
+      throws IOException {
     //System.out.println("update:gen");
     try (BufferedReader bufferedReader =
         new BufferedReader(new FileReader(file))) {
@@ -292,9 +287,6 @@ enum Auxiliary {
         md.update(line.getBytes());
         numLines.incrementAndGet();
       }
-      return true;
-    } catch (IOException e) {
-      return false;
     }
   }
 }

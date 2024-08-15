@@ -56,12 +56,13 @@ public class FileId {
       MessageDigest md = MessageDigest.getInstance(ALGORITHM);
       // The number of relevant lines decided by method Auxiliary.update(...) 
       AtomicInteger numLines = new AtomicInteger(0);
-      if (aux.update(file, md, numLines)) {
+      try {
+        aux.update(file, md, numLines);
         this.hash = new String(md.digest());
         this.numLines = numLines.get();
-      } else {
+      } catch (IOException ioe) {
         // TBD: add warning 
-        System.out.println("EMPTY HASH IO");
+        System.out.println("Risk to drop necessary rerun is augmented. ");
         this.hash = "";
         this.numLines = 0;
       }
