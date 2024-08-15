@@ -289,6 +289,7 @@ enum Auxiliary {
           // readLine may thr. IOException
           line = bufferedReader.readLine()) {
         md.update(line.getBytes());
+        numLines.incrementAndGet();
       }
       return true;
     } catch (IOException e) {
