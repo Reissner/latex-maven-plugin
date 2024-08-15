@@ -136,6 +136,7 @@ enum Auxiliary {
             inFile = matcher.group(GRP_INPUT);
             assert inFile.endsWith(this.extension());
             //System.out.println("update into:"+new File(parent, inFile));
+            // BUG: if this returns false, an exception is hidden. 
             update(new File(parent, inFile), md, numLines);
           }
         }
