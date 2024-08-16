@@ -116,9 +116,17 @@ enum Auxiliary {
       return proc.runBibtex(desc);
     }
 
-    void update(File file, MessageDigest md, AtomicInteger numLines)
-        throws IOException {
+    /**
+     * Takes not only the AUX file <code>file</code> 
+     * into account, but also files included 
+     * via command {@link #PATTERN_INPUT}. 
+     */
+    FileId update(File file) throws IOException {
       //System.out.println("update:Bibtex");
+      return update(file, new FileId());
+    }
+
+    private FileId update(File file, FileId fileId) throws IOException {
       File parent = file.getParentFile();
       String inFile;
       try (BufferedReader bufferedReader =
@@ -127,18 +135,19 @@ enum Auxiliary {
             // readLine may thr. IOException
             line = bufferedReader.readLine()) {
           if (PATTERN_BIBTEX.matcher(line).find()) {
-            md.update(line.getBytes());
-            numLines.incrementAndGet();
+            fileId.update(line);
             continue;
           }
           Matcher matcher = PATTERN_INPUT.matcher(line);
           if (matcher.find()) {
             inFile = matcher.group(GRP_INPUT);
             assert inFile.endsWith(this.extension());
-            update(new File(parent, inFile), md, numLines);
+            // ignore return value 
+            update(new File(parent, inFile), fileId);
           }
-        }
-      }
+        } // for 
+      } // try 
+      return fileId;
     }
   },
   // /**
@@ -264,29 +273,38 @@ enum Auxiliary {
 
   // overwritten for bibtex and one time also for bib2gls
   /**
-   * Updates <code>md</code> and <code>md</code>
+   * Yields the identifier 
+   * corresponding with the given text file. 
+   * It takes only the lines into account 
+   * which are relevant for this this {@link Auxiliary}. 
+   * Note that for some {@link Auxiliary}s, 
+   * typically tied to AUX files, 
+   * other files referred to are taken into account 
+   * as for {@link Auxiliary#BibTex}
    * 
    * @param file
    *   a text file written by the part of the {@link Auxiliary} 
    *   given by the run of the latex compiler 
    *   and at least partially read by the corresponding auxiliary program. 
-   * @param md
-   *    The hash over the lines in <code>file</code> 
-   *    read by the auxiliary program. 
-   * @param numLines
-   *   The number of lines in <code>file</code> read by the auxiliary program. 
+   * @return
+   *   The file identifier taking all lines of <code>file</code> into account 
+   *   which are relevant for this {@link Auxiliary}. 
+   * @throws IOException
+   *    if the file or files referred to within it 
+   *    could not be read completely. 
+   *    This degrades rerun detection. 
    */
-  void update(File file, MessageDigest md, AtomicInteger numLines)
-      throws IOException {
+  FileId update(File file) throws IOException {
+    FileId fileId = new FileId();
     //System.out.println("update:gen");
     try (BufferedReader bufferedReader =
         new BufferedReader(new FileReader(file))) {
       for (String line = bufferedReader.readLine(); line != null;
           // readLine may thr. IOException
           line = bufferedReader.readLine()) {
-        md.update(line.getBytes());
-        numLines.incrementAndGet();
+        fileId.update(line);
       }
     }
+    return fileId;
   }
 }

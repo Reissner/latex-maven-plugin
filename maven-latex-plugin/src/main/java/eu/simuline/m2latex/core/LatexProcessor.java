@@ -941,7 +941,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
         continue;
       }
       // TBC: can additional keys occur later? 
-      desc.aux2fileId.put(aux, new FileId(auxFile, aux));
+      desc.aux2fileId.put(aux, update(aux, auxFile));
+
       posterioryEntryInToc = aux.mayBeEntryInToc();
       aux.process(desc, this);
       minNumRunsAfter = Math.max(minNumRunsAfter,aux.numRunsAfter());
@@ -973,6 +974,35 @@ public class LatexProcessor extends AbstractLatexProcessor {
     }
 
     return minNumRunsAfter;
+  }
+
+  private static final FileId EMPTY_FILE_ID = new FileId().finalizFileId();
+
+  /**
+   * Wraps {@link Auxiliary#update(File))} 
+   * catching the IOException 
+   * and transforming it into WLP10 
+   * indicating that rerun check is degraded. 
+   * 
+   * @param aux
+   *    the auxiliary which determines the aspects of 
+   * @param file
+   *    the file for which an identifier is requested. 
+   * @return
+   *    the identifier for the file <code>file</code> 
+   *    tied to the auxiliary <code>aux</code> 
+   *    according to {@link Auxiliary#update(File))}, 
+   *    except if the latter throws an exception. 
+   *    In that case, {@link #EMPTY_FILE_ID} is returned. 
+   */
+  private FileId update(Auxiliary aux, File file) {
+    try {
+      return aux.update(file).finalizFileId();
+    } catch(IOException ioe) {
+      this.log.warn("WLP10: Degraded identifier for '" +file + 
+      "'; augmented risk not to rerun although necessary. ");
+      return EMPTY_FILE_ID;
+    }
   }
 
   /**
@@ -1059,7 +1089,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
       FileId fileId;
       for (Auxiliary aux : desc.aux2fileId.keySet()) {
         System.out.println("----------AUX: "+aux);
-        fileId = new FileId(desc.withSuffix(aux.extension()), aux);
+        fileId = update(aux, desc.withSuffix(aux.extension()));
 
         if (desc.aux2fileId.get(aux).equals(fileId)) {
           continue;

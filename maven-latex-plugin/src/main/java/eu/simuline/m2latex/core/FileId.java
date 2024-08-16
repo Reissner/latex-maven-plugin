@@ -3,7 +3,6 @@ package eu.simuline.m2latex.core;
 import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Provides an immutable identifier for a file 
@@ -42,34 +41,34 @@ public class FileId {
    * The number of lines written in a file relevant for the {@link Auxiliary} 
    * given by the constructor {@link #FileId(File, Auxiliary)}. 
    */
-  private final int numLines;
+  private int numLines;
 
-  /**
+  /*
    * The hash of lines the number of which is given by {@link #numLines}. 
    */
-  private final String hash;
+  private String hash;
 
-  FileId(File file, Auxiliary aux) {
-    assert !file.isDirectory();
+  private MessageDigest md;
 
+  FileId() {
     try {
-      MessageDigest md = MessageDigest.getInstance(ALGORITHM);
-      // The number of relevant lines decided by method Auxiliary.update(...) 
-      AtomicInteger numLines = new AtomicInteger(0);
-      try {
-        aux.update(file, md, numLines);
-        this.hash = new String(md.digest());
-        this.numLines = numLines.get();
-      } catch (IOException ioe) {
-        // TBD: add warning 
-        System.out.println("Risk to drop necessary rerun is augmented. ");
-        this.hash = "";
-        this.numLines = 0;
-      }
+      this.md = MessageDigest.getInstance(ALGORITHM);
     } catch (NoSuchAlgorithmException nsae) {
       throw new IllegalStateException(
           "Algorithm " + ALGORITHM + " should be known. ");
     }
+    this.numLines = 0;
+    this.hash = null;
+  }
+
+  void update(String line) {
+    this.numLines++;
+    this.md.update(line.getBytes());
+  }
+
+  FileId finalizFileId() {
+    this.hash = new String(md.digest());
+    return this;
   }
 
   /**
@@ -81,11 +80,16 @@ public class FileId {
       return false;
     }
     FileId other = (FileId) obj;
-    return this.numLines == other.numLines && this.hash.equals(other.hash);
+    assert other.hash != null;
+    return this.numLines == other.numLines 
+    //&& new String(this.md.digest()).equals(new String(other.md.digest()));
+    //&& Arrays.equals(this.md.digest(), other.md.digest());
+    && this.hash.equals(other.hash);
   }
 
   public String toString() {
-    return this.hash + " " + this.numLines;
+    return new String(this.hash) + " " + this.numLines;
+    //return this.hash + " " + this.numLines;
   }
 }
 
