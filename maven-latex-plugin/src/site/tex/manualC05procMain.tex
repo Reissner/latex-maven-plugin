@@ -27,10 +27,10 @@ is inclusion of results of code evaluations,
 code in python and other languages described in Section~\ref{sec:pythontex}. 
 Here, an auxiliary program essentially invokes the language interpreter. 
 
-Sections~\ref{sec:rerunMakeIndexGlossaries} 
+Sections~\ref{sec:rerunAux} 
 and~\ref{sec:rerunLatex} 
 are special in that they describe rerunning auxiliary programs 
-and the \LaTeX-to-pdf converter, 
+like \texttt{makeindex} and the \LaTeX-to-pdf converter, 
 which may be necessary even if certain lists are present 
 like table of contents list of figures or list of tables. 
 
@@ -115,7 +115,7 @@ Alternatively to \texttt{bibtex} a bibliography can be created
 with the package \pkg{biblatex} in conjunction with the auxiliary program \texttt{biber}. 
 Running a \LaTeX-to-pdf converter with package \pkg{biblatex} loaded 
 creates a \gls{bcf}-file read by \texttt{biber}. 
-This software does not support that option. 
+At time of this writing, this software does not support that option. 
 Nevertheless, for sake of completeness we added this data path to Figure~\ref{fig:tex2pdf}. 
 
 If an index is demanded, 
@@ -133,6 +133,9 @@ If more than one index is demanded,
 we suggest using \texttt{splitindex} instead of \texttt{makeindex} 
 which creates one \gls{ind}-file per index. 
 
+A more modern technique to create an index is via \texttt{xindy}, 
+but at time of this writing, this software does not support \texttt{xindy} yet. 
+
 If a glossary is demanded, this can be read off the \gls{aux}-file 
 and a \gls{glo}-file containing the index entries 
 is created and a file with style information. 
@@ -147,6 +150,10 @@ between the two \texttt{latex2pdf} runs.
 Based on the \gls{glo}-file, \texttt{makeglossaries} creates a \gls{gls}-file 
 containing the glossary, which is read in the next \texttt{latex2pdf} run. 
 For details see Section~\ref{sec:glossaries}. 
+
+Besides \texttt{makeglossaries}, there is a more modern tool, 
+\texttt{bib2gls}, which is not yet supported by this software 
+at time of this writing. 
 
 The package \pkg{pythontex} allows including python code or related 
 in the \gls{tex}-file and to evaluate it. 
@@ -194,10 +201,10 @@ even two further \LaTeX{} runs are required:
 After the first one, the bibliography, the index or the glossary 
 occurs in the PDF file but not yet in the table of contents. 
 This happens after the second additional \LaTeX{} run. 
-As described in Sections~\ref{sec:rerunMakeIndexGlossaries} and~\ref{sec:rerunLatex}, 
-further runs of \texttt{makeindex}, resp,~\texttt{splitindex}, 
-\texttt{makeglossaries} 
-and of the \LaTeX-processor \texttt{latex2pdf} may be necessary. 
+As described in Sections~\ref{sec:rerunAux} and~\ref{sec:rerunLatex}, 
+further runs of auxiliary programs mainly to create index or glossaries, 
+but also under certain circumstances bibliographies and inserting invoked code, 
+followed by invocation of the \LaTeX-processor \texttt{latex2pdf} may be necessary. 
 
 \begin{figure}[htb]
 \centering
@@ -817,8 +824,8 @@ To use another language, the according interpreter must be installed in addition
     \caption{\label{fig:depy2out}Conversion of a \texttt{depytx}-file using \texttt{depythontex}}
     \end{figure}
   
-\section{Rerunning the index- and glossary processor}%
-\label{sec:rerunMakeIndexGlossaries}
+\section{Rerunning auxiliary programs }%
+\label{sec:rerunAux}
 
 As described in Section~\ref{sec:tex2pdf}, 
 running a \LaTeX-to-pdf converter as \texttt{latex2pdf} 
@@ -826,57 +833,64 @@ may detect the presence of a bibliography, an index and/or of a glossary
 and writes raw files to describe them. 
 After that, an intermediate step is required, 
 sorting, unifying and formatting the entries. 
-This is always done by an external program. 
+This is always done by an external program, we call an auxiliary program. 
+Similarly, the presence of code to be interpreted 
+may be detected which is also written in a separate file 
+and an external program, \texttt{pythontex} must be run to run the code in sequence 
+and in many cases to determine the result of invocation. 
 
-In the next step the \LaTeX{} processor must read in the unified entries again. 
-Whereas a \LaTeX-run affects neither the bibliography nor python code, 
-it may well invalidate the page numbers 
-of the entries of the index or of the glossary. 
-%Also within a glossary entry, further glossary entries may be included. 
-Thus, the sorted index and glossary must be rebuilt 
-before the next \LaTeX{} run makes them visible in the PDF file. 
+In the next step, the \LaTeX{} processor must read in the results of the auxiliary programs again 
+to write bibliography, indices and glossaries and to insert the results of code invocations. 
+Also, except the code invocations, 
+all other pieces of information typically go into the table of contents. 
+If code is invoked in a headline or in a caption, 
+the result of the code invocation goes into the TOC and in the list of captions, 
+e.g.\@ the list of figures LOF also. 
+So in any case, after an auxiliary program the \LaTeX{} processor must be rerun. 
 
-To that end, we use the package \pkg{rerunfilecheck}. 
-%
-\begin{lstlisting}[language=TeX]
-\usepackage[index, glossary]{rerunfilecheck}
-\end{lstlisting}
-%
-must be put before 
-%
-\begin{lstlisting}[language=TeX]
-\usepackage{makeidx}
-\makeindex
-\usepackage[toc, xindy]{glossaries}
-%, xindy or even [xindy={language=english,codepage=utf8}]
-% mainly for index and glossaries 
-\makeglossaries
-\end{lstlisting}
-%
-in particular before \cmd{makeindex}{} and \cmd{makeglossaries}. 
+Obviously, the run of a \LaTeX{} processor may change page numbers 
+and thus invalidate the index or the glossary. 
+So the auxiliary program to create the index or the glossary 
+must be rerun if the \LaTeX{} processor changes the input file for the auxiliary program 
+creating index or glossary and after that, the \LaTeX{} processor must be run again. 
 
-Note that the package \pkg{hyperref} already loads \pkg{rerunfilecheck} 
-but with the wrong options. 
-Thus, the above declaration must come before 
-%
-\begin{lstlisting}[language=TeX]
-\usepackage[...]{hyperref}
-\end{lstlisting}
-%
-to avoid error 
-%
-\begin{verbatim}
-Option clash for package rerunfilecheck
-\end{verbatim}
+What is less obvious is, that bibliographies may be invalidated also, 
+e.g.\@ because of a backlink or because a bibliographic reference occurs in a glossary. 
+Even code may be invalidated by a run of the \LaTeX{} processor 
+if some code occurs in a floating object, e.g. in the caption or in a glossary. 
+So code invocations may change order 
+and also there may be additional code occurring not before later runs of the \LaTeX{} processor. 
+So also in this case, the according auxiliary program, \texttt{pythontex} 
+must be rerun after the run of the \LaTeX{} processor. 
 
-Package \pkg{rerunfilecheck} detects almost safely 
-changes of the raw index file writing an according message 
-into the LOG file. 
-That way, it can be determined whether it is necessary 
-to rerun \texttt{makeindex} and \texttt{makeglossaries}. 
-After that, of course \LaTeX{} must be rerun at least once. 
-Note that Section~\ref{sec:rerunLatex} describes 
-when to rerun \LaTeX{} without prior running *****
+Summarizing, a run of the \LaTeX{} processor may trigger invocation of each auxiliary program. 
+This must be done if the according raw file changes. 
+Note that various auxiliary programs share the AUX file to get information. 
+So only the aspects relevant for the specific auxiliary program shall be taken into account. 
+What makes things a bit more complicated is, 
+that including TEX files yields included AUX files 
+which must be taken into account also. 
+
+To implement rerun check completely reliable, 
+huge parts of text files, a lot of information must be stored. 
+Thus, we go a way like package \pkg{rerunfilecheck}, 
+detecting only the change of number of relevant lines and the according hash. 
+In extremely rare cases, this software may fail to rerun a program although needed, 
+because number of relevant lines or its hash don't change 
+although contents change. 
+
+Note that we only use the concept of \pkg{rerunfilecheck} 
+to detect running and rerunning auxiliary programs, 
+but we do not use the package \pkg{rerunfilecheck} itself for this task. 
+This is because supporting all relevant auxiliary programs and also 
+included AUX files would require considerable extensions on \pkg{rerunfilecheck} 
+and would impact considerable dependencies. 
+So, as described in Section~\ref{sec:rerunLatex}, 
+\pkg{rerunfilecheck} is used to control rerunning the \LaTeX{} processor 
+as far as auxiliary programs are not involved, 
+whereas detecting auxiliary programs to be rerun is done internally 
+while the algorithm is inspired by the package \pkg{rerunfilecheck}. 
+
 
 \section{Rerunning the \LaTeX{} processor}\label{sec:rerunLatex}
 
@@ -884,12 +898,10 @@ FIXME\@: a word on change in toc, lof, lot and lol.
 
 As indicated in the previous sections, 
 \texttt{latex2pdf} must be rerun, 
-if \texttt{bibtex} or \texttt{makeindex} \texttt{splitindex} 
+if an auxiliary program like \texttt{bibtex}, \texttt{makeindex} 
 or \texttt{makeglossaries} 
-had been run 
-to read in the bibliography created by \texttt{bibtex} 
-or the index created by \texttt{makeindex} 
-or the glossary created by \texttt{makeglossaries}. 
+had been run. 
+
 Likewise, if a toc-file, a lof-file, a lot-file or a lol-file
 had been created in the first \texttt{latex2pdf} run, 
 another run is needed to read in these files 
@@ -915,18 +927,24 @@ the list of figures, the list of tables and the list of listings
 may shift the subsequent text 
 which may require another run of \texttt{latex2pdf} 
 to get the page numbers right. 
-As described in Section~\ref{sec:rerunMakeIndexGlossaries} 
-intermediate runs of \texttt{makeindex} and \texttt{makeglossaries} 
+As described in Section~\ref{sec:rerunAux} 
+intermediate runs of auxiliary programs like \texttt{makeindex} 
 may be required 
 and these also require another run of \texttt{latex2pdf} 
 also to get the page numbers right. 
-The package \pkg{rerunfilecheck} allows to detect this need to rerun 
-by pattern matching on the LOG file almost for sure: 
-Still there is some chance 
-that the lengths and the md5-sum of all relevant files 
-remain the same, although there is a relevant change. 
-In this case, this software fails to update 
-triggering another \texttt{latex2pdf} run. 
+
+The package \pkg{rerunfilecheck} allows detecting file changes via a hash 
+almost for sure, and writes an according message into the LOG file. 
+This is offered for pure rerun control of \texttt{latex2pdf} 
+based on TOC, LOL, LOF and LOT, but also on the OUT file written by package \pkg{hyperref}. 
+Partially, it supports also the need to rerun auxiliary programs, 
+but for sake of uniformity, we refrain from using this, 
+and rely on in internal algorithm also based on hashes. 
+
+Only for rerunning \texttt{latex2pdf} alone, we rely on package \pkg{rerunfilecheck}. 
+This software just reruns texttt{latex2pdf} 
+if it detects the pattern of warning written by \pkg{rerunfilecheck} into the LOG file. 
+
 
 
 Note that there are several packages which require additional runs, 
@@ -940,7 +958,9 @@ Thus, it is configurable.
  
 Note that, if a package requires running other programs 
 between two runs of \texttt{latex2pdf}, 
-this would require a change in this software. 
+this may require a change in this software. 
+
+As described in Section~\ref
 
 \section{Checking reproducibility }\label{sec:chkReprod}
 

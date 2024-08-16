@@ -987,7 +987,22 @@ and thus cause neither a warning nor an error.
  or specify targets by magic comment. 
  \end{minipage}
  } \\
-\end{longtable}
+ \texttt{\footnotesize WLP10} & \texttt{\footnotesize Degraded identifier for '\$file'; } \\
+                              & \texttt{\footnotesize augmented risk not to rerun although necessary. } \\
+\multicolumn2{|l|}{
+\begin{minipage}{0.95\linewidth}
+Indicates that an auxiliary file \texttt{\$file} 
+which is used to determine whether an auxiliary program shall be rerun could not be completely evaluated. 
+An example of an auxiliary file is an IDX file. 
+If it changes not only \texttt{makeindex} but also the \LaTeX{} compiler need to be rerun. 
+
+A special kind of auxiliary files are AUX files. 
+They may be used to create bibliographies or glossaries. 
+They are special in that they may include other AUX files, 
+namely those corresponding with included TEX files. 
+In this case, \texttt{\$file} is the top level AUX file. 
+\end{minipage}
+} \\\end{longtable}
 
 
 
