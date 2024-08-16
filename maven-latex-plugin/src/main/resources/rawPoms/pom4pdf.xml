@@ -836,23 +836,6 @@ The default value '(## Warning )'
 is chosen according to the 'makeindex' documentation. -->
             <patternWarnMakeIndex>(## Warning )</patternWarnMakeIndex>
 
-            <!-- The pattern is applied linewise to the log-file 
-and matching triggers rerunning $makeIndexCommand 
-followed by $latex2pdfCommand. 
-
-This pattern only matches a warning 
-emitted by the package 'rerunfilecheck' 
-e.g. used with option 'index'. 
-The default value 
-is chosen according to the package documentation. 
-
-If the current default value is not appropriate, 
-please overwrite it in the configuration 
-and notify the developer of this plugin of the bug. -->
-            <patternReRunMakeIndex>
-(^\(rerunfilecheck\) +Rerun LaTeX/makeindex to get index right\.$)
-            </patternReRunMakeIndex>
-
             <!-- The SplitIndex command to create ind-files 
           from an idx-file logging on ilg-files. 
           This command invokes $makeIndexCommand. 
@@ -933,24 +916,6 @@ If the current default value is not appropriate,
 please overwrite it in the configuration 
 and notify the developer of this plugin of the deficiency. -->
             <patternWarnXindy>(^WARNING: )</patternWarnXindy>
-
-
-            <!-- The pattern is applied linewise to the log-file 
-and matching triggers rerunning $makeGlossariesCommand 
-followed by $latex2pdfCommand. 
-
-This pattern only matches a warning 
-emitted by the package 'rerunfilecheck' 
-e.g. used with option 'glossary'. 
-The default value 
-is chosen according to the package documentation. 
-
-If the current default value is not appropriate, 
-please overwrite it in the configuration 
-and notify the developer of this plugin of the bug. -->
-            <patternReRunMakeGlossaries>
-(^\(rerunfilecheck\) +Rerun LaTeX/makeindex to get glossary right\.$)
-            </patternReRunMakeGlossaries>
 
             <!-- The Pythontex command which creates a folder 'pythontex-files-xxx' 
               given by 'prefixPytexOutFolder' 

@@ -50,7 +50,6 @@ import com.florianingerl.util.regex.Pattern;
 
 
 import org.apache.commons.text.StringEscapeUtils;
-import org.apache.maven.execution.BuildFailure;
 import org.apache.maven.plugins.annotations.Parameter;
 // import org.apache.maven.plugin.descriptor.Parameter;
 
@@ -1407,31 +1406,6 @@ public class Settings {
   private String patternWarnMakeIndex = "(## Warning )";
 
   /**
-   * The pattern in the log-file which triggers 
-   * rerunning {@link #makeIndexCommand} 
-   * followed by {@link #latex2pdfCommand}. 
-   * This pattern only occurs, if package <code>rerunfilecheck</code> 
-   * is used with option <code>index</code>. 
-   * The default value 
-   * is chosen according to the package documentation. 
-   * If the user finds that default value is not appropriate, 
-   * (s)he is asked to contribute 
-   * and to notify the developer of this plugin. 
-   */
-  @RuntimeParameter
-  @Parameter(name = "patternReRunMakeIndex", defaultValue =
-  //"^Package rerunfilecheck Warning: File `.*\\.idx' has changed\\.$" //+
-  "^\\(rerunfilecheck\\) +Rerun LaTeX/makeindex to get index right\\.$")
-  // FIXME: should be included the full pattern. 
-  // First part works second also but not together. 
-  // Also did not find any way to connect the two parts. 
-  // This gives rise to the conjecture 
-  // that also other patterns do not work properly. 
-  private String patternReRunMakeIndex =
-      //"^Package rerunfilecheck Warning: File `.*\\.idx' has changed\\.$" //+
-      "^\\(rerunfilecheck\\) +Rerun LaTeX/makeindex to get index right\\.$";
-
-  /**
    * The SplitIndex command to create ind-files 
    * from an idx-file logging on ilg-files. 
    * This command invokes {@link #makeIndexCommand}. 
@@ -1537,31 +1511,6 @@ public class Settings {
   @Parameter(name = "patternWarnXindy", defaultValue = "(^WARNING: )")
   private String patternWarnXindy = "(^WARNING: )";
 
-  /**
-   * The pattern in the log-file which triggers 
-   * rerunning {@link #makeGlossariesCommand} 
-   * followed by {@link #latex2pdfCommand}. 
-   * This pattern only occurs, if package <code>rerunfilecheck</code> 
-   * is used with option <code>glossary</code>. 
-   * The default value 
-   * is chosen according to the package documentation. 
-   * If the user finds that default value is not appropriate, 
-   * (s)he is asked to contribute 
-   * and to notify the developer of this plugin. 
-   */
-  @RuntimeParameter
-  @Parameter(name = "patternReRunMakeGlossaries", defaultValue =
-  //"^Package rerunfilecheck Warning: File `.*\\.glo' has changed\\.$" +
-  // FIXME: really MAKEINDEX! 
-  // Problem: package glossaries redefines makeglossary 
-  // which breaks this solution with rerunfilecheck 
-  "^\\(rerunfilecheck\\) +Rerun LaTeX/makeindex to get glossary right\\.$")
-  private String patternReRunMakeGlossaries =
-      //"^Package rerunfilecheck Warning: File `.*\\.glo' has changed\\.$" +
-      // FIXME: really MAKEINDEX! 
-      // Problem: package glossaries redefines makeglossary 
-      // which breaks this solution with rerunfilecheck 
-      "^\\(rerunfilecheck\\) +Rerun LaTeX/makeindex to get glossary right\\.$";
 
   // parameters for pythontex
 
@@ -2796,10 +2745,6 @@ public class Settings {
     return this.patternWarnMakeIndex;
   }
 
-  public String getPatternReRunMakeIndex() {
-    return this.patternReRunMakeIndex;
-  }
-
   // for ant task only 
   @RuntimeParameter
   public String getSplitIndexCommand() throws BuildFailureException {
@@ -2828,10 +2773,6 @@ public class Settings {
     return this.patternWarnXindy;
   }
 
-  // TBD: clarify: never used. 
-  public String getPatternReRunMakeGlossaries() {
-    return this.patternReRunMakeGlossaries;
-  }
 
   // for ant task only 
   @RuntimeParameter
@@ -3429,25 +3370,6 @@ public class Settings {
     }
   }
 
-  // setter method for patternReRunMakeIndex in maven 
-  public void setPatternReRunMakeIndex(String pattern) {
-    this.patternReRunMakeIndex = pattern.replaceAll("\n+", "").trim();
-  }
-
-  // method introduces patternMakeIndex in ant 
-  public PatternReRunMakeIndex createPatternReRunMakeIndex() {
-    return new PatternReRunMakeIndex();
-  }
-
-  // defines patternReRunMakeIndex element with text in ant 
-  public class PatternReRunMakeIndex {
-    // FIXME: this is without property resolution. 
-    // to add this need  pattern = getProject().replaceProperties(pattern)
-    // with Task.getProject() 
-    public void addText(String pattern) {
-      Settings.this.setPatternReRunMakeIndex(pattern);
-    }
-  }
 
   public void setSplitIndexCommand(String splitIndexCommand) {
     this.splitIndexCommand = splitIndexCommand;
@@ -3474,16 +3396,6 @@ public class Settings {
     this.patternWarnXindy = patternWarnXindy.replaceAll("\n+", "").trim();
   }
 
-  // setter method for patternReRunMakeGlossaries in maven 
-  public void setPatternReRunMakeGlossaries(String pattern) {
-    this.patternReRunMakeGlossaries = pattern.replaceAll("\n+", "").trim();
-  }
-
-  // method introduces patternReRunMakeGlossaries in ant 
-  public PatternReRunMakeGlossaries createPatternReRunMakeGlossaries() {
-    return new PatternReRunMakeGlossaries();
-  }
-
   public void setPythontexCommand(String pythontexCommand) {
     this.pythontexCommand = pythontexCommand;
   }
@@ -3505,15 +3417,6 @@ public class Settings {
     this.prefixPytexOutFolder = prefixPytexOutFolder;
   }
 
-  // defines patternReRunMakeGlossaries element with text in ant 
-  public class PatternReRunMakeGlossaries {
-    // FIXME: this is without property resolution. 
-    // to add this need  pattern = getProject().replaceProperties(pattern)
-    // with Task.getProject() 
-    public void addText(String pattern) {
-      Settings.this.setPatternReRunMakeGlossaries(pattern);
-    }
-  }
 
   public void setTex4htCommand(String tex4htCommand) {
     this.tex4htCommand = tex4htCommand;

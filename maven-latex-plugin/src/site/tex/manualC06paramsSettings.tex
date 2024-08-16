@@ -1753,9 +1753,13 @@ The default value is chosen
 according to the `\texttt{makeindex}' documentation.
 \end{minipage}
 } \\
-\texttt{patternReRunMakeIndex} & see Section~\ref{subsec:patternReRunMakeIndex} \\
+\texttt{patternReRunMakeIndex} & \\
 \multicolumn2{|l|}{
 \begin{minipage}{0.95\linewidth}
+\textbf{This parameter is deprecated since version 2.1.} 
+Rerun check of auxiliary programs do not read the LOG file. 
+Details are described in Section~\ref{sec:rerunAux}. 
+
 The pattern is applied line-wise to the log-file 
 and matching triggers rerunning \texttt{\$makeIndexCommand} 
 followed by \texttt{\$latex2pdfCommand}. 
@@ -1765,10 +1769,6 @@ emitted by the package `\pkg{rerunfilecheck}'
 e.g.\@ used with option `\texttt{index}'. 
 The default value 
 is chosen according to the package documentation. 
-
-If the current default value is not appropriate, 
-please overwrite it in the configuration 
-and notify the developer of this plugin of the bug. 
 \end{minipage}
 } \\
 \texttt{splitIndexCommand} & \texttt{splitindex}     \\
@@ -1804,18 +1804,6 @@ Do not use `\texttt{--verbose}' either for sake of portability.
 \end{minipage}
 } \\
 \end{longtable}
-
-
-\subsection{The parameter \texttt{patternReRunMakeIndex}}%
-\label{subsec:patternReRunMakeIndex}
-
-As shown in~\cite{RerunFChkP}, Section 2.3, Listing line 166, 
-the pattern is 
-%
-\begin{Verbatim}
-(^\(rerunfilecheck\) +Rerun LaTeX/makeindex to get index right\.$)
-\end{Verbatim}
-%$ for emacs only 
 
 
 \section{Parameters for creation of the Glossary}%
@@ -1903,10 +1891,13 @@ please overwrite it in the configuration
 and notify the developer of this plugin of the deficiency. 
 \end{minipage}
 } \\
-\texttt{patternReRunMakeGlossaries}  
-& see Section~\ref{subsec:patternReRunMakeGlossaries}   \\
+\texttt{patternReRunMakeGlossaries} & \\ 
 \multicolumn2{|l|}{
 \begin{minipage}{0.95\linewidth}
+\textbf{This parameter is deprecated since version 2.1.} 
+Rerun check of auxiliary programs do not read the LOG file. 
+Details are described in Section~\ref{sec:rerunAux}. 
+
 The pattern is applied line-wise to the log file 
 and matching triggers rerunning \texttt{\$makeGlossariesCommand} 
 followed by \texttt{\$latex2pdfCommand}. 
@@ -1916,25 +1907,10 @@ emitted by the package `\pkg{rerunfilecheck}'
 e.g.\@ used with option `\texttt{glossary}'. 
 The default value 
 is chosen according to the package documentation. 
-
-If the current default value is not appropriate, 
-please overwrite it in the configuration 
-and notify the developer of this plugin of the bug. 
 \end{minipage}
 } \\
 \end{longtable}
 
-\subsection{The parameter \texttt{patternReRunMakeGlossaries}}\label{subsec:patternReRunMakeGlossaries}
-
-As shown in~\cite{RerunFChkP}, Section 2.3, Listing line 210, 
-the pattern is 
-%
-\begin{Verbatim}
-(^\(rerunfilecheck\) +Rerun LaTeX/makeindex to get index right\.$)
-\end{Verbatim}
-%$ for emacs only 
-
-This holds even if \texttt{splitindex} is used. 
 
 \section{Parameters for including code via \texttt{pythontex}}%
 \label{sec:settingsPythontex}
