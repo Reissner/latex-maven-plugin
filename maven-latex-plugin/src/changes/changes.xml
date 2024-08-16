@@ -1193,7 +1193,15 @@ Better even: indicate that targets are overwritten.. make a check. -->
 
     <release version="2.1" date="2023-08-28" description="build with latexmk and generalized reproducibility">
       <action dev='reissner' type='fix'>
-        Tried with enabled assertions through export MAVEN_OPTS="-ea"
+        Based on new rerun algorithm could reliably re-add classical glossary to manual. 
+      </action>
+      <action dev='reissner' type='fix'>
+        Rerun algorithms now based on hash of files aux, idx, glo and pytxcode. 
+        The new algorithm is better in that it is correct for pytxcode, 
+        taking into account pythontex. 
+      </action>
+      <action dev='reissner' type='fix'>
+        Tried with enabled assertions through `export MAVEN_OPTS="-ea"`
         Fixed certain points in code, deactivated and documented others in backlog. 
       </action>
       <action dev='reissner' type='fix'>
