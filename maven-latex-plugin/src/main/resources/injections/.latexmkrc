@@ -28,7 +28,7 @@ $pdf_mode = 4;# specifies creation of pdf via lualatex
 # %O is the options (additional options passed by latexmk)
 # %S source file (maybe %A and %B more appropriate: without ending)
 #$lualatex = "${getLatex2pdfCommand()} ${latex2pdfOptions} %O %S";
-$lualatex = "internal mylatex %A %O";
+$lualatex = "internal run_latex %A %O";
 
 # superfluous for perl >=5.36 according to documentation, but does not work for me (perl 5.38?)
 use feature 'signatures';
@@ -132,7 +132,7 @@ sub getCreationTimeMetaEpoch($pdfFile) {
 # TBD: not ideal foor pdfViaDvi=true: conversion dvi to pdf is needed only once at the end, 
 # whereas this method does conversion dvi to pdf each time also tex to dvi is performed. 
 # Thus in the long run only run dvi2pdf; the rest is done with rules. 
-sub mylatex($fileName, @opts) {
+sub run_latex($fileName, @opts) {
 
   # transforms string representations from pom to perl specific representations 
   # maybe there are alternative: yes for true and no for false. Clarify. 
