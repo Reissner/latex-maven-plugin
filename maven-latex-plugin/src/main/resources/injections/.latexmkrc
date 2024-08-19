@@ -206,7 +206,10 @@ sub run_latex($fileName, @opts) {
 
 # to configure bibtex 
 # bbl files are never precious 
-$bibtex_use=2;
+$bibtex_use = 2;
+$bibtex = "${bibtexCommand} ${bibtexOptions} %S";# default: bibtex %O %S
+
+
 
 # this cannot be done according to the according latex maven plugin, 
 # because the according parameter maxNumReRunsLatex may be set to -1 
