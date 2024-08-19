@@ -358,9 +358,12 @@ sub inkscape {
 
 
 # use splitindex 
-$makeindex = 'internal splitindex';
+$makeindex = 'internal run_makeSplitindex %A';
+#$makeindex = "${makeIndexCommand} ${makeIndexOptions} %S";# 'makeindex -s german -g %S';
+# TBD: take splitindex into account also 
+# ${splitIndexCommand} ${splitIndexOptions} %S
 
-sub splitindex {
+sub run_makeSplitindex($fileName) {
   # Use splitindex instead of makeindex.
   # The splitindex programe starts from an .idx file, makes a set of
   #   other .idx files for separate indexes, and then runs makeindex to
