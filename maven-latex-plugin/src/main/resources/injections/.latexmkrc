@@ -391,12 +391,23 @@ sub run_makeSplitindex($fileName) {
   return $ret1 || $ret2;
 }
 
-
+# This set of dependencies is only complete 
+# if we restrict ourselves to types defined by options 
+# without using \newglossary explicitly 
 add_cus_dep( 'acn', 'acr', 0, 'makeglossaries' );
+add_cus_dep( 'slo', 'sls', 0, 'makeglossaries' );
+add_cus_dep( 'nlo', 'nls', 0, 'makeglossaries' );
+add_cus_dep( 'idx', 'ind', 0, 'makeglossaries' );
 add_cus_dep( 'glo', 'gls', 0, 'makeglossaries' );
+# TBD: add file endings for symbols, 
+# not only here but also in the java code. 
 push @generated_exts, 'glo', 'gls', 'glg';
 push @generated_exts, 'acn', 'acr', 'alg';
-push @generated_exts, "ist"; # index stylefile created by the glossaries package 
+push @generated_exts, 'slo', 'sls', 'slg';
+push @generated_exts, 'nlo', 'nls', 'nlg';
+push @generated_exts, 'idx', 'ind', 'ilg';
+push @generated_exts, "ist", "xdy"; # index stylefile created by the glossaries package 
+# TBD: add xdy also in java code 
 
 #$clean_ext .= " acr acn alg glo gls glg";# TBD: clarify: better in @generated_exts? 
 
