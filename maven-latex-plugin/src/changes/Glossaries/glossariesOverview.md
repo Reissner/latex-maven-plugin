@@ -256,8 +256,63 @@ We mention it only because it is considered in the source document (see top of t
 
 ## Glossaries with auxiliary tool `bib2gls` 
 
-bib2gls creates xxx.glstex and xxx.glg. 
+Creation of glossaries using `bib2gls` is quite different from what was described above. 
+First, the entries of the glossaries are not stored in a TEX file 
+but in one or more BIB files. 
+In our example, we fit all kinds of entries into a single BIB file [termAcroSymb.bib](./termAcroSymb.bib). 
+The TEX file [glossariesBib2gls.tex](./glossariesBib2gls.tex) in contrast, 
+does not contain these definitions but only a link on them via command `\GlsXtrLoadResources`. 
+The TEX file must include `glossaries-extra`, but the options defining kinds of glossaries are the same. 
+All the glossaries are printed via `\printunsrtglossaries`. 
+
+Running `lualatex` on a TEX file using package `glossaries-extra` and specifying `\GlsXtrLoadResources` 
+creates an AUX file like the following. 
+
+```
+\providecommand\@newglossary[4]{}
+\@newglossary{main}{glg}{gls}{glo}
+\@newglossary{acronym}{alg}{acr}{acn}
+\@newglossary{symbols}{slg}{sls}{slo}
+\providecommand\@glsxtr@savepreloctag[2]{}
+\providecommand*{\glsxtr@fields}[1]{}
+\providecommand*{\glsxtr@resource}[2]{}
+\providecommand*{\glsxtr@pluralsuffixes}[4]{}
+\providecommand*{\glsxtr@shortcutsval}[1]{}
+\providecommand*{\glsxtr@linkprefix}[1]{}
+\glsxtr@fields{{name}{name},{sort}{sortvalue},{type}{type},{first}{first},{firstplural}{firstpl},{text}{text},{plural}{plural},{description}{desc},{descriptionplural}{descplural},{symbol}{symbol},{symbolplural}{symbolplural},{user1}{useri},{user2}{userii},{user3}{useriii},{user4}{useriv},{user5}{userv},{user6}{uservi},{long}{long},{longplural}{longpl},{short}{short},{shortplural}{shortpl},{counter}{counter},{parent}{parent},{loclist}{loclist},{location}{location},{group}{group},{see}{see},{alias}{alias},{seealso}{seealso},{category}{category}}
+\providecommand*{\glsxtr@record}[5]{}
+\glsxtr@pluralsuffixes{s}{s}{s}{s}
+\glsxtr@texencoding{utf8}
+\glsxtr@shortcutsval{none}
+\glsxtr@resource{src={termAcroSymb}}{glossariesBib2gls}
+\providecommand{\@glsxtr@prefixlabellist}[1]{}
+\@glsxtr@prefixlabellist{}
+\glsxtr@linkprefix{glo:}
+\providecommand {\@mfu@excls }[1]{}
+\providecommand {\@mfu@blockers }[1]{}
+\providecommand {\@mfu@mappings }[1]{}
+...
+\glsxtr@record{sample}{}{page}{glsnumberformat}{1}
+\glsxtr@record{ex}{}{page}{glsnumberformat}{1}
+\glsxtr@record{dfx}{}{page}{glsnumberformat}{1}
+\glsxtr@record{abbr}{}{page}{glsnumberformat}{1}
+\glsxtr@record{ex}{}{page}{glsnumberformat}{1}
+\glsxtr@record{abbr}{}{page}{glsnumberformat}{1}
+\@writefile{toc}{\contentsline {section}{Glossary}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Acronyms}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Symbols}{1}{}\protected@file@percent }
+\@glsxtr@mglslike{mgls,mglspl,mglsmainpl,Mgls,Mglspl,Mglsmainpl,MGls,MGlspl,MGlsmainpl,MGLS,MGLSpl,MGLSmainpl,mglsshort,mglslong,mglsfull,Mglsshort,Mglslong,Mglsfull,mglsname,Mglsname,MGlsname,mglssymbol,Mglssymbol,MGlssymbol,mglsusefield,Mglsusefield,MGlsusefield,mpgls,mpglspl,mpglsmainpl,Mpgls,Mpglspl,Mpglsmainpl,MPGls,MPGlspl,MPGlsmainpl,MPGLS,MPGLSpl,MPGLSmainpl}
+```
+
+It contains an entry `\glsxtr@resource` one for each `\GlsXtrLoadResources` in the TEX file. 
+If this is in the AUX file, then it is clear that `bib2gls` shall be invoked 
+as `\@istfilename` for `makeglossaries`. 
+
+Maybe there are good reasons to avoid occurrence of both. 
+
+Invocation of `bib2gls glossariesBib2gls` 
+creates `glossariesBib2gls.glstex` and the log file `glossariesBib2gls.glg`. 
 
 Next invocation of lualatex does not create more files, 
-but only inserts the glossaries into the PDF file. 
+but only inserts the glossaries' information stored in `glossariesBib2gls.glstex` into the PDF file. 
 
