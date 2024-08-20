@@ -26,7 +26,6 @@ import java.nio.file.LinkOption;
 import java.nio.file.attribute.FileTime;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
