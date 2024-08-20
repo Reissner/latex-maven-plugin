@@ -152,26 +152,35 @@ which deviates from [glossaries.tex](./glossaries.tex) in the following details:
 Essentially `\makexxxglossaries` and `\printxxxglossary` changed 
 and with the second variant additional sorting option is available. 
 
-Invoking `lualatex` unveils that besides `gls` also `acr` and `sls` files may be generated. 
-So I suspect, just watching out for `gls` as done presently, is not sufficient. 
-In fact, the file endings which may occur is an open list. 
+Invoking `lualatex` unveils that besides `glo` also `aco` and `slo` files may be generated. 
+In `makeglossaries`' user manual, Section 2.1 the option `nomain` is described 
+which suppresses creation of generation of the main glossary and so file `glo`. 
+The auxiliary tool `makeglossaries` transforms this into output file `gls` and log file `glg` 
+which are of course suppressed also. 
+In this case some other glossary must be specified 
+by according options 
 
-Cite from the manual: 
 
-    Note that the main (default) glossary is automatically created as:
-    ```
-    \newglossary{main}{gls}{glo}{\glossaryname}
-    ```
-    so it can be identified by the label main (unless the nomain package option
-    is used). Using the `acronym` package option is equivalent to:
-    ```
-    \newglossary[alg]{acronym}{acr}{acn}{\acronymname}
-    ```
-This makes `lualatex` create an `acr` file and `makeglossaries` create `acn` and log file `alg`. 
-No one is suitable to check whether `makeglossaries` shall be invoked initially 
-and this bunch of files makes it impossible to do reliable cleanup. 
+| option   | acronym(s) | symbols | numbers | index |
+| -------- | ---------- | ------- | ------- | ----- |
+| pkg      | acn        | slo     | nlo     | idx   |
+| tool out | acr        | sls     | nls     | ind   |
+| tool log | alg        | slg     | nlg     | ilg   |
 
-What is created in any case is an `ist` file. 
+So I suspect, just watching out for `gls` as done presently, 
+is not sufficient to find out whether to invoke `makeglossaries`. 
+In fact, the file endings which may occur is an open list, 
+because arbitrary new glossaries may be created in the way, e.g. acronyms are created via 
+
+```
+\newglossary[alg]{acronym}{acr}{acn}{\acronymname}
+```
+
+Thus, this builder shall be restricted to kinds of glossaries 
+created by an option to package `glossaries`. 
+
+What is created in any case is an `ist` file by default or an `xdy` file for option `xindy`, 
+which is described below. 
 
 
 Compared to the AUX file of `glossaries.tex`, which contains `\rovidecommand\@gls` and `\@gls@reference` directly, 
