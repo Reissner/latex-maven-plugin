@@ -10,8 +10,8 @@ import java.security.NoSuchAlgorithmException;
  * and a hash computed from these lines. 
  * The the hash is computed with fixed algorithm {@link #ALGORITHM}. 
  * <p>
- * The relevant parts of a file is given by an {@link #Auxiliary}, 
- * So, the constructor has signature {@link #FileId(File, Auxiliary)}. 
+ * The relevant parts of a file is given by an {@link Auxiliary}, 
+ * So, the constructor has signature {@link #FileId()}. 
  * <p>
  * If two files coincide in their relevant lines, 
  * their {@link FileId}s coincide, 
@@ -33,22 +33,34 @@ public class FileId {
    * The algorithm used to compute the hash {@link #hash} 
    * from lines of a file determined by an {@link Auxiliary}. 
    * 
-   * @see #FileId(File, Auxiliary)
+   * @see #FileId()
    */
   private static final String ALGORITHM = "MD5";
 
   /**
    * The number of lines written in a file relevant for the {@link Auxiliary} 
-   * given by the constructor {@link #FileId(File, Auxiliary)}. 
+   * initialized by the constructor {@link #FileId()} 
+   * and incremented by {@link #update(String)}. 
    */
   private int numLines;
 
-  /*
-   * The hash of lines the number of which is given by {@link #numLines}. 
+  /**
+   * The intermediate digest of a file relevant for the {@link Auxiliary} 
+   * initialized by the constructor {@link #FileId()} 
+   * and incremented by {@link #update(String)}. 
+   * At the end, {@link #finalizFileId()} is invoked 
+   * which hashes the result and writes it into {@link #hash}. 
+   */
+  private MessageDigest md;
+
+  /**
+   * The hash of lines the number of which is given by {@link #numLines} 
+   * computed from {@link #md}. 
+   * This is initially <code>null</code> 
+   * and properly initialized by {@link #finalizFileId()}. 
    */
   private String hash;
 
-  private MessageDigest md;
 
   FileId() {
     try {

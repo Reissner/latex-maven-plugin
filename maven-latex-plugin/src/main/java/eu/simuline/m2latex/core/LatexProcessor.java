@@ -27,7 +27,6 @@ import java.time.Instant;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -317,7 +316,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * via  {@link Target#getPatternOutputFiles(Settings)}. 
    * If no exception occurs before, they are copied to the target folder. 
    * Finally, by default a cleanup is performed 
-   * invoking {@link TexFileUtils#cleanUp(DirNode, File)}. 
+   * invoking {@link TexFileUtils#cleanUp(DirNode, File, String)}. 
    * <p>
    * Logging: 
    * <ul>
@@ -861,10 +860,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * or a MakeGlossaries run fails
    * or if a BibTeX run or a MakeIndex or a MakeGlossary run issues a warning
    * in the according methods
-   * {@link #runLatex2dev(LatexMainDesc, LatexDev)},
-   * {@link #runBibtexByNeed(LatexMainDesc)},
-   * {@link #makeIndexByNeed(LatexMainDesc)} and
-   * {@link #runMakeGlossaryByNeed(LatexMainDesc)}.
+   * {@link #runLatex2dev(LatexMainDesc, LatexDev)} and 
+   * {@link Auxiliary#process(LatexMainDesc, LatexProcessor)}. 
    * <p>
    * Logging:
    * <ul>
@@ -979,7 +976,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
   private static final FileId EMPTY_FILE_ID = new FileId().finalizFileId();
 
   /**
-   * Wraps {@link Auxiliary#update(File))} 
+   * Wraps {@link Auxiliary#update(File)} 
    * catching the IOException 
    * and transforming it into WLP10 
    * indicating that rerun check is degraded. 
@@ -991,7 +988,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * @return
    *    the identifier for the file <code>file</code> 
    *    tied to the auxiliary <code>aux</code> 
-   *    according to {@link Auxiliary#update(File))}, 
+   *    according to {@link Auxiliary#update(File)}, 
    *    except if the latter throws an exception. 
    *    In that case, {@link #EMPTY_FILE_ID} is returned. 
    */
@@ -1152,7 +1149,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    *    matching in the log file <code>logFile</code>.
    * @see TexFileUtils#matchInFile(File, String)
    */
-  // used in processLatex2devCore and in runBibtexByNeed only
+  // used in processLatex2devCore only
   // TBD: eliminate Converter again and replace by ConverterCategory
   // including also the rerun pattern.
   boolean needRun(boolean another, String cmdStr, File logAuxFile,
@@ -1929,46 +1926,6 @@ public class LatexProcessor extends AbstractLatexProcessor {
         + this.settings.getPatternWarnXindy());
         return true;
       } // runMakeGlossary
-
-  /**
-   * Runs the PythonTeX command given by {@link Settings#getPythontexCommand()}
-   * on the pytxcode-file corresponding with <code>texFile</code>
-   * in the directory containing <code>texFile</code>, 
-   * provided the pytxcode-file exists.
-   * <p>
-   * Logging:
-   * <ul>
-   * <li>EAP01: Running <code>pythontex</code> failed. For details...
-   * <li>EAP02: Running <code>pythontex</code> failed. No log file
-   * <li>WAP03: Running <code>pythontex</code> emitted warnings.
-   * <li>WAP04: if <code>logFile</code> is not readable.
-   * <li>WLP02: Cannot read plg file: run required?
-   * <li>WFU03: cannot close
-   * <li>EEX01, EEX02, EEX03, WEX04, WEX05:
-   * if running the PythonTeX command failed.
-   * </ul>
-   *
-   * @param desc
-   *     the description of a latex main file <code>texFile</code>
-   *     including the idx-file MakeGlossaries is to be run on.
-   * @return
-   *     Whether PythonTeX has been invoked
-   *     Equivalently, whether LaTeX has to be rerun because of PythonTeX.
-   * @throws BuildFailureException
-   *     TEX01 if invocation of the BibTeX command
-   *     returned by {@link Settings#getPythontexCommand()} failed.
-   */
-  private boolean runPythontexByNeed(LatexMainDesc desc)
-      throws BuildFailureException {
-
-    boolean needRun = desc.withSuffix(Auxiliary.Pyt.extension()).exists();
-    this.log.debug("Pythontex run required? " + needRun);
-    if (!needRun) {
-      return false;
-    }
-    return runPythontex(desc);
-
-  } // runPythontexByNeed
 
   boolean runPythontex(LatexMainDesc desc)
       throws BuildFailureException {
