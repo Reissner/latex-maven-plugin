@@ -225,7 +225,6 @@ $max_repeat=30;
 $cleanup_includes_cusdep_generated = 1;
 $cleanup_includes_generated = 1;
 
-#$makeindex = 'makeindex %O -o %D %S'; # the default
 
 # TBD: clarify: xdv and dvi seem to be internal. 
 # maybe missing other extensions in conjunction with synctex
@@ -420,7 +419,7 @@ sub run_makeglossaries {
     system "makeglossaries", "$base_name"; #windows
   };
 
-  popd; # ... and cd-ing back again
+  popd(); # ... and cd-ing back again
 }
 
 
