@@ -45,7 +45,7 @@ jobs:
     - name: update apt 
       run: sudo apt-get update -y
     - name: install additional packages 
-      run: sudo apt-get install -y transfig gnuplot inkscape
+      run: sudo apt-get install -y transfig gnuplot inkscape poppler-utils
 
     # - name: install additional packages 
     #   uses: awalsh128/cache-apt-pkgs-action@latest
