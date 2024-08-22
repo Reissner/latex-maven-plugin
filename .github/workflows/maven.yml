@@ -45,7 +45,7 @@ jobs:
     - name: update apt 
       run: sudo apt-get update -y
     - name: install additional packages 
-      run: sudo apt-get install -y transfig gnuplot inkscape poppler-utils
+      run: sudo apt-get install -y transfig gnuplot inkscape poppler-utils coreutils
 
     # - name: install additional packages 
     #   uses: awalsh128/cache-apt-pkgs-action@latest
@@ -67,6 +67,7 @@ jobs:
       working-directory: ./maven-latex-plugin
     - name: log
       run: cat src/site/tex/recorderOption/recorder.log
+      working-directory: ./maven-latex-plugin
 
     # This is with diff also. 
     # It does work for xfigFormat.tex, robustsample.tex, latexEngines.tex, latexEngines.tex, 
