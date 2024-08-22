@@ -65,6 +65,8 @@ jobs:
       run: mvn -B process-resources latex:cfg --file pom.xml #-Dmaven.test.skip=true
       # Note that the tests are not necessary, but ... used a different pom. 
       working-directory: ./maven-latex-plugin
+    - name: log
+      run: cat src/site/tex/recorderOption/recorder.log
 
     # This is with diff also. 
     # It does work for xfigFormat.tex, robustsample.tex, latexEngines.tex, latexEngines.tex, 
