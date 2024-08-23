@@ -13,6 +13,8 @@ rerunfilecheck
 xcolor
 hyperref
 luamplib
+babel
+csquotes
 import
 amsmath
 tools
