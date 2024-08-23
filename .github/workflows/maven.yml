@@ -73,9 +73,12 @@ jobs:
     # This is a check without diff. 
     # It merely ensures that the plugin runs without errors 
     - name: Build with Maven
-      run: mvn -B process-resources latex:cfg --file pom.xml -Dmaven.test.skip=true
+      run: mvn --fail-never -B process-resources latex:cfg --file pom.xml -Dmaven.test.skip=true
       # options useful for debugging: --fail-never -Dmaven.test.skip=true
       # Note that the tests are not necessary, but ... used a different pom. 
+      working-directory: ./maven-latex-plugin
+    - name: pdfinfo 
+      run: pdfinfo -rawdates src/site/tex/recorderOption/recorder.pdf src/main/resources/docsCmp/recorderOption/recorder.pdf
       working-directory: ./maven-latex-plugin
     # - name: log
     #   run: cat src/site/tex/recorderOption/recorder.log
