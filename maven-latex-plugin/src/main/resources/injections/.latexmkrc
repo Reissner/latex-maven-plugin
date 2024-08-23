@@ -185,6 +185,7 @@ sub run_latex($fileName, @opts) {
     # Note that $timeEnv is first of all suitable for the latex compiler. 
     # strictly speaking FORCE_SOURCE_DATE is not needed; the other variables are needed 
     # to set up 
+    # TBC: ignores options %O from latexmk, acceptable
     $res = $res or system("$timeEnv${getDvi2pdfCommand()} ${dvi2pdfOptions} $fileName");
   }
   #print("invoke: ${getLatex2pdfCommand()} ${latex2pdfOptions} @opts $fileName\n");
@@ -207,7 +208,7 @@ sub run_latex($fileName, @opts) {
 # to configure bibtex 
 # bbl files are never precious 
 $bibtex_use = 2;
-$bibtex = "${bibtexCommand} ${bibtexOptions} %S";# default: bibtex %O %S
+$bibtex = "${bibtexCommand} ${bibtexOptions} %O %S";# default: bibtex %O %S
 
 
 
@@ -357,12 +358,12 @@ sub inkscape {
 
 
 # use splitindex 
-$makeindex = 'internal run_makeSplitindex %A';
+$makeindex = 'internal run_makeSplitindex %A %O';
 #$makeindex = "${makeIndexCommand} ${makeIndexOptions} %S";# 'makeindex -s german -g %S';
 # TBD: take splitindex into account also 
 # ${splitIndexCommand} ${splitIndexOptions} %S
 
-sub run_makeSplitindex($fileName) {
+sub run_makeSplitindex($fileName, @opts) {
   # Use splitindex instead of makeindex.
   # The splitindex programe starts from an .idx file, makes a set of
   #   other .idx files for separate indexes, and then runs makeindex to
@@ -386,8 +387,13 @@ sub run_makeSplitindex($fileName) {
   # detecting whether to invoke makeindex or splitindex. 
   # my $ret1 = system( "makeindex", $$Psource );
   # my $ret2 = system( "splitindex", $$Psource );
-  my $ret1 = system("${makeIndexCommand} ${makeIndexOptions} $fileName");
-  my $ret2 = system("${splitIndexCommand} ${splitIndexOptions} $fileName");
+  # TBD: adapt documentation, do further research 
+  # which options are allowed for splitindex? 
+  # splitindex doc unveils: may be used with xindy also, 
+  # but, can we just put makeIndexCommand=xindy? 
+  # or is this different? 
+  my $ret1 = system("${makeIndexCommand} ${makeIndexOptions} @opts $fileName");
+  my $ret2 = system("${splitIndexCommand} -makeindex ${makeIndexCommand} ${splitIndexOptions} $fileName -- ${makeIndexOptions} @opts");
   return $ret1 || $ret2;
 }
 
