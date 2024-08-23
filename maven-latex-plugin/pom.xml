@@ -1093,28 +1093,20 @@
               but this does not work properly. 
               There is an according entry in the backlog in changes.xml 
               and a more detailled description in PdfMojoTest.java -->
-            <!--chkDiff>true</chkDiff-->
-            <targets>pdf</targets><!--chk.pdf.html-->
+            <chkDiff>true</chkDiff>
+            <targets>chk,pdf,html</targets><!--chk,pdf,html-->
             <!-- <targets>chk,pdf,html</targets> -->
             <!--pdfViaDvi>true</pdfViaDvi-->
-            <!--latexmkUsage>AsBackend</latexmkUsage-->
+            <latexmkUsage>AsBackend</latexmkUsage><!--Fully NotAtAll AsBackend-->
 
-
+            <!-- TBD: the default does not seem appropriate -->
             <!--diffDirectory>src/main/resources/docsCmp</diffDirectory-->
             <!--targets>chk,pdf,html</targets-->
             <!--docClassesToTargets>article,book:chk,dvi,pdf,html,odt,docx,rtf,txt beamer:chk,pdf,txt</docClassesToTargets-->
             <!--mainFilesIncluded>testtest</mainFilesIncluded-->
             <!--patternLatexMainFile>
-\A
-(%\s*!\s*T[eE]X (TXS|spellcheck|encoding|root).*\R)*
-(%\s*!\s*T[eE]X program\s*=\s*(?&lt;programMagic&gt;[^} ]+)\R)?
-(%\s*!\s*T[eE]X .*\R)*
-% !LMP (?&lt;latexmkMagic&gt;latexmk)\R
-(%\s*!\s*LMP targets=(?&lt;targetsMagic&gt;(\p{Lower}|,)+)\R)?
-\\RequirePackage\s*(\[(\s|\w|[,=])*\])?\s*\{(\w|-)+\}\s*(\[(\d|[.-/])+\])?\R
-\\(documentstyle|documentclass)\s*(\[[^]]*\])?\s*\{(?&lt;docClass&gt;[^} ]+)\}
             </patternLatexMainFile-->
-            <!--mainFilesIncluded>xfigFormat</mainFilesIncluded-->
+            <!--mainFilesIncluded>manualLMP</mainFilesIncluded-->
             <mainFilesExcluded>test useBeamerHandout</mainFilesExcluded>
             <pythontexCommand>pythontexW:pythontex</pythontexCommand>
             <pythontexOptions>--rerun=always</pythontexOptions>
