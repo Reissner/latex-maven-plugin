@@ -1088,7 +1088,6 @@
             <!--latex2pdfCommand>xelatex</latex2pdfCommand-->
             <!--pdfViaDvi>true</pdfViaDvi-->
             <cleanUp>false</cleanUp>
-            <!--chkDiff>true</chkDiff-->
             <!-- This is a hack: here it should be the default chkDiff=false, 
               and only in pom4pdf.xml it shall be chkDiff=true, 
               but this does not work properly. 
