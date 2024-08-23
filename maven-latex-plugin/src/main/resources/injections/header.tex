@@ -167,10 +167,17 @@
     %  \usepackage{showidx}
     \makeindex
     % TBD: eliminate; loads amsmath!!! 
+    % Concerning this section there is an entry in changes.xml 
+    % There are also articles and so which do not need glossaries. 
+    % So loading glossaries and invoking \makeglossaries 
+    % may not be appropriate. 
+    % \makeglossaries emits a warning if no \printglossaries is present 
+    % so currently a compromise: load package glossaries 
+    % but dont invoke \makeglossaries. 
     \usepackage[toc]{glossaries}%,automake
     % , xindy or even [xindy={language=english,codepage=utf8}]
     % mainly for index and glossaries 
-    \makeglossaries% TBD: activate later
+    %\makeglossaries%
   }
 }
 

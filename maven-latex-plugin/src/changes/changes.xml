@@ -1184,14 +1184,247 @@ Better even: indicate that targets are overwritten.. make a check. -->
      Thus pythontex shall consistently update its data files. 
      When changing initial data files 
      it must be ensured that pythontex is rerun -->
-     <!-- pythontex-files occurs literally in parameters 
+
+
+    <!-- Deep conceptual problem(s) with initial run and rerun file check. 
+      This applies to rerunfilecheck for auxiliary tools, i.e. postprocessing 
+      Some overview LatexProcessor.preProcessLatex2dev and callers 
+      - bibtex is the sole which works well, 
+        because it transforms bib+aux->bbl 
+        and the target does not change because of *latex rerun 
+        and so no rerun is required. 
+        The only problem is, how to find out that bibtex shall be invoked initially: 
+        if aux file exists AND 
+        matches LatexProcessor.PATTERN_NEED_BIBTEX_RUN = "^\\\\bibdata";
+      - check for biber; I think quite analogous. 
+      - makeindex in contrast is to be invoked initially if idx is present, 
+        without further matching any pattern. 
+        As described in the manual, Section 5.3, this holds even for splitindex. 
+        A rerun is required if and only if the idx file changes. 
+        This can be caused by a *latex run because page numbers change. 
+        Currently this is checked (successfully) using package rerunfilecheck. 
+      - TBD: check for xindy also: I think quite analogous 
+      - makeglossaries is to be invoked initially if the glo file exists. 
+        A rerun is necessary if the glo file changes. 
+        As for indices, this may occur if page numbers change. 
+        This is not really realized by rerunfilecheck, 
+        although an according bug in rerunfilecheck had been fixed.. well almost... 
+        The entry in the log file is still wrong, 
+        There is a problem with overwriting makeglossaries/makeglossary.. 
+      - bib2gls is a newer and by far superior way to get glossaries. 
+        The drawback is, that it starts with the aux file also, 
+        like does bibtex and needs also a particular pattern. 
+        In contrst to bibtex but like makeglossaries, 
+        a *latex run may make a rerun of bib2gls necessary. 
+        One could be very raw and do that if the aux file changes, 
+        but one could be more specific, 
+        recording changes only of the lines referring to the glossary 
+        according to the pattern.  
+      - pythontex is run initially if SUFFIX_PYC = ".pytxcode" is present. 
+        CAUTION: it turned out, that, 
+        if code occurs in (captions of) floating objects, 
+        the pytxcode file may change, so the case is 
+        - not that of bibtex (no further invocation)
+        - but that of makeindex (possibly further invocation) 
+        Here, we would need an extension of rerunfilecheck. 
+        Note that typically the pytxcode becomes longer, 
+        because captions are added, 
+        but sometimes also the ordering changes as a caption moves. 
+      - Finally, rerunfilecheck is used to detect the need to rerun *latex. 
+        Of course, if one of the above postprocessing is done, 
+        *latex must be run after, 
+        but there are also cases where *latex must be run alone, 
+        e.g. in change in aux file, both of latex main 
+        and of included TEX files. 
+        It is obvious, that there are also cases where more files are written, 
+        like in the beamer class 
+        and if there is another class or package, 
+        no one can guarantee, that rerunfileckeck detects the need to rerun *latex. 
+        And it is at risk to get a correction at all or even quickly. 
+      - toc, lof, lot, lol: all could be hashed and could trigger rerun of *latex 
+        without further postprocessing 
+
+      All these observations led to the idea, 
+      to restrict rerunfilecheck to rerun of *latex in the first step. 
+      In the second one, using -recorder, one can detect also aux files 
+      of included files so rerunfilecheck is no longer needed at all. 
+
+      For rerunfilecheck of postprocessing we mimic rerunfilecheck 
+      and make it more flexible: 
+      Initial invocation is tied on presence of file (if not no rerun). 
+      If present, compute md5 sha-512 (fast, little collision) and filesize. 
+      Rerun is based on a change in filesize || md5. 
+      
+      This approach allows for a very much unified design. 
+
+      java.security.MessageDigest md = MessageDigest.getInstance("SHA-512");// is fastest
+      new org.apache.commons.codec.digest.DigestUtils(md);
+      String md5 = DigestUtils.md5Hex(InputStream data);// the according file 
+
+      The strategy is to reimplement for makeindex only. 
+      Then maybe for makeglossaries, just to fix bugs. 
+      Then add pythontex to be able to compile my paper on FIR notch filters. 
+      I know, after comes modernization of tools 
+      (biber, bib2gls and xindy replacing their old fashioned counterparts), 
+      but before, some redesign is in place. 
+
+      Design: Enums of postprocessors. 
+      This knows the file ending triggering the postprocessor 
+      and also the pattern to accept a line (possibly accept all). 
+      In LatexProcessor.preProcessLatex2dev, 
+      after initial invocation of *latex, 
+      loop through the postprocessors and trigger postprocessing by need. 
+      In parallel create lengh,md5 of files 
+      and store in a Map<PostProc,LenCredential>
+      
+      For rerun check, rerun is only done if postprocessing was executed. 
+      After at least one postprocessing, or if 
+     -->
+
+    <!-- maybe only a matter of documentation initially: 
+     whereas latexmk takes dependencies to bib files into account, 
+     but also data files pythontex computations depend on, 
+     This software does not. 
+     Latexmk is a tool for document development 
+     and so needs to rerun consistently if anything changes, 
+     in particular if invoked as `latexmk -pvc xxx`, 
+     whereas this latex builder is a build tool 
+     assuming that during its build step no external changes occur. -->
+
+    <!-- pythontex-files occurs literally in parameters 
       patternCreatedFromLatexMain and -->
 
     <!-- in TexFileUtils.deleteX an assertion does not work safely, 
      when building with assertions enabled. 
      The codepoint is documented there. -->
 
-    <release version="2.1" date="2023-08-28" description="build with latexmk and generalized reproducibility">
+    <!-- Eliminated patternRerunMakeIndex/Glossaries 
+      This must be reflected by manual. -->
+
+      <!-- Do research on alternative `makeglossaries-lite` of `makeglossaires` -->
+
+      <!-- \newglossary allows to let latex create files with arbitrary endings. 
+       Difficult to clean up. 
+
+       mayabe stick to the predefined ones: 
+
+       2.5 Acronym Options
+`acronym`: This creates a new glossary with the label acronym. This is equivalent to:
+
+      \newglossary[alg]{acronym}{acr}{acn}{\acronymname}
+
+`symbols`: This option defines a new glossary type with the label symbols via 
+
+      \newglossary[slg]{symbols}{sls}{slo}{\glssymbolsgroupname}
+      It also defines
+      \printsymbols
+      \printsymbols[h optionsi]
+      which is a synonym for
+      72
+
+      \printglossary[type=symbols,h options i]
+      If you use Option 1, you need to use:
+      \printnoidxglossary[type=symbols,hoptionsi]
+      to display the list of symbols.
+      Remember to use the nomain package option if you’re only
+      interested in using this symbols glossary and don’t intend to use
+      the main glossary.
+
+`numbers`: This option defines a new glossary type with the label numbers via
+      \newglossary[nlg]{numbers}{nls}{nlo}{\glsnumbersgroupname}
+    It also defines
+    \printnumbers
+    \printnumbers[h optionsi]
+    which is a synonym for
+    \printglossary[type=numbers,h options i]
+    If you use Option 1, you need to use:
+    \printnoidxglossary[type=numbers,hoptionsi]
+    to display the list of numbers.
+    Remember to use the nomain package option if you’re only
+    interested in using this numbers glossary and don’t intend to use
+    the main glossary.
+
+`index` This option defines a new glossary type with the label index via
+        \newglossary[ilg]{index}{ind}{idx}{\indexname}%
+
+      \newterm
+      \printindex
+      It also defines
+      2 Package Options
+      \newterm[hoptionsi]{ hterm i}
+      which is a synonym for
+      \newglossaryentry{hterm i}[type=index,name={hterm i},%
+      description=\nopostdesc,hoptionsi]
+      and
+      \printindex[hoptionsi ]
+      which is a synonym for
+      \printglossary[type=index,hoptionsi ]
+      If you use Option 1, you need to use:
+      \printnoidxglossary[type=index, hoptionsi]
+      to display this glossary.
+      Remember to use the nomain package option if you’re only
+      interested in using this index glossary and don’t intend to use the
+      main glossary. Note that you can’t mix this option with \index.
+      Either use glossaries for the indexing or use a custom indexing
+      package, such as makeidx, index or imakeidx. (You can, of course,
+      load one of those packages and load glossaries without the index
+      package option.)
+      Since the index isn’t designed for terms with descriptions, you might
+      also want to disable the hyperlinks for this glossary using the package
+      option nohypertypes=index or the command
+      \GlsDeclareNoHyperList{index}
+      The example file sample-index.tex illustrates the use of the index
+      package option.
+-->
+      <!-- some issues with makeglossaries: 
+       - restrict to a special usage in ./Glossaries/glossariesMake.tex and glossariesXindy.tex 
+       - no support for explicit \newglossary[alg]{acronym}{acr}{acn}{\acronymname} 
+         but only the options described in ./Glossaries/glossariesOverview.md 
+         That way the number of files created is limited. 
+         - this allows cleanup because finite set of files 
+           besides files related with special glossaries 
+           dont forget files `ist` for makeindex and `xdy` for xindy 
+         - parse log in a limited set of files 
+           "glg", "alg", "slg", "nlg", "ilg"
+           Not one of them but all. 
+           Note that the log files are written either by makeindex or by xindy. 
+           So no special pattern for makeglossaries: this must be eliminated. 
+           Instead: use one pattern for makeindex and other for xindy, 
+           which has to be added. 
+            -->
+
+
+    <!-- I suspect that neither bibliography, nor index nor a glossary is mandatory. 
+     This is even the case for article or book. 
+     Nevertheless, in header.tex there is a section 
+
+     \IfClassLoadedTF{scrlttr2}{%
+}{
+  % index and glossary
+  \IfPackageLoadedTF{tex4ht}{
+  }{
+    \usepackage{splitidx}%[split]
+    %  \usepackage{makeidx}
+    %  \usepackage{showidx}
+    \makeindex
+    % TBD: eliminate; loads amsmath!!! 
+    \usepackage[toc]{glossaries}%,automake
+    % , xindy or even [xindy={language=english,codepage=utf8}]
+    % mainly for index and glossaries 
+    %\makeglossaries% TBD: activate later
+  }
+}
+
+The glossaries are eliminated: \makeglossaries, because this causes a warning 
+if no according \printglossaries is present. 
+Note that this is unlike \makeindex which is calm even if there is no index. 
+
+We shall wait with rework until package glossaries-extra and tool bib2gls is introduced. 
+     
+     -->
+
+    <release version="2.1" date="2023-08-28" 
+      description="build with latexmk and generalized reproducibility, readed glossary">
       <action dev='reissner' type='fix'>
         Based on new rerun algorithm could reliably re-add classical glossary to manual. 
       </action>

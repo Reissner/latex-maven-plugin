@@ -30,6 +30,23 @@
 \else
 \fi
 \input{header.tex}
+\IfPackageLoadedTF{tex4ht}{
+}{
+  % TBD: clarify: 
+  % whereas \makeindex does not cause a warning, /makeglossaries does. 
+  % One has to decide whether each document must have a bibliography, an index and a glossary. 
+  % I think neither. 
+  % so, shall be moved out of the general header. 
+  % \usepackage{splitidx}%[split]
+  % %  \usepackage{makeidx}
+  % %  \usepackage{showidx}
+  % \makeindex
+  % % TBD: eliminate; loads amsmath!!! 
+  %\usepackage[toc]{glossaries}%,automake
+  % , xindy or even [xindy={language=english,codepage=utf8}]
+  % mainly for index and glossaries 
+  \makeglossaries
+}
 \setMinorVersionPdf{7}% because of gnuplot file only 
 % how to number the glossary in the toc? seemingly a gap in tocbibind 
 %\usepackage[nottoc, numindex, numbib]{tocbibind}
