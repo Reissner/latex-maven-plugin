@@ -53,7 +53,7 @@ jobs:
       #https://github.com/marketplace/actions/install-and-cache-apt-tools
     - name: install additional packages
       # graphics: transfig gnuplot inkscape 
-      # pdfinfo: poppler-utils
+      # pdf utilities: poppler-utils (pdfinfo, pdftotext)
       run: sudo apt-get install -y transfig gnuplot inkscape poppler-utils
 
     # - name: install additional packages 
@@ -79,6 +79,8 @@ jobs:
       # options useful for debugging: --fail-never -Dmaven.test.skip=true
       # Note that the tests are not necessary, but ... used a different pom. 
       working-directory: ./maven-latex-plugin
+    - name: diff visual
+      run: diff <(pdftotext -layout src/site/tex/recorderOption/recorder.pdf /dev/stdout) <(pdftotext -layout src/main/resources/docsCmp/recorderOption/recorder.pdf /dev/stdout)
     - name: pdfinfo 
       run: |
         pdfinfo -rawdates src/site/tex/recorderOption/recorder.pdf 
