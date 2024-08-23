@@ -85,25 +85,9 @@ enum Auxiliary {
     }
 
     boolean doesFitAuxiliary(File file) {
-      if (!file.exists()) {
-        return false;
-      }
-
-      try (BufferedReader bufferedReader =
-          new BufferedReader(new FileReader(file))) {
-        for (String line = bufferedReader.readLine(); line != null;
-            // readLine may thr. IOException
-            line = bufferedReader.readLine()) {
-          if (PATTERN_NEED_BIBTEX_RUN.matcher(line).find()) {
-            return true;
-          }
-        } // for 
-        return false;
-      } catch (IOException e) {
-        // TBD: add warning 
-        return true;
-      }
+      return doesFitAuxiliary(file, PATTERN_NEED_BIBTEX_RUN);
     }
+
 
     int numRunsAfter() {
       return 2;
@@ -119,34 +103,12 @@ enum Auxiliary {
      * into account, but also files included 
      * via command {@link #PATTERN_INPUT}. 
      */
-    FileId update(File file) throws IOException {
+    FileId getIdent(File file) throws IOException {
       //System.out.println("update:Bibtex");
-      return update(file, new FileId());
+      return updateIdent(file, new FileId(), PATTERN_BIBTEX);
     }
 
-    private FileId update(File file, FileId fileId) throws IOException {
-      File parent = file.getParentFile();
-      String inFile;
-      try (BufferedReader bufferedReader =
-          new BufferedReader(new FileReader(file))) {
-        for (String line = bufferedReader.readLine(); line != null;
-            // readLine may thr. IOException
-            line = bufferedReader.readLine()) {
-          if (PATTERN_BIBTEX.matcher(line).find()) {
-            fileId.update(line);
-            continue;
-          }
-          Matcher matcher = PATTERN_INPUT.matcher(line);
-          if (matcher.find()) {
-            inFile = matcher.group(GRP_INPUT);
-            assert inFile.endsWith(this.extension());
-            // ignore return value 
-            update(new File(parent, inFile), fileId);
-          }
-        } // for 
-      } // try 
-      return fileId;
-    }
+
   },
   // /**
   //  * Bibliography processing with biblatex and biber. 
@@ -206,6 +168,9 @@ enum Auxiliary {
    */
   private static final Pattern PATTERN_NEED_BIBTEX_RUN =
       Pattern.compile("^\\\\bibdata");
+
+  private static final Pattern PATTERN_NEED_MAKEGLOSSARIES_RUN =
+      Pattern.compile("^\\\\@istfilename");
 
   // filename with .aux
   /**
@@ -292,8 +257,11 @@ enum Auxiliary {
    *    could not be read completely. 
    *    This degrades rerun detection. 
    */
-  FileId update(File file) throws IOException {
-    FileId fileId = new FileId();
+  FileId getIdent(File file) throws IOException {
+    return updateIdent(file, new FileId());
+  }
+
+  FileId updateIdent(File file, FileId fileId) throws IOException {
     //System.out.println("update:gen");
     try (BufferedReader bufferedReader =
         new BufferedReader(new FileReader(file))) {
@@ -305,4 +273,50 @@ enum Auxiliary {
     }
     return fileId;
   }
+
+  FileId updateIdent(File file, FileId fileId, Pattern patternAux) throws IOException {
+    File parent = file.getParentFile();
+    String inFile;
+    try (BufferedReader bufferedReader =
+        new BufferedReader(new FileReader(file))) {
+      for (String line = bufferedReader.readLine(); line != null;
+          // readLine may thr. IOException
+          line = bufferedReader.readLine()) {
+        if (patternAux.matcher(line).find()) {
+          fileId.update(line);
+          continue;
+        }
+        Matcher matcher = PATTERN_INPUT.matcher(line);
+        if (matcher.find()) {
+          inFile = matcher.group(GRP_INPUT);
+          assert inFile.endsWith(this.extension());
+          // ignore return value 
+          updateIdent(new File(parent, inFile), fileId, patternAux);
+        }
+      } // for 
+    } // try 
+    return fileId;
+  }
+
+  boolean doesFitAuxiliary(File file, Pattern pattern) {
+    if (!file.exists()) {
+      return false;
+    }
+
+    try (BufferedReader bufferedReader =
+        new BufferedReader(new FileReader(file))) {
+      for (String line = bufferedReader.readLine(); line != null;
+          // readLine may thr. IOException
+          line = bufferedReader.readLine()) {
+        if (pattern.matcher(line).find()) {
+          return true;
+        }
+      } // for 
+      return false;
+    } catch (IOException e) {
+      // TBD: add warning 
+      return true;
+    }
+  }
+
 }

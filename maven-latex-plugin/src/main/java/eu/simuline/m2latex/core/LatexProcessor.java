@@ -976,7 +976,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
   private static final FileId EMPTY_FILE_ID = new FileId().finalizFileId();
 
   /**
-   * Wraps {@link Auxiliary#update(File)} 
+   * Wraps {@link Auxiliary#getIdent(File)} 
    * catching the IOException 
    * and transforming it into WLP10 
    * indicating that rerun check is degraded. 
@@ -988,13 +988,13 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * @return
    *    the identifier for the file <code>file</code> 
    *    tied to the auxiliary <code>aux</code> 
-   *    according to {@link Auxiliary#update(File)}, 
+   *    according to {@link Auxiliary#getIdent(File)}, 
    *    except if the latter throws an exception. 
    *    In that case, {@link #EMPTY_FILE_ID} is returned. 
    */
   private FileId update(Auxiliary aux, File file) {
     try {
-      return aux.update(file).finalizFileId();
+      return aux.getIdent(file).finalizFileId();
     } catch(IOException ioe) {
       this.log.warn("WLP10: Degraded identifier for '" +file + 
       "'; augmented risk not to rerun although necessary. ");
