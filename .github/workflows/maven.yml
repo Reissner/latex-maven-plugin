@@ -81,6 +81,7 @@ jobs:
       working-directory: ./maven-latex-plugin
     - name: diff visual
       run: diff <(pdftotext -layout src/site/tex/recorderOption/recorder.pdf /dev/stdout) <(pdftotext -layout src/main/resources/docsCmp/recorderOption/recorder.pdf /dev/stdout)
+      working-directory: ./maven-latex-plugin
     - name: pdfinfo 
       run: |
         pdfinfo -rawdates src/site/tex/recorderOption/recorder.pdf 
