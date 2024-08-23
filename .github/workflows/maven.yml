@@ -80,14 +80,17 @@ jobs:
       # options useful for debugging: --fail-never -Dmaven.test.skip=true
       # Note that the tests are not necessary, but ... used a different pom. 
       working-directory: ./maven-latex-plugin
-    - name: diff visual
-      run: diff <(pdftotext -layout src/site/tex/recorderOption/recorder.pdf /dev/stdout) <(pdftotext -layout src/main/resources/docsCmp/recorderOption/recorder.pdf /dev/stdout)
+    - name: write logs
+      run: cat src/site/tex/./docClasses/useBeamerPres.log
       working-directory: ./maven-latex-plugin
-    - name: pdfinfo 
-      run: |
-        pdfinfo -rawdates src/site/tex/recorderOption/recorder.pdf 
-        pdfinfo -rawdates src/main/resources/docsCmp/recorderOption/recorder.pdf
-      working-directory: ./maven-latex-plugin
+    # - name: diff visual
+    #   run: diff <(pdftotext -layout src/site/tex/recorderOption/recorder.pdf /dev/stdout) <(pdftotext -layout src/main/resources/docsCmp/recorderOption/recorder.pdf /dev/stdout)
+    #   working-directory: ./maven-latex-plugin
+    # - name: pdfinfo 
+    #   run: |
+    #     pdfinfo -rawdates src/site/tex/recorderOption/recorder.pdf 
+    #     pdfinfo -rawdates src/main/resources/docsCmp/recorderOption/recorder.pdf
+    #   working-directory: ./maven-latex-plugin
     # - name: log
     #   run: cat src/site/tex/recorderOption/recorder.log
     #   working-directory: ./maven-latex-plugin
