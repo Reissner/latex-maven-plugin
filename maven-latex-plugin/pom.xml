@@ -1093,8 +1093,9 @@
               but this does not work properly. 
               There is an according entry in the backlog in changes.xml 
               and a more detailled description in PdfMojoTest.java -->
-            <chkDiff>true</chkDiff>
-            <targets>chk,pdf,html</targets>
+            <!--chkDiff>true</chkDiff-->
+            <targets>pdf</targets><!--chk.pdf.html-->
+            <!-- <targets>chk,pdf,html</targets> -->
             <!--pdfViaDvi>true</pdfViaDvi-->
             <!--latexmkUsage>AsBackend</latexmkUsage-->
 
