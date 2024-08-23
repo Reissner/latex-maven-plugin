@@ -49,8 +49,10 @@ jobs:
       run: cat /usr/bin/pythontexW
     - name: update apt 
       run: sudo apt-get update -y
-    - name: install additional packages 
-      run: sudo apt-get install -y transfig gnuplot inkscape poppler-utils #coreutils
+    - name: install additional packages
+      # graphics: transfig gnuplot inkscape 
+      # pdfinfo: poppler-utils
+      run: sudo apt-get install -y transfig gnuplot inkscape poppler-utils
 
     # - name: install additional packages 
     #   uses: awalsh128/cache-apt-pkgs-action@latest
