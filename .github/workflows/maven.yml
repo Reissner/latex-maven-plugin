@@ -30,7 +30,8 @@ jobs:
         cache: 'maven'
         # seems not to work 
     - name: Set up Maven
-      uses: stCarolas/setup-maven@v4.5
+    #@v4.5
+      uses: stCarolas/setup-maven@v5
       with:
         maven-version: 3.9.4
       # try @v5; still no caching 
@@ -49,6 +50,7 @@ jobs:
       run: cat /usr/bin/pythontexW
     - name: update apt 
       run: sudo apt-get update -y
+      #https://github.com/marketplace/actions/install-and-cache-apt-tools
     - name: install additional packages
       # graphics: transfig gnuplot inkscape 
       # pdfinfo: poppler-utils
@@ -78,7 +80,9 @@ jobs:
       # Note that the tests are not necessary, but ... used a different pom. 
       working-directory: ./maven-latex-plugin
     - name: pdfinfo 
-      run: pdfinfo -rawdates src/site/tex/recorderOption/recorder.pdf src/main/resources/docsCmp/recorderOption/recorder.pdf
+      run: |
+        pdfinfo -rawdates src/site/tex/recorderOption/recorder.pdf 
+        pdfinfo -rawdates src/main/resources/docsCmp/recorderOption/recorder.pdf
       working-directory: ./maven-latex-plugin
     # - name: log
     #   run: cat src/site/tex/recorderOption/recorder.log
