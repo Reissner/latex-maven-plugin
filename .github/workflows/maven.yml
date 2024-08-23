@@ -36,6 +36,7 @@ jobs:
       with:
         profile-path: ${{ github.workspace }}/.github/texlive.profile
         packages-path: ${{ github.workspace }}/.github/texlive.packages
+        cache-enabled: false
     - name: create pythontexW 
       # run: which pythontex yields /opt/hostedtoolcache/texlive/bin/x86_64-linux/pythontex
       # run: echo $PATH contains /usr/bin
