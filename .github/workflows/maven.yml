@@ -68,14 +68,15 @@ jobs:
     #   run: latexmk latexmk
     #   working-directory: ./maven-latex-plugin/src/site/tex/fdbLatexmk
 
-    - name: find
-      run: find src 
-      working-directory: ./maven-latex-plugin
+    # - name: find
+    #   run: find src 
+    #   working-directory: ./maven-latex-plugin
 
     # This is a check without diff. 
     # It merely ensures that the plugin runs without errors 
     - name: Build with Maven
-      run: mvn --fail-never -B process-resources latex:cfg --file pom.xml -Dmaven.test.skip=true
+      run: mvn --fail-never -B site-deploy --file pom.xml -Dmaven.test.skip=true
+      # process-resources latex:cfg 
       # options useful for debugging: --fail-never -Dmaven.test.skip=true
       # Note that the tests are not necessary, but ... used a different pom. 
       working-directory: ./maven-latex-plugin
