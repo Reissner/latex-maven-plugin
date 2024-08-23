@@ -67,3 +67,6 @@ $code --force --install-extension valentjn.vscode-ltex
 # perl (e.g. to configure latexmk)
 $code --force --install-extension d9705996.perl-toolbox
 $code --force --install-extension bscan.perlnavigator
+
+# pdf
+$code --force --install-extension tomoki1207.pdf
