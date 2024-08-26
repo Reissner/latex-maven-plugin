@@ -93,11 +93,6 @@ enum Auxiliary {
       return 2;
     }
 
-    boolean process(LatexMainDesc desc, LatexProcessor proc)
-        throws BuildFailureException {
-      return proc.runBibtex(desc);
-    }
-
     /**
      * Takes not only the AUX file <code>file</code> 
      * into account, but also files included 
@@ -107,6 +102,13 @@ enum Auxiliary {
       //System.out.println("update:Bibtex");
       return updateIdentInclude(file, new FileId(), PATTERN_BIBTEX);
     }
+
+    boolean process(LatexMainDesc desc, LatexProcessor proc)
+        throws BuildFailureException {
+      return proc.runBibtex(desc);
+    }
+
+
 
 
   },
