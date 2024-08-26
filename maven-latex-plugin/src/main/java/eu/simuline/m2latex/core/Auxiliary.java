@@ -140,7 +140,70 @@ enum Auxiliary {
   },
   Glo {
     String extension() {
-      return ".glo";
+      return ".aux";
+    }
+
+    boolean doesFitAuxiliary(File file) {
+      return doesFitAuxiliary(file, PATTERN_NEED_MAKEGLOSSARIES_RUN);
+    }
+
+    FileId getIdent(File file) throws IOException {
+      //System.out.println("update:Bibtex");
+      return updateIdentGls(file, new FileId());
+    }
+
+    // This need not be a seprate function. 
+    // It is, to be more extensible 
+    // if relevant material turns out to occur 
+    // which is not in the top level AUX file. 
+    /**
+     * Updates the identifier <code>fileId</code> 
+     * taking lines in <code>file</code> into account 
+     * matching {@link #PATTERN_INPUT_GLOSSARY} 
+     * indicating the presence of a specific glossary 
+     * and taking whole files into account 
+     * the name of which is the name of this AUX file 
+     * with the extension replaced by 
+     * the content of the group {@link #GRP_EXT_GLOSS}. 
+     * @param file
+     *    an AUX file from which the FileId is computed. 
+     * @param fileId
+     *    the empty FileId. 
+     * @return
+     *    the FileId created. 
+     * @throws IOException
+     */
+    FileId updateIdentGls(File file, FileId fileId) throws IOException {
+      // File parent = file.getParentFile();
+      // String inFile;
+      File glossFile;
+      try (BufferedReader bufferedReader =
+          new BufferedReader(new FileReader(file))) {
+        for (String line = bufferedReader.readLine(); line != null;
+            // readLine may thr. IOException
+            line = bufferedReader.readLine()) {
+          Matcher matcher = PATTERN_INPUT_GLOSSARY.matcher(line);
+          if (!matcher.find()) {
+            continue;
+          }
+          // Take all glossary files into account 
+          // which are created by makeglossaries 
+          fileId.update(line);
+          glossFile = TexFileUtils.replaceSuffix(file, 
+              "." + matcher.group(GRP_EXT_GLOSS));
+          System.out.println("gloss File: "+glossFile);
+          updateIdent(glossFile, fileId);
+          // We assume all is top level 
+          // Matcher matcher = PATTERN_INPUT.matcher(line);
+          // if (matcher.find()) {
+          //   inFile = matcher.group(GRP_INPUT);
+          //   assert inFile.endsWith(this.extension());
+          //   // ignore return value 
+          //   updateIdentInclude(new File(parent, inFile), fileId, patternAux);
+          // }
+        } // for 
+      } // try 
+      return fileId;
     }
 
     boolean process(LatexMainDesc desc, LatexProcessor proc)
@@ -165,12 +228,19 @@ enum Auxiliary {
 
   // maybe this is bad performance, scanning twice 
   /**
-   * The pattern signifying bibdata 
+   * The pattern signifying the presence of bibdata 
    * indicating that <code>bibtex</code> must be run. 
    */
   private static final Pattern PATTERN_NEED_BIBTEX_RUN =
       Pattern.compile("^\\\\bibdata");
 
+  /**
+   * The pattern signifying the the presence of an `istfile`, 
+   * which has indeed ending <code>ist</code> 
+   * for makeglossaries configured with makeindex 
+   * but which is <code>xdy</code> for xindy. 
+   * This detail does not affect the general pattern. 
+   */
   private static final Pattern PATTERN_NEED_MAKEGLOSSARIES_RUN =
       Pattern.compile("^\\\\@istfilename");
 
@@ -189,6 +259,26 @@ enum Auxiliary {
    * comprising the filename with ending. 
    */
   private static final String GRP_INPUT = "fileName";
+
+
+  /**
+   * Pattern which holds in braces 
+   * the name of the glossary, 
+   * the extension of the log file and of the file created by the auxiliary tool, 
+   * and finally the extension of the file created by the package <code>glossaries</code>. 
+   * Only the latter goes into computation of the hash. 
+   * Example: <code>\@newglossary{main}{glg}{gls}{glo}</code>. 
+   */
+  private static final Pattern PATTERN_INPUT_GLOSSARY =
+      Pattern.compile("\\\\@newglossary\\{.+\\}\\{.+\\}\\{.+\\}\\{(?<fileExt>.*)\\}");
+
+  /**
+   * The name of the group in pattern {@link #PATTERN_INPUT_GLOSSARY} 
+   * comprising the file extension of the file 
+   * created by a latex run by the package <code>glossaries</code> 
+   * holding the entries of the accoding glossary. 
+   */
+  private static final String GRP_EXT_GLOSS = "fileExt";
 
   /**
    * The pattern of the aux file 
@@ -302,6 +392,26 @@ enum Auxiliary {
     return fileId;
   }
 
+  /**
+   * Returns whether this {@link Auxiliary} fits which is assumed 
+   * if the <code>pattern</code> matches any line in <code>file</code>. 
+   * This is used to implement {@link #doesFitAuxiliary(File)} 
+   * for auxiliaries {@link #BibTex} and {@link #Glo}. 
+   * 
+   * @param file
+   *    the file the name of which is the according latex main file 
+   *    endowed with ending given by {@link #extension()}. 
+   * @param pattern
+   *    The pattern to be matched to lines in <code>file</code>. 
+   *    For {@link #BibTex}{@link #doesFitAuxiliary(File)} 
+   *    this method is invoked with pattern {@link #PATTERN_NEED_BIBTEX_RUN}, 
+   *    whereas for {@link #Glo}, 
+   *    the pattern is {@link #PATTERN_NEED_MAKEGLOSSARIES_RUN}. 
+   * @return
+   *    Whether <code>pattern</code> matches any line in <code>file</code>. 
+   * @see #BibTex{@link #doesFitAuxiliary(File)}
+   * @see #Glo{@link #doesFitAuxiliary(File)}
+   */
   boolean doesFitAuxiliary(File file, Pattern pattern) {
     if (!file.exists()) {
       return false;
