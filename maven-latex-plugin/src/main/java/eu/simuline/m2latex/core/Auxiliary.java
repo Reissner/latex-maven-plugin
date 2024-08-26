@@ -105,7 +105,7 @@ enum Auxiliary {
      */
     FileId getIdent(File file) throws IOException {
       //System.out.println("update:Bibtex");
-      return updateIdent(file, new FileId(), PATTERN_BIBTEX);
+      return updateIdentInclude(file, new FileId(), PATTERN_BIBTEX);
     }
 
 
@@ -274,7 +274,9 @@ enum Auxiliary {
     return fileId;
   }
 
-  FileId updateIdent(File file, FileId fileId, Pattern patternAux) throws IOException {
+  // invoked by BibTex.getIdent(File), Glo.getIdent(File) (strange) 
+  // and by itself. 
+  FileId updateIdentInclude(File file, FileId fileId, Pattern patternAux) throws IOException {
     File parent = file.getParentFile();
     String inFile;
     try (BufferedReader bufferedReader =
@@ -291,7 +293,7 @@ enum Auxiliary {
           inFile = matcher.group(GRP_INPUT);
           assert inFile.endsWith(this.extension());
           // ignore return value 
-          updateIdent(new File(parent, inFile), fileId, patternAux);
+          updateIdentInclude(new File(parent, inFile), fileId, patternAux);
         }
       } // for 
     } // try 
