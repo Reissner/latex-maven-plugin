@@ -510,6 +510,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
 
           File pdfFileCmp = pdfFileCmpOpt.get();
+          System.out.println("Artifact for comparison: "+pdfFileCmp);
           if (!pdfFileCmp.exists()) {
             // TBD: adapt identifier of warning 
             // THis shall occur only if a newly created or changed file shall be reproducible 
@@ -938,7 +939,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
         continue;
       }
       // TBC: can additional keys occur later? 
-      desc.aux2fileId.put(aux, update(aux, auxFile));
+      desc.aux2fileId.put(aux, getIdent(aux, auxFile));
 
       posterioryEntryInToc = aux.mayBeEntryInToc();
       aux.process(desc, this);
@@ -992,7 +993,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    *    except if the latter throws an exception. 
    *    In that case, {@link #EMPTY_FILE_ID} is returned. 
    */
-  private FileId update(Auxiliary aux, File file) {
+  private FileId getIdent(Auxiliary aux, File file) {
     try {
       return aux.getIdent(file).finalizFileId();
     } catch(IOException ioe) {
@@ -1086,7 +1087,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
       FileId fileId;
       for (Auxiliary aux : desc.aux2fileId.keySet()) {
         System.out.println("----------AUX: "+aux);
-        fileId = update(aux, desc.withSuffix(aux.extension()));
+        fileId = getIdent(aux, desc.withSuffix(aux.extension()));
 
         if (desc.aux2fileId.get(aux).equals(fileId)) {
           continue;
