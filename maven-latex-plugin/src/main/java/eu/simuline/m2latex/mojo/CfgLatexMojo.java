@@ -20,7 +20,6 @@ package eu.simuline.m2latex.mojo;
 
 import eu.simuline.m2latex.core.BuildFailureException;
 import eu.simuline.m2latex.core.Target;
-import eu.simuline.m2latex.core.LatexProcessor;
 
 import org.apache.maven.plugin.MojoFailureException;
 
