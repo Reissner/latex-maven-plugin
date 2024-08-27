@@ -2,6 +2,7 @@
 latex-bin
 metapost
 latexmk
+# latex contains classes, e.g. article, book, report, minimal
 latex
 chktex
 pythontex
@@ -13,8 +14,9 @@ glossaries-extra
 # classes
 beamer
 leaflet
-# scrlttr2 not in repository
-# minimal not in repository
+# koma-script contains scrlttr2
+koma-script
+# minimal contained in package 'latex' 
 # packages before \documentclass
 nag
 etoolbox
@@ -26,29 +28,27 @@ tools
 # packages from header.tex in proper order 
 # iftex  is already present 
 fontspec
-# inputenc not in repository
-# fontenc not in repository
+# inputenc contained in package 'latex' 
+# fontenc  contained in package 'latex' 
 babel
 csquotes
 geometry
 microtype
 anyfontsize
-# next maybe superfluous 
-# showkeys not present in repository 
+# showkeys contained in package 'latex' 
 rerunfilecheck
 xcolor
 hyperref
 import
 amsmath
-# longtable not in repository
+# longtable contained in package 'tools'
 xpatch
 fancyvrb
 booktabs
 xurl
 tocbibind
 # packages from headerGrp
-# graphicx not in repository
-# next replaces graphicx
+# graphicx contained in package 'graphics'
 graphics
 transparent
 # further packages
@@ -65,4 +65,6 @@ xstring
 pgfopts
 currfile
 
+# also needed 
 epstopdf-pkg
+lineno
