@@ -175,20 +175,29 @@ today mostly replaced by PDF}
 }
 
 % \newglossaryentry{latex}{name={latex},description={%
-% A document preparation system 
-% converting sources in the latex-format preferrably into pdf-output. 
+% First a file format based on \TeX with ending \gls{tex}, 
+% and secondly a document preparation system 
+% converting sources in the latex-format into a presentation format, 
+% preferrably into pdf-output. 
 % Historically, output was in \gls{dvi}-format 
 % which is still used by htlatex as an intermediate format 
 % to produce \gls{html} resp.~\gls{xhtml} and \gls{odt} output. 
+% %
+% Besides latex compilers, doing the proper conversion, 
+% this comprises many auxiliary programs, 
+% e.g. for bibliography but also to create graphics. 
 % }}
-% \newglossaryentry{htlatex}{name={htlatex},description={%
-% A script which wraps latex 
-% but producing (x)html and odt output instead of pdf 
-% which is usual for latex. 
+% \newglossaryentry{latexCMP}{name={latex compiler},description={%
+% Core part of the document preparation system \gls{latex}. 
 % }}
-%\newglossaryentry{ps}{name={PostScript},description={%
-%A computer language for creating vector graphics. 
-%}}
+% \newglossaryentry{lmf}{name={latex main file},description={%
+% A \gls{latex} file intended to be invoked by a \gls{latecCmp}. 
+% There are further \gls{latex} files which are not directly compiled 
+% but serve as input or include in other latex files. 
+% At the top of the input/include hierarchy there shall always be a latex main file; 
+% else the latex files are unused. 
+% }}
+
 
 
 
