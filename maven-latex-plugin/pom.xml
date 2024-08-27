@@ -1097,7 +1097,7 @@
             <targets>chk,pdf,html</targets><!--chk,pdf,html-->
             <!-- <targets>chk,pdf,html</targets> -->
             <!--pdfViaDvi>true</pdfViaDvi-->
-            <latexmkUsage>AsBackend</latexmkUsage><!--Fully NotAtAll AsBackend-->
+            <latexmkUsage>NotAtAll</latexmkUsage><!--Fully NotAtAll AsBackend-->
 
             <!-- TBD: the default does not seem appropriate -->
             <!--diffDirectory>src/main/resources/docsCmp</diffDirectory-->
@@ -1106,7 +1106,7 @@
             <!--mainFilesIncluded>testtest</mainFilesIncluded-->
             <!--patternLatexMainFile>
             </patternLatexMainFile-->
-            <mainFilesIncluded>manualLMP</mainFilesIncluded>
+            <!--mainFilesIncluded>manualLMP</mainFilesIncluded-->
             <mainFilesExcluded>test useBeamerHandout</mainFilesExcluded>
             <pythontexCommand>pythontexW:pythontex</pythontexCommand>
             <pythontexOptions>--rerun=always</pythontexOptions>
