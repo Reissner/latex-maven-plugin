@@ -41,14 +41,16 @@ xcolor
 hyperref
 import
 amsmath
-longtable
+# longtable not in repository
 xpatch
 fancyvrb
 booktabs
 xurl
 tocbibind
 # packages from headerGrp
-graphicx
+# graphicx not in repository
+# next replaces graphicx
+graphics
 transparent
 # further packages
 kvoptions
@@ -58,7 +60,6 @@ cm-super
 collection-fontsrecommended
 newverbs
 robustindex
-# graphics replaced by graphix?
 fvextra
 upquote
 xstring
