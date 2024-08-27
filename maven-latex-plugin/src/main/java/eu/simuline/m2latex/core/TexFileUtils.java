@@ -733,7 +733,7 @@ class TexFileUtils {
           lines = fromStart ? lines += line + "\n" : line;
           Matcher matcher = pattern.matcher(lines);
           if (matcher.find()) {
-            this.log.debug("Matched line: ;" + line + "'");
+            this.log.debug("Matched line: '" + line + "'");
             return FileMatch.fileMatch(matcher);// as match result TBD: .toMatchResult()
           }
         } // for 
