@@ -1106,7 +1106,7 @@
             <!--mainFilesIncluded>testtest</mainFilesIncluded-->
             <!--patternLatexMainFile>
             </patternLatexMainFile-->
-            <!--mainFilesIncluded>manualLMP</mainFilesIncluded-->
+            <mainFilesIncluded>manualLMP</mainFilesIncluded>
             <mainFilesExcluded>test useBeamerHandout</mainFilesExcluded>
             <pythontexCommand>pythontexW:pythontex</pythontexCommand>
             <pythontexOptions>--rerun=always</pythontexOptions>
