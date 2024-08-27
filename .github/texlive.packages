@@ -1,11 +1,14 @@
+# tools
 latex-bin
 metapost
 latexmk
+# classes
+beamer
+# packages 
 nag
 listings
 fontspec
 latex
-beamer
 geometry
 microtype
 anyfontsize
