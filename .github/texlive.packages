@@ -64,3 +64,5 @@ upquote
 xstring
 pgfopts
 currfile
+
+epstopdf-pkg
