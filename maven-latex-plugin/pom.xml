@@ -1107,7 +1107,7 @@
             <!--patternLatexMainFile>
             </patternLatexMainFile-->
             <!--mainFilesIncluded>manualLMP</mainFilesIncluded-->
-            <mainFilesExcluded>recorder useBeamerPres pythontexInOut productLeaflet fdbLatexmk testProgramNoLatexmk test useBeamerHandout</mainFilesExcluded>
+            <mainFilesExcluded>recorder useBeamerPres pythontexInOut productLeaflet fdbLatexmk testProgramNoLatexmk minTikz test useBeamerHandout</mainFilesExcluded>
             <pythontexCommand>pythontexW:pythontex</pythontexCommand>
             <pythontexOptions>--rerun=always</pythontexOptions>
             <!--patternErrPyTex>\* PythonTeX error|(PythonTeX:  .+ -|    - Current: ) [1-9][0-9]* error\(s\), [0-9]+ warning\(s\)</patternErrPyTex-->
