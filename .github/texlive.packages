@@ -24,8 +24,7 @@ listings
 tools
 
 # packages from header.tex in proper order 
-# next maybe superfluous 
-iftex 
+# iftex  is already present 
 fontspec
 # inputenc not in repository
 # fontenc not in repository
