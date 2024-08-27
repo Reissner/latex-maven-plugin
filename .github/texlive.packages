@@ -13,8 +13,8 @@ glossaries-extra
 # classes
 beamer
 leaflet
-scrlttr2
-minimal
+# scrlttr2 not in repository
+# minimal not in repository
 # packages before \documentclass
 nag
 etoolbox
@@ -24,16 +24,18 @@ listings
 tools
 
 # packages from header.tex in proper order 
-iftex # maybe superfluous 
+# next maybe superfluous 
+iftex 
 fontspec
-inputenc
-fontenc
+# inputenc not in repository
+# fontenc not in repository
 babel
 csquotes
 geometry
 microtype
 anyfontsize
-showkeys # maybe superfluous 
+# next maybe superfluous 
+# showkeys not present in repository 
 rerunfilecheck
 xcolor
 hyperref
@@ -46,7 +48,7 @@ booktabs
 xurl
 tocbibind
 # packages from headerGrp
-graphix
+graphicx
 transparent
 # further packages
 kvoptions
@@ -56,7 +58,7 @@ cm-super
 collection-fontsrecommended
 newverbs
 robustindex
-#graphics replaced by graphix?
+# graphics replaced by graphix?
 fvextra
 upquote
 xstring
