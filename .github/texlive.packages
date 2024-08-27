@@ -2,47 +2,63 @@
 latex-bin
 metapost
 latexmk
+latex
+chktex
+pythontex
+
+# tools with packages 
+splitindex
+glossaries
+glossaries-extra
 # classes
 beamer
-# packages 
+leaflet
+scrlttr2
+minimal
+# packages before \documentclass
 nag
+etoolbox
+tex4ht
+luamplib
 listings
+tools
+
+# packages from header.tex in proper order 
+iftex # maybe superfluous 
 fontspec
-latex
+inputenc
+fontenc
+babel
+csquotes
 geometry
 microtype
 anyfontsize
+showkeys # maybe superfluous 
 rerunfilecheck
 xcolor
 hyperref
-luamplib
-babel
-csquotes
 import
 amsmath
-tools
+longtable
 xpatch
 fancyvrb
-splitindex
-glossaries
 booktabs
 xurl
 tocbibind
+# packages from headerGrp
+graphix
+transparent
+# further packages
 kvoptions
 infwarerr
 metauml
 cm-super
 collection-fontsrecommended
-chktex
-tex4ht
-transparent
 newverbs
-pythontex
 robustindex
-graphics
+#graphics replaced by graphix?
 fvextra
 upquote
 xstring
 pgfopts
 currfile
-glossaries-extra
