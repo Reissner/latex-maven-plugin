@@ -1094,7 +1094,7 @@
               There is an according entry in the backlog in changes.xml 
               and a more detailled description in PdfMojoTest.java -->
             <chkDiff>true</chkDiff>
-            <targets>html</targets><!--chk,pdf,html-->
+            <targets>pdf</targets><!--chk,pdf,html-->
             <!-- <targets>chk,pdf,html</targets> -->
             <!--pdfViaDvi>true</pdfViaDvi-->
             <latexmkUsage>NotAtAll</latexmkUsage><!--Fully NotAtAll AsBackend-->
@@ -1107,7 +1107,7 @@
             <!--patternLatexMainFile>
             </patternLatexMainFile-->
             <!--mainFilesIncluded>manualLMP</mainFilesIncluded-->
-            <mainFilesExcluded>recorder useBeamerPres pythontexInOut productLeaflet fdbLatexmk testProgramNoLatexmk minTikz test useBeamerHandout</mainFilesExcluded>
+            <mainFilesExcluded>test useBeamerHandout</mainFilesExcluded>
             <pythontexCommand>pythontexW:pythontex</pythontexCommand>
             <pythontexOptions>--rerun=always</pythontexOptions>
             <!--patternErrPyTex>\* PythonTeX error|(PythonTeX:  .+ -|    - Current: ) [1-9][0-9]* error\(s\), [0-9]+ warning\(s\)</patternErrPyTex-->
