@@ -4,6 +4,7 @@ metapost
 latexmk
 # latex contains classes, e.g. article, book, report, minimal
 latex
+latex-lab
 chktex
 pythontex
 
