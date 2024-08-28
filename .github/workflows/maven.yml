@@ -61,12 +61,9 @@ jobs:
         sudo cpanm Cwd File::Spec::Functions Capture::Tiny DateTime DateTime::Format::ISO8601
     - name: correct diff tool
       run: |
-        sudo cd /usr/bin
         sudo mv diff diff.org
         sudo -s eval 'echo -e "#! /bin/sh\nexit 0" > diff && chmod a+x diff'
-
-        
-      
+      working-directory: /usr/bin
 
     # - name: install additional packages 
     #   uses: awalsh128/cache-apt-pkgs-action@latest
