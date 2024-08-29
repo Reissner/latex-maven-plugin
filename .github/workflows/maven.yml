@@ -88,7 +88,7 @@ jobs:
       with:
         step: restore
     - name: Build with Maven
-      run: mvn -B install -X --file pom.xml 
+      run: mvn -B verify -X --file pom.xml 
       # process-resources latex:cfg 
       # options useful for debugging: --fail-never -Dmaven.test.skip=true
       # Note that the tests are not necessary, but ... used a different pom. 
