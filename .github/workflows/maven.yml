@@ -56,9 +56,9 @@ jobs:
       # Perl modules Capture::Tiny in libcapture-tiny-perl
       run: sudo apt-get install -y transfig gnuplot inkscape poppler-utils libcapture-tiny-perl
     - name: install perl modules
-      run: |
-        sudo cpan App::cpanminus
-        sudo cpanm Cwd File::Spec::Functions Capture::Tiny DateTime DateTime::Format::ISO8601
+      run: sudo cpan Cwd File::Spec::Functions Capture::Tiny DateTime DateTime::Format::ISO8601
+        # sudo cpan App::cpanminus
+        # sudo cpanm Cwd File::Spec::Functions Capture::Tiny DateTime DateTime::Format::ISO8601
     - name: correct diff tool
       run: |
         sudo mv diff diff.org
