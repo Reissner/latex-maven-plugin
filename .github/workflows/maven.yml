@@ -44,7 +44,12 @@ jobs:
     - name: create pythontexW 
       # run: which pythontex yields /opt/hostedtoolcache/texlive/bin/x86_64-linux/pythontex
       # run: echo $PATH contains /usr/bin
-      run: sudo -s eval 'echo -e "#! /bin/bash\npythontex \$@ |& tee \${!#}.plg" > /usr/bin/pythontexW && chmod a+x /usr/bin/pythontexW'
+      run: |
+        bash -version
+        mvn latex:inj -Dlatex.injections=pythontexW
+        sudo mv pythontexW /usr/bin
+      working-directory: ./maven-latex-plugin
+      #sudo -s eval 'echo -e "#! /bin/bash\npythontex \$@ |& tee \${!#}.plg" > /usr/bin/pythontexW && chmod a+x /usr/bin/pythontexW'
     - name: echo pythontexW
       run: cat /usr/bin/pythontexW
     - name: update apt 
