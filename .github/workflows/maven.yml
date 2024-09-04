@@ -41,17 +41,6 @@ jobs:
         profile-path: ${{ github.workspace }}/.github/texlive.profile
         packages-path: ${{ github.workspace }}/.github/texlive.packages
         #cache-enabled: false
-    - name: create pythontexW 
-      # run: which pythontex yields /opt/hostedtoolcache/texlive/bin/x86_64-linux/pythontex
-      # run: echo $PATH contains /usr/bin
-      run: |
-        bash -version
-        mvn latex:inj -Dlatex.injections=pythontexW
-        sudo mv pythontexW /usr/bin
-      working-directory: ./maven-latex-plugin
-      #sudo -s eval 'echo -e "#! /bin/bash\npythontex \$@ |& tee \${!#}.plg" > /usr/bin/pythontexW && chmod a+x /usr/bin/pythontexW'
-    - name: echo pythontexW
-      run: cat /usr/bin/pythontexW
     - name: update apt 
       run: sudo apt-get update -y
       #https://github.com/marketplace/actions/install-and-cache-apt-tools
@@ -96,6 +85,16 @@ jobs:
       uses: skjolber/maven-cache-github-action@v1
       with:
         step: restore
+    - name: create pythontexW by injection 
+      # run: which pythontex yields /opt/hostedtoolcache/texlive/bin/x86_64-linux/pythontex
+      # run: echo $PATH contains /usr/bin
+      run: |
+        bash -version
+        mvn latex:inj -Dlatex.injections=pythontexW
+        sudo mv pythontexW /usr/bin
+      working-directory: ./maven-latex-plugin
+    - name: echo pythontexW
+      run: cat /usr/bin/pythontexW
     - name: Build with Maven
       run: mvn -B test -X --file pom.xml 
       # process-resources latex:cfg 
