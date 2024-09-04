@@ -106,7 +106,8 @@ jobs:
       with:
         step: save
     - name: write logs
-      run: tail -n500 src/site/tex/./docClasses/letter.log
+      if: always()
+      run: tail -n600 src/site/tex/./docClasses/letter.log
       working-directory: ./maven-latex-plugin
     # - name: diff visual
     #   run: diff <(pdftotext -layout src/site/tex/recorderOption/recorder.pdf /dev/stdout) <(pdftotext -layout src/main/resources/docsCmp/recorderOption/recorder.pdf /dev/stdout)
