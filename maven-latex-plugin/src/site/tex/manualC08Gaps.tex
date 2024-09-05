@@ -33,28 +33,54 @@ but not supported officially:
 \pkg{imakeidx} described in~\cite{ImakeidxP}.
 Note that the package \pkg{multind} is obsolete. 
 
-According to~\cite{GloP}, Section~1, 
-there are three options to create a glossary, 
-whereas this software supports option two only, 
-which uses \texttt{makeindex}. 
-Also, although the package \pkg{glossaries} itself 
-supports multiple glossaries via the command
+According to~\cite{GloP4_54}, Section~1.3, 
+there are various options to create a glossary, 
+whereas this software supports option two only described in Section~1.3.2, 
+which uses \texttt{makeindex} for indexing. 
+Currently, indexing with \texttt{xindy} is not supported. 
+The last two options are available only with package \pkg{glossaries-extra} 
+which this software will support in later versions. 
+% planned in 2.2. 
+% Then this technique is devoted a separate section and this becomes the preferred usage. 
+
+By default, package \pkg{glossaries} creates a single ``main glossary'', 
+which can be switched off specifying the option \texttt{nomain} 
+described in Section~2.6. 
+In this case at least, more specific glossary types must be specified. 
+This can be done by options like \texttt{acronyms} described in Section~2.7 
+or the \texttt{symbols},
+\texttt{numbers} or \texttt{index} options described in Section~2.9. 
+As the \texttt{index} option collides with indexing as performed by this software, 
+the option \texttt{index} is not allowed. 
+
+The package \pkg{glossaries} itself 
+supports new glossary types via the command
 %
 \begin{lstlisting}[language=TeX, basicstyle=\small]
 \newglossary[log-ext]{name}{in-ext}{out-ext}{title}[counter]
 \end{lstlisting}
 %
-described in~\cite{GloP}, Section~12, 
-this software only supports creating a single glossary. 
+described in~\cite{GloP4_54}, Section~9. 
+In fact, the glossary types accessible via options and even the main glossary 
+are defined internally that way. 
+Although the glossary algorithm of this software, 
+in particular rerun management as described in Section~\ref{sec:rerunAux}
+can create any kind of glossaries, 
+this software does not support defining new glossary types 
+because collision, e.g. with indexing cannot be excluded 
+and also because each glossary type creates auxiliary files 
+with user-defined extensions currently neither this software 
+nor \texttt{latexmk} can cleanup. 
 
-Reading~\cite{GloP}, Section~15.1, the glossarystyle \texttt{index} 
+Reading~\cite{GloP4_54}, Section~13.1, the glossary style \texttt{index} 
 seems to allow creating indices through the \pkg{glossaries} package 
 making any index-package obsolete. 
+This software does not support that option provided by the package \pkg{glossaries}. 
 
 For development given the \LaTeX{} main file \texttt{xxx.tex}, 
 the files \texttt{xxx.pdf}, \texttt{xxx.pdf}, \texttt{xxx.synctex.gz} 
 and \texttt{xxx.log} are vital. 
-Thus it would be fine to have a goal which touches these files 
+Thus, it would be fine to have a goal which touches these files 
 or to have a parameter to touch these prior to creation 
 to avoid that these are cleaned up after the run. 
 This is an alternative to setting parameter \texttt{cleanup} to \texttt{false}. 
