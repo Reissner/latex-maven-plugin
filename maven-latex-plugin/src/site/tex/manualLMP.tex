@@ -42,7 +42,7 @@
   % %  \usepackage{showidx}
   % \makeindex
   % % TBD: eliminate; loads amsmath!!! 
-  \usepackage[toc, style=tree]{glossaries}%,automake, acronyms, 
+  \usepackage[toc, acronyms, style=tree]{glossaries}%nomain, 
   % , xindy or even [xindy={language=english,codepage=utf8}]
   % mainly for index and glossaries 
   \makeglossaries
@@ -170,6 +170,15 @@ programming language for printers and printable file format;
 today mostly replaced by PDF}
 \newacronym{mps}{mps}{metapost's postscript like output including text}
 \newacronym{mpx}{mpx}{metapost tex output: texts }
+
+\newglossaryentry{gls:le}{name={\LaTeX{} engine},description={%
+A compiler for \LaTeX{} files 
+}}
+
+\newglossaryentry{gls:lmf}{name={\LaTeX{} main file},description={%
+A \LaTeX{} file intended to be compiled by a \gls{gls:le}. 
+}}
+
 \newindex[General Index]{idx}
 \newindex[LaTeX Packages]{pkg}
 }
@@ -190,13 +199,7 @@ today mostly replaced by PDF}
 % \newglossaryentry{latexCMP}{name={latex compiler},description={%
 % Core part of the document preparation system \gls{latex}. 
 % }}
-% \newglossaryentry{lmf}{name={latex main file},description={%
-% A \gls{latex} file intended to be invoked by a \gls{latecCmp}. 
-% There are further \gls{latex} files which are not directly compiled 
-% but serve as input or include in other latex files. 
-% At the top of the input/include hierarchy there shall always be a latex main file; 
-% else the latex files are unused. 
-% }}
+
 
 
 
