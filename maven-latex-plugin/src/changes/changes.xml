@@ -1427,6 +1427,12 @@ We shall wait with rework until package glossaries-extra and tool bib2gls is int
       The algorithm when to choose what is not ok, 
       and also in the long splitindex must be usable also with xindy. -->
 
+      <!-- what are the successors of makeindex? 
+       https://tex.stackexchange.com/questions/725804/is-xindy-under-use-development
+       Seemingly upmendex and a bit xindex. 
+       But still a question on glossaries package. 
+       -->
+
     <release version="2.1" date="2023-08-28" 
       description="build with latexmk and generalized reproducibility, readed glossary">
       <action dev='reissner' type='fix'>
