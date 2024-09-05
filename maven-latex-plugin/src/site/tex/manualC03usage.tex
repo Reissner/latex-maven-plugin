@@ -715,7 +715,7 @@ as specified in Section~\ref{subsubsec:openingMagComm}.
 As a magic comment can be used 
 to specify the target formats for a latex main file individually, 
 Section~\ref{subsubsec:openingMagComm} shows 
-how to specify the latex converter to be used for this file 
+how to specify the \LaTeX{} engine to be used for this file 
 overwriting the general setting \texttt{latex2pdfCommand} in the pom 
 given in Table~\ref{tab:paramLatex2pdf} on page~\pageref{tab:paramLatex2pdf}. 
 
@@ -1298,7 +1298,7 @@ As the configuration files described above,
 Note that \texttt{header.tex} is written for use of 
 %
 \begin{itemize}
-  \item various \LaTeX{} converters, \lualatex, \xelatex{} and \pdflatex{} 
+  \item various \LaTeX{} enginess, \lualatex, \xelatex{} and \pdflatex{} 
   \item various document classes, 
   specifically \texttt{article}, \texttt{book}, \texttt{beamer} for presentations, 
   \texttt{leaflet} and the letter class \texttt{scrlttr2}. 
@@ -1314,7 +1314,7 @@ This is realized with a bunch of if-constructs.
 In the long run, \texttt{header.tex} could be adapted 
 to the configuration as \texttt{.latexmkrc}, 
 but currently it detects the use case 
-as the latex converter or the target format 
+as the \LaTeX{} engine or the target format 
 and loads the according packages. 
 It is also conceivable to create different headers, one for each document class. 
 
@@ -1696,13 +1696,13 @@ This invocation must be repeated as soon as a FIG file changes\footnote%
 {Typically, this triggers a sequence of invocations of converters 
 along files one depending on the other. }. 
 
-Then a latex converter like \lualatex{} must be invoked. 
-Typically, the latex converter must be invoked more than once 
-and besides the latex converter 
+Then a \LaTeX{} engine like \lualatex{} must be invoked. 
+Typically, the \LaTeX{} engine must be invoked more than once 
+and besides the \LaTeX{} engine 
 some further auxiliary programs like \texttt{makeindex} must be run. 
 The console displays indications to the user what action to be taken next. 
 Normally after invocation of an auxiliary program, 
-the latex converter must be rerun at least once. 
+the \LaTeX{} engine must be rerun at least once. 
 Each of the programs may fail. 
 Most of the programs write success messages and more detailed information 
 containing error messages, warnings or just information messages 
@@ -1716,7 +1716,7 @@ Orchestration means invoking more basic tools in a reasonable order
 and supervising the results, at least success and to react appropriately. 
 This frees the user from deciding 
 which of the many auxiliary programs are to be invoked next 
-and whether the latex converter is to be invoked once more 
+and whether the \LaTeX{} engine is to be invoked once more 
 to get final correct output. 
 Also, an orchestration tool detects if a build fails 
 or ideally even if a warning indicates 
@@ -1747,7 +1747,7 @@ then a viewer is opened in the background
 if not yet open 
 and then \tool{latexmk} monitors changes of dependencies 
 and triggers a rebuild each time a change is detected 
-performing a proper sequence of invocations of latex converters and auxiliary tools. 
+performing a proper sequence of invocations of \LaTeX{} engines and auxiliary tools. 
 Note that \tool{latexmk} does not stop after finishing a compilation, 
 whether successful or not. 
 Instead, it awaits a change of a source file which triggers a new run of some basic tool 
@@ -1756,7 +1756,7 @@ The option \texttt{-pvc} is described in more detail
 in~\cite{LatexMk23}, Section ``LATEXMK OPTIONS AND ARGUMENTS ON COMMAND LINE''. 
 One detail to be added, mentioned in~\cite{LatexMk23}, Section ``DESCRIPTION'', is, 
 that \tool{latexmk} detects dependencies 
-based on the FLS file written by the latex converter 
+based on the FLS file written by the \LaTeX{} engine 
 when invoked with the \texttt{-recorder} option. 
 
 A small fallback step advisable if something goes wrong 
@@ -1829,11 +1829,11 @@ This is more elegant than the idea of this plugin
 which is creates a fixed set of graphic files first 
 and is from that pointon based on detecting hard coded set of files and tracing log files. 
 Nevertheless, to deal with graphic files which are to be created in the course of the build, 
-\tool{latexmk} runs the latex converter in \texttt{nonstopmode} mode. 
-Still, the converter run is interrupted, a single graphic file is created according to some rule 
-and then the converter is rerun. 
+\tool{latexmk} runs the \LaTeX{} engine in \texttt{nonstopmode} mode. 
+Still, the run of the engine is interrupted, a single graphic file is created according to some rule 
+and then the engine is rerun. 
 For a document with 10 graphic files to be created in the course of the build, 
-for \tool{latexmk} only the 10th runs of the converter is completed. 
+for \tool{latexmk} only the 10th runs of the \LaTeX{} engine is completed. 
 In contrast, this plugin requires a single run, so performance is significantly better. 
 The use of \cmd{IfFileExists} is not really elegant but prevents \tool{latexmk} from frequent reruns 
 and in some cases is a technique to make the build process with \tool{latexmk} work. 
@@ -1877,11 +1877,11 @@ in a way that saves performance of \tool{latexmk}.
 Let us elaborate. 
 
 This software and \tool{latexmk} follow a different philosophy in finding dependencies: 
-Whereas this software creates image files in advance before invoking a latex converter, 
-\tool{latexmk} first calls the latex converter in \texttt{nonstopmode} 
+Whereas this software creates image files in advance before invoking a \LaTeX{} engine, 
+\tool{latexmk} first calls the \LaTeX{} engine in \texttt{nonstopmode} 
 to avoid a stop because of a missing file. 
 Then the file is created using the appropriate rule (hopefully unique) 
-and the converter is run again, 
+and the emgome is run again, 
 this time passing the inclusion of the first created files 
 failing at the next one. 
 To find out that another rule is needed, \tool{latexmk} parses the LOG file of the latex compiler. 
@@ -1977,7 +1977,7 @@ for development of documents.
 
 
 Note that in general \texttt{mvn clean validate latex:grp} 
-creates all files necessary to compile with a latex converter like \lualatex{} 
+creates all files necessary to compile with a \LaTeX{} engine like \lualatex{} 
 and also to compile smoothly with \tool{latexmk}. 
 
 
@@ -2107,9 +2107,9 @@ Process all graphics files of the formats requiring preprocessing.
 \item
 Determine the \LaTeX{} main files.
 \item
-Run the \LaTeX{} converter, e.g.~the one creating PDF-output or DOCX-output.
+Run the \LaTeX{} engine, e.g.~the one creating PDF-output or DOCX-output.
 This may include running auxiliary programs like \texttt{bibtex} or \texttt{pythontex} 
-and also rerunning the \LaTeX{} converter several times. 
+and also rerunning the \LaTeX{} engine several times. 
 \item
 Copy the result files (if any) into the target folder.
 \item

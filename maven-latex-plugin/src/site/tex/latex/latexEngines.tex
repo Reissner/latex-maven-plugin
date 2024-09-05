@@ -106,10 +106,10 @@ DVI% TBD: take XDV into account also
 The package \texttt{tex4ht} 
 is \IfPackageLoadedTF{tex4ht}{}{not} loaded. 
 
-This document is about features the three generators on latex, 
+This document is about features the three \LaTeX{} engines, 
 \pdflatex, \lualatex{} and \xelatex{} have in common 
 and discusses also aspects under which they are specific. 
-These programs are just underlying tex engines preloading the the \LaTeX{} format. 
+These programs are just underlying \TeX{} engines preloading the \LaTeX{} format. 
 The names of the underlying engines just drop the inner sylable ``\texttt{la}''. 
 For \texttt{pdftex} there is a user manual~\cite{PdfTexUsr24}, 
 for \texttt{luatex} there is a reference manual~\cite{LuaTexRef24} and 
@@ -134,19 +134,19 @@ The results of our research is collected in Section~\ref{sec:PDFreprSec}.
 
 Note that in fact we use a variant of \texttt{luatex}, called \texttt{luahbtex}. 
 
-This document is valid for versions of the underlying tex engine 
+This document is valid for versions of the underlying \LaTeX{} engine 
 as given in Table~\ref{tab:versions}. 
 Moreover, our research refers to a specific distribution, \texlive. 
 
 
 \begin{longtable}{|ll|}
   \toprule
-  converter & version \\
+  \LaTeX{} engine & version \\
   \midrule
   \midrule
   \endfirsthead%
   \bottomrule
-  \caption{\label{tab:versions} Converters and the version this document refers to }
+  \caption{\label{tab:versions} \LaTeX{} engines and the version this document refers to }
   \endlastfoot%
   \pdflatex{}  & \texttt{pdfTeX 3.141592653-2.6-1.40.24} \\% chktex 8
   \xelatex{}   & \texttt{XeTeX 3.141592653-2.6-0.999994} \\% chktex 8
@@ -156,23 +156,23 @@ Moreover, our research refers to a specific distribution, \texlive.
 
 We start with a synopsis of the options. 
 Table~\ref{tab:latexOptionsCommonTexlive} 
-shows options of the converters under consideration. 
-Note that in contrast to the other converters, 
+shows options of the \LaTeX{} engines under consideration. 
+Note that in contrast to the other \LaTeX{} engines, 
 \lualatex{} defines options starting with \texttt{-{}-} 
 but it can also process the options if given with a single dash also. 
-Conversely, converters other than \lualatex{} can also deal with options 
+Conversely, \LaTeX{} engines other than \lualatex{} can also deal with options 
 starting with single dash. 
-Options unknown to a converter never result in an error or even a warning; 
+Options unknown to a \LaTeX{} engine never result in an error or even a warning; 
 instead just an info message is displayed. 
-This allows to create a configuration which works for all converters. 
+This allows to create a configuration which works for all \LaTeX{} engines. 
 
 In Table~\ref{tab:latexOptionsCommonTexlive} column ``included'', 
-each converter is represented by the starting letter of its name, 
-so for each option it is known which converters know about it 
-and conversely, which options each converter has. 
+each \LaTeX{} engine is represented by the starting letter of its name, 
+so for each option it is known which \LaTeX{} engines know about it 
+and conversely, which options each \LaTeX{} engine has. 
 
-The table allows furnishing configurations working for all converters. 
-Some options are common to all converters
+The table allows furnishing configurations working for all \LaTeX{} engines. 
+Some options are common to all \LaTeX{} engines
 
 
 {\footnotesize
@@ -294,7 +294,7 @@ We shall also investigate whether there are further distributions.
 
 Whereas the description~\cite{Texlive} seems not to mention the options explicitly, 
 the \miktex{} manual~\cite{MiKTeX} describes each program in Section II, 6, 
-in particular also the tex converters. 
+in particular also the \LaTeX{} engines. 
 This is the source of the following tables. 
 
 
@@ -334,7 +334,7 @@ Set \texttt{dir} as the directory to write auxiliary files to. \\
                                       &  & &        & under definite conditions\footnote%
 {Similar for \texlive. Note that there is also a converse option. } \\
 \texttt{-{}-draftmode}                & p&-&l  & switch on draft mode (generates no output PDF)\footnote%
-{Some differences in formulation between the converter and also between distributions} \\
+{Some differences in formulation between the \LaTeX{} engines and also between distributions} \\
 \texttt{-{}-enable-8bit-chars}        & p&x&- & Make all characters printable. \\
 \texttt{-{}-enable-enctex}            & p&-&- & Enable encTeX extensions such as \texttt{\textbackslash{}mubyte}\footnote%
 {Corresponds with \texttt{-enc} in \texlive. }. \\
@@ -518,7 +518,7 @@ Besides direct creation of a PDF file,
 we consider creation via XDV file using \texttt{xdvipdfmx}. 
 The XDV format is an extension and in fact a variant of the DVI format. 
 
-For the other compilers in contrast, the option \texttt{-output-format=dvi/pdf} 
+For the other engines in contrast, the option \texttt{-output-format=dvi/pdf} 
 determines the output format which is PDF by default 
 and there is no intermediate format for PDF\@. 
 When creating DVI files instead, these files can be converted into PDF 
@@ -542,7 +542,7 @@ Although this section focuses on PDF format,
 of course the intermediate format DVI/XDV must be considered by need. 
 The visual appearance is roughly the same, so visual reproducibility of DVI/XDV 
 is almost equivalent with visual reproducibility of PDF, 
-but for metadata one has to distinguish cases where the \LaTeX{} compiler already creates metadata 
+but for metadata one has to distinguish cases where the \LaTeX{} engine already creates metadata 
 and writes it into \cmd{special} commands in a DVI/XDV file, 
 whereas the PDF creator just includes this data from DVI/XDV 
 from cases where it is the PDF creator which creates metadata, like creation time. 
@@ -724,7 +724,7 @@ i.e.\@ \texttt{+\%W} and \texttt{+\%Y}, respectively.
 \medskip
 
 
-As one would expect, the modification time is the time when the compiler finished writing. 
+As one would expect, the modification time is the time when the engine finished writing. 
 The time of file birth is really when the file comes into existence, 
 e.g.\@ for the first time or after having been deleted. 
 
@@ -754,7 +754,7 @@ First, \xelatex{} is special in that by default, it provides \texttt{CreationDat
 whereas \lualatex{} and \pdflatex{} provide both. 
 The command \cmd{DocumentMetadata} forces \xelatex{} to display both times. 
 This is not really important, because the two times seem to coincide if both are given. 
-The idea behind creation time is, that the \LaTeX{} compiler creates a new file 
+The idea behind creation time is, that the \LaTeX{} engine creates a new file 
 even when overwriting an old one. 
 The time when starting to overwrite seems to be the \texttt{CreationDate}. 
 Why the \texttt{ModDate} is the same and not the later time when writing is finished, 
@@ -763,7 +763,7 @@ An idea is that this is related to incremental updates described in \cite{Pdf20}
 Instead of creating a PDF anew if a modification occurs, 
 it is advised to just append a description of the difference. 
 This update does not affect creation date but only modification date. 
-\LaTeX{} processors no not support incremental updates 
+\LaTeX{} engines no not support incremental updates 
 and so compilation creates just a new PDF document. 
 
 Both, \xelatex{} and \pdflatex{} represent \texttt{CreationDate} and \texttt{ModDate} 
@@ -820,7 +820,7 @@ It was introduced to obtain reproducible builds in a general context
 can also be used in \TeX{} systems. 
 Although \texttt{SOURCE\_DATE\_EPOCH} defines the build time in a sense, 
 it is specified, that the given epoch time is exactly what is written into the metadata. 
-It affects \LaTeX{} each compiler but in slightly different way. 
+It affects each \LaTeX{} engine but in slightly different way. 
 
 For \pdflatex, the main description is in~\cite{PdfTexUsr24}, Chapter~2.
 An important detail is, that the time zone written into metadata is UTC. 
@@ -855,9 +855,9 @@ when the time is start of a full hour.
 
 
 Last thing: 
-Latex compiler creating DVI/XDV and going on with \texttt{xdvipdvmx}. 
+\LaTeX{} engines creating DVI/XDV and going on with \texttt{xdvipdvmx}. 
 Of course, visible data are as with direct compilation and also file times are straightforward. 
-To get these data right, latex compiler must be invoked with the system variables 
+To get these data right, \LaTeX{} engine must be invoked with the system variables 
 as for direct creation of PDF files. 
 
 The only issue are meta-data. 
@@ -876,7 +876,7 @@ So \texttt{xdvipdfmx} behaves very much like \xelatex{} in direct compilation of
 which is clear because it is by defaults \xelatex's PDF backend. 
 This behavior of \texttt{xdvipdfmx} coins time metadata even if used in conjunction with \lualatex, 
 which is some argument to configure direction computation of PDF files with \lualatex 
-in a way that it fits the other compilers. 
+in a way that it fits the other engines. 
 
 
 
@@ -895,7 +895,7 @@ For all entries in the document information dictionary including \texttt{Creatio
 there are replacements in the metadata streams described in~\cite{Pdf20}, Section 14.3.2. 
 To be more precise it is the XMP metadata, which is an XML format, described in~\cite{ISO16684-1}. 
 Frequently, the replacements allow a set of locales. 
-The latex compiler writes this if in the header of the TEX file 
+The \LaTeX{} engine writes this if in the header of the TEX file 
 %
 \begin{verbatim}
 \DocumentMetadata{...}
@@ -912,7 +912,7 @@ The keys of the document information dictionary (DID)
 and their replacements as XMP are given in Table~\ref{tab:keysDID_XMP}. 
 Note that the keys for XMP have a prefixed namespace separated by \texttt{:}. 
 The table does not list all XMP keys specified in~\cite{ISO16684-1}, 
-but only those which are observed as created by a latex compiler. 
+but only those which are observed as created by a \LaTeX{} engine. 
 Observe that the XMP keys with namespace \texttt{pdf} are not specified in~\cite{ISO16684-1}. 
 
 
@@ -983,7 +983,7 @@ produces different PDF output for each run.
 Likewise, \texttt{xelatex -no-pdf latexEngines} produces different XDV output for each run. 
 As turns out later, this is because the creation time goes into the result. 
 
-Thus, it is plausible that, to obtain reproducibility, we invoke the compiler as 
+Thus, it is plausible that, to obtain reproducibility, we invoke the engine as 
 %
 \begin{verbatim}
   SOURCE_DATE_EPOCH=0 FORCE_SOURCE_DATE=1 xelatex         latexEngines
@@ -1037,11 +1037,11 @@ but only in a way specific for \xelatex:
 makes even the XDV to PDF converter transparent. 
 
 In~\cite{HyperTextP}, Section 5.10, also the creator is found, 
-which is \texttt{LaTeX with hyperref} independent of the \LaTeX{} compiler. 
+which is \texttt{LaTeX with hyperref} independent of the \LaTeX{} engine. 
 This shall be overwritten if there are security concerns. 
 
 As long as the tool chain and settings remain constant, 
-invocation of latex compiler \xelatex{} and backend XDV to PDF converter 
+invocation of \LaTeX{} engine \xelatex{} and backend XDV to PDF converter 
 specifying \texttt{SOURCE\_DATE\_EPOCH=0 FORCE\_SOURCE\_DATE=1} 
 suffices to guarantee reproducibility. 
 This setting refers to start of computer time history, 
@@ -1059,16 +1059,16 @@ and in a second step, can we do this directly without using \texttt{hyperref}.
 \medskip
 
 
-Now let us switch to the other two \LaTeX{} compilers. 
+Now let us switch to the other two \LaTeX{} engines. 
 Both write the banner information indicating 
-above all the type of compiler and the version. 
+above all the type of engine and the version. 
 As checked by switching compression of, \xelatex{} does not write any banner information. 
-Again, as long as the compiler does not change nor changes its version or its distribution, 
+Again, as long as the engine does not change nor changes its version or its distribution, 
 the banner does not corrupt reproducibility. 
 On the other hand, removing it would stabilize and generalize reproducibility somewhat: 
 stabilize because the banner contains version information 
 and thus breaks reproducibility at version change, 
-and it breaks reproducibility when changing the compiler of course. 
+and it breaks reproducibility when changing the engine of course. 
 Also, privacy or security is an argument in favor of eliminating the banner. 
 The package \texttt{hyperref} offers no way to change the banner; 
 this can be done only in a machine specific way. 
@@ -1083,7 +1083,7 @@ Creating DVI files with \texttt{SOURCE\_DATE\_EPOCH=0 FORCE\_SOURCE\_DATE=1}
 yields reproducible results. 
 As expected, these settings are also necessary for translating DVI into PDF\@. 
 
-\subsection{Suppressing and overwriting meta info in a compiler specific way }
+\subsection{Suppressing and overwriting meta info in an engine specific way }
 
 For \lualatex{} \cite{LuaTexRef24}, Section 3.2.2 describes the variable \texttt{suppressoptionalinfo} 
 which specifies bitwise which pieces of metadata to be suppressed. 
@@ -1161,7 +1161,7 @@ This is done with hyperref package ****
   (which loads \texttt{hyperref} implicitly)
   for which it is \texttt{LaTeX with Beamer class}. 
   If \texttt{hyperref} is not loaded, 
-  the creator is \TeX{} except for \xelatex{} which shows compiler and creation date. 
+  the creator is \TeX{} except for \xelatex{} which shows engine and creation date. 
   Thus, it is advisable in general for security but without \texttt{hyperref} 
   for sake of stability of reproducibility. 
   \item[Producer] This is \texttt{xdvipdfmx} with version for creating DVIs 
@@ -1203,7 +1203,7 @@ This is done with hyperref package ****
   % It is really the same as \texttt{CreationDate}. 
   \item[PTEX.Fullbanner] is not written by \xelatex, 
   but for both \lualatex{} and \pdflatex. 
-  It can be suppressed in a compiler specific way, 
+  It can be suppressed in an engine specific way, 
   but not through \texttt{hyperref}. 
   The banner exposes tools, versions and distributions. 
   Thus, it shall not be exposed for sake of security and stability of reproducibility. 
@@ -1214,16 +1214,16 @@ All these pieces of information
 and a bit more are suppressed 
 by including \href{\urlSite fromTex/headerSuppressMetaPDF.tex}{headerSuppressMetaPDF.tex}. 
 Observe that to that end the package \texttt{hyperref} is used 
-whenever possible because this technique is not specific for the latex compiler. 
-Only banner and trailer identifier are suppressed in a compiler specific way. 
+whenever possible because this technique is not specific for the \LaTeX{} engine. 
+Only banner and trailer identifier are suppressed in an engine specific way. 
 
 % TBD: in the long run, here must be included a description of the details 
 Besides code, \texttt{headerSuppressMetaPDF.tex} provides 
 additional info in the comments, 
-but for details specific for the individual compilers 
+but for details specific for the individual engines 
 see~\cite{LuaTexRef24}, Section 14.1.8 for \lualatex, 
 and~\cite{PdfTexUsr24}, Section 4.2 for \pdflatex. 
-Seemingly, \xelatex{} is quite different from the other compilers 
+Seemingly, \xelatex{} is quite different from the other engines 
 and tends to write fewer pieces of information. 
 It uses an external XDV to PDF converter, \texttt{xdvipdfmx} by default. 
 By placing \cmd{special} commands in the TEX file, 

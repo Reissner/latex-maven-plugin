@@ -534,10 +534,10 @@ the magic comments are all optional, i.e.\@ they need not match any part of the 
   \item[docClass]
   the document class given by the command \cmd{documentclass}. 
   \item[programMagic]
-  the \LaTeX{} converter to be used 
+  the \LaTeX{} engine to be used 
   specifically for the according document. 
   This is intended to be specified only 
-  if the required converter for the given document deviates 
+  if the required engine for the given document deviates 
   from what is specified 
   globally as setting \texttt{latex2pdfCommand} described in 
   Table~\ref{tab:paramLatex2pdf} on page~\pageref{tab:paramLatex2pdf}. 
@@ -678,7 +678,7 @@ to add material if a user is not familiar with regular expressions.
 
 In the long run it must be thought of weakening the pattern: 
 It is not necessary, that exactly the correct files are parsed, 
-because incorrect files are detected by the \LaTeX{} converter anyway. 
+because incorrect files are detected by the \LaTeX{} engine anyway. 
 Instead, among the correct files the latex main files shall be detected. 
 
 As a workaround for very special \LaTeX{} main files, 
@@ -687,13 +687,13 @@ Then the pattern as a whole must match, even not matching a \cmd{documentclass}.
 From the point of view of this software, 
 it makes sense to specify the document type in the magic comment then. 
 Thinking one step further, also specifying the target 
-or the latex converter in a magic comment 
+or the \LaTeX{} engine in a magic comment 
 indicates already a latex main file. 
 Whereas the target set makes the document class superfluous, 
-this is not the case for the magic comment specifying the latex converter. 
+this is not the case for the magic comment specifying the \LaTeX{} engine. 
 
 
-% From the point of view of the \LaTeX{} converter, 
+% From the point of view of the \LaTeX{} engine, 
 % \cmd{documentclass} is not required in the main file, 
 % it could be hidden in some \cmd{input}-file. 
 % If we stick to the wise convention to open and to close the same environment 
@@ -1198,7 +1198,7 @@ If no extension is given, this is to determine the export type.
 \label{sec:settingsLatex2pdf}
 
 This section describes the parameters 
-of the \LaTeX-to-pdf converter 
+of the \LaTeX{} engine 
 which are given in Table~\ref{tab:paramLatex2pdf}. 
 
 TODO\@: do this. 
@@ -1212,12 +1212,13 @@ Parameter        & Default  \\
 \midrule
 \endfirsthead%
 \bottomrule
-\caption{\label{tab:paramLatex2pdf} The \LaTeX-to-pdf-converter}
+\caption{\label{tab:paramLatex2pdf} The \LaTeX{}-to PDF conversion}
 \endlastfoot%
 \texttt{latex2pdfCommand}       & \lualatex{}      \\
 \multicolumn2{|l|}{
 \begin{minipage}{0.95\linewidth}
-The \LaTeX{} command to create above all a PDF-file with. 
+The \LaTeX{} command to create above all a PDF-file with, 
+i.e. the \LaTeX{} engine. 
 Further formats are DVI and XDV and also other formats based on these. 
 Expected values are \lualatex, \xelatex{} and \pdflatex. 
 CAUTION\@: This setting may be overwritten for individual \LaTeX{} main files 
@@ -1421,12 +1422,12 @@ or -1 which signifies that there is no threshold.
 
 An overview over the options supported by the usual latex engines in distribution \texlive{} 
 is given in~\cite{LatexGen}, Section 2. 
-In particular, there is a table with the options occurring in any latex converter 
-and columns indicating for each option for which converters it is valid. 
+In particular, there is a table with the options occurring in any \LaTeX{} engine 
+and columns indicating for each option for which engines it is valid. 
 Note that unlike the other engines, \lualatex{} defines options starting with \texttt{-{}-}, 
 it works on according options starting with single dash also. 
 To support all engines with the same parameters, 
-the default options are among the ones common to all supported converters. 
+the default options are among the ones common to all supported engines. 
 Currently, default option line is as follows: 
 %
 \begin{center}
@@ -1506,7 +1507,7 @@ Two options deserve particular notification, both specifying the output format:
   not by the user. 
   \item[-output-format=FORMAT], which this software uses to set the output format, 
   either to \texttt{dvi} or to \texttt{pdf}. 
-  Strictly speaking, this option is supported by all converters, except for \xelatex. 
+  Strictly speaking, this option is supported by all engines, except for \xelatex. 
   For \xelatex, this software only supports \texttt{pdf}, 
   which \xelatex{} creates because \texttt{-no-pdf} is not given. 
   The option \texttt{-output-format=pdf} does no harm, because it is ignored. 
@@ -1522,9 +1523,9 @@ whereas \lualatex{} uses double dash according to the help text.
 But using the single dash always is ok, 
 because \lualatex{} understands single dash also. 
 
-In \miktex, all options of all converters are double dash. 
+In \miktex, all options of all engines are double dash. 
 It must be clarified, whether they understand single dash. 
-If not one has to clarify whether in \texlive{} all converters understand double dash. 
+If not one has to clarify whether in \texlive{} all engines understand double dash. 
 If so all must be changed into double dash. 
 
 

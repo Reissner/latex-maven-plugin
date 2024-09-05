@@ -19,7 +19,7 @@ allows specifying transparency in graphics.
 Even if you do not use the feature, 
 some source formats do (in fact only \gls{svg}) does 
 and so the according converters create according information 
-and so \LaTeX{} must get along with it. 
+and so the \LaTeX{} engine must get along with it. 
 Note that this applies only for output format PDF 
 and in particular not for \texttt{xelatex}. 
 For details see~\cite{TransP}. 
@@ -68,7 +68,7 @@ into a separate file which is then further processed by an external tool.
 This is more like running \cmd{bibtex} to extract a bibliography. 
 
 If using the package \texttt{pythontex} 
-a special processing interacting with the latex to PDF converter is required also, 
+a special processing interacting with the \LaTeX{} engine is required also, 
 but it is not preprocessing. 
 \end{itemize}
 
@@ -1101,7 +1101,7 @@ should be a picture
 \caption{\label{fig:asIsPng}Some PNG-picture, directly included }
 \end{figure}
 
-Note that in DVI/XDV mode all usual latex converter 
+Note that in DVI/XDV mode all usual \LaTeX{} engines 
 can include BMP-pictures, whereas in PDF mode only \texttt{xelatex} 
 can do that, maybe because it creates XDV internally in any case. 
 In contrast, \texttt{lualatex} and \texttt{pdflatex} can not. 

@@ -30,7 +30,7 @@ Here, an auxiliary program essentially invokes the language interpreter.
 Sections~\ref{sec:rerunAux} 
 and~\ref{sec:rerunLatex} 
 are special in that they describe rerunning auxiliary programs 
-like \texttt{makeindex} and the \LaTeX-to-pdf converter, 
+like \texttt{makeindex} and the \LaTeX{} engine, 
 which may be necessary even if certain lists are present 
 like table of contents list of figures or list of tables. 
 
@@ -67,20 +67,20 @@ master TEX files roughly have the form
 \end{lstlisting}
 
 The core of conversion of a TEX file into a PDF file 
-is running a \LaTeX{}-to-pdf converter \texttt{latex2pdf} 
+is running a \LaTeX{} engine \texttt{latex2pdf} 
 to a master TEX file \texttt{xxx.tex}.
-The \LaTeX-to-pdf converter \texttt{latex2pdf} 
+The \LaTeX{} engine \texttt{latex2pdf} 
 is configurable via the parameter \texttt{latex2pdfCommand}. 
 Possible values are \lualatex{}, \xelatex{} and \pdflatex, 
 where the first is the default for which this software is also tested. 
-It is also possible to pass parameters to the \LaTeX{}-to-pdf converter. 
+It is also possible to pass parameters to the \LaTeX{} engine. 
 Besides conversion into \gls{pdf} format, 
-all converters offer conversion to the older \gls{dvi} format 
+all engines offer conversion to the older \gls{dvi} format 
 via option \texttt{-{}-output-format} as \lualatex{} and \pdflatex, 
 or the alternative \gls{xdv} generalizing \gls{dvi} 
 as \xelatex{} does with the option \texttt{-{}-no-pdf}. 
 
-In fact, the converter \texttt{latex2pdf} 
+In fact, the engine \texttt{latex2pdf} 
 does much more than converting TEX files to PDF files. 
 Figure~\ref{fig:tex2pdf} shows for \texttt{latex2pdf} set e.g.~to \lualatex{}, 
 that besides the PDF file also a LOG file and an AUX file is created. 
@@ -113,7 +113,7 @@ For details see Section~\ref{sec:bibtex}.
 
 Alternatively to \texttt{bibtex} a bibliography can be created 
 with the package \pkg{biblatex} in conjunction with the auxiliary program \texttt{biber}. 
-Running a \LaTeX-to-pdf converter with package \pkg{biblatex} loaded 
+Running a \LaTeX{} engine with package \pkg{biblatex} loaded 
 creates a \gls{bcf}-file read by \texttt{biber}. 
 At time of this writing, this software does not support that option. 
 Nevertheless, for sake of completeness we added this data path to Figure~\ref{fig:tex2pdf}. 
@@ -218,7 +218,7 @@ should be a picture
 
 \section{Bibliographies}\label{sec:bibtex}
 
-In case the \LaTeX{}-to-pdf converter writes bibliographic information, 
+In case the \LaTeX{} engine writes bibliographic information, 
 into its aux-file, a bibliography must be generated. 
 For each occurrence of a \cmd{cite}-command in the TEX file, 
 \texttt{latex2pdf} writes an according entry \cmd{citation} into the aux-file. 
@@ -283,7 +283,7 @@ Also, Chapter 10 in~\cite{Gra} gives vital information on \texttt{bibtex}.
 
 \section{Indices}\label{sec:indices}
 
-In case the \LaTeX{}-to-pdf converter writes index information, 
+In case the \LaTeX{} engine writes index information, 
 into its \gls{idx}-file, at least one index must be generated. 
 Since the \gls{idx}-file contains nothing but index information, 
 an index is created if and only if the \gls{idx}-file is created. 
@@ -460,7 +460,7 @@ indicates that all following options are passed to \texttt{makeindex}
 
 CAUTION\@: The method described here, 
 has at least two severe bugs: 
-The number of reruns of the \LaTeX-to-pdf converter and also of \texttt{makeglossaries} 
+The number of reruns of the \LaTeX{} engine and also of \texttt{makeglossaries} 
 is not guaranteed as a consequence of a bug in \pkg{rerunfilecheck} 
 and the fact, that it does not fit current versions of \pkg{makeglossaries}. 
 In addition, entries of the glossaries not mentioned directly in the document 
@@ -647,7 +647,7 @@ Information required to integrate pythontex into this software
 partially goes much beyond the official documentation and is collected in~\cite{PyTexInOut}. 
 It could also be interesting for the user for debugging. 
 
-Running the \LaTeX-to-pdf converter on a file \texttt{xxx.tex} 
+Running the \LaTeX{} engine on a file \texttt{xxx.tex} 
 with package \pkg{pythontex} loaded 
 yields a file \texttt{xxx.pytxcode} 
 and if the package is loaded with option \texttt{depythontex} 
@@ -670,16 +670,16 @@ The figure reflects this.
 % creating a tex file without python code. 
 % TBD: clarify what if input files or include files are present. 
 
-Running the \LaTeX-to-pdf converter again, 
+Running the \LaTeX{} engine again, 
 includes all the output files \texttt{*.stdout} 
 in the PDF file or whatever output file created. 
 
 % Note that if depythontex is invoked, it is immaterial whether the subsequent run of LaTeX-to-pdf converter 
 % is on the original tex file or on the tex file created by depythontex. 
 
-An important remark is that \lualatex{} is the preferred converter, 
+An important remark is that \lualatex{} is the preferred engine, 
 because files \texttt{*.stdout} can impose heavy memory usage 
-and currently \lualatex{} is the only converter allocating memory dynamically. 
+and currently \lualatex{} is the only engine allocating memory dynamically. 
 
 As one can see, \texttt{pythontex} cooperates with \lualatex{} in a way 
 also \texttt{bibtex} or the other auxiliary programs do. 
@@ -828,7 +828,7 @@ To use another language, the according interpreter must be installed in addition
 \label{sec:rerunAux}
 
 As described in Section~\ref{sec:tex2pdf}, 
-running a \LaTeX-to-pdf converter as \texttt{latex2pdf} 
+running a \LaTeX{} engine as \texttt{latex2pdf} 
 may detect the presence of a bibliography, an index and/or of a glossary 
 and writes raw files to describe them. 
 After that, an intermediate step is required, 
@@ -1041,7 +1041,7 @@ that the timestamp does not only affect metadata but also visual data of the PDF
 to be created, 
 as e.g.\@ typically the date at the front page. 
 Note that if the PDF file is created from TEX files via DVI/XDV files, 
-both converters need the appropriate environment. 
+both engines need the appropriate environment. 
 
 After creating the new PDF file with this environment, 
 coincidence with the original PDF file is checked 
@@ -1247,7 +1247,7 @@ whether the document can be built with latexmk alone.
 
 Having explained this, the question arises 
 why this \LaTeX{} builder does not in general rely on \tool{latexmk} 
-and invokes \LaTeX{} compilers and other converters directly. 
+and invokes \LaTeX{} engines and other converters directly. 
 One reason is that \LaTeX{} builder does not only invoke converters, 
 it also checks return values and, depending on the converter, 
 log files emitting errors and warnings if appropriate. 
