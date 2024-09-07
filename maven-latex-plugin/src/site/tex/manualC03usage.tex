@@ -67,7 +67,8 @@ or executed via the package \pkg{pythontex}\index{pythontex}. % chktex 24
 \end{itemize}
 
 
-\subsection{\LaTeX{} main files and other latex files}\label{subsec:sourcesLatex}
+\subsection{\texorpdfstring{\glspl{gls:lmf}}{LaTeX main files} and other latex files}
+\label{subsec:sourcesLatex}
 
 The TEX files are special in that only part of them is processed explicitly 
 invoking a compiler like \lualatex{} on them, 
@@ -81,9 +82,9 @@ whereas the file \texttt{header.tex} is not, although also a \LaTeX-file:
 it is intended to be input in another TEX file, in this case \texttt{manualLMP.tex}. 
 
 
-% identification of the latex main file?
+% identification of the \LaTeX{} main file?
 \LaTeX{} main files are detected automatically 
-\index{latex main file}% chktex 24
+\index{\LaTeX{} main file}% chktex 24
 by fitting the regular expression \texttt{patternLatexMainFile} 
 described in detail in Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen}, 
 and in the reference given there, 
@@ -686,7 +687,7 @@ Example: \texttt{mvn -X latex:cfg}.
 
 Although the possible targets can be configured globally 
 via the setting \texttt{targets}, 
-the possible targets may depend on the document class of the latex main file. 
+the possible targets may depend on the document class of the \LaTeX{} main file. 
 At time of this writing, 
 all document classes in preferred usage as defined in Chapter~\ref{chap:tests} 
 support all targets with obvious exceptions: 
@@ -703,7 +704,7 @@ if a document class cannot be identified by the command \texttt{documentclass}
 or the outdated \texttt{documentstyle}, 
 it can be specified by a magic comment directly. 
 
-Finally, the targets can be specified individually for each latex main file 
+Finally, the targets can be specified individually for each \LaTeX{} main file 
 using a magic comment as described in Section~\ref{subsubsec:openingMagComm}. 
 A target specification in a magic comment overwrites all settings in 
 \texttt{targets} and in \texttt{docClassesToTargets}. 
@@ -713,7 +714,7 @@ In particular, a magic comment only specifying targets identifies already a \LaT
 as specified in Section~\ref{subsubsec:openingMagComm}. 
 
 As a magic comment can be used 
-to specify the target formats for a latex main file individually, 
+to specify the target formats for a \LaTeX{} main file individually, 
 Section~\ref{subsubsec:openingMagComm} shows 
 how to specify the \LaTeX{} engine to be used for this file 
 overwriting the general setting \texttt{latex2pdfCommand} in the pom 
@@ -729,7 +730,7 @@ given in Table~\ref{tab:paramLatex2pdf} on page~\pageref{tab:paramLatex2pdf}.
 
 % Still other goals have no output format. These are 
 % - latex:chk, although a check file is created. 
-%   TBD: currently, there is no config to make chk run on latex main files. 
+%   TBD: currently, there is no config to make chk run on \LaTeX{} main files. 
 % - latex:grp, although graphic files are created but they are not exported. 
 %   This may be done if source distributions are defined. 
 % - latex:vrs, creating a version output or emitting warning if a version does not fit. 
@@ -1175,7 +1176,7 @@ in which the configuration file given by the option \texttt{-l} is read in.
 
 For sake of reproducibility, we recommend restricting to the global configuration file 
 which is tied to the installation and to a local file, specific to the latex source directory 
-which shall be valid for all latex main files in that directory. 
+which shall be valid for all \LaTeX{} main files in that directory. 
 
 Goal \texttt{inj} injects the configuration files \texttt{.latexmkrc}, \texttt{.chktexrc} 
 and further files, 
@@ -1191,12 +1192,12 @@ That way independent of the operating system,
 the configuration files \texttt{.latexmkrc} and \texttt{.chktexrc} are sufficient. 
 
 It is important that there is a unique central configuration file 
-applying to all latex main files. 
+applying to all \LaTeX{} main files. 
 There is the choice between at least two mechanisms to ensure this: 
 Either \tool{latexmk} and \texttt{chktex} 
 are invoked with options \texttt{-r} and \texttt{-l}, respectively, 
 specifying the configuration file explicitly 
-or for each folder containing a latex main file 
+or for each folder containing a \LaTeX{} main file 
 there must be a link named \texttt{.latexmkrc} and \texttt{.chktexrc}, respectively, 
 to the according central configuration file. 
 
@@ -1643,7 +1644,7 @@ and vice versa.
 Even better would be if moving in the editor selects the according site at the viewer 
 and the other way round. 
 These two features are called \emph{forward search} and \emph{backward search}, respectively. 
-If the latex main file has a setting \texttt{synchtex=1} or \texttt{synchtex=-1}, 
+If the \LaTeX{} main file has a setting \texttt{synchtex=1} or \texttt{synchtex=-1}, 
 then the created PDF has the according information. 
 Then for VS Code with \LaTeX{} Workshop offers forward search: 
 the keystroke \texttt{ctrl-alt-j} 
@@ -1776,13 +1777,13 @@ Let us discuss the differences between \tool{latexmk} and this latex plugin:
 First, the plugin runs within a maven process which introduces a lot of overhead. 
 So this cannot be as fast as \tool{latexmk} is. 
 In addition, a maven plugin cannot open a viewer. 
-Moreover, the plugin is designed to build all latex main files %in a project 
+Moreover, the plugin is designed to build all \LaTeX{} main files %in a project 
 and not to focus on a single one. 
 In many cases, more than one output format shall be created. 
 The latter properties which are disadvantages in the context of document development, 
 can be overcome, by specifying a single target in the setting \texttt{targets} 
 or by invoking goals with a single target, e.g.\@ by \texttt{mvn latex:pdf} 
-and to restrict to building a subset of files and if needed a single latex main file
+and to restrict to building a subset of files and if needed a single \LaTeX{} main file
 with the settings \texttt{mainFilesExcluded} or \texttt{mainFilesIncluded} 
 described in Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen}. 
 
@@ -1970,7 +1971,7 @@ there is a goal \emph{graphics}, invoked by \texttt{mvn latex:grp}.
 This goal does not create any output in the site directory. 
 Instead, it populates the source directories 
 with graphic files which can be directly included into the \LaTeX-file 
-and so it allows to run the \LaTeX-compiler on the latex main files 
+and so it allows to run the \LaTeX-compiler on the \LaTeX{} main files 
 from within a development environment. 
 Thus, the goal \emph{graphics} is thus a vital feature 
 for development of documents. 
@@ -2006,7 +2007,7 @@ that after deletion exactly the files under version control remain.
 The goal \texttt{clr} corresponds with \texttt{latexmk -C} and is tied to phase \texttt{clean}. 
 
 Clearing comprises files created by the goal \texttt{grp} and by any other goals. 
-Note that AUX files are deleted if they belong to a latex main file or to an included file. 
+Note that AUX files are deleted if they belong to a \LaTeX{} main file or to an included file. 
 
 The most interesting files are those created by injection, 
 i.e.\@ by goal \texttt{inj} like \texttt{.latexmkrc}: 
@@ -2160,7 +2161,7 @@ That is what is the goal \texttt{latex:clr} is for:
 \texttt{mvn latex:clr}
 %
 removes all created graphic files 
-and for each latex main file, it removes all files with ``similar'' names
+and for each \LaTeX{} main file, it removes all files with ``similar'' names
 including log files, index files and that like.
 Typically, this suffices, to remove all files created. 
 If not, 
@@ -2217,7 +2218,7 @@ mvn latex:chk
 \end{Verbatim}
 %
 and runs \texttt{chktex}, described in~\cite{ChkTeX22}, 
-on each latex main file 
+on each \LaTeX{} main file 
 after having created graphic files as for goal \emph{graphics}. 
 As a result, a log-file with suffix \texttt{.clg} is created 
 but not copied to the target folder. 

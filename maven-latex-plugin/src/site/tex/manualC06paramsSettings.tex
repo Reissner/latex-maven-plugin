@@ -68,7 +68,7 @@ The converter of ODT-files into doc(x)-files. % chktex 36
 \item[pdf2txt]
 The converter of PDF-files into TXT-files. 
 \item[chktex]
-A code-checker converting in a sense a latex main file into a log-file 
+A code-checker converting in a sense a \LaTeX{} main file into a log-file 
 containing errors, warnings and further messages. 
 \item[diffPdf]
 A diff tool comparing the PDF file created with an expected PDF file. 
@@ -258,7 +258,7 @@ but can also be configured to mean DOC\@.
 Independent of the order given, the given targets are created 
 in an internal ordering. 
 
-CAUTION\@: These targets are the default targets for any latex main file, 
+CAUTION\@: These targets are the default targets for any \LaTeX{} main file, 
 but depending on the document class, there may be further restrictions 
 given by setting '\texttt{\$docClassesToTargets}'. 
 Currently, only the class \texttt{beamer} used for presentations has restrictions. 
@@ -291,7 +291,7 @@ or via the document class.
 
 The default value for the pattern is chosen to match quite exactly the start of 
 the \LaTeX{} main files. 
-Here we assume that the latex main file should contain 
+Here we assume that the \LaTeX{} main file should contain 
 the declaration ``\cmd{documentclass}'' 
 or the old-fashioned ``\cmd{documentstyle}'' 
 preceded by a few constructs and followed by the document class. 
@@ -357,14 +357,14 @@ using magic comments as described in Section~\ref{subsubsec:openingMagComm}.
 \texttt{mainFilesIncluded}          &  empty string        \\
 \multicolumn2{|l|}{
 \begin{minipage}{0.95\linewidth}
-  The list of names of latex main files 
+  The list of names of \LaTeX{} main files 
   without extension \texttt{.tex} separated by whitespace 
   which shall be included for creating targets, 
   except if this is empty in which cases all are included. 
-  It is assumed that the names of the latex main files 
+  It is assumed that the names of the \LaTeX{} main files 
   do not contain whitespace. 
   Note that leading and trailing whitespace are trimmed. 
-  Currently, names of latex main files 
+  Currently, names of \LaTeX{} main files 
   should better have pairwise different names, 
   even if in different directories. 
   The empty string is the default, i.e.\@ including all. 
@@ -374,14 +374,14 @@ using magic comments as described in Section~\ref{subsubsec:openingMagComm}.
 \texttt{mainFilesExcluded}          &  empty string        \\
 \multicolumn2{|l|}{
 \begin{minipage}{0.95\linewidth}
-  The list of names of latex main files 
+  The list of names of \LaTeX{} main files 
   without extension \texttt{.tex} 
   separated by whitespace 
   which shall be excluded for creating targets. 
-  It is assumed that the names of the latex main files 
+  It is assumed that the names of the \LaTeX{} main files 
   do not contain whitespace. 
   Note that leading and trailing whitespace are trimmed. 
-  Currently, names of latex main files 
+  Currently, names of \LaTeX{} main files 
   should better have pairwise different names, 
   even if in different directories. 
   Together with \texttt{mainFilesExcluded}, 
@@ -410,7 +410,7 @@ The following values for build strategy are allowed:
   on the individual \LaTeX{} main files without any prior actions. 
 \end{description}
 
-This setting can be overwritten for individual latex main files 
+This setting can be overwritten for individual \LaTeX{} main files 
 by the magic comment \texttt{latexmkMagic} 
 described in Section~\ref{subsec:patternLatexMainFile}. 
 
@@ -441,7 +441,7 @@ see Section~\ref{subsec:patternCreatedFromLatexMain} \\
 \begin{minipage}{0.95\linewidth}
 This pattern is applied to file names 
 and matching shall accept all the files 
-which were created from a latex main file `\texttt{xxx.tex}'. 
+which were created from a \LaTeX{} main file `\texttt{xxx.tex}'. 
 It is neither applied to directories 
 nor to `\texttt{xxx.tex}' itself. 
 It shall comprise neither graphic files to be processed 
@@ -453,13 +453,13 @@ to decide which graphic files should be processed
 (those rejected by this pattern) 
 and to log warnings if there is a risk, 
 that graphic files to be processed 
-are skipped or that processing a latex main file overwrites 
+are skipped or that processing a \LaTeX{} main file overwrites 
 the result of graphic preprocessing. 
 
 When clearing the \LaTeX{} source processing directory 
 \texttt{\$texSrcProcDirectory}, 
 i.e.\@ all generated files should be removed, 
-first those created from latex main files. 
+first those created from \LaTeX{} main files. 
 As an approximation, 
 those are removed which match this pattern. 
 
@@ -511,7 +511,7 @@ The capturing group named \texttt{docClass} extracts the document class
 from the command \cmd{documentclass}. 
 If \texttt{patternLatexMainFile} matches, 
 also the capturing group \texttt{docClass} matches, 
-so that for latex main files the document class is always known. 
+so that for \LaTeX{} main files the document class is always known. 
 All other capturing groups are defined though magic comments. 
 As the document class, they are directives specific to the given file 
 on how to compile it. 
@@ -580,7 +580,7 @@ linerange={166-181}, % chktex 8 TBD: why is this not covered by .chktexrc?
 breaklines,
 %float,
 captionpos=b, label={lst:patternLatexMainFile},
-caption={The default pattern of the latex main file in a form as in a pom configuration}]
+caption={The default pattern of the \LaTeX{} main file in a form as in a pom configuration}]
 {../../main/resources/rawPoms/pom4pdf.xml}% chktex 11 
 
 % \begin{Verbatim}[fontsize=\scriptsize]
@@ -679,7 +679,7 @@ to add material if a user is not familiar with regular expressions.
 In the long run it must be thought of weakening the pattern: 
 It is not necessary, that exactly the correct files are parsed, 
 because incorrect files are detected by the \LaTeX{} engine anyway. 
-Instead, among the correct files the latex main files shall be detected. 
+Instead, among the correct files the \LaTeX{} main files shall be detected. 
 
 As a workaround for very special \LaTeX{} main files, 
 it is a good idea to let it indicate in a magic comment. 
@@ -688,7 +688,7 @@ From the point of view of this software,
 it makes sense to specify the document type in the magic comment then. 
 Thinking one step further, also specifying the target 
 or the \LaTeX{} engine in a magic comment 
-indicates already a latex main file. 
+indicates already a \LaTeX{} main file. 
 Whereas the target set makes the document class superfluous, 
 this is not the case for the magic comment specifying the \LaTeX{} engine. 
 
@@ -700,35 +700,36 @@ this is not the case for the magic comment specifying the \LaTeX{} engine.
 % in the same file and to have \cmd{documentclass}, 
 % \cmd{begin\{document\}} and \cmd{end\{document\}} 
 % in the same file also, 
-% then a latex main file without \cmd{documentclass} 
+% then a \LaTeX{} main file without \cmd{documentclass} 
 % cannot contain very much material. 
 
 % So it is almost no restriction to the user to have \cmd{documentclass} 
-% declared in the latex main file. 
+% declared in the \LaTeX{} main file. 
 % As explained above, this is necessary for this \LaTeX{} builder to find out the document class. 
 % % TBD: explain why: link to support of various classes. 
 % % Partially, this is not yet documented. 
 
 
 
-The latex extension latex workshop for VS Code offers two similar 
+The \LaTeX{} extension \LaTeX{} workshop for VS Code offers two similar 
 \href{https://github.com/James-Yu/LaTeX-Workshop/wiki/Compile#multi-file-projects}%
 {alternatives to identify \LaTeX{} main files}: 
 Occurrence of \cmd{documentclass} without checking preceding material and 
-absence of first line \texttt{\%~!TEX root=} declaring a TEX file as depending on a latex main file 
+absence of first line \texttt{\%~!TEX root=} declaring a TEX file 
+as depending on a \LaTeX{} main file 
 which must be given explicitly. 
 The first alternative risks that a TEX file is recognized as main file, 
 just because it deals with document classes, 
 whereas the second alternative is inconvenient 
-and does not work if a file has two potential latex main files 
+and does not work if a file has two potential \LaTeX{} main files 
 as is suggested for \texttt{beamer} presentations in Section~\ref{sec:sources} 
 and realized in~\cite{PresBeamer}. 
 Although presence of \texttt{\%~!TEX root=} indicates that the according file 
 is no \LaTeX{} main file, this software ignores this magic comment. 
 
 Emacs with package \auctex, uses an alternative
-to the current technique to determine the latex main files: 
-Latex main files are marked with an end section as this file: 
+to the current technique to determine the \LaTeX{} main files: 
+\LaTeX{} main files are marked with an end section as this file: 
 %
 \begin{Verbatim}[fontsize=\footnotesize]
 %%% Local Variables: 
@@ -767,15 +768,15 @@ All this would push down performance.
 \subsection{The parameter \texttt{patternCreatedFromLatexMain}}%
 \label{subsec:patternCreatedFromLatexMain}
 
-The files created from a latex main file 
+The files created from a \LaTeX{} main file 
 depend strongly on the compiler options 
-and on packages used in the latex main file 
+and on packages used in the \LaTeX{} main file 
 and in the TEX-files inputted. 
 The default value 
 `\texttt{\^{}T\$T\textbackslash.$[$\^{}.$]*$}' 
 is appropriate for most parameters and packages: 
 Most packages create files with names only 
-which coincide with the name of the latex main file, except the suffix. 
+which coincide with the name of the \LaTeX{} main file, except the suffix. 
 This is all sufficient even for programs doing post-processing 
 such as \texttt{bibtex}, \texttt{makeindex}, \texttt{xindy} and 
 \texttt{makeglossaries}. 
@@ -1997,11 +1998,11 @@ If this is not appropriate, please modify and notify the developer of this plugi
 \begin{minipage}{0.95\linewidth}
 The prefix of the name of the folder written by \texttt{\$pythontexCommand}. 
 The full name of that folder is this prefix 
-followed by the jobname of the latex main file, 
+followed by the jobname of the \LaTeX{} main file, 
 i.e.\@ the filename without ending. 
  
 CAUTION\@: This is readonly, 
-because in both, the pythontex tool and the according latex package 
+because in both, the pythontex tool and the according \LaTeX{} package 
 this prefix is hardcoded at time of this writing. 
 \end{minipage}
 } \\\end{longtable}
@@ -2110,7 +2111,7 @@ see Section~\ref{subsec:patternT4htOutputFiles}\\
 The pattern is applied to file names 
 and matching shall accept 
 exactly the target files of goal `\texttt{html}' 
-for a given latex main file `\texttt{xxx.tex}'. 
+for a given \LaTeX{} main file `\texttt{xxx.tex}'. 
 Matching triggers copying those files to \texttt{\$outputDirectory}. 
 
 The patterns for the other targets 
@@ -2334,7 +2335,7 @@ we can specify the command ant its options, both given in Table~\ref{tab:paramCh
   \texttt{chkTexCommand}      & \texttt{chktex}        \\
   \multicolumn2{|l|}{
   \begin{minipage}{0.95\linewidth}
-  The chktex-command for checking latex main files. 
+  The chktex-command for checking \LaTeX{} main files. 
   %The default value is 'chktex'. 
   \end{minipage}
   } \\
@@ -2575,7 +2576,7 @@ ranging from byte equivalence to some kind of visual equivalence.
 		Note that currently, only pdf files are checked. 
     % TBD: correct the information on epoch time 
 
-    This setting can be overwritten for individual latex main files 
+    This setting can be overwritten for individual \LaTeX{} main files 
     by the magic comment \texttt{chkDiffMagic} 
     described in Section~\ref{subsec:patternLatexMainFile}. 
 

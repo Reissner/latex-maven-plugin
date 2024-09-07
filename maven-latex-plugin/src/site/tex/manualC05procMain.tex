@@ -4,7 +4,7 @@
 Given graphics in formats includable in TEX files, 
 which may require preprocessing described in 
 Chapter~\ref{chap:GraphConversions}, 
-this section describes the conversions of latex main files 
+this section describes the conversions of \LaTeX{} main files 
 into target files in detail. 
 The most important target file format is \gls{pdf}. 
 Conversion into this format is described in Section~\ref{sec:tex2pdf}. 
@@ -1008,7 +1008,7 @@ Since the first one works very well, it is the one we describe here,
 but it is always possible to configure a diff tool with a weaker equivalence check. 
 
 The first question is, whether reproducibility is requested. 
-It is, if there is according magic comment in the latex main file requires this 
+It is, if there is according magic comment in the \LaTeX{} main file requires this 
 as described in Section~\ref{subsubsec:openingMagComm}. 
 If there is no such magic comment is present, if the setting \texttt{chkDiff} specifies so. 
 If in this section settings are given without explicit reference, 
@@ -1022,7 +1022,7 @@ and, as reproducibility shall not break if changing a timezone
 or if the country running the build changes between daylight saving time and standard time, 
 we chose a uniform timezone namely UTC\@. 
 
-If a latex main file is already under reproducibility control, 
+If a \LaTeX{} main file is already under reproducibility control, 
 then there is an according original PDF file in \texttt{diffDirectory} or in a subfolder 
 to be compared with a newly created PDF file 
 which occurs in a subfolder of the TEX source directory \texttt{texSrcDirectory} 
@@ -1052,13 +1052,13 @@ a build exception is thrown as specified in Table~\ref{tab:TLP}.
 \medskip
 
 
-If a latex main file is not already under reproducibility control, 
+If a \LaTeX{} main file is not already under reproducibility control, 
 then no original PDF file exists. 
 In this case, the environment for compilation only ensures the timezone UTC\@. 
 Then the created PDF file is copies at proper place into \texttt{diffDirectory} 
 -- that's all for setting a document under reproducibility control. 
 
-Finally, if a latex main f8ile file is under reproducibility control 
+Finally, if a \LaTeX{} main f8ile file is under reproducibility control 
 but is to be changed in a way that also the according PDF file is affected, 
 then before compilation just the original PDF file is deleted, 
 and the workflow is as setting under reproducibility control. 
@@ -1345,7 +1345,7 @@ and support for reproducibility checks.
 % an idea would be to include the fdb_latexmk file as this is specific for latexmk 
 % But this has to be done in a way, that compilation still works if not present. 
 % Only the diff to the original fails then. 
-% In fact, even two latex main files are required: 
+% In fact, even two \LaTeX{} main files are required: 
 % - one for which latexmk is activated although latexmkUsage is set to the default NotAtAll
 % - another one for which latexmk is not requested by magic comment. 
 % This can be any document which is already present. 
