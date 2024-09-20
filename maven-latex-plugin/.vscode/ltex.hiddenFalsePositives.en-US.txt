@@ -60,3 +60,10 @@
 
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QWilberd van der Kallen\\E$"}
 {"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qmaybe followed by an identifier of the tool it refers to.\\E$"}
+{"rule":"SUBJECT_VERB_AGREEMENT_PLURAL","sentence":"^\\QIn contrast, the package glossaries supports multiple glossaries, with and without main glossary and even allows user-defined glossaries.\\E$"}
+{"rule":"SUBJECT_VERB_AGREEMENT_PLURAL","sentence":"^\\QAlso, the package glossaries offers sorting and unifying either via makeindex as for indices or via xindy, and it offers also to do without external programs.\\E$"}
+{"rule":"SUBJECT_VERB_AGREEMENT_PLURAL","sentence":"^\\QMoreover, the package glossaries even supports user-defined glossary types, but\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QGLOssary file containing unsorted and multiple glossary entries; output format of \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q engines with package makeglossaries makeglossaries log file glossary file containing sorted, unified and formatted glossary entries; output format of the makeglossaries tool read by \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q engines\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QInDeX file containing unsorted and multiple index entries; output format of \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q engines with package makeindex or similar INDex file containing sorted, unified and formatted index entries, output format of makeindex and xindy\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QBIBliography file: In particular input file for the bibtex tool bibliography for a latex document in latex format: written by the bibtex tool and read by \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q processors\\E$"}
+
