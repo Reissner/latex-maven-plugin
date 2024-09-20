@@ -329,12 +329,19 @@ to be inserted for the \cmd{cite} commands,
 but it is the \LaTeX{} engine which extracts these mappings 
 from the \cmd{bibitem} entries in the BBL file written by \tool{bibtex}. 
 
+The package \pkg{tocbibind} described in~\cite{TocBibIndP}, 
+then writes the headline of the index into the table of contents, 
+if the option \texttt{numibib} is given.\index{table of contents}
+
 
 \section{Indices}\label{sec:indices}
 
-
-
-
+Let us first assume that only a single index is wanted. 
+For each occurrence 
+of a command \cmd{index} or similar (details see below) in the TEX file, 
+referring to an entry of the index,
+\texttt{latex2pdf} writes an according entry \cmd{indexentry} 
+into the \gls{idx} file, provided before the command \cmd{makeindex} was issued. 
 
 In case the \LaTeX{} engine writes index information, 
 into its \gls{idx} file, at least one index must be generated. 
@@ -342,20 +349,24 @@ Since the \gls{idx} file contains nothing but index information,
 an index is created if and only if the \gls{idx} file is created. 
 % Well, this is not really the truth: it is needed only if ...
 Essentially, 
+
 the command \cmd{makeindex} tells \texttt{latex2pdf} 
 to open the \gls{idx} file for writing. 
-Then for each occurrence of the \cmd{index}-command 
-or similar (details see below) in the TEX file, 
-an entry is written sequentially to the \gls{idx} file as 
-\cmd{indexentry} comprising the keyword given by the \cmd{index}-command 
+Then for each occurrence of the \cmd{index}-command in the TEX file 
+specifying an index entry, 
+an \cmd{indexentry} command is written into the \gls{idx} file 
+comprising the keyword to be written into the index given by the \cmd{index}-command 
 and the page number where the \cmd{index}-command occurred. 
-For example \cmd{index\{ant-task\}} occurring on page 3 creates an entry 
+
+ is written to the \gls{idx} file as 
+\cmd{indexentry} 
+For example \cmd{index\{ant-task\}} in occurring on page 3 creates an entry 
 %
 \begin{lstlisting}[language=TeX]
 \indexentry{ant-task}{3}
 \end{lstlisting}
 %
-in \texttt{xxx.idx}. 
+in the IDX file. 
 
 Then the \texttt{makeindex}-command is applied to the \gls{idx} file 
 which sorts keywords and for each keyword collects the according page numbers, 
@@ -368,7 +379,8 @@ is \pkg{makeidx} described in~\cite{MkidxShIdxP}.
 In addition, \pkg{makeidx} provides the command \cmd{see}{} 
 which is for cross-reference within an index. 
 The package \pkg{tocbibind} described in~\cite{TocBibIndP}, 
-then writes the headline of the index into the table of contents.\index{table of contents}
+then writes the headline of the index into the table of contents, 
+if the option \texttt{numindex} is given.\index{table of contents}
 % The package \pkg{rerunfilecheck} described in~\cite{110}, 
 % ensures that \texttt{latex2pdf} is rerun if needed, 
 % provided loaded with option \texttt{aux}. 
