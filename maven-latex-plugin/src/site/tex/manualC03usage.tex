@@ -1,3 +1,4 @@
+
 \chapter{Usage of Plugin and Task}\label{chap:usage}
 
 % TBD: in the long run: plugin, task and standalone, or as a dependency
@@ -639,7 +640,7 @@ Note that the target \texttt{docx} converts by default into \gls{docx}
 but may also be configured to produce the old-fashioned \gls{doc} format. 
 
 Be aware that the target \texttt{dvi} creates output in DVI format 
-only for latex processors \lualatex{} and \pdflatex{}, 
+only for \LaTeX{} engines \lualatex{} and \pdflatex{}, 
 whereas \xelatex{} creates the XDV (extended DVI) format for target \texttt{dvi}. 
 
 %\lstset{language=xml, basicstyle=\small}
@@ -1049,7 +1050,8 @@ It provides packages used in \texttt{headerGrp.tex}
 and provides commands to exclude checking by \texttt{chktex} 
 controlled by \texttt{.chktexrc}. 
 The header \texttt{header.tex} is very crucial 
-for example controlling and guaranteeing rerun of the \LaTeX{} compiler. 
+for example controlling and guaranteeing rerun of the \LaTeX{} engine 
+by including package \pkg{rerunfilecheck}. 
 Its presence makes the results uniform and is a cornerstone for quality guarantees. 
 As said above, the default for injections is \texttt{latexmkrc,chktexrc}, 
 but it is advisable to use \texttt{latexmkrc,chktexrc,header}. 
@@ -1501,12 +1503,16 @@ From that point of view, \LaTeX{} and friends is the worst conceivable choice:
   first you have to trigger a compilation process and wait some time. 
   So, besides an editor and a viewer you also need some kind of console. 
   It is even worse: 
-  Typically, based on the console output you must either rerun the compiler 
+  Typically, based on the console output you must either rerun the \LaTeX{} engine
   or run some auxiliary program, even more of them 
   and then again the compiler, maybe several times. 
   The decision whether the viewer shows the final result already, 
   or whether another command has to be issued and if so which one, 
-  is based on the console output. 
+  is based on the console output\footnote%
+  {What is worse, there are cases where the console output fails 
+  to contain a hint to rerun some program. 
+  % pythontex z.B. aber auch makeglossaries.
+  }. 
   So part of your attention must be on the console also. 
   The console is also used to issue the next command. 
   \item 
@@ -1771,6 +1777,8 @@ or all intermediate files by \texttt{latexmk -c}, which does not erase the resul
 before using the basic tools. 
 \medskip
 
+\subsubsection{Differences of \tool{latexmk} with this \LaTeX{} builder}%
+\label{subsubsec:latexmkDiff}
 
 
 Let us discuss the differences between \tool{latexmk} and this latex plugin: 
@@ -1828,22 +1836,34 @@ concerning mostly graphic files:
 and creates or recreated what is new or changed. 
 This is more elegant than the idea of this plugin 
 which is creates a fixed set of graphic files first 
-and is from that pointon based on detecting hard coded set of files and tracing log files. 
-Nevertheless, to deal with graphic files which are to be created in the course of the build, 
+and is from that point on 
+based on detecting hard coded set of files and tracing log files. 
+In other words, \tool{latexmk} has no graphic preprocessing 
+as Chapter~\ref{chap:GraphConversions} describes for this build tool. 
+This offers the advantage, that \tool{latexmk} never creates graphic files 
+which are later not needed for inclusion. 
+Nevertheless, 
+to deal with graphic files which are to be created in the course of the build, 
 \tool{latexmk} runs the \LaTeX{} engine in \texttt{nonstopmode} mode. 
-Still, the run of the engine is interrupted, a single graphic file is created according to some rule 
+Still, the run of the engine is interrupted, 
+a single graphic file is created according to some rule 
 and then the engine is rerun. 
 For a document with 10 graphic files to be created in the course of the build, 
 for \tool{latexmk} only the 10th runs of the \LaTeX{} engine is completed. 
-In contrast, this plugin requires a single run, so performance is significantly better. 
-The use of \cmd{IfFileExists} is not really elegant but prevents \tool{latexmk} from frequent reruns 
+In contrast, this plugin requires a single run, 
+so performance is significantly better. 
+The use of \cmd{IfFileExists} is not really elegant 
+but prevents \tool{latexmk} from frequent reruns 
 and in some cases is a technique to make the build process with \tool{latexmk} work. 
-One of these cases, related with using \pkg{listings} is discussed below in this section. 
+One of these cases, 
+related with using \pkg{listings} is discussed below in this section. 
 
-More general, there are cases, where this latex builder succeeds but \tool{latexmk} does not. 
+More general, there are cases, 
+where this latex builder succeeds but \tool{latexmk} does not. 
 As this latex builder may invoke \tool{latexmk} either in general or for selected files, 
 this latex builder is mightier than \tool{latexmk}. 
-If both approaches succeed, the results shall be the same for this plugin and for \tool{latexmk}. 
+If both approaches succeed, 
+the results shall be the same for this plugin and for \tool{latexmk}. 
 
 It is possible to combine this plugin with \tool{latexmk} to speed up \tool{latexmk}: 
 %
@@ -1869,7 +1889,7 @@ goal \texttt{clr} to clear created files is
 described in Section~\ref{subsec:develClear}. 
 \medskip
 
-
+\subsubsection{How \tool{latexmk} is integrated}\label{subsubsec:latexmkIntegration}
 
 Finally, we show how this plugin may support \tool{latexmk} where. 
 To understand in which sense, one must dive very deep. 
@@ -1906,9 +1926,9 @@ before invoking \tool{latexmk}.
 Still some generalization in \tool{latexmk} could spare this modification. 
 
 Another point is, that currently for each file \tool{latexmk} creates with a separate rule, 
-another run of the latex processor is required: 
+another run of the \LaTeX{} engine is required: 
 The initial run is interrupted with the first missing file. 
-Then that file is created by an appropriate rule and the latex processor is rerun 
+Then that file is created by an appropriate rule and the \LaTeX{} engine is rerun 
 failing with the next missing file. 
 That way the process goes on until the last file is created with a rule. 
 Of course this procedure is quite time-consuming, so an alternative is required. 

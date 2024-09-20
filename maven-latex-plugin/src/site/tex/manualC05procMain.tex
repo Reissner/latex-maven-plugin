@@ -15,7 +15,7 @@ which is supported mainly for historical reasons.
 % FIXME\@: nowhere described. 
 
 Almost independent of the format created, 
-Inclusion of bibliographies, indices and glossaries 
+inclusion of bibliographies, indices and glossaries 
 requires additional conversions 
 done by several auxiliary programs. 
 Bibliographies are described in Section~\ref{sec:bibtex}, 
@@ -27,18 +27,29 @@ is inclusion of results of code evaluations,
 code in python and other languages described in Section~\ref{sec:pythontex}. 
 Here, an auxiliary program essentially invokes the language interpreter. 
 
-Sections~\ref{sec:rerunAux} 
-and~\ref{sec:rerunLatex} 
-are special in that they describe rerunning auxiliary programs 
-like \texttt{makeindex} and the \LaTeX{} engine, 
-which may be necessary even if certain lists are present 
+Sections~\ref{sec:runRerunAux} and~\ref{sec:rerunLatex} 
+describe running and rerunning auxiliary programs 
+like \texttt{makeindex} and the \LaTeX{} engine, respectively. 
+The latter may be necessary if certain lists are present 
 like table of contents list of figures or list of tables. 
+Section~\ref{sec:runRerunAux} clarifies the exchange of information  
+between the \LaTeX{} engines and auxiliary programs, 
+whereas Section~\ref{sec:rerunLatex} 
+essentially describes the exchange of information 
+between individual runs of the \LaTeX{} engine. 
 
 Section~\ref{sec:chkReprod} is special in that it is not related with conversion 
 but with checking reproducibility. 
+This \LaTeX{} builder has some built-in build algorithm, 
+but one can also use \tool{latexmk} as a build tool 
+in a way that invokes all tools with parameters given by the configuration. 
+Note that \tool{latexmk} has a different build algorithm, 
+but the results should be the same. 
+This is mainly to integrate document development more seamlessly. 
+For details on motivation and implementation see Section~\ref{sec:latexmk}. 
 
 Besides the output formats traditional for \LaTeX, 
-\gls{pdf} and \gls{dvi} describing e.g.~books, 
+\gls{pdf} and \gls{dvi} describing e.g.\@ books, 
 Section~\ref{sec:tex2html} describes creation of 
 \gls{html}, Section~\ref{sec:tex2odt} the creation of \gls{odt} and 
 Section~\ref{sec:tex2doc} creation of MS Word formats like \gls{docx}. 
@@ -85,7 +96,7 @@ does much more than converting TEX files to PDF files.
 Figure~\ref{fig:tex2pdf} shows for \texttt{latex2pdf} set e.g.~to \lualatex{}, 
 that besides the PDF file also a LOG file and an AUX file is created. 
 The LOG file contains logging information on the run of the conversion 
-and the aux-file transports information from one run to the next, 
+and the AUX file transports information from one run to the next, 
 writing in one run and reading in the next run. 
 Thus, conversion goes without it, but it is read if present. 
 This is why it is depicted at input side in dashed lines. 
@@ -98,56 +109,56 @@ to the according input files.
 This is to support backward search, meaning click on a place in the PDF viewer 
 opens an editor in the source file. 
 
-What is in fact in the aux-file depends on the package. 
+What is in fact in the AUX file depends on the package. 
 Among other information, 
 also citations and the location of the bibliography file with ending bib 
 are present. 
 This cannot be used directly in the next \texttt{latex2pdf} run 
 to create the bibliography, 
-because the entries referenced in the document must be extracted from the bib-file 
+because the entries referenced in the document must be extracted from the BIB file 
 and sorted. 
 This is done by invoking \texttt{bibtex} between two \texttt{latex2pdf} runs. 
-Based on the aux-file, \texttt{bibtex} creates a bbl-file 
+Based on the AUX file, \texttt{bibtex} creates a BBL file 
 containing the bibliography, which is read in the next \texttt{latex2pdf} run. 
 For details see Section~\ref{sec:bibtex}. 
 
 Alternatively to \texttt{bibtex} a bibliography can be created 
 with the package \pkg{biblatex} in conjunction with the auxiliary program \texttt{biber}. 
 Running a \LaTeX{} engine with package \pkg{biblatex} loaded 
-creates a \gls{bcf}-file read by \texttt{biber}. 
+creates a \gls{bcf} file read by \texttt{biber}. 
 At time of this writing, this software does not support that option. 
 Nevertheless, for sake of completeness we added this data path to Figure~\ref{fig:tex2pdf}. 
 
 If an index is demanded, 
-in addition \texttt{latex2pdf} creates a \gls{idx}-file. 
+in addition \texttt{latex2pdf} creates a \gls{idx} file. 
 As the citations, it cannot be used directly to create an index in
 the next \texttt{latex2pdf} run, 
 because the index entries must be collected and sorted before. 
 This is done by invoking \texttt{makeindex} 
 between the two \texttt{latex2pdf} runs. 
-Based on the \gls{idx}-file, \texttt{makeindex} creates a \gls{ind}-file 
+Based on the \gls{idx} file, \texttt{makeindex} creates a \gls{ind} file 
 containing the index, which is read in the next \texttt{latex2pdf} run. 
 For details see Section~\ref{sec:indices}. 
 
 If more than one index is demanded, 
 we suggest using \texttt{splitindex} instead of \texttt{makeindex} 
-which creates one \gls{ind}-file per index. 
+which creates one \gls{ind} file per index. 
 
 A more modern technique to create an index is via \texttt{xindy}, 
 but at time of this writing, this software does not support \texttt{xindy} yet. 
 
-If a glossary is demanded, this can be read off the \gls{aux}-file 
-and a \gls{glo}-file containing the index entries 
+If a glossary is demanded, this can be read off the \gls{aux} file 
+and a \gls{glo} file containing the index entries 
 is created and a file with style information. 
 Depending on the configuration, 
-this may be a \gls{ist}-file or a \gls{xdy}-file. 
-As for the index the \gls{idx}-file, 
-the \gls{glo}-file cannot be used directly to create a glossary in
+this may be a \gls{ist} file or a \gls{xdy} file. 
+As for the index the \gls{idx} file, 
+the \gls{glo} file cannot be used directly to create a glossary in
 the next \texttt{latex2pdf} run, 
 because the glossary entries must be collected and sorted before. 
 This is done by invoking \texttt{makeglossaries} 
 between the two \texttt{latex2pdf} runs. 
-Based on the \gls{glo}-file, \texttt{makeglossaries} creates a \gls{gls}-file 
+Based on the \gls{glo} file, \texttt{makeglossaries} creates a \gls{gls} file 
 containing the glossary, which is read in the next \texttt{latex2pdf} run. 
 For details see Section~\ref{sec:glossaries}. 
 
@@ -156,22 +167,22 @@ Besides \texttt{makeglossaries}, there is a more modern tool,
 at time of this writing. 
 
 The package \pkg{pythontex} allows including python code or related 
-in the \gls{tex}-file and to evaluate it. 
-The first \texttt{latex2pdf} run creates a \gls{pytxcode}-file 
-which contains essentially the code parts of the \LaTeX-file. 
+in the \gls{tex} file and to evaluate it. 
+The first \texttt{latex2pdf} run creates a \gls{pytxcode} file 
+which contains essentially the code parts of the \LaTeX file. 
 Invoking \texttt{pythontex} creates by default 
 a folder \texttt{pythontex-files-xxx} 
 with material where code is already evaluated. 
 In the next \texttt{latex2pdf} run, this material is included in the document. 
 The \pkg{pythontex} comes with a second command line utility, 
-\texttt{depythontex}, eliminating all python code from the original tex-file. 
-Optionally, \texttt{latex2pdf} also creates a \gls{depytx}-file 
-with all information to replace python code in the original tex-file 
+\texttt{depythontex}, eliminating all python code from the original TEX file. 
+Optionally, \texttt{latex2pdf} also creates a \gls{depytx} file 
+with all information to replace python code in the original TEX file 
 with evaluated material from \texttt{pythontex-files-xxx}. 
 Replacement is done by \texttt{depythontex} 
 which by default, sends the result to stdout, 
-but there is an option to write into another \LaTeX-file. 
-Converting this new \LaTeX-file 
+but there is an option to write into another \LaTeX file. 
+Converting this new \LaTeX file 
 yields the same result as converting the original one. 
 Depythonization is a feature needed e.g.~for papers 
 when the publisher does not accept included code. 
@@ -180,10 +191,10 @@ For details see Section~\ref{sec:pythontex}.
 In addition, if
 a table of contents, a list of figures, a list of tables 
 or a list of listings is required, 
-also a toc-file, a lof-file, a lot-file and a lol-file is created,
+also a TOC file, a LOF file, a LOT file and a LOL file is created,
 respectively, 
 collecting the according information. 
-Also, if hyper-references are built, an \gls{out}-file 
+Also, if hyper-references are built, an \gls{out} file 
 containing bookmarks is created. 
 If such a file is present, it is read in and is used
 to create a table of contents, a list of figures, of tables and of listings 
@@ -193,7 +204,7 @@ To summarize,
 if a table of contents, a list of figures, a list of tables, a list of listings or 
 a bibliography, an index or a glossary is present, 
 or if code must be replaced by their evaluation, 
-a second \LaTeX{} run is required to make that material appear in the pdf-output. 
+a second \LaTeX{} run is required to make that material appear in the PDF output. 
 
 If a table of contents and at the same time 
 a bibliography, an index or a glossary is present, 
@@ -201,10 +212,10 @@ even two further \LaTeX{} runs are required:
 After the first one, the bibliography, the index or the glossary 
 occurs in the PDF file but not yet in the table of contents. 
 This happens after the second additional \LaTeX{} run. 
-As described in Sections~\ref{sec:rerunAux} and~\ref{sec:rerunLatex}, 
+As described in Sections~\ref{sec:runRerunAux} and~\ref{sec:rerunLatex}, 
 further runs of auxiliary programs mainly to create index or glossaries, 
 but also under certain circumstances bibliographies and inserting invoked code, 
-followed by invocation of the \LaTeX-processor \texttt{latex2pdf} may be necessary. 
+followed by invocation of the \LaTeX engine \texttt{latex2pdf} may be necessary. 
 
 \begin{figure}[htb]
 \centering
@@ -218,51 +229,83 @@ should be a picture
 
 \section{Bibliographies}\label{sec:bibtex}
 
-In case the \LaTeX{} engine writes bibliographic information, 
-into its aux-file, a bibliography must be generated. 
-For each occurrence of a \cmd{cite}-command in the TEX file, 
-\texttt{latex2pdf} writes an according entry \cmd{citation} into the aux-file. 
+
+For each occurrence of a command \cmd{cite\{\textlangle key\textrangle\}} in the TEX file, 
+referring to a document with given key,
+\texttt{latex2pdf} writes an according entry \cmd{citation\{\textlangle key\textrangle\}} 
+into an AUX file. 
+Note that, 
+if the \LaTeX{} main file includes other TEX files with \cmd{include}, 
+and the \cmd{cite}-command is invoked in the included TEX file, 
+the \cmd{citation} commands go into the AUX file of that TEX file. 
 Moreover, a \cmd{bibliography}-command in the TEX file 
-writes a link to the bib-file containing the bibliography data 
-into the aux-file as \cmd{bibdata}. 
-Optionally, a \cmd{bibliographystyle}-command in the TEX file 
+writes a link to the BIB files containing the bibliography data 
+into the (top level) AUX file as \cmd{bibdata}. 
+Note that \cmd{bibliography} accepts a list of BIB files, not only a single one, 
+as maybe suggested by the singular name. 
+The key given by \cmd{cite} commands must refer to exactly one key in the BIB files. 
+Last not least, a \cmd{bibliographystyle}-command in the TEX file 
 writes a link to the bibliography style file 
-into the aux-file as \cmd{bibstyle}. 
+which determines the appearance of the bibliography 
+and also the labels and the ordering 
+into the AUX file as \cmd{bibstyle}. 
+Typically, the style file comes from the \TeX{} distribution rather than the user. 
+Its ending is \gls{bst}. 
 
 To create a bibliography, 
 a \texttt{bibtexCommand} must be run after the \LaTeX{} run. 
-The default command is the traditional \texttt{bibtex}, 
-but there are more modern alternatives 
-like \texttt{bibtexu} and \texttt{bibtex8} supporting utf8 encoding 
+The default command is the traditional \tool{bibtex}, 
+but there are more modern alternatives also supported
+like \tool{bibtexu} and \tool{bibtex8} supporting utf8 encoding 
 and others. 
+Among the tools which are not supported are \tool{biber} and \tool{mlbibtex}. 
 
-% mention Biber and biblatex and also mlbibtex 
+We run \tool{bibtex} if either 
+the \cmd{bibliography}-command, or \cmd{bibliographystyle}-command 
+is in the top level AUX file. 
+If there is no \cmd{cite}-command, \tool{bibtex} yields an error. 
+If neither \cmd{bibliography}-command nor \cmd{bibliographystyle}-command 
+are present, then presence of \cmd{cite} yields an error when running the \LaTeX{} engine. 
+So, there is an error if not either all three ingredients are present or neither. 
 
-Essentially, \texttt{bibtex} extracts the citations in the aux-file, 
-unifies them, i.e.~a citation is listed once even if it is used more than once, 
-retrieves the according entries from the bib-file, sorts these, 
-performs formatting and writes all into a bbl-file 
+Essentially, \tool{bibtex} extracts the citations in the AUX files, 
+unifies them, i.e.\@ a citation is listed once even if it is used more than once, 
+retrieves the according entries from the BIB files specified, 
+sorts and formats these entries 
+according to the \gls{bst} file and writes all into a \gls{bbl} file 
 which can be included in the next run of \texttt{latex2pdf}. 
+Formatting includes associating a label with each key 
+and sorting is based typically on the label. 
+The BBL file consists essentially in a \env{thebibliography} environment 
+listing the \cmd{bibitem}s. 
+These relate the key and the label given by the BST file 
+and show the text of the bibliography entry. 
 
-Note that after a \texttt{bibtex}-run, 
+Note that after a \tool{bibtex}-run, 
 two \LaTeX{} runs are required: 
-The first one just puts the bibliography found in the bbl-file 
-into the PDF file and the labels of the citations into the aux-file 
+The first one just puts the bibliography found in the BBL file 
+into the PDF file at place of \cmd{bibliography} 
+(which shows why it is singular, although a list of BIB files may serve as source)
+and the labels of the citations into the AUX file 
 as \cmd{bibcite}-commands. 
-The second run places the labels of the citations found in the aux-file 
+The second run places the labels of the citations found in the AUX file 
 at the citations given by \cmd{cite}. 
 The package \pkg{tocbibind} described in~\cite{TocBibIndP}, 
-then writes the headline of the bibliography into the table of contents.\index{table of contents}
-The package \pkg{rerunfilecheck} described in~\cite{RerunFChkP}, 
-ensures that \texttt{latex2pdf} is rerun if needed, 
-provided loaded with option \texttt{aux}. 
+then writes the headline of the bibliography 
+into the table of contents.\index{table of contents}
+% The package \pkg{rerunfilecheck} described in~\cite{RerunFChkP110}, 
+% ensures that \texttt{latex2pdf} is rerun if needed, 
+% provided loaded with option \texttt{aux}. 
+
+% TBD: One could do some postprocessing to bibtex 
+% writing 
 
 
-This software presupposes, that \texttt{bibtex} reads the aux-file 
-and creates a bbl-file and also an blg-file with logging output 
+This software presupposes, that \tool{bibtex} reads the AUX file 
+and creates a BBL file and also a BLG file with logging output 
 as illustrated by Figure~\ref{fig:aux2bbl}. 
-From the blg-file this software may determine 
-whether \texttt{bibtex} emitted an error or warnings. 
+From the BLG file this software may determine 
+whether \tool{bibtex} emitted an error or warnings. 
 
 
 \begin{figure}[htb]
@@ -273,40 +316,50 @@ should be a picture
 \import{}{F5_02aux2bbl.ptx}
 }
 \caption{\label{fig:aux2bbl}
-Conversion of an aux-file into a bbl-file using a bibliography}
+Conversion of an AUX file into a BBL file using bibliographies}
 \end{figure}
 
-Vital information on \texttt{bibtex} can be found in~\cite{BibPat} 
+Vital information on \tool{bibtex} can be found in~\cite{BibPat} 
 and in~\cite{BibMar}. 
-Also, Chapter 10 in~\cite{Gra} gives vital information on \texttt{bibtex}. 
+Also, \cite{Gra}, Chapter 10 is worth reading in this context. 
+
+Note that in the master AUX file one can find also entries \cmd{bibcite} 
+relating the labels for bibliography entries to the representations 
+to be inserted for the \cmd{cite} commands, 
+but it is the \LaTeX{} engine which extracts these mappings 
+from the \cmd{bibitem} entries in the BBL file written by \tool{bibtex}. 
 
 
 \section{Indices}\label{sec:indices}
 
+
+
+
+
 In case the \LaTeX{} engine writes index information, 
-into its \gls{idx}-file, at least one index must be generated. 
-Since the \gls{idx}-file contains nothing but index information, 
-an index is created if and only if the \gls{idx}-file is created. 
+into its \gls{idx} file, at least one index must be generated. 
+Since the \gls{idx} file contains nothing but index information, 
+an index is created if and only if the \gls{idx} file is created. 
 % Well, this is not really the truth: it is needed only if ...
 Essentially, 
-the command \cmd{makeindex}{} tells \texttt{latex2pdf} 
-to open the \gls{idx}-file for writing. 
+the command \cmd{makeindex} tells \texttt{latex2pdf} 
+to open the \gls{idx} file for writing. 
 Then for each occurrence of the \cmd{index}-command 
 or similar (details see below) in the TEX file, 
-an entry is written sequentially to the \gls{idx}-file as 
-\cmd{indexentry}{} comprising the keyword given by the \cmd{index}-command 
-and the page number where the \cmd{index}-command occured. 
-For example \cmd{index\{ant-task\}}{} creates an entry 
+an entry is written sequentially to the \gls{idx} file as 
+\cmd{indexentry} comprising the keyword given by the \cmd{index}-command 
+and the page number where the \cmd{index}-command occurred. 
+For example \cmd{index\{ant-task\}} occurring on page 3 creates an entry 
 %
 \begin{lstlisting}[language=TeX]
-\indexentry{ant-task|hyperpage}{3}
+\indexentry{ant-task}{3}
 \end{lstlisting}
 %
 in \texttt{xxx.idx}. 
 
-Then the \texttt{makeindex}-command is applied to the \gls{idx}-file 
+Then the \texttt{makeindex}-command is applied to the \gls{idx} file 
 which sorts keywords and for each keyword collects the according page numbers, 
-sorts it and and writes the result into a \gls{ind}-file. 
+sorts it and and writes the result into a \gls{ind} file. 
 In the next run of \texttt{latex2pdf}, 
 the \cmd{prindindex}-command includes the index as a separate section; 
 typically at the end of the PDF file. 
@@ -316,9 +369,9 @@ In addition, \pkg{makeidx} provides the command \cmd{see}{}
 which is for cross-reference within an index. 
 The package \pkg{tocbibind} described in~\cite{TocBibIndP}, 
 then writes the headline of the index into the table of contents.\index{table of contents}
-The package \pkg{rerunfilecheck} described in~\cite{RerunFChkP}, 
-ensures that \texttt{latex2pdf} is rerun if needed, 
-provided loaded with option \texttt{aux}. 
+% The package \pkg{rerunfilecheck} described in~\cite{110}, 
+% ensures that \texttt{latex2pdf} is rerun if needed, 
+% provided loaded with option \texttt{aux}. 
 
 The same document,~\cite{MkidxShIdxP} 
 also describes the package \pkg{showidx} 
@@ -329,9 +382,9 @@ This is for debugging only.
 
 The main restriction of the package \pkg{makeidx} is, 
 that only a single index can be created. 
-The reason is that, \texttt{latex2pdf} creates a single \gls{idx}-file 
+The reason is that, \texttt{latex2pdf} creates a single \gls{idx} file 
 and, as illustrated in Figure~\ref{fig:idx2ind}, 
-\texttt{makeindex} creates a single ind-file from that, 
+\texttt{makeindex} creates a single ind file from that, 
 representing a single index. 
 
 To overcome this restriction, 
@@ -344,24 +397,25 @@ in conjunction with the program \texttt{splitindex}.
 It must be possible to create a single index 
 without using \pkg{splitidx} and \texttt{splitindex}. **** 
 
+% TBD: clarify whether this option is for splitidx or for makeidx 
 Package option \texttt{split} makes \texttt{latex2pdf} 
-creating \gls{idx}-files \texttt{xxx-y.idx} directly. 
+creating \gls{idx} files \texttt{xxx-y.idx} directly. 
 Here \texttt{y} represents the identifier of an individual index. 
-These \gls{idx}-files can be transformed individually with \texttt{makeindex} 
-into ind-files as illustrated in Figure~\ref{fig:idx2indMult}. 
+These \gls{idx} files can be transformed individually with \texttt{makeindex} 
+into ind files as illustrated in Figure~\ref{fig:idx2indMult}. 
 Since \texttt{latex2pdf} can keep open only up to 16 output streams, 
 not all of which can be used to create a file \texttt{xxx-y.idx}, 
 this approach allows a limited number of indices 
 and is thus not recommended and not supported. 
-Another reason is, that this approach undermines 
-the package \pkg{rerunfilecheck} described in~\cite{RerunFChkP}, 
-and so it is not guaranteed that \texttt{latex2pdf} is rerun if needed. 
-This explains why option \texttt{split} is not allowed. 
+% Another reason is, that this approach undermines 
+% the package \pkg{rerunfilecheck} described in~\cite{RerunFChkP110}, 
+% and so it is not guaranteed that \texttt{latex2pdf} is rerun if needed. 
+% This explains why option \texttt{split} is not allowed. 
 % **** check? 
 
 Instead, without option \texttt{split}, 
-\texttt{latex2pdf} creates a single \gls{idx}-file. 
-The program \texttt{splitindex} splits it up into several \gls{idx}-files 
+\texttt{latex2pdf} creates a single \gls{idx} file. 
+The program \texttt{splitindex} splits it up into several \gls{idx} files 
 and applies \texttt{makeindex} to each of them separately 
 as illustrated in Figure~\ref{fig:idx2indSplit}. 
 
@@ -369,11 +423,11 @@ For usage of further packages supporting multiple indices
 which are not intended to be used with this software, 
 see Chapter~\ref{chap:gaps}. 
 
-This software presupposes, that \texttt{makeindex} converts the \gls{idx}-file 
-into an ind-file containing the index 
-and creating also an ilg-file with logging output 
+This software presupposes, that \texttt{makeindex} converts the \gls{idx} file 
+into an ind file containing the index 
+and creating also an ilg file with logging output 
 as shown in Figure~\ref{fig:idx2ind}. 
-From the ilg-file this software may determine 
+From the ilg file this software may determine 
 whether \texttt{makeindex} emitted an error or warnings. 
 
 \begin{figure}[htb]
@@ -383,7 +437,7 @@ should be a picture
 }{
 \import{}{F5_03idx2ind.ptx}
 }
-\caption{\label{fig:idx2ind}Conversion of an \gls{idx}-file into an ind-file}
+\caption{\label{fig:idx2ind}Conversion of an \gls{idx} file into an ind file}
 \end{figure}
 
 \begin{figure}[htb]
@@ -394,7 +448,7 @@ should be a picture
 \import{}{F5_04idx2indMult.ptx}
 }
 \caption{\label{fig:idx2indMult}
-Not supported: Conversion of \gls{idx}-files into ind-files}
+Not supported: Conversion of \gls{idx} files into ind files}
 \end{figure}
 
 \begin{figure}[htb]
@@ -404,7 +458,7 @@ should be a picture
 }{
 \import{}{F5_05idx2indSplit.ptx}
 }
-\caption{\label{fig:idx2indSplit}Conversion of an \gls{idx}-file into ind-files}
+\caption{\label{fig:idx2indSplit}Conversion of an \gls{idx} file into ind files}
 \end{figure}
 
 It is possible to configure the makeindex-command 
@@ -451,7 +505,7 @@ Then comes the name of the index file to be processed
 without suffix. 
 
 The program \texttt{splitindex} invokes \texttt{makeindex}. 
-The option option \texttt{--} coming after the filename, 
+The option \texttt{--} coming after the filename, 
 indicates that all following options are passed to \texttt{makeindex} 
 
 
@@ -482,28 +536,40 @@ For the time being, use glossaries with caution.
 
 Creating glossaries 
 requires the package \pkg{glossaries} described in~\cite{GloP4_54}. 
-Note that despite the headline of this section, 
-and despite \pkg{glossaries} itself supports multiple glossaries, 
-this software supports only a single glossary 
-and also sorting and unifying is done 
-either via \texttt{makeindex} as for indices or via \texttt{xindy}, 
-whereas the option to do without external programs 
-offered also by package \pkg{glossaries} 
-is not supported by this software. 
+By default, package \pkg{glossaries} creates a single ``main glossary'', 
+which can be switched off specifying the option \texttt{nomain} 
+described in Section~2.6. 
+In this case at least, more specific glossary types with according headline must be specified. 
+As specified in \cite{GloP4_54}, Section~2.6, 
+\pkg{glossaries} offers \texttt{acronyms}, \texttt{symbols},
+\texttt{numbers} and \texttt{index}. 
+To avoid collision with indexing as described in Section~\ref{sec:indices}, 
+this software does not allow the latter. 
+Moreover, the package \pkg{glossaries} even supports user-defined glossary types, 
+but this software does not, 
+mainly to keep the internal build in line with build using \tool{latexmk}. 
+For details see Section~\ref{sec:gapGlossaries}. 
 
-For generalizations see Chapter~\ref{chap:gaps}. 
+Also, the package \pkg{glossaries} offers sorting and unifying 
+either via \texttt{makeindex} as for indices or via \texttt{xindy}, 
+and it offers also to do without external programs. 
+In contrast, this software supports only the variant using \texttt{makeindex}. 
+
+
+
+
 
 As for creating indices there is a \LaTeX-command \cmd{makeindex}, 
-to create a glossary there is a \LaTeX-command \cmd{makeglossaries}{}, 
+to create a glossary there is a \LaTeX-command \cmd{makeglossaries}, 
 but the latter is not built-in as \cmd{makeindex} 
 but provided by the package \pkg{glossaries}. 
 If \texttt{xxx.tex} is the \LaTeX{} main file, 
-\cmd{makeglossaries}{} opens the glo-file \texttt{xxx.glo} 
+\cmd{makeglossaries} opens the glo file \texttt{xxx.glo} 
 containing glossary entries for writing. 
-As the built-in command \cmd{index}{} 
-writes entries into the \gls{idx}-file defining the index, 
-the command \cmd{gls}{} defined by the package \pkg{glossaries} 
-writes an entry into the glo-file. 
+As the built-in command \cmd{index} 
+writes entries into the \gls{idx} file defining the index, 
+the command \cmd{gls} defined by the package \pkg{glossaries} 
+writes an entry into the glo file. 
 Note that \texttt{xxx.glo} typically contains entries more than once 
 and that the entries are not sorted. 
 
@@ -516,7 +582,7 @@ Using \texttt{makeindex} is the default but can also be activated through
 \cmd{usepackage[makeindex]\{glossaries\}}. 
 Using \texttt{xindy} instead of \texttt{makeindex} is triggered through 
 \cmd{usepackage[xindy]\{glossaries\}}. 
-Accordingly, for option \texttt{makeindex} the aux-file receives lines 
+Accordingly, for option \texttt{makeindex} the AUX file receives lines 
 %
 \begin{lstlisting}[language=TeX]
 \providecommand\@istfilename[1]{}
@@ -540,32 +606,32 @@ whereas for option \texttt{xindy}, there are lines
 This software neither invokes \texttt{makeindex} nor \texttt{xindy} directly. 
 Instead, it invokes the shell command \texttt{makeglossaries}
 invoked without file ending  
-which determines from the aux-file 
+which determines from the AUX file 
 whether to invoke \texttt{makeindex} nor \texttt{xindy}. 
 Accordingly, it writes the style definition 
-by creating an ist-file \texttt{xxx.ist} or an xdy-file \texttt{xxx.xdy} 
+by creating an ist file \texttt{xxx.ist} or an xdy file \texttt{xxx.xdy} 
 if \texttt{makeindex} or \texttt{xindy} is specified as package option, 
 respectively. 
 
-Seemingly, \texttt{makeglossaries} relies on the aux-file 
+Seemingly, \texttt{makeglossaries} relies on the AUX file 
 to determine whether to invoke \texttt{makeindex} or \texttt{xindy} 
 for sorting and unification. 
 Then it invokes the according command and writes a LOG file 
 with ending \texttt{glg}, 
 redirecting the logging output of \texttt{makeindex} or \texttt{xindy} 
-adding own output so that a glg-file may be written, 
+adding own output so that a glg file may be written, 
 even if e.g.~\texttt{makeindex} is invoked and does not. 
-In any case, if the glg-file is written, 
+In any case, if the glg file is written, 
 \texttt{makeglossaries} writes text matching 
 %
 \begin{verbatim}
 (^\*\*\* unable to execute: )
 \end{verbatim}
 %
-in the glg-file if an error occurs, 
+in the glg file if an error occurs, 
 no matter whether \texttt{makeindex} or \texttt{xindy} is invoked. 
-Possibly, there are cases where an error causes no glg-file to be written. 
-If no error occurs, a glg-file is written 
+Possibly, there are cases where an error causes no glg file to be written. 
+If no error occurs, a glg file is written 
 and if warnings are emitted, 
 they either come from \texttt{makeindex} or from \texttt{xindy}. 
 Thus warnings may be detected with the patterns 
@@ -584,7 +650,7 @@ specify the form in which the style is encoded
 and thus the ending of the style file, 
 which is either \texttt{ist} or \texttt{xdy}. 
 
-Sorting the glo-file, as said above, 
+Sorting the glo file, as said above, 
 currently is only supported using the command \texttt{makeglossaries}. 
 The allowed options are essentially those 
 making sense for \texttt{makeindex} and those making sense for \texttt{xindy}. 
@@ -592,10 +658,10 @@ If the shell command \texttt{makeglossaries}
 invokes \texttt{makeindex} of course only the according options 
 are passed supplemented by additional options 
 \texttt{-s}, \texttt{-t}, \texttt{-o}, to specify the
-ist-file, the glg-file (the transcript-file) and the gls-file,
+ist file, the glg file (the transcript file) and the gls file,
 respectively, 
 which is the result of sorting, the output file, 
-and contains the entries of the glo-file 
+and contains the entries of the glo file 
 just sorted, formatted and unified.
 So for a tex main file \texttt{xxx.tex} the program 
 \texttt{makeglossaries} invokes
@@ -618,7 +684,7 @@ should be a picture
 }{
 \import{}{F5_06glo2gls.ptx}
 }
-\caption{\label{fig:glo2gls}Conversion of a glo-file into a gls-file 
+\caption{\label{fig:glo2gls}Conversion of a glo file into a gls file 
 using \texttt{makeglossaries}}
 \end{figure}
 
@@ -628,7 +694,7 @@ using \texttt{makeglossaries}}
 The package \pkg{pythontex}, described in~\cite{PythonTexP} 
 originally allowed including Python code into a latex document. 
 Later on, further languages were added, most notably octave or Matlab, 
-and the user can easily extended it to further languages 
+and the user can easily extend it to further languages 
 as sketched in~\cite{PythonTexP}. Section 7. 
 Of course, to that end, the interpreter for the desired language must be installed.\index{pythontex}
 The meaning of the term ``including'' used above 
@@ -667,7 +733,7 @@ instead of \texttt{pythontex} itself.
 The figure reflects this. 
 
 % TBD: later on, if \texttt{xxx.depytx} after \texttt{pythontex} also \texttt{pythontex} is invoked, 
-% creating a tex file without python code. 
+% creating a TEX file without python code. 
 % TBD: clarify what if input files or include files are present. 
 
 Running the \LaTeX{} engine again, 
@@ -675,7 +741,7 @@ includes all the output files \texttt{*.stdout}
 in the PDF file or whatever output file created. 
 
 % Note that if depythontex is invoked, it is immaterial whether the subsequent run of LaTeX-to-pdf converter 
-% is on the original tex file or on the tex file created by depythontex. 
+% is on the original TEX file or on the TEX file created by depythontex. 
 
 An important remark is that \lualatex{} is the preferred engine, 
 because files \texttt{*.stdout} can impose heavy memory usage 
@@ -772,7 +838,7 @@ If we place some code, e.g.~python code as inline code using \cmd{pyc}
   \pyc|print(rf'Python inside latex says: "Hello World; 1+1={1+1}"')|
 \end{lstlisting}
 %
-the code is really evaluated and the string result is included at proper place 
+the code is really evaluated, and the string result is included at proper place 
 as illustrated by the following text which is created by python: 
 %
 \begin{quote}
@@ -804,7 +870,7 @@ To use another language, the according interpreter must be installed in addition
   }{
   \import{}{F5_07py2dir.ptx}
   }
-  \caption{\label{fig:py2dir}Conversion of a \texttt{pytxcode}-file using \texttt{pythontex}}
+  \caption{\label{fig:py2dir}Conversion of a \texttt{pytxcode} file using \texttt{pythontex}}
   \end{figure}
 
 
@@ -821,11 +887,161 @@ To use another language, the according interpreter must be installed in addition
     }{
     \import{}{F5_08depy2out.ptx}
     }
-    \caption{\label{fig:depy2out}Conversion of a \texttt{depytx}-file using \texttt{depythontex}}
+    \caption{\label{fig:depy2out}Conversion of a \texttt{depytx} file using \texttt{depythontex}}
     \end{figure}
   
-\section{Rerunning auxiliary programs }%
-\label{sec:rerunAux}
+\section{Running and rerunning auxiliary programs}%
+\label{sec:runRerunAux}
+
+After describing the interface 
+between the \LaTeX{} engine and the auxiliary programs 
+in Section~\ref{subsec:latexAux}, 
+Section~\ref{subsec:noRerunfilecheck} explains 
+why we don't use the package \pkg{rerunfilecheck} 
+to determine when to (re-) run auxiliary programs. 
+
+
+\subsection{The interface between \LaTeX{} and auxiliary programs}%
+\label{subsec:latexAux}
+
+Auxiliary programs perform tasks which \LaTeX{} cannot carry out at all 
+or only with bad performance, 
+for example adding bibliographies which comprises sorting 
+or executing program code. 
+
+The interface between the \LaTeX{} engine and an auxiliary program 
+is always implemented via files: 
+In the first run, the \LaTeX{} engine writes a file or files 
+specific for the auxiliary program 
+or at least writes entries specific for the auxiliary program 
+in a standard file or even both. 
+Then the auxiliary program is run which creates other files 
+which in turn must be read back, in a second run of the \LaTeX{} engine. 
+So the run of an auxiliary program 
+is always enclosed between two runs of a \LaTeX{} engine. 
+
+Typically, the \LaTeX{} run needs a \LaTeX{} package 
+associated with the auxiliary tool 
+which performs reading and writing. 
+An exception is \tool{bibtex} and friends 
+for which \LaTeX{} engines support communication out of the box. 
+An example with more complicated communication 
+is \tool{makeglossaries} with associated package \pkg{makeglossaries} 
+which writes lines into the AUX file 
+and which typically writes the main glossary into a GLO file. 
+The tool \tool{makeglossaries} which is invoked without ending, 
+reads the AUX file, determines which other files to read, 
+typically the GLO file also 
+and writes the result into the GLS file. 
+This is read back by the package \pkg{makeglossaries} 
+in the next run of the \LaTeX{} engine. 
+
+
+\subsection{When running an auxiliary program}\label{subsec:firstRunAux}
+
+After the first run of the \LaTeX{} engine, 
+one must decide which auxiliary programs to run. 
+For each auxiliary program, there is a specific file it reads 
+or at least specific entries in a general file, typically the AUX file. 
+If this file or these entries exist, the auxiliary program must be run 
+and after the \LaTeX{} engine must be rerun 
+to read in the data created by the auxiliary program. 
+As is discussed for each auxiliary program separately 
+in Section~\ref{subsec:noRerunfilecheck}, 
+this file or these entries may change after each run of the \LaTeX{} engine 
+and as a result, the auxiliary program must be rerun as well. 
+So, \LaTeX{} engine and auxiliary program maybe must be run alternately. 
+
+Instead of checking whether the relevant data really changes, 
+only the number of relevant lines and a hash is taken into account. 
+% TBD: clarify: Does it really have advantages to take the number of lines into account? 
+% latexmk uses the length instead. 
+% is it advantageous to add length as additional identifier 
+% or instead number of lines? 
+% Maybe some discussion is in place 
+This bears a minimal risk of not rerunning the auxiliary program although needed. 
+Note that also package \pkg{rerunfilecheck} is based on hashes and bears the same risk. 
+% TBD: could improve just compressing the entries losslessly. 
+% Essentially, there is a whole spectrum between hashes with high overlap 
+% and hashes with no overlap, i.e. lossless. 
+% Maybe even Hamming distance plays a role. 
+
+It is an interesting detail, 
+that deciding whether an auxiliary program must be run at all, 
+i.e. for the first time, 
+is just based on the existence of a specific file 
+or of a specific line in a file, 
+not comprising all pieces of information read by the auxiliary program. 
+Nevertheless, if it is decided that the auxiliary program must be run, 
+it is clear that the \LaTeX{} engine must be run after also 
+and so the information may change. 
+So one must be prepared for a rerun check. 
+For this, all the information in the file(s) relevant for the auxiliary program must be hashed. 
+
+From the second run of the \LaTeX{} engine on, 
+only those auxiliary programs must be checked for rerun condition, 
+for which a hash is present. 
+\medskip
+
+After these quite abstract considerations, 
+let us apply these to the concrete auxiliary programs supported. 
+
+
+
+
+
+% TBD: \pkg in headlines 
+\subsection{Why \texttt{rerunfilecheck} is not used for auxiliary programs}%
+\label{subsec:noRerunfilecheck}
+
+As described in Section~\ref{sec:prerequisites}, 
+package \pkg{rerunfilecheck} is used to check 
+whether the \LaTeX{} engine must be rerun, 
+and its authors also intended it to check 
+for need of rerun of auxiliary programs. 
+While this works satisfactory for a single index, 
+it fails for multiple indices. 
+Likewise, support for glossaries is buggy and works only in case of a single glossary, 
+which in addition must be the main glossary. 
+In contrast, the package \pkg{glossaries} supports multiple glossaries, 
+with and without main glossary 
+and even allows user-defined glossaries. 
+It is awkward to implement rerun check 
+for all this functionality with \pkg{rerunfilecheck}. 
+% TBD: link to discussion for rerun check on bibliography and others.. 
+
+It may be surprising, that there are situations 
+where even bibliography processors need to be rerun, 
+among these backlinks, and citations in headlines and glossaries. 
+Package \pkg{rerunfilecheck} does not take this into account. 
+Accordingly, even \texttt{pythontex} may need a rerun, 
+e.g. if code is executed in headlines or in captions of floating objects, 
+because this may insert additional invocations and may change invocation order 
+which may lead to different results. 
+
+While many auxiliary programs depend only on a subset of entries 
+in their source file, 
+\pkg{rerunfilecheck} can take files into account only as a whole. 
+As a consequence, even if no rerun is required 
+because the relevant entries did not change, 
+\pkg{rerunfilecheck} could trigger useless rerun, 
+because irrelevant entries in the relevant file changed. 
+
+Tanking all these aspects into account, 
+we decided to provide an internal algorithm for rerun check of auxiliary programs, 
+which is based on the ideas of \pkg{rerunfilecheck} 
+but avoiding all its shortcomings. 
+
+Note also, that besides whether to rerun an auxiliary program, 
+there is also the question in which case to run it at all, i.e. for a first time. 
+Since package \pkg{rerunfilecheck} interprets a newly occurring file 
+as a changed file, this case is addressed implicitly. 
+
+Unfortunately, not all packages associated with auxiliary tools 
+give a hint if the auxiliary program must be run. 
+% TBD: talk with the maintainers 
+\medskip
+
 
 As described in Section~\ref{sec:tex2pdf}, 
 running a \LaTeX{} engine as \texttt{latex2pdf} 
@@ -836,11 +1052,14 @@ sorting, unifying and formatting the entries.
 This is always done by an external program, we call an auxiliary program. 
 Similarly, the presence of code to be interpreted 
 may be detected which is also written in a separate file 
-and an external program, \texttt{pythontex} must be run to run the code in sequence 
+and an external program, 
+\tool{pythontex} must be run to run the code in sequence 
 and in many cases to determine the result of invocation. 
 
-In the next step, the \LaTeX{} processor must read in the results of the auxiliary programs again 
-to write bibliography, indices and glossaries and to insert the results of code invocations. 
+In the next step, 
+the \LaTeX{} processor must read in the results of the auxiliary programs again 
+to write bibliography, indices and glossaries 
+and to insert the results of code invocations. 
 Also, except the code invocations, 
 all other pieces of information typically go into the table of contents. 
 If code is invoked in a headline or in a caption, 
@@ -850,23 +1069,28 @@ So in any case, after an auxiliary program the \LaTeX{} processor must be rerun.
 
 Obviously, the run of a \LaTeX{} processor may change page numbers 
 and thus invalidate the index or the glossary. 
-So the auxiliary program to create the index or the glossary 
-must be rerun if the \LaTeX{} processor changes the input file for the auxiliary program 
-creating index or glossary and after that, the \LaTeX{} processor must be run again. 
+So the auxiliary program to create the index or the glossary must be rerun 
+if the \LaTeX{} processor changes the input file for the auxiliary program 
+creating index or glossary and after that, 
+the \LaTeX{} processor must be run again. 
 
 What is less obvious is, that bibliographies may be invalidated also, 
-e.g.\@ because of a backlink or because a bibliographic reference occurs in a glossary. 
+e.g.\@ because of a backlink 
+or because a bibliographic reference occurs in a glossary. 
 Even code may be invalidated by a run of the \LaTeX{} processor 
 if some code occurs in a floating object, e.g. in the caption or in a glossary. 
 So code invocations may change order 
-and also there may be additional code occurring not before later runs of the \LaTeX{} processor. 
-So also in this case, the according auxiliary program, \texttt{pythontex} 
+and also there may be additional code 
+occurring not before later runs of the \LaTeX{} processor. 
+So also in this case, the according auxiliary program, \tool{pythontex} 
 must be rerun after the run of the \LaTeX{} processor. 
 
-Summarizing, a run of the \LaTeX{} processor may trigger invocation of each auxiliary program. 
+Summarizing, a run of the \LaTeX{} processor 
+may trigger invocation of each auxiliary program. 
 This must be done if the according raw file changes. 
 Note that various auxiliary programs share the AUX file to get information. 
-So only the aspects relevant for the specific auxiliary program shall be taken into account. 
+So only the aspects relevant for the specific auxiliary program 
+shall be taken into account. 
 What makes things a bit more complicated is, 
 that including TEX files yields included AUX files 
 which must be taken into account also. 
@@ -894,6 +1118,8 @@ while the algorithm is inspired by the package \pkg{rerunfilecheck}.
 
 \section{Rerunning the \LaTeX{} processor}\label{sec:rerunLatex}
 
+CAUTION: rework needed 
+
 FIXME\@: a word on change in toc, lof, lot and lol. 
 
 As indicated in the previous sections, 
@@ -902,7 +1128,7 @@ if an auxiliary program like \texttt{bibtex}, \texttt{makeindex}
 or \texttt{makeglossaries} 
 had been run. 
 
-Likewise, if a toc-file, a lof-file, a lot-file or a lol-file
+Likewise, if a toc file, a lof file, a lot file or a lol file
 had been created in the first \texttt{latex2pdf} run, 
 another run is needed to read in these files 
 to create a table of contents, a list of figures or a list of tables, 
@@ -927,7 +1153,7 @@ the list of figures, the list of tables and the list of listings
 may shift the subsequent text 
 which may require another run of \texttt{latex2pdf} 
 to get the page numbers right. 
-As described in Section~\ref{sec:rerunAux} 
+As described in Section~\ref{sec:runRerunAux} 
 intermediate runs of auxiliary programs like \texttt{makeindex} 
 may be required 
 and these also require another run of \texttt{latex2pdf} 
@@ -960,7 +1186,7 @@ Note that, if a package requires running other programs
 between two runs of \texttt{latex2pdf}, 
 this may require a change in this software. 
 
-\section{Checking reproducibility }\label{sec:chkReprod}
+\section{Checking reproducibility}\label{sec:chkReprod}
 
 There are use cases, where it is extremely important 
 that the according artifacts are really reproducible. 
@@ -1263,8 +1489,9 @@ before for each \LaTeX{} main file is compiled.
 So this \LaTeX{} builder combines ``forward discovery'' and backwards discovery. 
 Pure backward discovery is more elegant 
 but as the \LaTeX{} compiler stops at each graphic file not present 
-before creating it and rerunning the \LaTeX{} main file, 
-it may result in excessive reruns if there are many created graphics in the document. 
+before creating it and rerunning compilation of the \LaTeX{} main file, 
+it may result in excessive reruns of the \LaTeX{} engine 
+if there are many created graphics in the document. 
 
 So there are strong reasons to avoid \tool{latexmk}, 
 but there are also reasons to allow in special cases. 
@@ -1401,7 +1628,7 @@ Note that this is in contrast to \lualatex{}
 which would create some \texttt{yyy.pdf} unless otherwise specified. 
 
 Then comes the converter \pkg{tex4ht} into the game 
-which creates several html-files among those also \texttt{xxx.html}. 
+which creates several html files among those also \texttt{xxx.html}. 
 The other files, \texttt{yyy.idv} and \texttt{yyy.lg}, 
 are further processed by \texttt{t4ht} 
 creating the stylesheet \texttt{xxx.css} and graphic files. 
@@ -1409,7 +1636,7 @@ creating the stylesheet \texttt{xxx.css} and graphic files.
 
 
 Let us make this more precise. 
-The output of latex is a standard \gls{dvi}-file 
+The output of latex is a standard \gls{dvi} file 
 interleaved with special instructions 
 for the post-processor \pkg{tex4ht} to use. 
 Note that \pkg{tex4ht} is the name both of the post-processor 
@@ -1434,7 +1661,7 @@ This is an interpreter
 for executing the requests made in the \texttt{xxx.lg} script.
 
 \texttt{xxx.idv}
-This is a dvi-file extracted from \texttt{xxx.dvi}, 
+This is a dvi file extracted from \texttt{xxx.dvi}, 
 and it contains the pictures needed in the html files.
 
 \texttt{xxx.lg}
@@ -1453,7 +1680,7 @@ should be a picture
 }{
 \import{}{F5_09tex2xml.ptx}
 }
-\caption{\label{fig:tex2xml}Conversion of a TEX file into an xml-file}
+\caption{\label{fig:tex2xml}Conversion of a TEX file into an xml file}
 \end{figure}
 
 % LTeX: enabled=false
@@ -1484,7 +1711,7 @@ Note: for ^ of catcode 13, use the command line option `^13'
 (/usr/local/texlive/2014/texmf-dist/tex/generic/tex4ht/html4.4ht
 --------------------------------------
 Note: For section filenames that reflect on their titles 
-use the command line option `sec-filename'
+use the command line option `sec filename'
 
 Note: for alternative charset, use the command line option `charset=...'
 
@@ -1593,7 +1820,7 @@ Note --- for frames-like object-based table of contents,
 use the command line option `obj-toc'
 
 Note --- for files named derived from section titles, 
-use the command line option `sec-filename'
+use the command line option `sec filename'
 
 Note --- for i-columns index, 
 use the command line option `index=i' (e.g., index=2)
@@ -1636,20 +1863,20 @@ Note --- to ensure proper alignments use fixed size fonts (see listings.dtx
 tex4ht.c (2012-07-25-19:36 kpathsea)
 tex4ht 
 --- error --- improper command line
-tex4ht [-f<path-separator-ch>]in-file[.dvi]
+tex4ht [-f<path-separator-ch>]in file[.dvi]
    [-.<ext>]            replacement to default file extension name .dvi
    [-c<tag name>]       choose named segment in env file
-   [-e<env-file>]
+   [-e<env file>]
    [-f<path-separator-ch>]        remove path from the file name
    [-F<ch-code>]        replacement for missing font characters; 0--255; default 0
-   [-g<bitmap-file-ext>]
+   [-g<bitmap file-ext>]
    [-h(e|f|F|g|s|v|V)]  trace: e-errors/warnings, f-htf, F-htf search
                             g-groups, s-specials, v-env, V-env search
    [-i<htf-font-dir>]
-   [-l<bookkeeping-file>]
+   [-l<bookkeeping file>]
    [-P(*|<filter>)]     permission for system calls: *-always, filter
    [-S<image-script>]
-   [-s<css-file-ext>]   default: -s4cs; multiple entries allowed
+   [-s<css file-ext>]   default: -s4cs; multiple entries allowed
    [-t<tfm-font-dir>]
    [-u10]               base 10 for unicode characters
    [-utf8]              utf-8 encoding for unicode characters
@@ -1685,7 +1912,7 @@ Example:
 
 \flushbottom
 
-\section{Creating odt-files}\label{sec:tex2odt}
+\section{Creating odt files}\label{sec:tex2odt}
 
 \section{Creating MS word files}\label{sec:tex2doc}
 
@@ -1704,7 +1931,7 @@ should be a picture
 }{
 \import{}{F5_10tex2doc.ptx}
 }
-\caption{\label{fig:tex2doc}Conversion of a TEX file into a docx-file}
+\caption{\label{fig:tex2doc}Conversion of a TEX file into a docx file}
 \end{figure}
 
 
@@ -1725,10 +1952,10 @@ and symbols get lost.
 Thus, the first step we take is complete creation of a PDF file 
 except display of warnings like bad boxes 
 as described in Section~\ref{sec:tex2pdf}. 
-This creates an appropriate pdf-file, 
+This creates an appropriate pdf file, 
 with correct numbering and links, 
 possibly with overfull boxes and that like. 
-As a final step, we convert the pdf-file into a text file 
+As a final step, we convert the pdf file into a text file 
 using, as a default \texttt{pdftotext} with ending \texttt{txt}. 
 Figure~\ref{fig:tex2txt} illustrates the translation process. 
 
@@ -1739,7 +1966,7 @@ should be a picture
 }{
 \import{}{F5_11tex2txt.ptx}
 }
-\caption{\label{fig:tex2txt}Conversion of a TEX file into a txt-file}
+\caption{\label{fig:tex2txt}Conversion of a TEX file into a txt file}
 \end{figure}
 
 Note that \texttt{pdftotext} produces a text file with page numbers 

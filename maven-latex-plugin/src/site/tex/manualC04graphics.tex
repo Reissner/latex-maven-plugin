@@ -1,20 +1,93 @@
-\chapter{Graphical Preprocessing}\label{chap:GraphConversions}
+\chapter{Graphics and Preprocessing}\label{chap:GraphConversions}
 
 While \LaTeX{} is really strong in text processing 
 and also in formula processing, 
 in itself it is weak in its graphical abilities. 
-Graphics in some formats can be included directly, 
-in some cases preprocessing is necessary to obtain includable graphics, 
-but in most cases, according \LaTeX-packages must be used: 
+Graphics in some formats can be included directly in a \LaTeX{} document, 
+but all need loading of according packages. 
+For an overview of the graphic formats and the packages needed for their support 
+see Section~\ref{sec:graphPkg}. 
+The set of available graphic formats is extended by \emph{preprocessing}, 
+i.e.\@ by processing prior to the \LaTeX{} engine. 
+Preprocessing mainly consists in converting 
+graphic formats not supported by \LaTeX{} packages 
+into graphic formats supported by some \LaTeX{} packages. 
+Section~\ref{sec:preprocTarget} provide vital information 
+on the target formats. 
+
+This software uses preprocessing for graphics only. 
+Note that preprocessing is a design decision on the build tool 
+and e.g. \texttt{latexmk} has no preprocessing at all. 
+For details see Section~\ref{subsubsec:latexmkDiff}. 
+
+
+Table~\ref{tab:graphicPreprocOverview} 
+gives an overview over the formats supported via preprocessing. 
+The first column lists the formats, the second one at least one editor for the format, 
+and the last row contains the parameter to configure the preprocessing tool 
+and give the default tool as an example. 
+Sections~\ref{sec:fig2dev}, \ref{sec:gnuplot2dev}, \ref{sec:metapost}, 
+\ref{sec:picSvg} and \ref{sec:picAsIs} treat each format separately. 
+For all but \gls{png} and \gls{jpg} considered in Section~\ref{sec:picAsIs}, 
+preprocessing is just conversion of the format 
+into another format directly supported as described in Section~\ref{sec:graphPkg}. 
+Historically the latter two required preprocessing 
+to determine the bounding box was needed. 
+We still support this to support historical techniques and to be sure 
+to be able to reconstruct historical documents. 
+Support for further formats can be easily added. 
+If there is some need, please write an email to the author. 
+
+Of course, to support a format, the preprocessing tools must be installed. 
+It is advisable to have also an editor installed. 
+Sometimes the editor is used also as converter as for \tool{inkscape}. 
+For human-readable formats like \texttt{fig}, it often makes sense, 
+to use both the graphical editor and the textual one. 
+Note that \tool{vscode} supports the given formats more properly, 
+if the extensions described in Section~\ref{subsec:instExtVsCode} are installed also. 
+
+\begin{longtable}{|l|ll|}
+\toprule
+Graphic format & editor & preprocessing tool\\
+\midrule
+\midrule
+\endfirsthead%
+\bottomrule
+\caption{\label{tab:graphicPreprocOverview} 
+Overview over the graphic formats supported via preprocessing}
+\endlastfoot%
+fig             & xfig, vscode     & \texttt{fig2devCommand}, e.g.~\texttt{fig2dev}    \\
+gnuplot (gp)    & vscode           & \texttt{gnuplotCommand}, e.g.~\texttt{gnuplot}          \\
+MetaPost (mp)   & vscode           & \texttt{metapostCommand}, e.g.~\texttt{mpost}          \\
+svg             & inkscape, vscode & \texttt{svg2devCommand}, e.g.~\texttt{inkscape}  \\
+jpg, png        & gimp             & \texttt{ebbCommand}, e.g.~\texttt{ebb}                   \\
+\end{longtable}
+
+
+\section{Graphic formats and packages supporting them}\label{sec:graphPkg}
+
+Find below a list of packages either allowing to include directly certain graphic formats, 
+or helping with graphics indirectly. 
+Although strictly speaking these techniques do not need special treatment 
+of a build tool, 
+this software supports these techniques by providing header files 
+by injection loading the needed packages. 
+
+We also describe in which sense these packages support graphical preprocessing. 
+
 %
 \begin{itemize}
-\item[graphicx]
+\item[\pkg{graphicx}]
 is the basic graphics package which provides the command 
 \cmd{includegraphics}{} 
 which allows including graphics natively 
 in the formats PDF, EPS, JPG and PNG at least. 
 For details see~\cite{GraX}. 
-\item[transparent]
+Note that PDF and EPS are target formats for graphical preprocessing, 
+where PDF is embedded into PDF and EPS is embedded into DVI/XDV. 
+As described in Section~\ref{sec:metapost}, 
+also \gls{mps}, the target format for metapost is included using \pkg{graphicx}. 
+\item[\pkg{transparent}]
 allows specifying transparency in graphics. 
 Even if you do not use the feature, 
 some source formats do (in fact only \gls{svg}) does 
@@ -23,17 +96,22 @@ and so the \LaTeX{} engine must get along with it.
 Note that this applies only for output format PDF 
 and in particular not for \texttt{xelatex}. 
 For details see~\cite{TransP}. 
-\item[bmpsize]
+\item[\pkg{bmpsize}]
 is needed for bitmap formats like \gls{jpg} and \gls{png} only. 
 Used to extract resolution and bounding box. 
 FIXME\@: needed more information. 
 For details see~\cite{BmpP}. 
-\item[tikz]
-The tikz code described in~\cite{TikzPGF23} is just in \LaTeX{} format. 
+% maybe for dvi format, where jpg and png may be included also, 
+% preprocessing is needed to generate the bounding boxes. 
+\item[\pkg{tikz}]
+The TikZ code described in~\cite{TikzPGF23} is just in \LaTeX{} format. 
 Thus, it can be included directly and does not require any preprocessing. 
 Still what is needed is a good graphical editor like \texttt{tikzedt} 
 with online manual~\cite{TikzEdt}. 
-\item[import]
+In later versions of this software, 3.x or so, 
+it is planned that TikZ is used as new target format for graphical preprocessing, 
+replacing the current combination of \LaTeX{} for texts and PDF/EPS for proper graphic. 
+\item[\pkg{import}]
 is strictly speaking no graphics package. 
 According to its documentation~\cite{ImpoP}, 
 it allows an imported file to find its own inputs 
@@ -43,16 +121,17 @@ which itself imports a PDF/EPS file located in the same folder
 but not in the folder of the importing file. 
 It is advisable to combine the \texttt{import} package with other graphic packages 
 to include graphics in separate graphic files. 
-\item[xcolor]
+\item[\pkg{xcolor}]
 allows using colors in graphics. 
 Even if the author does not use colors in graphics, 
 several formats, like \gls{fig}, \gls{gp} and \gls{svg} 
 offer it and so the according converters 
 transforming them into the native formats 
-create color information which can be rendered only via \texttt{xcolor}. 
-On the other hand, the use of \texttt{xcolor} is not specific to graphics. 
+create color information which can be rendered only via \pkg{xcolor}. 
+In this sense its role is comparable to that of \pkg{transparent}. 
+On the other hand, the use of \pkg{xcolor} is not specific to graphics. 
 For details see~\cite{XColorP}. 
-\item[pythontex]
+\item[\pkg{pythontex}]
 is strictly speaking no graphics package either but more general 
 a way to include and run code within a \LaTeX{} document 
 as described in~\cite{PythonTexP}. 
@@ -79,7 +158,7 @@ and in particular header files:
   \item[\texttt{header.tex}] treated in Section~\ref{subsec:header}, 
   is a general header file intended to be included into all \LaTeX{} files. 
   Since the packages \pkg{import} and \pkg{xcolor} are generally useful, 
-  not only in the context of graphics, they are among those loaded in texttt{header.tex}. 
+  not only in the context of graphics, they are among those loaded in \texttt{header.tex}. 
   \item[\texttt{headerGrp.tex}] described in Section~\ref{subsec:headerGrp} in contrast, 
   is a header file loading graphic specific packages related with \pkg{graphicx}, 
   loading also \pkg{transparent} and \pkg{bmpsize}. 
@@ -90,44 +169,17 @@ in particular to the target format.
 Note that \texttt{headerGrp.tex} must follow \texttt{header.tex}. 
 
 The package \pkg{tikz}, although a pure graphic package 
-is very specific and not related to \pkg{graphicx}, 
-Thus it must be loaded separately. The same holds for \pkg{pythontex}. 
+is very specific and not related to \pkg{graphicx}. 
+Thus, it must be loaded separately. 
+The same holds for \pkg{pythontex}. 
 
-We support figures created in the \gls{fig} by the program \texttt{xfig}, 
-figures created by the plotting utility \texttt{gnuplot}, 
-the TEX specific graphic language MetaPost, 
-figures in \gls{svg}-format 
-and finally figures in formats which can be included into a \LaTeX-file 
-without preprocessing like \gls{png} and \gls{jpg}. 
-Further functionality on \LaTeX{} figures can be easily added. 
-If there is some need, please write an email to the author. 
 
-Table~\ref{tab:graphicOverview} gives an overview over the supported formats 
-together with the graphic converters, 
-the name of the parameter to configure which one is used 
-and the default value. 
-Of course this converter must be installed. 
-It is advisable to have also an editor installed. 
-Sometimes the editor is used also as converter. 
-For human-readable formats like \texttt{fig}, it often makes sense, 
-to use both the graphical editor and the textual one. 
 
-\begin{longtable}{|l|ll|}
-\toprule
-Graphic format & conversion tool & editor \\
-\midrule
-\midrule
-\endfirsthead%
-\bottomrule
-\caption{\label{tab:graphicOverview} 
-Overview over the supported graphic formats }
-\endlastfoot%
-fig             & \texttt{fig2devCommand}, e.g.~\texttt{fig2dev}  & xfig, emacs   \\
-gnuplot (gp)    & \texttt{gnuplotCommand}, e.g.~\texttt{gnuplot}  & emacs         \\
-MetaPost (mp)   & \texttt{metapostCommand}, e.g.~\texttt{mpost}   & emacs         \\
-svg             & \texttt{svg2devCommand}, e.g.~\texttt{inkscape} & inkscape      \\
-jpg, png        & ---                                             & gimp          \\
-\end{longtable}
+
+
+
+
+
 
 Besides the converter external to \LaTeX, 
 also several \LaTeX-packages are required 
@@ -140,8 +192,8 @@ in detail.
 
 But PDF also occurs as an intermediate format for pictures. 
 For historical reasons, still \gls{eps} is used. 
-Section~\ref{sec:figpdf} shows that it suffices to stick to pictures 
-in PDF format. 
+%Section~\ref{sec:figpdf} shows that it suffices to stick to pictures 
+%in PDF format. 
 % FIXME\@: REALLY? 
 %FIXME\@: missing pdf als basic input format. What about (e)ps? 
 Section~\ref{sec:fig2dev} shows how \texttt{fig2dev} converts fig-files 
@@ -152,40 +204,104 @@ An interesting alternative to gnuplot for computing pictures
 is MetaPost described in Section~\ref{sec:metapost}. 
 A more elaborate alternative to fig-pictures are SVG pictures 
 described in Section~\ref{sec:picSvg}
-Also several formats collected in Section~\ref{sec:picasis} 
+Also several formats collected in Section~\ref{sec:picAsIs} 
 may be included as is. 
 
 
 
-\section{Inclusion of PDF and EPS files}\label{sec:figpdf}
+\section{Target formats for preprocessing}\label{sec:preprocTarget}
 
-Modern \LaTeX{} implementations directly create PDF files. 
-Thus, it makes sense, 
-to allow including graphics as PDF files in \LaTeX-files. 
-This is done in PDF mode 
-by the \LaTeX-package \pkg{graphicx}. 
-In contrast, traditionally \LaTeX{} produced output in the \gls{dvi}/\gls{xdv}-format 
+At a first sight, PDF seems the ideal target format for any kind of preprocessing: 
+It is really mighty enough to display pictures in any source format 
+without loss of information and even without change in appearance, 
+and for modern \LaTeX{} implementations directly creating PDF files, 
+the \LaTeX-package \pkg{graphicx} allows including graphics as PDF files in \LaTeX-files. 
+
+At a second sight, the source formats under consideration 
+offer pictures mixing vector graphics and texts and in particular formulae 
+set in \LaTeX{} style. 
+Preprocessing is based on on-the-shelf converters 
+and if targeting PDF, the texts originally in \LaTeX{} style change their appearance. 
+To keep up \LaTeX{} style, they provide mixed export 
+consisting of a PDF file containing proper graphics 
+without texts and a TEX file containing the texts in proper location 
+and an \cmd{includegraphics} command including the created PDF file. 
+This mixed conversion is used for all kind of preprocessing. 
+
+Note that we could have used the ending TEX for the texts, 
+but we opted for a specific ending \gls{ptx} signifying that the file is created 
+and thus does not slow down search of \LaTeX{} main files. 
+
+But still there is another problem with PDF as target format: 
+Traditionally \LaTeX{} produced output in the \gls{dvi}/\gls{xdv}-format 
 which is still used to create \gls{html}-output. 
-Also, there are cases where PDF is not created directly but via DVI/XDV, 
-as it is the case with \texttt{xelatex}. 
+For \LaTeX{} engines \pdflatex{} and \lualatex, 
+DVI output is specified with option \texttt{--output-format=dvi}. 
+It turns out, that with this setting, 
+PDF files cannot be incorporated with \cmd{includegraphics} command. 
+Instead, one must use \gls{eps} files. 
+Fortunately, the graphic converters used also support combined TEX/\gls{ptx} and EPS formats. 
+We ensured that \cmd{includegraphics} in the \gls{ptx} file 
+specifies the file without ending so that the \gls{ptx} file is the same, 
+whether it encloses a PDF file or an EPS file,
+and we provide both, a PDF file and an EPS file\footnote%
+{Of course, here a more sophisticated technique is conceivable, 
+recognizing the required format and generating the specific one if missing. }. 
+That way, both, \pdflatex{} and \lualatex{} choose the EPS file or the PDF file 
+depending on whether the output format is \texttt{--output-format=dvi} 
+or \texttt{--output-format=pdf} which is the default. 
+Note that \xelatex, which always creates an intermediate XDV file 
+(which is a special kind of DVI file), 
+acts differently: If present, it prefers including the PDF file, 
+if absent, but there is an EPS file instead, it uses this without making any difference. 
 
-In these cases, the according graphic format is no longer PDF, but it is EPS\@. 
-A way to allow both ways on one document is, 
-to provide one and the same picture in two formats. 
-To that end, the name of the graphic file must be given in \cmd{includegraphics} 
-without file ending. 
-This is the approach taken for the other formats 
-which are just converted to both PDF and EPS\@. 
-For conversion frequently also \pkg{xcolor} and that like is required.
-Of course, here a more sophisticated technique is conceivable, 
-recognizing the required format and generating the specific one if missing. 
+Although this is beyond necessity, 
+let me state that \pdflatex{} and \lualatex, 
+while not accepting inclusion of PDF files in DVI mode, 
+EPS files are accepted in PDF mode for more modern versions of the \LaTeX{} engines, 
+but this leads to creation of intermediate files \texttt{xxx-eps-converted-to.pdf}, 
+which are not cleaned up in target \texttt{clr}. 
+
+Whereas PDF and EPS files both are offered, 
+only one of them is included for a specific configuration. 
+This is in contrast to other formats described in Section~\ref{sec:picAsIs}. 
+
+Although \gls{ptx} is just a TEX format, 
+it is special in that it presupposes that some packages are loaded before being included. 
+The packages which are not specific for graphics like \pkg{xcolor} are loaded in \texttt{header.tex} 
+described in Section~\ref{subsec:header}, 
+whereas the ones specific for graphics, above all \pkg{graphicx}, 
+are loaded in \texttt{headerGrp.tex} 
+as described in Section~\ref{subsec:headerGrp}. 
+The packages actually to be loaded and their respective options 
+depend on the configuration. 
+
+Note that PDF and EPS file may be created by preprocessing 
+but also as proper sources not created at all, 
+even in a single document. 
+Goal \texttt{clr} deletes the according files \texttt{xxx.pdf} or \texttt{xxx.eps} only, 
+if an according source like \texttt{xxx.fig} exists. 
+Else it is treated as proper source and is not deleted. 
+
+
+In the future, the combination of PDF/EPS and PTX files may be replaced, 
+at least partially, or supplemented by TikZ files. 
+It turned out, that the converters under consideration 
+support more and more conversion into the TikZ format 
+which can represent both, proper vector graphic and also \LaTeX{} texts like formulae. 
+Using TikZ as intermediate format has the advantage, 
+that the working space is polluted less with generated files, 
+preprocessing is speeded up because fewer files are created and in some cases, 
+less processing steps are needed. 
+Another advantage is, that the internal dependency recording of \LaTeX{} engines 
+made available through the \gls{fls} file is accessible. 
+% TBD: not so easy: The created 
+As in the current technique using PTX files instead of TEX files, 
+we could put the TikZ into TEX files, but we opt against it for the same reasons. 
 
 Note that PS is not supported because it misses the bounding box. 
+% TBD: clarify whether we could add a bounding box by preprocessing 
 If adding it, one arrives at the EPS format. 
-Although PDF and EPS files can be included, 
-only one of them can be included for a specific configuration, 
-namely the one tied to the according output format of the \LaTeX{} compiler. 
-This is in contrast to other formats described in Section~\ref{sec:picasis}. 
 
 
 
@@ -274,10 +390,10 @@ i.e.~\texttt/ for Unix like systems and
 \texttt{\textbackslash} for win-like systems. 
 \end{itemize}
 
-As indicated in Section~\ref{sec:figpdf}, 
+As indicated in Section~\ref{sec:graphPkg}, 
 the commands in \texttt{xxx.ptx} 
 require the packages \pkg{graphicx} and \pkg{xcolor}. 
-Also the \cmd{import}{} command 
+Also, the \cmd{import}{} command 
 requires the \pkg{import} package. 
 
 To export \texttt{xxx.fig} into \texttt{xxx.ptx} and \texttt{xxx.pdf} 
@@ -1025,7 +1141,7 @@ of course provided the extensions
 described in Section~\ref{subsec:instExtVsCode} are installed. 
 
 
-\section{Pictures which are not transformed}\label{sec:picasis}
+\section{Pictures which are not transformed}\label{sec:picAsIs}
 
 Figure~\ref{fig:asIsJpg} shows some picture included as JPG\@. 
 This is done as usual with the command \cmd{includegraphics}{}
@@ -1060,7 +1176,7 @@ Only the latter yields the same size as direct conversion to PDF creates.
 Since bounding boxes seem superfluous, 
 we control their creation with a parameter \texttt{createBoundingBoxes} 
 whether to invoke \texttt{ebb}, which is false by default. 
-Nevertheless, if we invoke, then we do twice 
+Nevertheless, if we invoke, then we do twice, 
 creating bounded boxes and extended bounding boxes. 
 
 
@@ -1068,7 +1184,6 @@ FIXME\@: further research and further documentation is required.
 
 Note that both for \pdflatex{} and siblings creating PDF-output 
 and for \texttt{htlatex} in conjunction with \texttt{dvipdfmx} 
-(see Section~\ref{sec:figpdf}) 
 files in the format \gls{pdf}, \gls{png}, \gls{jpg} are supported. 
 % **** what about \gls{gif}? 
 This list may be incomplete. 

@@ -69,4 +69,10 @@ $code --force --install-extension d9705996.perl-toolbox
 $code --force --install-extension bscan.perlnavigator
 
 # pdf
-$code --force --install-extension tomoki1207.pdf
+# incompatible with latex workshop
+#$code --force --install-extension tomoki1207.pdf
+$code --force --install-extension mathematic.vscode-pdf
+
+# ps and eps 
+$code --force --install-extension mxschmitt.postscript
+$code --force --install-extension ahnafnafee.postscript-preview

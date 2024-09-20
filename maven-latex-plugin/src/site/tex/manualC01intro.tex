@@ -49,22 +49,24 @@ and Chapter~\ref{chap:usage} describes the usage.
 Note that the maven-plugin is both easier to install 
 and more versatile to be used. 
 
-From the \LaTeX-files, the \glspl{gls:lmf} must be extracted, 
-only these must be compiled using a so called \gls{gls:le}. 
+From the \LaTeX-files, only the so-called \glspl{gls:lmf} 
+must be compiled using a so called \gls{gls:le}, 
+other \LaTeX{} files occur only as input for the \cmd{input} command. 
 It is very usual to endow \LaTeX-files with figures. 
 On the other hand, there are many graphic formats 
 which cannot be included directly in a \LaTeX-file 
-but must be preprocessed. 
+and thus need special support by this software. 
 If there is some format needed but not yet provided, 
 please write an email to the author. 
 
-Graphic files must be preprocessed before processing \LaTeX main files, 
+Many graphic file formats require preprocessing, 
+i.e. the according files must be processed before processing \LaTeX main files, 
 %\gls{lmf}
 as described in Chapter~\ref{chap:GraphConversions}. 
 Then follows the proper processing of \LaTeX main files 
 including creation of index and glossaries 
 as described in Chapter~\ref{chap:latexMainConversions}. 
-Besides \gls{pdf}, these formats include the web-formats \gls{html} 
+Besides \gls{pdf}, the target formats include the web-formats \gls{html} 
 and \gls{xhtml}, 
 open offices format \gls{odt}, Microsoft's word formats like \gls{docx} 
 and finally plain text. 

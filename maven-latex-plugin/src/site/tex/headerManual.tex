@@ -1,6 +1,8 @@
 \newcommand{\cmd}[1]{\texttt{\textbackslash #1}}
+\newcommand{\env}[1]{\texttt{\textbackslash #1}}
 
-% For tex4ht packages splitindex and glossaries is not loaded, makeindex is not invoked. 
+% For tex4ht packages splitindex and glossaries/glossaries-extra are not loaded, 
+% makeindex is not invoked. 
 \IfPackageLoadedTF{tex4ht}{
   \newcommand{\pkg}[1]{\texttt{#1}}% without indexing 
 }{
@@ -21,3 +23,6 @@
 \newcommand{\miktex}{MiKTeX}
 \newcommand{\ltex}{L\TeX}% maybe also with \tool
 \newcommand{\auctex}{AUC\TeX}
+
+% TBD: clarify: \tool may be used in definition of acroyms, whereas \pkg may not. 
+% Could be because \sindex does strange things 

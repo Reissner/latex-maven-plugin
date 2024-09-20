@@ -156,8 +156,13 @@ The rest of the rule line is as follows:
   The system time when the rule was last checked, 
   which is used to decide whether a rerun was needed.
   \item
-  A status code for the last run: 0 for success. Currently, other possible values are: 1 if the rule failed to create the intended output file, 2 if there was some other kind of error.
-
+  A status code for the last run: 0 for success. 
+  Currently, other possible values are: 
+  %
+  \begin{enumerate}
+    \item[1] if the rule failed to create the intended output file, 
+    \item[2] if there was some other kind of error.
+  \end{enumerate}
 \end{itemize}
 
 The rule may be user/customer defined, but it may also be internal. 

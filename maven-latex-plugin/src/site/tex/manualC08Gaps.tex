@@ -1,27 +1,35 @@
 \chapter{Gaps}\label{chap:gaps}
 
-Only figures created with xfig and stored as files pdf and ptx 
+This chapter collects some gaps, but not all and sorts them into categories. 
+
+\section{Gaps in graphics}\label{sec:gapGraph}
+
+Only figures created with \tool{xfig} and stored as files PDF and PTX 
 may be integrated into a \LaTeX{} document. 
 This could be extended to a broader variety of export file formats. 
 The problem is, that fig-files to not contain information on the export
 format. 
 This has to be either given elsewhere in a config file 
-or determined by pre-parsing the tex-files. 
+or determined by pre-parsing the TEX files. 
 
 There is no support for pictures in \gls{gif}-format 
 but maybe a converter to \gls{png} is all needed. 
 
+\section{Build mechanism}\label{sec:gapBuild}
+
 There is no proper make-mechanism taking dependencies into account. 
-Thus all documents in all formats specified are remade, 
+Thus, all documents in all formats specified are remade, 
 whether they changed or not. 
 
 Also, if more than one target is created from one \LaTeX{} source, 
 common steps are redone for each target. 
-E.g.~if pdf and html are created, 
-pdf creation is done twice and if pdf, html, odt and docx are created, 
-odt is done twice (once for odt second for docx) 
-and pdf is done even trice: 
-once for pdf itself, once for odt and once for docx. 
+E.g.~if PDF and HTML are created, 
+PDF creation is done twice and if PDF, HTML, ODT and DOCX are created, 
+ODT is done twice (once for ODT second for DOCX) 
+and PDF is done even trice: 
+once for pv itself, once for ODT and once for DOCX. 
+
+\section{Indices}\label{sec:gapIndices}
 
 % This has to be removed. 
 Creating more than one index is supported only 
@@ -32,6 +40,8 @@ but not supported officially:
 \pkg{amsmidx} described in~\cite{AmsmidxP} and 
 \pkg{imakeidx} described in~\cite{ImakeidxP}.
 Note that the package \pkg{multind} is obsolete. 
+
+\section{Glossaries}\label{sec:gapGlossaries}
 
 According to~\cite{GloP4_54}, Section~1.3, 
 there are various options to create a glossary, 
@@ -63,19 +73,22 @@ supports new glossary types via the command
 described in~\cite{GloP4_54}, Section~9. 
 In fact, the glossary types accessible via options and even the main glossary 
 are defined internally that way. 
-Although the glossary algorithm of this software, 
-in particular rerun management as described in Section~\ref{sec:rerunAux}
-can create any kind of glossaries, 
-this software does not support defining new glossary types 
-because collision, e.g. with indexing cannot be excluded 
-and also because each glossary type creates auxiliary files 
-with user-defined extensions currently neither this software 
-nor \texttt{latexmk} can cleanup. 
 
-Reading~\cite{GloP4_54}, Section~13.1, the glossary style \texttt{index} 
+Although the glossary algorithm of this software, 
+in particular rerun management as described in Section~\ref{sec:runRerunAux}
+can create any kind of glossaries created with \cmd{newglossary}, 
+and it can also clean up files created in conjunction with glossaries 
+as long as the file endings do not contain ``\texttt{.}'',
+defining new glossary types is not recommended 
+because \texttt{latexmk} cannot mimic this 
+with a fixed \texttt{.latexmkrc} file, neither in creation rules 
+nor in patter for files for deletion  
+and because collision, e.g. with indexing, cannot be excluded. 
+
+Reading~\cite{GloP4_54}, Section~13.1, the glossary option \texttt{index} 
 seems to allow creating indices through the \pkg{glossaries} package 
 making any index-package obsolete. 
-This software does not support that option provided by the package \pkg{glossaries}. 
+This software does not support that technique offered by the package \pkg{glossaries}. 
 
 For development given the \LaTeX{} main file \texttt{xxx.tex}, 
 the files \texttt{xxx.pdf}, \texttt{xxx.pdf}, \texttt{xxx.synctex.gz} 
@@ -85,7 +98,7 @@ or to have a parameter to touch these prior to creation
 to avoid that these are cleaned up after the run. 
 This is an alternative to setting parameter \texttt{cleanup} to \texttt{false}. 
 On the other hand, goal \texttt{grp} creating graphics 
-in conjunction with a development tool like \auctex{} for \texttt{emacs}, 
+in conjunction with a development tool like \tool{vscode}, 
 allows to compile a \LaTeX{} main file in that tool 
 and thus to access \texttt{xxx.log} and \texttt{xxx.pdf}. 
 

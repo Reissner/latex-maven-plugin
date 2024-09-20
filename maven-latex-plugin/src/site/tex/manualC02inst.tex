@@ -14,7 +14,7 @@ These prerequisites are collected in Section~\ref{sec:prerequisites}.
 The ant-task is tested with\index{ant} 
 %
 \begin{verbatim}
-Apache Ant(TM) version 1.10.12 compiled on December 14 1969}
+Apache Ant(TM) version 1.10.12 compiled on December 14 1969
 \end{verbatim}
 %
 (of course the year is not correct, but this is the version string
@@ -127,13 +127,13 @@ to be supported:
 %
 \begin{itemize}
 \item
-To create PDF-files from \LaTeX-files we use \lualatex\index{lualatex} 
-or some other kind of \LaTeX{} creating PDF-files 
-like \xelatex\index{xelatex} or \pdflatex\index{pdflatex}. 
+To create PDF-files from \LaTeX-files we use \LaTeX{} engines like 
+\lualatex\index{lualatex}, \xelatex\index{xelatex} or \pdflatex\index{pdflatex}. 
 
 \LaTeX{} uses several auxiliary programs. 
 Above all \texttt{bibtex}\index{bibtex}, to create the bibliography 
-and \texttt{makeindex}\index{makeindex} and \texttt{splitindex}\index{splitindex} for the index 
+and \texttt{makeindex}\index{makeindex} 
+and \texttt{splitindex}\index{splitindex} for the index 
 and \texttt{makeglossaries}\index{makeglossaries} for the glossary. 
 The latter two 
 also require the latex packages \pkg{makeidx}, optionally \pkg{showidx}, 
@@ -141,23 +141,38 @@ both described in~\cite{MkidxShIdxP},
 the package \pkg{splitidx} documented in~\cite{SplitidxP}
 and \pkg{glossaries} specified in~\cite{GloP4_54}. 
 Note that \texttt{makeglossaries} either invokes \texttt{makeindex} 
-or \texttt{xindy}, depending on the parametrization of \pkg{glossaries}. 
+or \texttt{xindy}, depending on the parametrization of the package \pkg{glossaries}. 
 Both, \texttt{makeglossaries} and \texttt{xindy} are written in Perl, 
 which shall also be installed if a glossary is required. 
+%TBD: do research: not really needed: makeglossaries-lite
 % TBD: GloP is referenced later again; 
 % seems to indicate inconsistency in presentation of this manual 
 
 To include program code in Python, octave and other language, 
-\texttt{pythontex}\index{pythontex} is needed; to eliminate that code creating an equivalent tex-file, 
+\texttt{pythontex}\index{pythontex} is needed; 
+to eliminate that code creating an equivalent TEX file, 
 one has to combine it with \texttt{depythontex}\index{depythontex}. 
 Both are written in Python3 which shall be installed also as a dependency. 
 To use them, one also needs to install the package \pkg{pythontex}. 
 
-The package \pkg{rerunfilecheck} is in any standard \LaTeX-installation. 
-It is almost mandatory 
-because this software presupposes that package is present  
-to ensure that the table of contents, list of figures, list of tables, 
-the index and the glossary are up-to-date. 
+%The packages come later 
+% The package \pkg{rerunfilecheck} is in any standard \LaTeX-installation. 
+% It is intended to notify the user when the \LaTeX{} engine 
+% or any auxiliary program must be rerun, 
+% to ensure that the created output is up-to-date. 
+% Also, this software presupposes that package is present  
+% to ensure that the table of contents, list of figures, 
+% list of tables and list of listings are up-to-date. 
+% Although \pkg{rerunfilecheck} partially offers rerun check for auxiliary programs also, 
+% this software uses internal mechanisms for that task. 
+% For a more detailed discussion on the aspects this software replaces \pkg{rerunfilecheck} 
+% by internal algorithms, see Section~\ref{sec:runRerunAux}. 
+% Strange: there are many cases, where the user is not really notified. 
+% This is a problem with packages creating bibliographies, indices and glossaries. 
+% what about pythontex? 
+% This section is not stringent, as the auxiliary programs may be used also 
+% if html and related are created, but we must do research before correcting this correctly. 
+
 
 It is standard to endow a PDF-file with hyperlinks. 
 To support this, the package \pkg{hyperref} is required. 
@@ -206,6 +221,8 @@ an according properties file
 % in particular pythontex and latexmk
 
 
+% TBD: relate this with header.tex 
+% and also with the installation given in the CI workflow 
 There are also several \LaTeX-packages needed or at least recommended. 
 The recommended ones are 
 %
@@ -240,11 +257,13 @@ Almost required are
 %
 \begin{itemize}
 \item
-\pkg{rerunfilecheck} described in~\cite{RerunFChkP} 
+\pkg{rerunfilecheck} described in~\cite{RerunFChkP110} 
 which writes additional rerun warnings to the log file 
 if some auxiliary files have changed. 
-This software relies on these warnings 
-to control rerun latex and other applications. 
+This software partially relies on these warnings 
+to control rerun the \LaTeX{} engine. 
+Although \pkg{rerunfilecheck} is intended to detect also rerunning auxiliary programs, 
+this does not work properly and so this software bases reruns on internal algorithms. 
 \item
 \pkg{iftex} described in~\cite{IfTeXP} which has two functions: 
 \begin{itemize}
