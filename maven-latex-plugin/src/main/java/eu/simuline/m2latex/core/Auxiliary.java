@@ -228,11 +228,24 @@ enum Auxiliary {
 
   // maybe this is bad performance, scanning twice 
   /**
-   * The pattern signifying the presence of bibdata 
+   * The pattern signifying 
+   * the presence of <code>bibdata</code> or <code>bibstyle</code> 
+   * in the top level AUX file
    * indicating that <code>bibtex</code> must be run. 
+   * It is important, that one of the two commands is sufficient: 
+   * if only one is present, 
+   * or if <code>citation</code> is missing 
+   * (which may be in included AUX fies), 
+   * then running <code>bibtex</code> yields an error. 
+   * If neither <code>bibdata</code> nor <code>bibstyle</code> is present, 
+   * then <code>bibtex</code> is not run. 
+   * Then the latex engine yields a warning if a citation is present. 
+   * So either <code>bibdata</code> and <code>bibstyle</code> 
+   * and at least one citation is present, 
+   * or neither, or there is an error or a warning. 
    */
   private static final Pattern PATTERN_NEED_BIBTEX_RUN =
-      Pattern.compile("^\\\\bibdata");
+      Pattern.compile("^\\\\(bibdata|bibstyle)");
 
   /**
    * The pattern signifying the the presence of an `istfile`, 
@@ -249,7 +262,6 @@ enum Auxiliary {
    * The pattern for iputting another AUX file 
    * with a group with name {@link #GRP_INPUT} 
    * comprising the name of the file with ending. 
-   * 
    */
   private static final Pattern PATTERN_INPUT =
       Pattern.compile("^\\\\@input\\{(?<fileName>.*)\\}");
