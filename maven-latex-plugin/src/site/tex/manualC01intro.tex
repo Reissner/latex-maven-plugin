@@ -60,10 +60,10 @@ If there is some format needed but not yet provided,
 please write an email to the author. 
 
 Many graphic file formats require preprocessing, 
-i.e. the according files must be processed before processing \LaTeX main files, 
+i.e.\@ the according files must be processed before processing \LaTeX{} main files, 
 %\gls{lmf}
 as described in Chapter~\ref{chap:GraphConversions}. 
-Then follows the proper processing of \LaTeX main files 
+Then follows the proper processing of \LaTeX{} main files 
 including creation of index and glossaries 
 as described in Chapter~\ref{chap:latexMainConversions}. 
 Besides \gls{pdf}, the target formats include the web-formats \gls{html} 
@@ -71,7 +71,7 @@ and \gls{xhtml},
 open offices format \gls{odt}, Microsoft's word formats like \gls{docx} 
 and finally plain text. 
 
-Uniformity of ant-task and a maven-plugin means in particular, 
+Uniformity of ant-task\index{ant-task} and a maven-plugin means in particular, 
 that the settings which may be passed to the task 
 and those allowed for the plugin are in a one-to-one relation. 
 They are both described in Chapter~\ref{chap:settings}. 
@@ -79,7 +79,7 @@ It is a design goal, that the auxiliary programs
 used by this software are fully configurable via parameters, 
 that aspects not completely specified can be handled flexibly, 
 there are parameters supporting information development 
-and that for the parameters are default values \index{ant-task}
+and that for the parameters are default values 
 which allow doing without explicit parametrization in most of the cases. 
 Both, the ant-task and the maven-plugin rely on the same code base 
 which form the package \texttt{org.m2latex.core}. 

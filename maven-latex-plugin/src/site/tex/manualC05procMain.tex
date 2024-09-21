@@ -169,7 +169,7 @@ at time of this writing.
 The package \pkg{pythontex} allows including python code or related 
 in the \gls{tex} file and to evaluate it. 
 The first \texttt{latex2pdf} run creates a \gls{pytxcode} file 
-which contains essentially the code parts of the \LaTeX file. 
+which contains essentially the code parts of the \LaTeX{} file. 
 Invoking \texttt{pythontex} creates by default 
 a folder \texttt{pythontex-files-xxx} 
 with material where code is already evaluated. 
@@ -181,8 +181,8 @@ with all information to replace python code in the original TEX file
 with evaluated material from \texttt{pythontex-files-xxx}. 
 Replacement is done by \texttt{depythontex} 
 which by default, sends the result to stdout, 
-but there is an option to write into another \LaTeX file. 
-Converting this new \LaTeX file 
+but there is an option to write into another \LaTeX{} file. 
+Converting this new \LaTeX{} file 
 yields the same result as converting the original one. 
 Depythonization is a feature needed e.g.~for papers 
 when the publisher does not accept included code. 
@@ -215,7 +215,7 @@ This happens after the second additional \LaTeX{} run.
 As described in Sections~\ref{sec:runRerunAux} and~\ref{sec:rerunLatex}, 
 further runs of auxiliary programs mainly to create index or glossaries, 
 but also under certain circumstances bibliographies and inserting invoked code, 
-followed by invocation of the \LaTeX engine \texttt{latex2pdf} may be necessary. 
+followed by invocation of the \LaTeX{} engine \texttt{latex2pdf} may be necessary. 
 
 \begin{figure}[htb]
 \centering
@@ -320,7 +320,7 @@ Conversion of an AUX file into a BBL file using bibliographies}
 
 Vital information on \tool{bibtex} can be found in~\cite{BibPat} 
 and in~\cite{BibMar}. 
-Also, \cite{Gra}, Chapter 10 is worth reading in this context. 
+Also,~\cite{Gra}, Chapter 10 is worth reading in this context. 
 
 Note that in the master AUX file one can find also entries \cmd{bibcite} 
 relating the labels for bibliography entries to the representations 
@@ -551,7 +551,7 @@ By default, package \pkg{glossaries} creates a single ``main glossary'',
 which can be switched off specifying the option \texttt{nomain} 
 described in Section~2.6. 
 In this case at least, more specific glossary types with according headline must be specified. 
-As specified in \cite{GloP4_54}, Section~2.6, 
+As specified in~\cite{GloP4_54}, Section~2.6, 
 \pkg{glossaries} offers \texttt{acronyms}, \texttt{symbols},
 \texttt{numbers} and \texttt{index}. 
 To avoid collision with indexing as described in Section~\ref{sec:indices}, 
@@ -974,12 +974,12 @@ This bears a minimal risk of not rerunning the auxiliary program although needed
 Note that also package \pkg{rerunfilecheck} is based on hashes and bears the same risk. 
 % TBD: could improve just compressing the entries losslessly. 
 % Essentially, there is a whole spectrum between hashes with high overlap 
-% and hashes with no overlap, i.e. lossless. 
+% and hashes with no overlap, i.e.\@ lossless. 
 % Maybe even Hamming distance plays a role. 
 
 It is an interesting detail, 
 that deciding whether an auxiliary program must be run at all, 
-i.e. for the first time, 
+i.e.\@ for the first time, 
 is just based on the existence of a specific file 
 or of a specific line in a file, 
 not comprising all pieces of information read by the auxiliary program. 
@@ -987,7 +987,8 @@ Nevertheless, if it is decided that the auxiliary program must be run,
 it is clear that the \LaTeX{} engine must be run after also 
 and so the information may change. 
 So one must be prepared for a rerun check. 
-For this, all the information in the file(s) relevant for the auxiliary program must be hashed. 
+For this, all the information in the file(s) %chktex 36
+relevant for the auxiliary program must be hashed. 
 
 From the second run of the \LaTeX{} engine on, 
 only those auxiliary programs must be checked for rerun condition, 
@@ -1026,7 +1027,7 @@ where even bibliography processors need to be rerun,
 among these backlinks, and citations in headlines and glossaries. 
 Package \pkg{rerunfilecheck} does not take this into account. 
 Accordingly, even \texttt{pythontex} may need a rerun, 
-e.g. if code is executed in headlines or in captions of floating objects, 
+e.g.\@ if code is executed in headlines or in captions of floating objects, 
 because this may insert additional invocations and may change invocation order 
 which may lead to different results. 
 
@@ -1044,7 +1045,7 @@ which is based on the ideas of \pkg{rerunfilecheck}
 but avoiding all its shortcomings. 
 
 Note also, that besides whether to rerun an auxiliary program, 
-there is also the question in which case to run it at all, i.e. for a first time. 
+there is also the question in which case to run it at all, i.e.\@ for a first time. 
 Since package \pkg{rerunfilecheck} interprets a newly occurring file 
 as a changed file, this case is addressed implicitly. 
 
@@ -1089,7 +1090,7 @@ What is less obvious is, that bibliographies may be invalidated also,
 e.g.\@ because of a backlink 
 or because a bibliographic reference occurs in a glossary. 
 Even code may be invalidated by a run of the \LaTeX{} processor 
-if some code occurs in a floating object, e.g. in the caption or in a glossary. 
+if some code occurs in a floating object, e.g.\@ in the caption or in a glossary. 
 So code invocations may change order 
 and also there may be additional code 
 occurring not before later runs of the \LaTeX{} processor. 
@@ -1129,7 +1130,7 @@ while the algorithm is inspired by the package \pkg{rerunfilecheck}.
 
 \section{Rerunning the \LaTeX{} processor}\label{sec:rerunLatex}
 
-CAUTION: rework needed 
+CAUTION\: rework needed 
 
 FIXME\@: a word on change in toc, lof, lot and lol. 
 
