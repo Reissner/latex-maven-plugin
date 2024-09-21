@@ -25,7 +25,7 @@ Supports
 - many output formats like PDF, DVI, HTML, DOCX, RTF, TXT and others 
 - document classes including `book`, `article`, `leaflet`, `scrlttr2` and `beamer`; for the latter also `beamerarticle` 
 - many graphical input formats like PNG, MP, FIG, gnuplot and provides a separate goal creating them, `grp` 
-- bibliography, index, glossary and embedded code; in particular split index 
+- bibliography, index/indices, glossary/glossaries and embedded code 
 
 
 ## Checks 
