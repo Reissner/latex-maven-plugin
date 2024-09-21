@@ -913,6 +913,26 @@ caption={Output of goal \texttt{latex:vrs}}]
 %[INFO]           xindy:              '2.5.1'in[2.5.1]
 
 
+\section{Logging of errors and warnings}\label{sec:chkErrWarn}
+
+It is a design goal to notify the user of formal deficiencies of the created documents 
+by tight logging of errors and warnings 
+to give high confidence in the formal quality of the result in the absence of errors and warnings. 
+Logging is devoted all of Chapter~\ref{chap:exceptionLogging}. 
+Of particular intestest is Table~\ref{tab:WarnALP} on failures running a tool 
+on page~\pageref{tab:WarnALP}. 
+We highlight 
+%
+\begin{itemize}
+  \item
+  Check of return codes 
+  \item
+  absent/outdated target files or log files
+  \item
+  log files containing errors and warnings (provided by many but not all tools). 
+  Among those notification of bad boxes. 
+\end{itemize}
+
 
 \section{Injection of files}\label{sec:injFiles}
 

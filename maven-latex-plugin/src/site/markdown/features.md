@@ -35,6 +35,8 @@ Checks
 - sources with `chktex` and logs the result in target and goal `chk` 
 - versions of used tools 
 - log files detecting errors and warnings 
+- Check of return codes 
+- further excessive logging of warnings and errors 
 - whether a document could have been reproduced, by demand 
 
 
