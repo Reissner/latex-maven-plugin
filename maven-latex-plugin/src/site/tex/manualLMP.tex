@@ -42,10 +42,15 @@
   % %  \usepackage{showidx}
   % \makeindex
   % % TBD: eliminate; loads amsmath!!! 
+
+  % note that this is eliminated from header: there only splitindex is loaded 
+  \makeindex
+
   \usepackage[toc, acronym, nohypertypes={acronym},style=tree]{glossaries}%nomain, 
   % , xindy or even [xindy={language=english,codepage=utf8}]
   % mainly for index and glossaries 
   \makeglossaries%
+
 }
 \setMinorVersionPdf{7}% because of gnuplot file only 
 % how to number the glossary in the toc? seemingly a gap in tocbibind 
