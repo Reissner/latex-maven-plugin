@@ -67,8 +67,20 @@
 
 \IfPackageLoadedTF{tex4ht}{%
   % no glossaries and no index with tex4ht 
+  % Syntax: \gls[⟨options ⟩]{⟨label ⟩}[⟨insert text ⟩] 
+  % cannot be covered with this... 
+  % needed e.g. \NewDocumentCommand{\gls}{O{}mO{}}{#2}
   \newcommand{\gls}[1]{#1}
+  \newcommand{\Gls}[1]{#1}
+  \newcommand{\GLS}[1]{#1}
+  \newcommand{\glspl}[1]{#1}
+  \newcommand{\Glspl}[1]{#1}
+  \newcommand{\GLSpl}[1]{#1}
+  % not complete, what about \glsfirst and family
+  % interesting is \glsdesc
+  % see glossaries manual around page 140 
   \renewcommand{\index}[1]{}
+  % why no \sindex? because based on \index? 
   \newcommand{\newindex}[1][]{}
 }{%
 \setacronymstyle{long-short}%{footnote}%

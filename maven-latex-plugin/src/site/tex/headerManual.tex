@@ -1,23 +1,26 @@
 \newcommand{\bs}{\symbol{'134}} % backslash in typewriter T1/T1 
-\newcommand{\cmd}[1]{\texttt{\bs #1}\sindex[cmd]{#1@\texttt{\bs #1}}}
+
 \newcommand{\env}[1]{\texttt{#1}}
 
 % For tex4ht packages splitindex and glossaries/glossaries-extra are not loaded, 
 % makeindex is not invoked. 
 \IfPackageLoadedTF{tex4ht}{
+  \newcommand{\cmd}[1]{\texttt{\bs{}#1}}
   \newcommand{\pkg}[1]{\texttt{#1}}% without indexing 
 }{
+  \newcommand{\cmd}[1]{\texttt{\bs{}#1}\sindex[cmd]{#1@\texttt{\bs{}#1}}}
   \newcommand{\pkg}[1]{\texttt{#1}\sindex[pkg]{#1}} % TBD: this must be extracted 
 }
+
+% currently used for latexmk only 
+% but in the long shall be used for all tools 
+% this is the base for creating an index of tools. 
+\newcommand{\tool}[1]{\texttt{#1}}
 
 % the following 3 shall be replaced by \tool{...}
 \newcommand{\pdflatex}{\texttt{pdflatex}}
 \newcommand{\lualatex}{\texttt{lualatex}}
 \newcommand{\xelatex}{\texttt{xelatex}}
-% currently used for latexmk only 
-% but in the long shall be used for all tools 
-% this is the base for creating an index of tools. 
-\newcommand{\tool}[1]{\texttt{#1}}
 
 
 \newcommand{\texlive}{\TeX~Live}
