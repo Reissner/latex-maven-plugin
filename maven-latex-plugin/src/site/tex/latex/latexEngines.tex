@@ -59,22 +59,22 @@
 }
 %\usepackage{datetime2}% not with dvi
 
-\ExplSyntaxOn
+\ExplSyntaxOn%
 
 \NewExpandableDocumentCommand{\printtime}{}
  {
   \int_compare:nT { \c_sys_hour_int < 10 } { 0 }
   \int_eval:n { \c_sys_hour_int }
-  :
+  :% chktex 26
   \int_compare:nT { \c_sys_minute_int < 10 } { 0 }
   \int_eval:n { \c_sys_minute_int }
  }
 
-\ExplSyntaxOff
+\ExplSyntaxOff%
 
 \title{Special and common aspects of pdf/dvi/xdvi generators }
 \author{Ernst Reissner (rei3ner@arcor.de)}
-\date{\the\year-\the\month-\the\day T\printtime}%***\today***\DTMnow }%\today \DTMnow
+\date{\the\year-\the\month-\the\day{}T\printtime}%***\today***\DTMnow }%\today \DTMnow
 
 \newcommand{\pdflatex}{\texttt{pdflatex}}
 \newcommand{\lualatex}{\texttt{lualatex}}
@@ -571,7 +571,7 @@ which is agreed to be
 \end{verbatim}
 %
 i.e.\@ the point in time, where in timezone UTC (represented by the \texttt Z, zero deviation from UTC) 
-it was start of year 1970, i.e. date \texttt{1970--01--01} and midnight, time \texttt{00:00:00}. 
+it was start of year 1970, i.e.\@ date \texttt{1970--01--01} and midnight, time \texttt{00:00:00}. 
 It is called epoch time, although nothing special happened like Christs birth. 
 Zero and negative time is allowed. 
 Note, that this does not depend on a time zone, 
@@ -596,7 +596,7 @@ We only use the forms based on UTC like so:
   TZ=UTC, TZ=UTC-02
 \end{verbatim}
 %
-CAUTION: The number is understood as to be added to given time to get UTC, 
+CAUTION\@: The number is understood as to be added to given time to get UTC, 
 so east of UTC has negative numbers. 
 This is the sign opposite to the representation given by ISO 8601 
 which is the offset to be added to UTC to get time given. 
@@ -614,9 +614,9 @@ If no time is given, the current time is assumed.
   yields the current date and time 
   in form given by ISO 8601 with date given by \texttt{\%F} followed by literal \texttt{T} 
   followed by time \texttt{\%T} and finally the time zone given by \texttt{\%z}. 
-  \item[\texttt{date -d 'Apr 29 2024' +\%s}] 
+  \item[\texttt{date -d 'Apr 29 2024' +\%s}] % chktex 32
   converts human-readable date into epoch time specified by format \texttt{\%s} 
-  (seconds since 1970-01-01, i.e. epoch time). 
+  (seconds since 1970--01--01, i.e.\@ epoch time). 
   \textbf{Caution}: Many formats are recognized, but time zones are \emph{silently ignored}. 
   For example, 
   %
@@ -662,9 +662,9 @@ If no time is given, the current time is assumed.
 \end{description}
 
 
-Finally, ~\cite{Pdf20}, Section~7.9.4 describes the encoding 
+Finally,~\cite{Pdf20}, Section~7.9.4 describes the encoding 
 of date/time with timezone in metadata of PDF files. 
-It is quite similar to the format given by ISO 8601-1. 
+It is quite similar to the format given by ISO 8601--1. 
 Transformation is by dropping separators \texttt{--} and \texttt{:}, 
 prefixing \texttt{D:} and inserting \texttt{'} separating hours and minutes in time zone. 
 The above date/time writes as follows: 
@@ -673,7 +673,7 @@ The above date/time writes as follows:
   D:20240620130300+03'00
 \end{verbatim}
 
-\subsubsection{Date, time and time zones in PDF files created from \LaTeX{} files}
+\subsubsection{Date, time and time zones in PDF files created from \LaTeX{} files}%
 \label{subsubsec:dateTimeZoneTexPdf}
 
 
@@ -709,7 +709,7 @@ yields both creation time and modification time of a file \texttt{xxx.pdf}:
 %
 Both times comprise the date 
 are endowed with time zone information and are given in human-readable form, 
-although not precisely conform with ISO 8601-1. 
+although not precisely conform with ISO 8601--1. 
 The command \texttt{stat} assumes the local time zone by default, 
 but is sensitive to \texttt{TZ}: 
 %
@@ -741,7 +741,7 @@ This is essentially accessible via
 %
 The data is considered raw because it is displayed as is, i.e.\@ as stored in the PDF file. 
 It is close to ISO 8824--1. 
-Dates are also accessible in format specified in ISO 8601-1 via 
+Dates are also accessible in format specified in ISO 8601--1 via 
 %
 \begin{verbatim}
   pdfinfo -isodates xxx.pdf
@@ -759,7 +759,7 @@ even when overwriting an old one.
 The time when starting to overwrite seems to be the \texttt{CreationDate}. 
 Why the \texttt{ModDate} is the same and not the later time when writing is finished, 
 well\dots the reader may find an explanation him/herself. 
-An idea is that this is related to incremental updates described in \cite{Pdf20}, Section 7.5.6: 
+An idea is that this is related to incremental updates described in~\cite{Pdf20}, Section 7.5.6: 
 Instead of creating a PDF anew if a modification occurs, 
 it is advised to just append a description of the difference. 
 This update does not affect creation date but only modification date. 
@@ -823,7 +823,7 @@ it is specified, that the given epoch time is exactly what is written into the m
 It affects each \LaTeX{} engine but in slightly different way. 
 
 For \pdflatex, the main description is in~\cite{PdfTexUsr24}, Chapter~2.
-An important detail is, that the time zone written into metadata is UTC. 
+An important detail is, that the time zone written into metadata is UTC\@. 
 Even if the timezone is given explicitly by \texttt{TZ}, it is ignored. 
 The time given by \texttt{SOURCE\_DATE\_EPOCH} affects metadata but also \cmd{DTMnow}. 
 To affect also primitives like \cmd{time}, 
@@ -875,7 +875,7 @@ ignoring \texttt{TZ}.
 So \texttt{xdvipdfmx} behaves very much like \xelatex{} in direct compilation of PDF, 
 which is clear because it is by defaults \xelatex's PDF backend. 
 This behavior of \texttt{xdvipdfmx} coins time metadata even if used in conjunction with \lualatex, 
-which is some argument to configure direction computation of PDF files with \lualatex 
+which is some argument to configure direction computation of PDF files with \lualatex{} 
 in a way that it fits the other engines. 
 
 
@@ -887,7 +887,7 @@ As described in~\cite{Pdf20}, Section 7.5.5,
 it contains references to several other dictionaries, 
 the size and the \emph{trailer identifier} with key \texttt{ID}. 
 Among the references is that with key \texttt{Info} 
-to the \emph{document information dictionary} (DID) described in \cite{Pdf20}, Section 14.3.3. 
+to the \emph{document information dictionary} (DID) described in~\cite{Pdf20}, Section 14.3.3. 
 The most important entries are \texttt{CreationDate} and \texttt{ModDate}; 
 the rest is deprecated with PDF version 2.0. 
 Still these entries are relevant for PDF versions 1.x. 
@@ -929,12 +929,12 @@ Observe that the XMP keys with namespace \texttt{pdf} are not specified in~\cite
   Author       & dc:creator & same \\
   Subject      & dc:description & \\
   Keywords     & dc:subject & not pdf:Keywords as specified \\
-  --           & dc:type & \\
-  --           & dc:language & \\
-  --           & dc:date & duplicate of CreationDate? \\
-  --           & dc:format & application/pdf \\
-  --           & dc:source & the \LaTeX{} main file \\% TBD: this term shall be in terms.bib. 
-  Creator      & xmp:CreatorTool & should be creator of tex source... \\
+  ---          & dc:type & \\
+  ---          & dc:language & \\
+  ---          & dc:date & duplicate of CreationDate? \\
+  ---          & dc:format & application/pdf \\
+  ---          & dc:source & the \LaTeX{} main file \\% TBD: this term shall be in terms.bib. 
+  Creator      & xmp:CreatorTool & should be creator of tex source\dots \\
   Producer     & pdf:Producer & \\
   ---          & pdf:PDFVersion & \\
   CreationDate & xmp:CreateDate & \\
@@ -954,24 +954,24 @@ This is deferred because it collides with \cmd{DocumentMetadata}.
 
 Besides a reference to the document information dictionary, 
 the trailer dictionary also contains the trailer identifier 
-described in \cite{Pdf20}, Section 7.5.5. 
+described in~\cite{Pdf20}, Section 7.5.5. 
 It indicates that not writing the trailer identifier or corrupting it is no good idea, 
-e.g. because it is needed for encryption or for uniquely identifying the document. 
+e.g.\@ because it is needed for encryption or for uniquely identifying the document. 
 
-Details are given in \cite{Pdf20}, Section 14.4. 
+Details are given in~\cite{Pdf20}, Section 14.4. 
 First, the identifier consists of two hashes, 
 the first of which depends on the newly created but unmodified document. 
-The notion behind is that of incremental updates described in \cite{Pdf20}, Section 7.5.6. 
+The notion behind is that of incremental updates described in~\cite{Pdf20}, Section 7.5.6. 
 The first hash shall depend on the content of the file 
 at creation time and on \texttt{CreateDate}. 
 The second hash in contrast shall depend on content of the file after last incremental update 
-and on time of last update, i.e. on \texttt{ModDate}. 
+and on time of last update, i.e.\@ on \texttt{ModDate}. 
 
 In the \LaTeX{} world incremental update is not supported 
 so that \texttt{CreateDate} and \texttt{ModDate} coincide 
 and so do the contents. 
 As a consequence, the two hashes of the trailer identifier coincide as well. 
-The last section of \cite{Pdf20}, Section 14.4 seems to indicate, 
+The last section of~\cite{Pdf20}, Section 14.4 seems to indicate, 
 that the location of the PDF file may go into the trailer ID, 
 which would make it less reproducible. 
 
@@ -1085,7 +1085,7 @@ As expected, these settings are also necessary for translating DVI into PDF\@.
 
 \subsection{Suppressing and overwriting meta info in an engine specific way }
 
-For \lualatex{} \cite{LuaTexRef24}, Section 3.2.2 describes the variable \texttt{suppressoptionalinfo} 
+For \lualatex{}~\cite{LuaTexRef24}, Section 3.2.2 describes the variable \texttt{suppressoptionalinfo} 
 which specifies bitwise which pieces of metadata to be suppressed. 
 Among the \texttt{PTEX} entries, \texttt{PTEX.FullBanner} is unique as it refers to the top level document: 
 it is the first line of output in the log file. 
@@ -1093,7 +1093,8 @@ For sake of privacy this shall be suppresed.
 The other \texttt{PTEX} entries, 
 \texttt{PTEX.FileName}, \texttt{PTEX.PageNumber} and \texttt{PTEX.InfoDict} 
 refer to embedded PDF files. 
-The \texttt{InfoDict} has entries \texttt{Producer}, \texttt{Creator}, \texttt{CreationDate} ,\texttt{ModDate} 
+The \texttt{InfoDict} has entries 
+\texttt{Producer}, \texttt{Creator}, \texttt{CreationDate}, \texttt{ModDate} 
 and \texttt{Trapped} and must be suppressed as well. 
 
 Also, \texttt{Creator} and \texttt{Producer} shall be suppressed. 
@@ -1106,19 +1107,19 @@ both for suppression and for leaving as is.
 
 As described elsewhere, neither \texttt{CreationDate}, \texttt{ModDate} or \texttt{ID} shall be suppressed. 
 
-As described in \cite{PdfTexUsr24}, Section 4.2.3 and 4.2.4, \pdflatex can suppress only \texttt{PTEX} data 
+As described in~\cite{PdfTexUsr24}, Section 4.2.3 and 4.2.4, \pdflatex{} can suppress only \texttt{PTEX} data 
 which must be done, and \texttt{CreationDate}, \texttt{ModDate} which must not be suppressed. 
-Finally, \xelatex cannot suppress any metadata. 
+Finally, \xelatex{} cannot suppress any metadata. 
 \medskip 
 
 
 Meta info may be suppressed but also overwritten. 
-For \lualatex{} \cite{LuaTexRef24}, Section 3.2.2 shows how to overwrite the trailer ID. 
+For \lualatex{}~\cite{LuaTexRef24}, Section 3.2.2 shows how to overwrite the trailer ID\@. 
 In contrast, \pdflatex{} has many options to overwrite metadata 
-collected in \cite{PdfTexUsr24}, Section 4.2, among those also the trailer ID. 
+collected in~\cite{PdfTexUsr24}, Section 4.2, among those also the trailer ID\@. 
 Neither of these are needed. 
 Finally, there is no official documentation on \xelatex{} for overwriting metadata 
-but internet sources show a way to overwrite the trailer ID: 
+but internet sources show a way to overwrite the trailer ID\@: 
 %
 \begin{verbatim}
 \special{pdf:trailerid [
@@ -1248,11 +1249,11 @@ We used it as
 %
 to avoid compression of the created PDF file, mainly for debugging, 
 but it is significant even with empty argument list, 
-e.g. it forces \xelatex{} displaying \texttt{ModDate} in addition to \texttt{CreationDate}. 
+e.g.\@ it forces \xelatex{} displaying \texttt{ModDate} in addition to \texttt{CreationDate}. 
 Another effect, which can be considered a bug is, 
 that overwriting of meta info by command \cmd{hypersetup} offered by package \texttt{hyperref} 
 does not work anymore. 
-This applies e.g. to dates but also to creator and producer. 
+This applies e.g.\@ to dates but also to creator and producer. 
 This bug does not corrupt reproducibility but security. 
 
 Another effect comes into the game because \cmd{DocumentMetadata} 
