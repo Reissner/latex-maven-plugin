@@ -3,12 +3,22 @@
 
 # Features
 
-The features consist in support of various input and ability to create [various output](#input-and-output), 
+The features consist in support of various [contexts](#contexts), 
+input and ability to create [various output](#input-and-output), 
 various [checks](#checks) and [orchestration and document development](#orchestration-and-document-development). 
 
 
-## Input and Output 
+## Contexts 
 
+This piece of software consists of a 
+
+- an ant task and 
+- a maven plugin 
+  
+with a common source core. 
+
+
+## Input and Output 
 
 Supports 
 
