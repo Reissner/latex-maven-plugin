@@ -1433,6 +1433,19 @@ We shall wait with rework until package glossaries-extra and tool bib2gls is int
        But still a question on glossaries package. 
        -->
 
+       <!-- robustglossary: add a discussion. -->
+
+       <!-- new goal: lmf: latex main files: similar to grp, but without graphic processing. 
+        Maybe grp shall not display the latex main files. -->
+
+        <!-- clarify whether also multiple bibliographies are supported -->
+
+        <!-- magic comment: suppressFalsePositive: 
+         shall specify identifiers for errors and warnings. 
+         If listed, no display. 
+         Application: robustindex.tex: different settings, maybe false positives. 
+         like split not allowed in splitindex. -->
+
     <release version="2.1" date="2023-08-28" 
       description="build with latexmk and generalized reproducibility, readed glossary">
       <action dev='reissner' type='fix'>
