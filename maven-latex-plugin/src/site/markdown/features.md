@@ -23,8 +23,10 @@ with a common source core.
 Supports 
 
 - many output formats like PDF, DVI, HTML, DOCX, RTF, TXT and others 
-- document classes including `book`, `article`, `leaflet`, `scrlttr2` and `beamer`; for the latter also `beamerarticle` 
-- many graphical input formats like PNG, MP, FIG, gnuplot and provides a separate goal creating them, `grp` 
+- many graphical input formats like PNG, MP, FIG, gnuplot 
+  and provides a separate goal creating them, `grp` 
+- document classes including `book`, `article`, `leaflet`, `scrlttr2` and `beamer`; 
+  for the latter also `beamerarticle` 
 - bibliography, index/indices, glossary/glossaries and embedded code 
 
 
