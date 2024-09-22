@@ -11,6 +11,12 @@
   }
 }
 
+\makeindex
+
+\newcommand{\goal}[1]{\texttt{#1}\index{goal!#1}}%|texttt{#1}
+\newcommand{\tool}[1]{\texttt{#1}\index{tool!#1}}%|texttt{#1}
+
+
 % TBD: clarify what to do if no pdf is created. 
 % As soon as this question comes up in the course of new development, 
 % this will be compiled as html by accident. 
@@ -87,7 +93,7 @@ This is some additional text
   Automatically creates documents from LaTeX sources during the Maven \texttt{site} phase 
   and in an ant run. 
 
-  This comprises running basic tools like \texttt{lualatex} and \texttt{bibtex} 
+  This comprises running basic tools like \tool{lualatex} and \tool{bibtex} 
   and rerunning them by need. 
 
 \end{frame}
@@ -117,9 +123,9 @@ This is some additional text
   %
   \begin{itemize}
     \item
-    sources with \texttt{chktex} and logs the results in target and goal \texttt{chk}%\index{goal!vrs} 
+    sources with \tool{chktex} and logs the results in target and goal \goal{chk}%\index{goal!chk} 
     \item
-    versions of used tools via goal \texttt{vrs}%\index{goal!vrs}
+    versions of used tools via goal \goal{vrs}%\index{goal!vrs}
     \item
     log files detecting errors and warnings 
     \item
@@ -134,7 +140,7 @@ This is some additional text
 \begin{frame}
   \frametitle{Orchestration and document development}
   Orchestration of various tools detecting need for execution e.g.
-  of \texttt{bibtex} including \texttt{rerunfilecheck} for \texttt{lualatex} and friends.
+  of \tool{bibtex} including \texttt{rerunfilecheck} for \tool{lualatex} and friends.
 
   Supports document development, mainly by cooperating with editor, viewer and with other tools in the build chain. 
   Offers 
@@ -142,8 +148,8 @@ This is some additional text
   \begin{itemize}
     \item various scripts, 
     most notably an installation script for extensions of VS Code.
-    \item configuration file \texttt{.chktexrc} for \texttt{chktex}.
-    \item configuration file \texttt{.latexmkrc} for \texttt{latexmk} 
+    \item configuration file \texttt{.chktexrc} for \tool{chktex}.
+    \item configuration file \texttt{.latexmkrc} for \tool{latexmk} 
     synchronized with the configuration.
     \item header files like \texttt{header.tex} 
     to unify packages loaded by \LaTeX{} main files. % TBD: this term shall be in terms.bib. 
@@ -156,10 +162,10 @@ This is some additional text
 \begin{frame}
   \frametitle{Planned Features}
   \begin{itemize}
-  \item Support \texttt{biber} replacing \texttt{bibtex} as preferred tool
-  \item Support \texttt{xindy} replacing \texttt{makeindex} as preferred tool
-  \item Support \texttt{bib2gls} replacing \texttt{makeglossary} as preferred tool
-  \item Execute \texttt{glosstex} if needed
+  \item Support \tool{biber} replacing \tool{bibtex} as preferred tool
+  \item Support \tool{xindy} replacing \tool{makeindex} as preferred tool
+  \item Support \tool{bib2gls} replacing \tool{makeglossary} as preferred tool
+  \item Execute \tool{glosstex} if needed
   \item Usage of the \texttt{multibib} macros
   \item \dots
   \end{itemize}
@@ -177,22 +183,22 @@ This is some additional text
   
   \setbeamercolor{alerted text}{fg=blue}
   Besides goals referring to creating output of a given type 
-  like \alert{\texttt{pdf}}, \alert{\texttt{odt}} and \alert{\texttt{html}}, 
-  there is a goal \alert{\texttt{cfg}}, 
+  like \alert{\goal{pdf}}, \alert{\goal{odt}} and \alert{\goal{html}}, 
+  there is a goal \alert{\goal{cfg}}, 
   which allows \setbeamercolor{alerted text}{fg=red}
   \alert con\alert fi\alert guring various output formats as \texttt{targets}. % chktex 1
   
   \setbeamercolor{alerted text}{fg=blue}
-  One further goal, \alert{\texttt{chk}} to perform a check with \texttt{chktex} 
+  One further goal, \alert{\goal{chk}} to perform a check with \tool{chktex} 
   is allowed among the \texttt{targets}. 
 
   The other goals cannot serve as targets: 
   %
   \begin{description}
-    \item[\texttt{vrs}] to check versions of tools, 
-    \item[\texttt{grp}] to create graphic files speeding up use of \texttt{latexmk} 
+    \item[\goal{vrs}] to check versions of tools, 
+    \item[\goal{grp}] to create graphic files speeding up use of \tool{latexmk} 
     and 
-    \item[\texttt{inj}] to inject useful files like headers or config files 
+    \item[\goal{inj}] to inject useful files like headers or config files 
     like \texttt{.latexmkrc}. 
   \end{description}
 \end{frame}
@@ -350,6 +356,14 @@ see the manual~\cite{LatexPlugin}, Chapter 6.
 \end{frame}
 
 % \section{Examples}
+
+\mode<presentation>
+\section{Index}
+
+\begin{frame}[allowframebreaks]
+  \frametitle{Index}
+  \printindex
+\end{frame}
 
 \mode<presentation>
 \section{References}% if with star not in toc 
