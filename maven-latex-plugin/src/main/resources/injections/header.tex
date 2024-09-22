@@ -157,15 +157,18 @@
 
 \usepackage{fancyvrb}
 
+% index: always load package splitindex, except in some classes or if tex4ht. 
+% If no index is needed just don't command \makeindex 
 \IfClassLoadedTF{scrlttr2}{%
 }{
   % index and glossary
   \IfPackageLoadedTF{tex4ht}{
   }{
-    \usepackage{splitidx}%[split]
-    %  \usepackage{makeidx}
+    \usepackage{splitidx}%[split] is not supported 
+    %  \usepackage{makeidx}% superfluous if splitindex loaded 
     %  \usepackage{showidx}
-    \makeindex
+    % \makeindex %invoked by need only 
+
     % TBD: eliminate; loads amsmath!!! 
     % Concerning this section there is an entry in changes.xml 
     % There are also articles and so which do not need glossaries. 
