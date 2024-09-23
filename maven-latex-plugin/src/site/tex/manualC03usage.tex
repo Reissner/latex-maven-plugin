@@ -170,7 +170,7 @@ Since we recommend inputting the header file \texttt{header.tex}
 described in Section~\ref{subsec:header} which in turn loads \pkg{babel} and 
 by the way also \pkg{csquotes}, a language setting is mandatory. 
 It is possible specifying the language when loading \pkg{babel} as an option 
-like so \cmd{usepackage[english]\{babel\}}, 
+like so \cmd[{[english]}\{babel\}]{usepackage}, 
 but it is recommended to specify the language as an option of the document class, 
 in order to make it available for various packages, 
 besides \pkg{babel} also for \pkg{csquotes}. 
@@ -1300,8 +1300,9 @@ listed in Table~\ref{tab:WarnALP} on page~\pageref{tab:WarnALP}.
 The warning pattern is described in Section~\ref{subsec:patternWarnLatex} in detail. 
 As described in~\cite{DocMetaDataSuppCode}, Section 2 
 the recommended way to set major and minor version of the PDF output 
-like in \cmd{DocumentMetadata\{pdfversion=1.7\}}, 
-but due to a bug, any invocation of \cmd{DocumentMetadata} corrupts reproducibility of the created PDFs. 
+like in \cmd[\{pdfversion=1.7\}]{DocumentMetadata}, 
+but due to a bug, any invocation of \cmd{DocumentMetadata} 
+corrupts reproducibility of the created PDFs. 
 After this is fixed, the \cmd{setMinorVersionPdf} shall be removed again. 
 % TBD: check from time to time. 
 

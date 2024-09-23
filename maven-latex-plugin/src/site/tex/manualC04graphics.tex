@@ -356,7 +356,7 @@ by the command
 \end{lstlisting}
 %texttt
 and includes \texttt{xxx.pdf} automatically the file \texttt{xxx.pdf} 
-via \cmd{includegraphics\{xxx\}}{} (line 2). 
+via \cmd[\{xxx\}]{includegraphics} (line 2). 
 Note the following remarkable details: 
 %
 \begin{itemize}
@@ -375,14 +375,14 @@ odt-files can include eps-files.
 \item
 If \texttt{xxx.pdf} is included in \texttt{xxx.ptx} 
 with the full path name, 
-we may use \cmd{input\{xxx.ptx\}}{} instead of \cmd{import\{yyy\}\{xxx.ptx\}}. 
+we may use \cmd[\{xxx.ptx\}]{input} instead of \cmd[\{yyy\}\{xxx.ptx\}]{import}. 
 
 If in contrast, \texttt{xxx.pdf} is included in \texttt{xxx.ptx} 
 with the short name only, 
 \texttt{xxx.pdf} is assumed to be in the same directory 
 as the file inputting \texttt{xxx.ptx}. 
 So in general, i.e.~if this is not \texttt{yyy}, we need import 
-\cmd{import\{yyy\}\{xxx.ptx\}}. 
+\cmd[\{yyy\}\{xxx.ptx\}]{import}. 
 If the directories coincide, 
 in the import the string \texttt{yyy} may be empty. 
 If the string \texttt{yyy} is not empty, it must end with the path delimiter, 
@@ -393,7 +393,7 @@ i.e.~\texttt/ for Unix like systems and
 As indicated in Section~\ref{sec:graphPkg}, 
 the commands in \texttt{xxx.ptx} 
 require the packages \pkg{graphicx} and \pkg{xcolor}. 
-Also, the \cmd{import}{} command 
+Also, the \cmd{import} command 
 requires the \pkg{import} package. 
 
 To export \texttt{xxx.fig} into \texttt{xxx.ptx} and \texttt{xxx.pdf} 
@@ -424,7 +424,7 @@ otherwise they do not fit.
 For the output format \texttt{pdftex\_t}, 
 the option \texttt{-p xxx} says, 
 that the string \texttt{xxx} must be included in \texttt{xxx.ptx} 
-as \cmd{includegraphics\{xxx\}}. 
+as \cmd[\{xxx\}]{includegraphics}. 
 Note that the option \texttt{-p} shall not be specified 
 in \texttt{fig2devPtxOptions}, because it is automatically added. 
 
@@ -606,7 +606,7 @@ The file \texttt{xxx.ptx} must be imported via
 \end{lstlisting}
 %
 It contains the texts and includes \texttt{xxx.pdf} 
-via \cmd{includegraphics\{xxx\}}{} without specifying a suffix. 
+via \cmd[\{xxx\}]{includegraphics} without specifying a suffix. 
 
 Unlike for fig-files, 
 \texttt{xxx.ptx} and \texttt{xxx.pdf} are created with a single command: 
@@ -1064,7 +1064,7 @@ can be integrated into the latex document as
 Unlike \texttt{fig2dev} and \texttt{gnuplot}, 
 specifying the files with their full path, 
 has no effect, i.e.~inclusion uses the file name only. 
-Thus, \cmd{import}{} cannot be replaced by \cmd{input}{} 
+Thus, \cmd{import} cannot be replaced by \cmd{input} 
 and so the \LaTeX-package \pkg{import} is required. 
  
 

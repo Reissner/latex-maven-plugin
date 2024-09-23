@@ -318,7 +318,7 @@ should be a picture
 Conversion of an AUX file into a BBL file using bibliographies}
 \end{figure}
 
-Vital information on \tool{bibtex} can be found in~\cite{BibPat} 
+Vital information on \tool{bibtex} is found in~\cite{BibPat} 
 and in~\cite{BibMar}. 
 Also,~\cite{Gra}, Chapter 10 is worth reading in this context. 
 
@@ -338,6 +338,7 @@ if the option \texttt{numibib} is given.\index{table of contents}
 % \makeindex after splitindex 
 % This document is an example for multiple index, 
 % whereas useBeamer.tex ... (\cite needed) is an example for single index. 
+% At the moment, only the perl version of splitindex is supported, not lua. 
 
 Let us first assume that only a single index is wanted. 
 For each occurrence 
@@ -363,7 +364,7 @@ and the page number where the \cmd{index}-command occurred.
 
  is written to the \gls{idx} file as 
 \cmd{indexentry} 
-For example \cmd{index\{ant-task\}} in occurring on page 3 creates an entry 
+For example \cmd[\{ant-task\}]{index} in occurring on page 3 creates an entry 
 %
 \begin{lstlisting}[language=TeX]
 \indexentry{ant-task}{3}
@@ -594,9 +595,9 @@ This software supports two of them:
 via the shell command \texttt{makeindex}, which is also used for indices, 
 and via the shell command \texttt{xindy}. 
 Using \texttt{makeindex} is the default but can also be activated through 
-\cmd{usepackage[makeindex]\{glossaries\}}. 
+\cmd[{[makeindex]}\{glossaries\}]{usepackage}. 
 Using \texttt{xindy} instead of \texttt{makeindex} is triggered through 
-\cmd{usepackage[xindy]\{glossaries\}}. 
+\cmd[{[xindy]}\{glossaries\}]{usepackage}. 
 Accordingly, for option \texttt{makeindex} the AUX file receives lines 
 %
 \begin{lstlisting}[language=TeX]
@@ -1684,7 +1685,7 @@ and it contains the pictures needed in the html files.
 This is a log file listing the pictures of \texttt{xxx.idv}, 
 the \gls{png} files that should be created, CSS information, 
 and user directives introduced 
-through the ``\cmd{Needs\{\ldots\}}'' command.
+through the ``\cmd{Needs}'' command.
 
 \raggedbottom{}
 

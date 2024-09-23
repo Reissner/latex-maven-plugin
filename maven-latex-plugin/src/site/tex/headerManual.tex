@@ -4,11 +4,14 @@
 
 % For tex4ht packages splitindex and glossaries/glossaries-extra are not loaded, 
 % makeindex is not invoked. 
+% note how to write commands with optional arguments: 
+% optional argument in {} like so: 
+% \cmd[{[yy]}\{\dots\}\{\dots\}]{indexentry} 
 \IfPackageLoadedTF{tex4ht}{
-  \newcommand{\cmd}[1]{\texttt{\bs{}#1}}
+  \newcommand{\cmd}[2][]{\texttt{\bs{}#2#1}}
   \newcommand{\pkg}[1]{\texttt{#1}}% without indexing 
 }{
-  \newcommand{\cmd}[1]{\texttt{\bs{}#1}\sindex[cmd]{#1@\texttt{\bs{}#1}}}
+  \newcommand{\cmd}[2][]{\texttt{\bs{}#2#1}\sindex[cmd]{#2@\texttt{\bs{}#2}}}
   \newcommand{\pkg}[1]{\texttt{#1}\sindex[pkg]{#1}} % TBD: this must be extracted 
 }
 

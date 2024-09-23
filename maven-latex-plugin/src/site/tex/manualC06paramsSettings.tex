@@ -556,7 +556,8 @@ the magic comments are all optional, i.e.\@ they need not match any part of the 
   may specify direct compilation without \tool{latexmk}. 
 
   The magic comment can take the form \texttt{\% !LMP latexmkMagic=<bool>} % chktex 26
-  or \texttt{\% !LMP latexmkMagic} which is just short for \texttt{\% !LMP latexmkMagic=true}. % chktex 26
+  or \texttt{\% !LMP latexmkMagic} 
+  which is just short for \texttt{\% !LMP latexmkMagic=true}. % chktex 26
 
   \item[chkDiffMagic, chkDiffMagicVal]
   whether the \emph{created PDF file} shall be checked against an original 
@@ -566,7 +567,8 @@ the magic comments are all optional, i.e.\@ they need not match any part of the 
   given in Table~\ref{tab:paramDiffPdf} on page~\pageref{tab:paramDiffPdf}. 
 
   The magic comment can take the form \texttt{\% !LMP chkDiff=<bool>} % chktex 26
-  or \texttt{\% !LMP chkDiff} which is just short for \texttt{\% !LMP chkDiff=true}. % chktex 26
+  or \texttt{\% !LMP chkDiff} 
+  which is just short for \texttt{\% !LMP chkDiff=true}. % chktex 26
 \end{description}
 
 The default pattern for identifying \LaTeX{} main files 
@@ -606,7 +608,7 @@ Let us trace through line by line:
 %
 \begin{description}
   \item[1]
-  The \cmd{A} indicates the start of the file. 
+  The \texttt{\textbackslash A} indicates the start of the file. 
   \item[2--4]
   These lines match magic comments \texttt{\%~!TEX}, 
   which are used by other build tools also. 
@@ -637,7 +639,7 @@ Let us trace through line by line:
   except for magic comments and is the only one without magic comments. 
   Besides lines with specific commands, it matches empty lines and comment lines. 
   Also, a line may start with whitespace 
-  and may contain a comand and end in a comment. 
+  and may contain a command and end in a comment. 
   The commands specified there may occur in arbitrary multiplicity and order. 
   This section is likely to be modified by the user. 
   \item[11]
@@ -661,7 +663,7 @@ allowing to pass one or more options to a package,
 although including with \cmd{usepackage} is without options, 
 \item 
 \cmd{newbool} and \cmd{setbool} to define and set a boolean value 
-defining variants (preceeded by \cmd{RequirePackage\{etoolbox\}}), 
+defining variants (preceeded by \cmd[\{etoolbox\}]{RequirePackage}), 
 \item 
 the command \cmd{DocumentMetadata} allowing arbitrarily nested braces, 
 \item
@@ -1174,7 +1176,7 @@ Export into PDF/PS/EPS format without text.
 Besides the PDF/PS/EPS files, a \LaTeX-file \texttt{latexfile.tex} is exported,
 putting the text on top of the PDF/PS/EPS file, 
 i.e.\@ including the according pure graphic file. 
-Include the result in \LaTeX{} as: \cmd{input\{latexfile.tex\}}. 
+Include the result in \LaTeX{} as: \cmd[\{latexfile.tex\}]{input}. 
 
 Note that the latter option is necessary, 
 to create the expected files. 
