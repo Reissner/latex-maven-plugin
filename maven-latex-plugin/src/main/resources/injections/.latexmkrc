@@ -41,7 +41,7 @@ sub parseTexFile($fileName) {
   # The pattern is used to read magic comments. 
   # Double quotes because the pattern contains single quotes; 
   # no interpolation 
-  my $patternLatexMainFile="${patternLatexMainFile}";
+  my $patternLatexMainFile = "${patternLatexMainFile}";
   print("patternLatexMainFile: \n$patternLatexMainFile\n");
   open my $info, $fileName or die "Could not open $fileName: $!";
   # the lines read so far (each line with newline)
@@ -357,13 +357,34 @@ sub inkscape {
 # }
 
 
+# TBD: bugfix: rework on dependency rules... feasable? 
 # use splitindex 
 $makeindex = 'internal run_makeSplitindex %A %O';
 #$makeindex = "${makeIndexCommand} ${makeIndexOptions} %S";# 'makeindex -s german -g %S';
 # TBD: take splitindex into account also 
 # ${splitIndexCommand} ${splitIndexOptions} %S
 
+# if used \sindex[idx]{} and no other index name, this is misleading: is a single multi-index
+sub parseIdxFileForMultiIdx($fileName) {
+  $fileName = "$fileName.idx";
+  # since the patter is likely to end in $ 
+  my $patternMultiIndex = '${patternMultiIndex}';
+  open my $info, $fileName or die "Could not open $fileName: $!";
+  while (my $line = <$info>) {
+    if ($line =~ /$patternMultiIndex/) {
+      # Here, it is clear that we have a multi-index 
+      close $info;
+      return true;
+    }
+  }
+  close $info;
+  # Here, it is clear that we have no multi-index 
+  return false;
+}
+
 sub run_makeSplitindex($fileName, @opts) {
+  # $fileName is without ending 
+
   # Use splitindex instead of makeindex.
   # The splitindex programe starts from an .idx file, makes a set of
   #   other .idx files for separate indexes, and then runs makeindex to
@@ -392,9 +413,12 @@ sub run_makeSplitindex($fileName, @opts) {
   # splitindex doc unveils: may be used with xindy also, 
   # but, can we just put makeIndexCommand=xindy? 
   # or is this different? 
-  my $ret1 = system("${makeIndexCommand} ${makeIndexOptions} @opts $fileName");
-  my $ret2 = system("${splitIndexCommand} -makeindex ${makeIndexCommand} ${splitIndexOptions} $fileName -- ${makeIndexOptions} @opts");
-  return $ret1 || $ret2;
+  if (parseIdxFileForMultiIdx($fileName)) {
+    #system("touch $filename.ind");
+    return system("${splitIndexCommand} -makeindex ${makeIndexCommand} ${splitIndexOptions} $fileName -- ${makeIndexOptions} @opts");
+  } else {
+    return system("${makeIndexCommand} ${makeIndexOptions} @opts $fileName");
+  }
 }
 
 # This set of dependencies is only complete 
