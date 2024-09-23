@@ -1107,7 +1107,7 @@
             <!--patternLatexMainFile>
             </patternLatexMainFile-->
             <!--mainFilesIncluded>manualLMP</mainFilesIncluded-->
-            <mainFilesExcluded>test useBeamerHandout</mainFilesExcluded>
+            <mainFilesExcluded>test</mainFilesExcluded><!--useBeamerHandout-->
             <pythontexCommand>pythontexW:pythontex</pythontexCommand>
             <pythontexOptions>--rerun=always</pythontexOptions>
             <!--patternErrPyTex>\* PythonTeX error|(PythonTeX:  .+ -|    - Current: ) [1-9][0-9]* error\(s\), [0-9]+ warning\(s\)</patternErrPyTex-->

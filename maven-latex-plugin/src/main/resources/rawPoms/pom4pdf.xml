@@ -247,7 +247,7 @@ beamer,leaflet,scrlttr2:chk,pdf,txt
     The empty string is the default, i.e. excluding no file. 
     See 'mainFilesIncluded'
     -->
-            <mainFilesExcluded>useBeamerHandout</mainFilesExcluded>
+            <mainFilesExcluded></mainFilesExcluded><!--useBeamerHandout-->
 
             <!--
             The extent to which latexmk or to be more precise, 
