@@ -1446,6 +1446,14 @@ We shall wait with rework until package glossaries-extra and tool bib2gls is int
          Application: robustindex.tex: different settings, maybe false positives. 
          like split not allowed in splitindex. -->
 
+         <!-- support splitindex in two variants: perl and tlu (lua). 
+          Note that Settings.patternMultiIndex is used in java also, 
+          so cannot be just exchanged to make for lua. 
+          Instead, \[ and \] must be replaced by %[ and %]. 
+          Maybe other solutions also possible. 
+          Note that in LatexProcessor.run... everything is prepared, 
+          whereas in .latexmkrc it is not yet done. -->
+
     <release version="2.1" date="2023-08-28" 
       description="build with latexmk and generalized reproducibility, readed glossary">
       <action dev='reissner' type='fix'>
