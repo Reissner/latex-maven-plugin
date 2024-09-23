@@ -114,6 +114,14 @@ public class Settings {
    */
   final static String SST;
 
+  /**
+   * Identifier for a group. 
+   * For Perl it is <code>$</code> whereas for Lua it is <code>%</code>. 
+   * If splitindex shall be supported for both Perl and Lua, 
+   * then this must be configurable. 
+   */
+  final static String GRP_IDENT = "$";
+
   static {
     String fs = System.getProperty("file.separator");
     SST = "src" + fs + "site" + fs + "tex";
@@ -325,7 +333,11 @@ public class Settings {
    * and notify the developer of this plugin of the deficiency. 
    * In any case, matching of the group named <code>class</code> must be retained 
    * so that the document class is matched. 
+   * <p>
+   * Note that this pattern contains named groups 
+   * which are given by elements of {@link LatexMainParameterNames}. 
    */
+  // One shall use LatexMainParameterNames to fill in the names of the named groups. 
   // FIXME: not only on this pattern: 
   // Matching is line by line which is inappropriate. 
   // pattern is to be applied to the start of the tex-file 
@@ -1338,6 +1350,39 @@ public class Settings {
   private String patternWarnBibtex = "^Warning--";
 
   // parameters for index 
+
+  /**
+   * The shape of the lines of an IDX file
+   * with explicit identifier of the index. 
+   * These lines are caused by commands <code>\sindex</code>, 
+   * whereas the lines without index name 
+   * come from commands <code>\index</code>. 
+   * Presence of that pattern identifies multi-index 
+   * to be treated by {@link Converter#Splitindex}, 
+   * absence indicates a single index 
+   * to be treated by {@link Converter#Makeindex}. 
+   * Note that this regular expression has three groups
+   * as in the specification of <code>splitindex</code>. 
+   * <p>
+   * The middle one has index {@link LatexProcessor#GRP_IDX_IDENT} 
+   * and the value <code>yyy</code> identifies the index to be created. 
+   * In particular, 
+   * {@link Converter#Splitindex} creates an index file <code>xxx-yy.idx</code> 
+   * If lines with and without explicit index identifier occur, 
+   * the name of the index not explititly given is just <code>idx</code>. 
+   * The first and the last group together form the entries of the index files 
+   * code>xxx-yy.idx</code>. 
+   * <p>
+   * Note that the default value applies to the Perl version of <code>splitindex</code> 
+   * and applies also to the internal workings of this java code 
+   * and to the configuration file of <code>latexmk</code>. 
+   * Although <code>splitindex</code> is also available as a lua file, 
+   * this requires slightly different default pattern 
+   * which is not compatible with what is needed at the other places. 
+   */
+  @RuntimeParameter
+  @Parameter(name = "patternMultiIndex",
+    defaultValue = "^(\\\\indexentry)\\[([^]]*)\\](.*)$") String patternMultiIndex = "^(\\\\indexentry)\\[([^]]*)\\](.*)$";
 
   /**
    * The MakeIndex command to create an ind-file 
@@ -2727,6 +2772,12 @@ public class Settings {
     return this.patternWarnBibtex;
   }
 
+  // for indices 
+
+  public String getPatternMultiIndex() {
+    return this.patternMultiIndex;
+  }
+
   // for ant task only 
   @RuntimeParameter
   public String getMakeIndexCommand() throws BuildFailureException {
@@ -3320,6 +3371,12 @@ public class Settings {
     }
   }
 
+  // for indices 
+
+  public void setPatternMultiIndex(String patternMultiIndex) {
+    this.patternMultiIndex = patternMultiIndex;
+  }
+
   public void setMakeIndexCommand(String makeIndexCommand) {
     this.makeIndexCommand = makeIndexCommand;
   }
@@ -3743,10 +3800,11 @@ public class Settings {
         // To that end, the language must be implemented as an enum. 
         // the comment character tied to the injection directly, 
         // must be tied to the language which is tied to the injection. 
-        replacement = StringEscapeUtils.escapeJava(replacement).replace("\\",  "\\\\");
+        replacement = StringEscapeUtils.escapeJava(replacement)
+        .replace("\\",  "\\\\")
+        .replace("$",  "\\$");
 
         strLine = matcher.replaceFirst(replacement);
-
         // filter next line 
       } // while true
     } // while ((strLine = bufReader.readLine()) != null)

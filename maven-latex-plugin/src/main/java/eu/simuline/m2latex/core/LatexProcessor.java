@@ -144,23 +144,6 @@ public class LatexProcessor extends AbstractLatexProcessor {
   private final static String SUFFIX_CLG = ".clg";
 
   /**
-   * The shape of the entries of an index file
-   * with explicit identifier of the index.
-   * If not explicitly given, this is just <code>idx</code>.
-   * Note that this regular expression has three groups
-   * as in the specification of <code>splitindex</code>. 
-   * 
-   * @see #GRP_IDENT_IDX
-   */
-  private final static String IDX_EXPL = "^(\\\\indexentry)\\[([^]]*)\\](.*)$";
-
-  /**
-   * Index of the group in {@link #IDX_EXPL}
-   * containing the identifier of the index.
-   */
-  private final static int GRP_IDENT_IDX = 2;
-
-  /**
    * The implicit default identifier of an index
    * hardcoded into the package <code>splitidx</code>
    * and into the program <code>splitindex</code>.
@@ -196,6 +179,27 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * Else this <code>Optional</code> is empty. 
    */
   private Optional<String> latex2PdfCmdMagic = Optional.empty();
+
+  /**
+   * Index of the group in {@link #patternMultiIndex}
+   * containing the string <code>\indexentry</code>. 
+   * The default is 3 and this may hardly change. 
+   */
+  final static int GRP_IDX_KEYPAGE = 3;
+
+  /**
+   * Index of the group in {@link #patternMultiIndex}
+   * containing the identifier of the index. 
+   * The default is 2 and this may hardly change. 
+   */
+  final static int GRP_IDX_IDENT = 2;
+
+  /**
+   * Index of the group in {@link #patternMultiIndex}
+   * containing the string <code>\indexentry</code>. 
+   * The default is 1 and this may hardly change. 
+   */
+  final static int GRP_IDX_IDXENTRY = 1;
 
 
   // also for tests
@@ -1635,7 +1639,9 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
     // determine the explicit given identifiers of indices
     final Collection<String> explIdxIdent =
-        this.fileUtils.collectMatches(desc.idxFile, IDX_EXPL, GRP_IDENT_IDX);
+        this.fileUtils.collectMatches(desc.idxFile,
+                                      this.settings.getPatternMultiIndex(),
+                                      GRP_IDX_IDENT);
     if (explIdxIdent == null) {
       this.log.warn("WLP04: Cannot read idx file '" + desc.idxFile.getName()
           + "'; skip creation of index. ");
@@ -1704,6 +1710,11 @@ public class LatexProcessor extends AbstractLatexProcessor {
         // "without option 'split'. ");
       }
     }
+
+    // TBD: the following is misleading 
+    // if \sindex[idx]{...} is used with a single index name idx 
+    // This counts as a multi-index but is only one. 
+    // But then we need splitindex anyway. 
 
     // check whether more than one index has to be created
     if (explIdxIdent.isEmpty()) {
@@ -1838,18 +1849,18 @@ public class LatexProcessor extends AbstractLatexProcessor {
     this.log
         .debug("Running " + splitInxCmd + " on '" + desc.xxxFile.getName() + "'. ");
     // buildArguments(this.settings.getMakeIndexOptions(), idxFile);
+    // NOTE: named groups are not compatible with the lua version of splitindex 
+    String groupIdent = Settings.GRP_IDENT;
     String[] argsDefault = new String[] {
         "-m " + this.settings.getCommand(ConverterCategory.MakeIndex),
         // **** no splitindex.tlu
+        // TBD: take over in .latexmkrc also: else latexmk cannot be used with splitindex.tlu. 
         // This is hardcoded by splitidx when writing xxx.ind
-        "-i " + IDX_EXPL,
+        "-i " + this.settings.getPatternMultiIndex(),
         // This is hardcoded by makeindex when writing xxx.ind
-        "-r $1$3", // groups in IDX_EXPL: \indexentry{...}
-        // -s -$2 is hardcoded by splitidx when readin in the -xxx.ind-files
-        "-s " + SEP_IDENT_IDX + "$" + GRP_IDENT_IDX // groups in IDX_EXPL
-        // **** Here, only -V may occur in addition.
-        // "-V",
-        // desc.xxxFile.getName()
+        "-r "+groupIdent+GRP_IDX_IDXENTRY+groupIdent+GRP_IDX_KEYPAGE, // groups in IDX_EXPL: \indexentry{...}
+        // -s -$2 is hardcoded by splitidx when reading in the -xxx.ind-files
+        "-s " + SEP_IDENT_IDX + groupIdent + GRP_IDX_IDENT
     };
 
     String argsOption = this.settings.getMakeIndexOptions();

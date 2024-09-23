@@ -774,8 +774,9 @@ class TexFileUtils {
    *    In practice this is an idx file. 
    * @param regex
    *    the pattern (regular expression) to look for in <code>file</code>. 
-   * @param idxGroup
-   *    the number of a group of the pattern <code>regex</code>. 
+   * @param idxGroupIdx
+   *    the number of a group of the pattern {@link Settings#getPatternMultiIndex()} 
+   *    tied to the name of the index if given explicitly. 
    * @return
    *    the set of strings representing the <code>idxGroup</code> 
    *    of the pattern <code>regex</code> matching a line 
@@ -784,7 +785,7 @@ class TexFileUtils {
    */
   // used in LatexProcessor.runMakeIndexByNeed only 
   // **** a lot of copying from method matchInFile 
-  Collection<String> collectMatches(File file, String regex, int idxGroup) {
+  Collection<String> collectMatches(File file, String regex, int idxGroupIdx) {
     Collection<String> res = new TreeSet<String>();
     Pattern pattern = Pattern.compile(regex);
 
@@ -804,7 +805,7 @@ class TexFileUtils {
         matcher = pattern.matcher(line);
         if (matcher.find()) {
           // Here, a match has been found 
-          res.add(matcher.group(idxGroup));
+          res.add(matcher.group(idxGroupIdx));
         }
       } // for 
 
