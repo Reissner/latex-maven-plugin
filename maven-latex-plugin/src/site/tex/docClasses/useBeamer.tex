@@ -11,7 +11,8 @@
   }
 }
 
-\makeindex
+\mode<article>{\makeindex}
+
 
 \newcommand{\goal}[1]{\texttt{#1}\index{goal!#1}}%|texttt{#1}
 \newcommand{\tool}[1]{\texttt{#1}\index{tool!#1}}%|texttt{#1}
@@ -27,9 +28,9 @@
 \author{E. Reissner}
 \date{\today{} ernst.reissner@simuline.eu}
 
-%\hypersetup{colorlinks=true,allcolors=blue}%
-%\hypersetup{colorlinks,linkcolor=blue,urlcolor=blue,citecolor=blue}%
-%\hypersetup{frenchlinks}
+\hypersetup{colorlinks=true,allcolors=blue}%
+\hypersetup{colorlinks,linkcolor=blue,urlcolor=blue,citecolor=blue}%
+\hypersetup{frenchlinks}
 \begin{document}
  
 \mode<article>{\maketitle}
@@ -140,7 +141,7 @@ This is some additional text
 \begin{frame}
   \frametitle{Orchestration and document development}
   Orchestration of various tools detecting need for execution e.g.
-  of \tool{bibtex} including \texttt{rerunfilecheck} for \tool{lualatex} and friends.
+  of \tool{bibtex} including the package \texttt{rerunfilecheck} for \tool{lualatex} and friends.
 
   Supports document development, mainly by cooperating with editor, viewer and with other tools in the build chain. 
   Offers 
@@ -356,27 +357,24 @@ see the manual~\cite{LatexPlugin}, Chapter 6.
 \end{frame}
 
 % \section{Examples}
+% no index for presentation 
+% \mode<all>
+% \section{Index}
 
-\mode<presentation>
-\section{Index}
+\mode<article>{
+% not allowed for presentation itself: 
+% no theindex-environment defined in beamer class 
+\printindex
+\bibliographystyle{alpha}
+\bibliography{../lit,../litLMPpub}
+}
 
+\mode<presentation>{
 \begin{frame}[allowframebreaks]
-  \frametitle{Index}
-  \printindex
-\end{frame}
-
-\mode<presentation>
-\section{References}% if with star not in toc 
-
-
-\begin{frame}[allowframebreaks]
-  \frametitle{References}
+ \frametitle{References}
   \bibliographystyle{alpha}
   \bibliography{../lit,../litLMPpub}
 \end{frame}
-
-\mode<article>
-\bibliographystyle{alpha}
-\bibliography{../lit,../litLMPpub}
+}
 
 \end{document}
