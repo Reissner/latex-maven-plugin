@@ -453,8 +453,6 @@ public class LatexProcessor extends AbstractLatexProcessor {
             if (pdfFileCmp.exists()) {
               //runPdfInfo(desc.pdfFile);
               long timestampSec = runPdfInfo(pdfFileCmp);
-              System.out.println("++pdf TS meta: " + timestampSec);
-              System.out.println("++pdf TS file: " + pdfFileCmp.lastModified() / 1000);
 
               this.log.info("Process with timestamp "
                     + Instant.ofEpochSecond(timestampSec)
@@ -465,7 +463,6 @@ public class LatexProcessor extends AbstractLatexProcessor {
             } else {
               // just a placeholder to signify that a reproducible artifact must be created 
               // but there is no original 
-              System.out.println("++pdf: no original exists ");
               this.executor.envUtc();
               this.log.info("Process with time zone UTC. ");
             }
@@ -496,7 +493,6 @@ public class LatexProcessor extends AbstractLatexProcessor {
           Set<File> targetFiles = this.fileUtils
               .copyOutputToTargetFolder(texFile, fileFilter, targetDir);
 
-
           if (!doDiff) {
             this.log.debug("No artifact diff specified.");
             continue;
@@ -510,11 +506,11 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
 
           File pdfFileCmp = pdfFileCmpOpt.get();
-          System.out.println("Artifact for comparison: "+pdfFileCmp);
           if (!pdfFileCmp.exists()) {
             // TBD: adapt identifier of warning 
             // THis shall occur only if a newly created or changed file shall be reproducible 
             // in the message: 'Modification of reproducible file?' - add artifact as original file ' 
+            // TBD: pdfFileCmp is absolute but shall be relative to project base directory 
             this.log.warn("TLP02: Add file '" + pdfFileCmp
                    + "' to compare with artifact '" + pdfFileAct + "'! ");
             continue;
@@ -942,6 +938,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
       desc.aux2fileId.put(aux, getIdent(aux, auxFile));
 
       posterioryEntryInToc = aux.mayBeEntryInToc();
+      this.log.debug("Running auxiliary " + aux + ". ");
       aux.process(desc, this);
       minNumRunsAfter = Math.max(minNumRunsAfter,aux.numRunsAfter());
     } // for 
@@ -1086,13 +1083,12 @@ public class LatexProcessor extends AbstractLatexProcessor {
     for (int num = 0; maxNumReruns == -1 || num < maxNumReruns; num++) {
       FileId fileId;
       for (Auxiliary aux : desc.aux2fileId.keySet()) {
-        System.out.println("----------AUX: "+aux);
         fileId = getIdent(aux, desc.withSuffix(aux.extension()));
 
         if (desc.aux2fileId.get(aux).equals(fileId)) {
           continue;
         }
-        System.out.println("rerun!!!!");
+        this.log.debug("Rerunning auxiliary " + aux + ". ");
         desc.aux2fileId.put(aux, fileId);
         aux.process(desc, this);
         needLatexReRun = true;
@@ -1593,8 +1589,6 @@ public class LatexProcessor extends AbstractLatexProcessor {
     logWarns(logFile, command, this.settings.getPatternWarnBibtex());
     return true;
   }
-
-
 
   /**
    * Runs the MakeIndex command

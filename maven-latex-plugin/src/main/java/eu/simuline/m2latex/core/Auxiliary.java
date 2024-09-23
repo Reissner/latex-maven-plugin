@@ -191,7 +191,6 @@ enum Auxiliary {
           fileId.update(line);
           glossFile = TexFileUtils.replaceSuffix(file, 
               "." + matcher.group(GRP_EXT_GLOSS));
-          System.out.println("gloss File: "+glossFile);
           updateIdent(glossFile, fileId);
           // We assume all is top level 
           // Matcher matcher = PATTERN_INPUT.matcher(line);
