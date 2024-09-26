@@ -368,6 +368,7 @@ SubType  & start-x, start-y  & end-x, end-y \\
 
 Ellipse	 
 
+\begin{verbatim}
 ellipse\_common:: Common
 ellipse\_direction:: Integer
 ellipse\_angle:: Double
@@ -379,6 +380,7 @@ ellipse\_start\_x:: Integer
 ellipse\_start\_y:: Integer
 ellipse\_end\_x:: Integer
 ellipse\_end\_y:: Integer
+\end{verbatim}
 
 \subsection{Polygonal line, Box and included Picture}\label{subsec:polyline}
 
@@ -735,7 +737,7 @@ the \texttt{BackwardArrowLine} only if \texttt{BackwardArrow} is not 0;
 %
 both described in Section~\ref{subsec:paramArrowLines}. 
 
-
+\begin{verbatim}
 Arc ArcLine (Maybe Arrow) (Maybe Arrow)	 
 Spline SplineLine (Maybe Arrow) (Maybe Arrow) [(Integer, Integer)] [Double]
 
@@ -762,7 +764,7 @@ Stick
 Closed	 
 Indented	 
 Pointed	 
-
+\end{verbatim}
 
  
 \subsection{Compound}\label{subsec:compound}
@@ -802,7 +804,7 @@ CapStyle: see Section~\ref{subsec:styDep}
 
 
 
-
+\begin{verbatim}
 Common:
 subType:: Integer
 lineStyle:: LineStyle
@@ -826,7 +828,7 @@ DashTripleDotted
 
 
 AreaFill: (NoFill|Filled Integer|Pattern Integer)
-
+\end{verbatim}
 
 
 
