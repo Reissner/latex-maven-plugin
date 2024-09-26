@@ -242,7 +242,9 @@ Moreover, a \cmd{bibliography}-command in the TEX file
 writes a link to the BIB files containing the bibliography data 
 into the (top level) AUX file as \cmd{bibdata}. 
 Note that \cmd{bibliography} accepts a list of BIB files, not only a single one, 
-as maybe suggested by the singular name. 
+as maybe suggested by the singular name\footnote%
+{In fact, cmd{bibliography} does not only specify the (source) BIB files, 
+it \cmd{input}s the (singular) bibliography to be created.}. 
 The key given by \cmd{cite} commands must refer to exactly one key in the BIB files. 
 Last not least, a \cmd{bibliographystyle}-command in the TEX file 
 writes a link to the bibliography style file 
@@ -260,7 +262,7 @@ like \tool{bibtexu} and \tool{bibtex8} supporting utf8 encoding
 and others. 
 Among the tools which are not supported are \tool{biber} and \tool{mlbibtex}. 
 
-We run \tool{bibtex} if either command \cmd{bibliography} or \cmd{bibliographystyle} 
+We run \texttt{bibtexCommand} if either \cmd{bibliography} or \cmd{bibliographystyle} 
 is in the top level AUX file. 
 If there is no \cmd{cite}-command, \tool{bibtex} yields an error. 
 If neither \cmd{bibliography}-command nor \cmd{bibliographystyle}-command 
@@ -275,23 +277,24 @@ according to the \gls{bst} file and writes all into a \gls{bbl} file
 which can be included in the next run of \texttt{latex2pdf}. 
 Formatting includes associating a label with each key 
 and sorting is based typically on the label. 
-The BBL file consists essentially in a \env{thebibliography} environment 
+The \gls{bbl} file consists essentially in a \env{thebibliography} environment 
 listing the \cmd{bibitem}s. 
 These relate the key and the label given by the BST file 
 and show the text of the bibliography entry. 
 
 Note that after a \tool{bibtex}-run, 
 two \LaTeX{} runs are required: 
-The first one just puts the bibliography found in the BBL file 
-into the PDF file at place of \cmd{bibliography} 
-(which shows why it is singular, although a list of BIB files may serve as source)
+The first one just puts the bibliography found in the \gls{bbl} file \texttt{xxx.bbl}
+into the PDF file at place of \cmd{bibliography} as \cmd[\{xxx.bbl\}]{input} would do 
+(which shows why \cmd{bibliography} is singular, although a list of BIB files may serve as source)
 and the labels of the citations into the AUX file 
 as \cmd{bibcite}-commands. 
 The second run places the labels of the citations found in the AUX file 
 at the citations given by \cmd{cite}. 
 The package \pkg{tocbibind} described in~\cite{TocBibIndP}, 
 then writes the headline of the bibliography 
-into the table of contents.\index{table of contents}
+into the table of contents\index{table of contents} 
+if option \texttt{numbib}
 % The package \pkg{rerunfilecheck} described in~\cite{RerunFChkP110}, 
 % ensures that \texttt{latex2pdf} is rerun if needed, 
 % provided loaded with option \texttt{aux}. 
@@ -301,7 +304,7 @@ into the table of contents.\index{table of contents}
 
 
 This software presupposes, that \tool{bibtex} reads the AUX file 
-and creates a BBL file and also a BLG file with logging output 
+and creates a \gls{bbl} file and also a \gls{blg} file with logging output 
 as illustrated by Figure~\ref{fig:aux2bbl}. 
 From the BLG file this software may determine 
 whether \tool{bibtex} emitted an error or warnings. 
@@ -315,7 +318,7 @@ should be a picture
 \import{}{F5_02aux2bbl.ptx}
 }
 \caption{\label{fig:aux2bbl}
-Conversion of an AUX file into a BBL file using bibliographies}
+Conversion of an AUX file into a \gls{bbl} file using bibliographies}
 \end{figure}
 
 Vital information on \tool{bibtex} is found in~\cite{BibPat} 
@@ -332,8 +335,22 @@ The package \pkg{tocbibind} described in~\cite{TocBibIndP},
 then writes the headline of the index into the table of contents, 
 if the option \texttt{numibib} is given.\index{table of contents}
 
+% Note that also multiple bibliographies are possible: 
+% for each occurrence of \cmd[\{\dots\}]{bibliography} 
+% a separate bibliography is inserted furnished from the given BIB files. 
+% See: latex companion \cite{LatComp2}, Section~12.6. 
+% Seemingly, this is not possible with \tool{bibtex}, but I have latex companion only 2nd edition. 
+
 
 \section{Indices}\label{sec:indices}
+
+If an index is wanted, the command \cmd{makeindex} must be issued
+before any index entry is requested. 
+In fact, this does nothing but opening \texttt{xxx.idx} 
+given a \LaTeX{} main file \texttt{xxx.tex}. 
+The \gls{idx} file collects all index information extracted from \texttt{xxx.tex}. 
+
+
 
 % \makeindex after splitindex 
 % This document is an example for multiple index, 
@@ -342,45 +359,67 @@ if the option \texttt{numibib} is given.\index{table of contents}
 
 Let us first assume that only a single index is wanted. 
 For each occurrence 
-of a command \cmd{index} or similar (details see below) in the TEX file, 
-referring to an entry of the index,
+of a command \cmd{index} in the TEX file, 
+specifying an index entry,
 \texttt{latex2pdf} writes an according entry \cmd{indexentry} 
-into the \gls{idx} file, provided before the command \cmd{makeindex} was issued. 
+into the \gls{idx} file 
+which relates the entry with the page number where it occurred. 
 
-In case the \LaTeX{} engine writes index information, 
-into its \gls{idx} file, at least one index must be generated. 
-Since the \gls{idx} file contains nothing but index information, 
-an index is created if and only if the \gls{idx} file is created. 
-% Well, this is not really the truth: it is needed only if ...
-Essentially, 
-
-the command \cmd{makeindex} tells \texttt{latex2pdf} 
-to open the \gls{idx} file for writing. 
-Then for each occurrence of the \cmd{index}-command in the TEX file 
-specifying an index entry, 
-an \cmd{indexentry} command is written into the \gls{idx} file 
-comprising the keyword to be written into the index given by the \cmd{index}-command 
-and the page number where the \cmd{index}-command occurred. 
-
- is written to the \gls{idx} file as 
-\cmd{indexentry} 
-For example \cmd[\{ant-task\}]{index} in occurring on page 3 creates an entry 
+For example \cmd[\{ant-task\}]{index} occurring on page 3 creates an entry 
 %
 \begin{lstlisting}[language=TeX]
 \indexentry{ant-task}{3}
 \end{lstlisting}
 %
 in the IDX file. 
+Caution: If the IDX file is not open, 
+\cmd{index} has no significant impact and in particular no index is created, 
+without any warning. 
+
+To create an index, 
+a \texttt{makeIndexCommand} must be run after the \LaTeX{} run. 
+The default command and the only one currently supported by this software, 
+is the traditional \tool{makeindex}. 
+Similar but based on unicode are \tool{upmendex} and \tool{xindex}. 
+Whereas in the context of glossaries \tool{xindy} is still used, 
+for pure index creation for which \tool{xindy} has been designed originally, 
+it seems widely abandoned. 
+
+Note that entries in the IDX file can occur more than once, 
+even with the same page number. 
+% possible to create \indexentry with section() number)s instead of page numbers? 
+The task of \tool{makeindex} and related is, 
+to sort the index entries given in the IDX file 
+and within each entry to sort the page numbers 
+unifying same page numbers and simplifying by using ranges 
+and writing the result to an \gls{ind} file, 
+which essentially consists of an \env{theindex} environment 
+listing \cmd{item}s and \cmd{subitem}s. 
+
+
+The behavior of the various \texttt{makeIndexCommand}-tools varies 
+if the IDX file is empty: \tool{upmendex} does not create an \gls{ind} file at all, 
+\tool{makeindex} creates and empty one and only \tool{xindex} 
+creates an \gls{ind} file with an empty \env{theindex} environment. 
+
+
+% In case the \LaTeX{} engine writes index information, 
+% into its \gls{idx} file, at least one index must be generated. 
+% Since the \gls{idx} file contains nothing but index information, 
+% an index is created if and only if the \gls{idx} file is created. 
+% % Well, this is not really the truth: it is needed only if ...
+% Essentially, 
+
+
 
 Then the \texttt{makeindex}-command is applied to the \gls{idx} file 
 which sorts keywords and for each keyword collects the according page numbers, 
-sorts it and and writes the result into a \gls{ind} file. 
+sorts it and writes the result into a \gls{ind} file. 
 In the next run of \texttt{latex2pdf}, 
-the \cmd{prindindex}-command includes the index as a separate section; 
-typically at the end of the PDF file. 
+the \cmd{printindex}-command in the TEX file includes the index much like \cmd[xxx.ind]{input}. 
 The most basic package to provide this command 
 is \pkg{makeidx} described in~\cite{MkidxShIdxP}. 
-In addition, \pkg{makeidx} provides the command \cmd{see}{} 
+In addition, \pkg{makeidx} provides the command \cmd{see} 
 which is for cross-reference within an index. 
 The package \pkg{tocbibind} described in~\cite{TocBibIndP}, 
 then writes the headline of the index into the table of contents, 
@@ -393,57 +432,14 @@ The same document,~\cite{MkidxShIdxP}
 also describes the package \pkg{showidx} 
 which prints index entries at the margin of the document. 
 This is for debugging only. 
-\medskip
 
 
-The main restriction of the package \pkg{makeidx} is, 
-that only a single index can be created. 
-The reason is that, \texttt{latex2pdf} creates a single \gls{idx} file 
-and, as illustrated in Figure~\ref{fig:idx2ind}, 
-\texttt{makeindex} creates a single ind file from that, 
-representing a single index. 
-
-To overcome this restriction, 
-replace package \pkg{makeidx} and \texttt{makeindex} 
-with package \pkg{splitidx} and \texttt{splitindex} 
-both described in~\cite{SplitidxP}. 
-
-The package \pkg{splitidx} is used 
-in conjunction with the program \texttt{splitindex}. 
-It must be possible to create a single index 
-without using \pkg{splitidx} and \texttt{splitindex}. **** 
-
-% TBD: clarify whether this option is for splitidx or for makeidx 
-Package option \texttt{split} makes \texttt{latex2pdf} 
-creating \gls{idx} files \texttt{xxx-y.idx} directly. 
-Here \texttt{y} represents the identifier of an individual index. 
-These \gls{idx} files can be transformed individually with \texttt{makeindex} 
-into ind files as illustrated in Figure~\ref{fig:idx2indMult}. 
-Since \texttt{latex2pdf} can keep open only up to 16 output streams, 
-not all of which can be used to create a file \texttt{xxx-y.idx}, 
-this approach allows a limited number of indices 
-and is thus not recommended and not supported. 
-% Another reason is, that this approach undermines 
-% the package \pkg{rerunfilecheck} described in~\cite{RerunFChkP110}, 
-% and so it is not guaranteed that \texttt{latex2pdf} is rerun if needed. 
-% This explains why option \texttt{split} is not allowed. 
-% **** check? 
-
-Instead, without option \texttt{split}, 
-\texttt{latex2pdf} creates a single \gls{idx} file. 
-The program \texttt{splitindex} splits it up into several \gls{idx} files 
-and applies \texttt{makeindex} to each of them separately 
-as illustrated in Figure~\ref{fig:idx2indSplit}. 
-
-For usage of further packages supporting multiple indices 
-which are not intended to be used with this software, 
-see Chapter~\ref{chap:gaps}. 
 
 This software presupposes, that \texttt{makeindex} converts the \gls{idx} file 
 into an ind file containing the index 
-and creating also an ilg file with logging output 
+and creating also an \gls{ilg} file with logging output 
 as shown in Figure~\ref{fig:idx2ind}. 
-From the ilg file this software may determine 
+From the \gls{ilg} file this software may determine 
 whether \texttt{makeindex} emitted an error or warnings. 
 
 \begin{figure}[htb]
@@ -453,29 +449,141 @@ should be a picture
 }{
 \import{}{F5_03idx2ind.ptx}
 }
-\caption{\label{fig:idx2ind}Conversion of an \gls{idx} file into an ind file}
+\caption{\label{fig:idx2ind}Conversion of an \gls{idx} file into an \gls{ind} file}
 \end{figure}
+\medskip
+
+
+The main restriction of the package \pkg{makeidx} is, 
+that only a single index can be created. 
+The reason is that, \texttt{latex2pdf} creates a single \gls{idx} file 
+and \texttt{makeindex} creates a single ind file from that, 
+representing a single index. 
+
+To overcome this restriction, 
+replace package \pkg{makeidx} and \tool{makeindex} 
+with package \pkg{splitidx} and \tool{splitindex} 
+both described in~\cite{SplitidxP}. 
+
+Using package \pkg{splitidx} instead of \pkg{makeidx}, 
+still the commands \cmd{index} and \cmd{printindex} can be used 
+and both work as for package \pkg{makeidx}. 
+Thus, also the tool \tool{makeindex} can be combined with package \pkg{splitidx}. 
+This shows that \pkg{splitidx} is a full replacement of \pkg{makeidx}, 
+if a single index is required besides supporting multiple indices. 
+
+To support multiple indices, 
+\pkg{splitidx} offers the command \cmd[{[\dots]}\{\dots\}]{newindex} 
+to define a new index with given identifier and optional headline. 
+Besides indexing command \cmd{index}, 
+there is the command \cmd[{[\dots]\{\dots\}}]{sindex}, 
+with optional index identifier. 
+
+Also command \cmd{printindex} has additional variants, 
+among those write all indices or write the index of a given identifier \cmd[{[\dots]}]{printindex}. 
+Note that there is a special identifier, \texttt{idx} referring to the main index. 
+So \cmd[{[idx]}\{\dots\}]{sindex} mainly behaves as \cmd[\{\dots\}]{sindex}. 
+
+% TBD: clarify whether this option is for splitidx or for makeidx 
+Option \texttt{split} of \pkg{splitidx} makes \texttt{latex2pdf} 
+creating \gls{idx} files \texttt{xxx-y.idx} directly. 
+Here \texttt{y} represents the identifier of an individual index 
+which is \texttt{idx} for entries created by 
+\cmd[{[idx]}\{\dots\}]{sindex}, \cmd[\{\dots\}]{sindex} and \cmd[\{\dots\}]{index}. 
+These \gls{idx} files can be transformed individually with \texttt{makeindex} 
+into \gls{ind} files creating log files \gls{ilg} 
+as illustrated in Figure~\ref{fig:idx2indMult}. 
+Since \texttt{latex2pdf} can keep open only up to 16 output streams at once, 
+not all of which can be used to create a file \texttt{xxx-y.idx}, 
+this approach allows a limited number of indices 
+and is thus not recommended and not supported by this software. 
+% Another reason is, that this approach undermines 
+% the package \pkg{rerunfilecheck} described in~\cite{RerunFChkP110}, 
+% and so it is not guaranteed that \texttt{latex2pdf} is rerun if needed. 
+% This explains why option \texttt{split} is not allowed. 
+% **** check? 
 
 \begin{figure}[htb]
-\centering
-\IfPackageLoadedTF{tex4ht}{%
-should be a picture 
-}{
-\import{}{F5_04idx2indMult.ptx}
-}
-\caption{\label{fig:idx2indMult}
-Not supported: Conversion of \gls{idx} files into ind files}
+  \centering
+  \IfPackageLoadedTF{tex4ht}{%
+  should be a picture 
+  }{
+  \import{}{F5_04idx2indMult.ptx}
+  }
+  \caption{\label{fig:idx2indMult}
+  Not supported: Conversion of \gls{idx} files into ind files}
 \end{figure}
+  
+
+Instead, \pkg{splitidx} is supported without option \texttt{split}. 
+Then \texttt{latex2pdf} creates a single \gls{idx} file 
+but \cmd[{[y]}\{\dots\}]{sindex} 
+creates lines \cmd[{[y]}\{\dots\}]{indexentry} in the IDX file 
+which allow to identify the index \texttt{y}. 
+For example \cmd[{[Packages]}\{pkg\}]{newindex} defines a new index of \LaTeX{} packages 
+and \cmd[{[pkg]}\{splitidx\}]{sindex} on page 3 indicates 
+that index there shall be an entry \texttt{splitidx} referring to page 3. 
+The according entry in the IDX file is as follows: 
+%
+\begin{lstlisting}[language=TeX]
+  \indexentry[pkg]{splitidx}{3}
+\end{lstlisting}
+%
+Note that both \cmd[\{\dots\}]{sindex} and \cmd[\{\dots\}]{index} 
+create entries \cmd[\{\dots\}]{indexentry} as with a single index. 
+
+The program \tool{splitindex} splits up the single file \texttt{xxx.idx} 
+into several \gls{idx} files \texttt{xxx-y.idx}. 
+Besides the lines \cmd[{[idx]}\{\dots\}]{indexentry} 
+also the lines \cmd[\{\dots\}]{indexentry} go into \texttt{xxx-idx.idx}. 
+Then \tool{splitindex} applies \tool{makeindex} to each of these IDX files separately 
+creating files \texttt{xxx-y.ind} and according \gls{ilg} files, 
+as illustrated in Figure~\ref{fig:idx2indSplit}. 
+
+Note that \tool{splitindex} itself does not create any kind of log file. 
+Strictly speaking, there are at least two variants of \tool{splitindex} 
+implemented in different languages and with slightly different behavior. 
+At time of this writing, only the main variant in Perl is supported, 
+but it may be interested to generalize this to the version in the Lua language. 
 
 \begin{figure}[htb]
-\centering
-\IfPackageLoadedTF{tex4ht}{%
-should be a picture 
-}{
-\import{}{F5_05idx2indSplit.ptx}
-}
-\caption{\label{fig:idx2indSplit}Conversion of an \gls{idx} file into ind files}
-\end{figure}
+  \centering
+  \IfPackageLoadedTF{tex4ht}{%
+  should be a picture 
+  }{
+  \import{}{F5_05idx2indSplit.ptx}
+  }
+  \caption{\label{fig:idx2indSplit}Conversion of an \gls{idx} file into ind files}
+  \end{figure}
+  \medskip
+
+
+
+
+The package \pkg{splitidx} is intended to be used 
+in conjunction with the program \tool{splitindex}, 
+but it can also create a single index and if so, it is better to use it in conjunction with 
+\tool{makeindex} or that like. 
+This software can decide on the IDX file whether there is a line specifying an index like so, 
+%
+\begin{lstlisting}[language=TeX]
+  \indexentry[pkg]{splitidx}{3}
+\end{lstlisting}
+%
+or neither has an explicit index, i.e.\@ like so 
+%
+\begin{lstlisting}[language=TeX]
+  \indexentry[pkg]{splitidx}{3}
+\end{lstlisting}
+%
+In the first case \tool{splitindex} is invoked, in the second \tool{makeindex} is invoked. 
+\medskip
+
+
+For usage of further packages supporting multiple indices 
+which are not intended to be used with this software, 
+see Chapter~\ref{chap:gaps}. 
+
 
 It is possible to configure the makeindex-command 
 and to pass arbitrary options. 
@@ -512,7 +620,7 @@ Thus, this may not be given explicitly but is specified implicitly.
 Also, the option \texttt{--identify <regex>}, resp.~\texttt{-i <regex>} 
 must be set implicitly because it must be the same expression 
 as used to ***** 
-Then splitindex.tlu is not allowed, 
+Then \texttt{splitindex.tlu} is not allowed, 
 because this has another expression. 
 
 Only allowable seems \texttt{-V}, the shortcut for \texttt{--verbose}. 
