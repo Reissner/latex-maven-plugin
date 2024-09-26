@@ -1382,7 +1382,8 @@ public class Settings {
    */
   @RuntimeParameter
   @Parameter(name = "patternMultiIndex",
-    defaultValue = "^(\\\\indexentry)\\[([^]]*)\\](.*)$") String patternMultiIndex = "^(\\\\indexentry)\\[([^]]*)\\](.*)$";
+    defaultValue = "^(\\\\indexentry)\\[([^]]*)\\](.*)$")
+  private String patternMultiIndex = "^(\\\\indexentry)\\[([^]]*)\\](.*)$";
 
   /**
    * The MakeIndex command to create an ind-file 
@@ -3608,9 +3609,9 @@ public class Settings {
       if (Modifier.isStatic(mod)) {
         continue;
       }
-      assert !Modifier.isStatic(mod) : "found static parameter. ";
-      assert !Modifier.isFinal(mod) : "found final parameter. ";
-      assert Modifier.isPrivate(mod) : "found non-private parameter. ";
+      assert !Modifier.isStatic(mod) : "found static parameter " + field + ". ";
+      assert !Modifier.isFinal(mod) : "found final parameter " + field + ". ";
+      assert Modifier.isPrivate(mod) : "found non-private parameter " + field + ". ";
 
       name = field.getName();
       //assert annot.name().equals(name) : "Parameter name shall be fieldname. ";
