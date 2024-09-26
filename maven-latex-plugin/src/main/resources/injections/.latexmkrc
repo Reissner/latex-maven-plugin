@@ -374,12 +374,12 @@ sub parseIdxFileForMultiIdx($fileName) {
     if ($line =~ /$patternMultiIndex/) {
       # Here, it is clear that we have a multi-index 
       close $info;
-      return true;
+      return 1;
     }
   }
   close $info;
   # Here, it is clear that we have no multi-index 
-  return false;
+  return 0;
 }
 
 sub run_makeSplitindex($fileName, @opts) {
