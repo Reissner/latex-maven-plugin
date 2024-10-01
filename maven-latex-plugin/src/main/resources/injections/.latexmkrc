@@ -430,10 +430,12 @@ push @generated_exts, "ist", "xdy"; # index stylefile created by the glossaries 
 #$clean_ext .= " acr acn alg glo gls glg";# TBD: clarify: better in @generated_exts? 
 
 sub run_makeglossaries {
-  my ($base_name, $path) = fileparse( $_[0] );
-  my @args = ( "-q", "-d", $path, $base_name );
-  if ($silent) { unshift @args, "-q"; }
-  return system "makeglossaries", "-d", $path, $base_name; 
+  my $file = $_[0];
+  my $options = "${makeGlossariesOptions}";
+  if ($silent) {
+    $options = "$options -q";
+  }
+  return system("${makeGlossariesCommand} $options $file"); 
 }
 
 
