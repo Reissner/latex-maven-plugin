@@ -1818,7 +1818,19 @@ This section describes the parameters
 or creation of the glossary
 which are given in Table~\ref{tab:paramMakeGlossaries}. 
 
-TODO\@: do this. 
+Besides the options for \tool{makeindex} and \tool{xindy} 
+described in Table~\ref{tab:paramMakeGlossaries}, 
+\tool{makeglossaries} has additional options from which the following are not allowed: 
+%
+\begin{description}
+  \item[-q] which makes no sense in internal build process. 
+  When using \tool{latexmk}, that tool adds this option by internal mechanisms 
+  so it shall not be added manually either. 
+  \item[-n] prevents from execution of proper commands. 
+  \item[-o, -d] which expects and places files in locations this software does not expect. 
+\end{description}
+
+TODO\@: complete
 
 
 
@@ -1845,9 +1857,10 @@ into account logging on a glg-file.
 \multicolumn2{|l|}{
 \begin{minipage}{0.95\linewidth}
 The options for the \texttt{\$makeGlossariesCommand}. 
-These are the options for `\texttt{makeindex}' (not for \texttt{\$makeIndexCommand}) 
-and for `\texttt{xindy}' (also hardcoded). 
-The aux-file decides on whether program is executed 
+They are described in Section~\ref{sec:settingsMakeGlossaries}. 
+Among the options are the options for `\texttt{makeindex}' (not for \texttt{\$makeIndexCommand}) 
+and for `\texttt{xindy}' (also hard-coded). 
+The aux-file decides on which program is executed 
 and consequently which options are used. 
 		 
 The default value is the empty option string. 
