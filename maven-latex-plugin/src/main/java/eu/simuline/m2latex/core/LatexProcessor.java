@@ -1638,7 +1638,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
     throws BuildFailureException {
 
     // determine the explicit given identifiers of indices
-    final Collection<String> explIdxIdent =
+    final Set<String> explIdxIdent =
         this.fileUtils.collectMatches(desc.idxFile,
                                       this.settings.getPatternMultiIndex(),
                                       GRP_IDX_IDENT);

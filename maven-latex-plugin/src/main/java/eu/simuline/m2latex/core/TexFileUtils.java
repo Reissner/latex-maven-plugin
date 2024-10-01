@@ -757,13 +757,45 @@ class TexFileUtils {
   }
 
   /**
+   * Pattern for any line in an IDX file, 
+   * whether with explicit identifier of index 
+   * created with <code>\sindex</code> provided by package splitidx 
+   * or for generic index created with buitin <code>\index</code>. 
+   */
+  private static final Pattern PATTERN_IDX_LINE =
+      Pattern.compile("^(\\\\indexentry)(\\[([^]]*)\\])?(.*)$");
+
+  /**
+   * The default label of an index as assigned by package splitidx. 
+   * This is <code>idx</code>. 
+   * It is used for entries defined without explicit label, 
+   * either by <code>\index</code> or by <code>\sindex</code> 
+   * without optional parameter which is the label. 
+   */
+  private static final String DEFAULT_IDX_LABEL = "idx";
+
+  /**
    * Returns the set of strings representing the <code>idxGroup</code> 
    * of the pattern <code>regex</code> matching a line 
-   * in file <code>file</code> or returns <code>null</code> 
+   * in file <code>file</code> with possibly added {@link #DEFAULT_IDX_LABEL} 
+   * or returns <code>null</code> 
    * in case of problems reading <code>file</code>. 
+   * The default label is added only, 
+   * if there are further labels from matching a line with <code>regex</code> 
+   * and there is at least one line not matching that expression. 
+   * <p>
+   * This rule is not complicated if all lines match <code>regex</code>. 
+   * Then the list of labels is returned. 
+   * If part of the lines match the rule, then the lines not matching the rule 
+   * must be treated like matching with label {@link #DEFAULT_IDX_LABEL}. 
+   * So, in this case, the default label must be added. 
+   * If there are other lines matching <code>regex</code> with default label, 
+   * this has no effect. 
+   * The fine point is, that, if no line matches <code>regex</code> 
+   * the default label shall not be added: this is the case where the index is not split. 
    * <p>
    * This is used only to collect the identifiers 
-   * of explicitly given indices in an idx-file. 
+   * of explicitly given indices in an idx-file and added implicitly given indices. 
    * 
    * <p>
    * Logging:
@@ -778,15 +810,21 @@ class TexFileUtils {
    *    the number of a group of the pattern {@link Settings#getPatternMultiIndex()} 
    *    tied to the name of the index if given explicitly. 
    * @return
-   *    the set of strings representing the <code>idxGroup</code> 
-   *    of the pattern <code>regex</code> matching a line 
-   *    in file <code>file</code> or returns <code>null</code> 
+   *    <ul>
+   *    <li> <code>null</code> 
    *    in case of problems reading <code>file</code>. 
+   *    <li> an empty list 
+   *    if neither line in <code>file</code> matches <code>regex</code> 
+   *    <li> the set of labels of lines matching <code>regex</code> 
+   *    if all lines are matching 
+   *    <li> the set of labels of lines matching <code>regex</code> with {@link #DEFAULT_IDX_LABEL} 
+   *    if there are besides matching lines also non-matching lines. 
+   *    </ul>
    */
   // used in LatexProcessor.runMakeIndexByNeed only 
   // **** a lot of copying from method matchInFile 
-  Collection<String> collectMatches(File file, String regex, int idxGroupIdx) {
-    Collection<String> res = new TreeSet<String>();
+  Set<String> collectMatches(File file, String regex, int idxGroupIdx) {
+    Set<String> res = new TreeSet<String>();
     Pattern pattern = Pattern.compile(regex);
 
     // may throw FileNotFoundException < IOExcption 
@@ -795,6 +833,7 @@ class TexFileUtils {
       BufferedReader bufferedReader = new BufferedReader(fileReader);
 
       Matcher matcher;
+      boolean foundDefaultEntry = false;
 
       // readLine may throw IOException 
       for (String line = bufferedReader.readLine();
@@ -802,12 +841,21 @@ class TexFileUtils {
           // readLine may throw IOException
           line = bufferedReader.readLine()) {
 
+        assert PATTERN_IDX_LINE.matcher(line).find() 
+          : "Found unexpected line '" + line + "' in IDX file. ";
         matcher = pattern.matcher(line);
         if (matcher.find()) {
           // Here, a match has been found 
           res.add(matcher.group(idxGroupIdx));
+        } else {
+          foundDefaultEntry = true;
         }
       } // for 
+
+      if (foundDefaultEntry && !res.isEmpty()) {
+        // if there is a default label and non-default ones, one has to add 
+        res.add(DEFAULT_IDX_LABEL);
+      }
 
       return res;
     } catch (IOException ioe) {
