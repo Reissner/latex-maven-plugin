@@ -412,11 +412,11 @@ sub run_makeSplitindex($fileName, @opts) {
 # This set of dependencies is only complete 
 # if we restrict ourselves to types defined by options 
 # without using \newglossary explicitly 
-add_cus_dep( 'acn', 'acr', 0, 'makeglossaries' );
-add_cus_dep( 'slo', 'sls', 0, 'makeglossaries' );
-add_cus_dep( 'nlo', 'nls', 0, 'makeglossaries' );
-#add_cus_dep( 'idx', 'ind', 0, 'makeglossaries' ); # would collide with indexing 
-add_cus_dep( 'glo', 'gls', 0, 'makeglossaries' );
+add_cus_dep( 'acn', 'acr', 0, 'run_makeglossaries' );
+add_cus_dep( 'slo', 'sls', 0, 'run_makeglossaries' );
+add_cus_dep( 'nlo', 'nls', 0, 'run_makeglossaries' );
+#add_cus_dep( 'idx', 'ind', 0, 'run_makeglossaries' ); # would collide with indexing 
+add_cus_dep( 'glo', 'gls', 0, 'run_makeglossaries' );
 # TBD: add file endings for symbols, 
 # not only here but also in the java code. 
 push @generated_exts, 'glo', 'gls', 'glg';
@@ -429,26 +429,11 @@ push @generated_exts, "ist", "xdy"; # index stylefile created by the glossaries 
 
 #$clean_ext .= " acr acn alg glo gls glg";# TBD: clarify: better in @generated_exts? 
 
-sub makeglossaries {
+sub run_makeglossaries {
   my ($base_name, $path) = fileparse( $_[0] );
   my @args = ( "-q", "-d", $path, $base_name );
   if ($silent) { unshift @args, "-q"; }
   return system "makeglossaries", "-d", $path, $base_name; 
-}
-
-sub run_makeglossaries {
-  my ($base_name, $path) = fileparse( $_[0] ); #handle -outdir param by splitting path and file, ...
-  pushd $path; # ... cd-ing into folder first, then running makeglossaries ...
-
-  if ( $silent ) {
-    # system "makeglossaries -q '$base_name'"; #unix
-    system "makeglossaries", "-q", "$base_name"; #windows
-  } else {
-    # system "makeglossaries '$base_name'"; #unix
-    system "makeglossaries", "$base_name"; #windows
-  };
-
-  popd(); # ... and cd-ing back again
 }
 
 
