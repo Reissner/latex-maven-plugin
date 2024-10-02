@@ -688,6 +688,26 @@ enum Converter {
     }
 
   },
+  Xindex {
+    String getCommand() {
+      return "xindex";
+    }
+
+    String getVersionPattern() {
+      return VX_X;
+    }
+
+    String getVersionEnvironment() {
+      return "^" + getCommand()
+          + " version %s\\R";
+    }
+
+    ConverterCategory getCategory() {
+      return ConverterCategory.Unspecific;
+    }
+
+  },
+
   Splitindex {
     String getCommand() {
       return "splitindex";
@@ -740,6 +760,24 @@ enum Converter {
 
     ConverterCategory getCategory() {
       return ConverterCategory.MakeGlossaries;
+    }
+  },
+  Bib2Gls {
+    String getCommand() {
+      return "bib2gls";
+    }
+
+    String getVersionPattern() {
+      return VX_X;
+    }
+
+    String getVersionEnvironment() {
+      return "^" + Bib2Gls.getCommand() + " %s "
+          + "\\([0-9]{4}-[0-9]{2}-[0-9]{2}\\)\\R";
+    }
+
+    ConverterCategory getCategory() {
+      return ConverterCategory.Unspecific;
     }
   },
   // TBD: add a category 
