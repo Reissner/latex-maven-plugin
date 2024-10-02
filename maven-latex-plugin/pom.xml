@@ -1083,7 +1083,7 @@
         <version>2.1-SNAPSHOT</version><!-- 2.0 2.1-SNAPSHOT -->
         <configuration>
           <settings>
-            <convertersExcluded>upmendex, xindy</convertersExcluded>
+            <convertersExcluded>xindy</convertersExcluded><!-- because abandoned-->
             <!--texSrcDirectory>src/site/tex/testMagicComments</texSrcDirectory-->
             <!--latex2pdfCommand>xelatex</latex2pdfCommand-->
             <!--pdfViaDvi>true</pdfViaDvi-->
