@@ -377,13 +377,28 @@ Caution: If the \gls{idx} file is not open,
 without any warning. 
 
 To create an index, 
-a \texttt{makeIndexCommand} must be run after the \LaTeX{} run. 
+a \texttt{makeIndexCommand} described in Table~\ref{tab:paramMakeIndex} on page~\pageref{tab:paramMakeIndex} 
+must be run after the \LaTeX{} run. 
 The default command and the only one currently supported by this software, 
 is the traditional \tool{makeindex}. 
-Similar but based on unicode are \tool{upmendex} and \tool{xindex}. 
+Similar but based on Unicode are \tool{upmendex} and \tool{xindex}. 
 Whereas in the context of glossaries \tool{xindy} is still used, 
 for pure index creation for which \tool{xindy} has been designed originally, 
 it seems widely abandoned. 
+The manual is \cite{XindyMan}. 
+
+At time of this writing, quality of output and above all quality of logging of errors and warnings 
+given by \tool{makeindex} as described in \cite{MkIdxMoe}, Section 5 
+is not yet fully reached by \tool{upmendex} which is described in \cite{UpMendex109}. 
+Even worse, \tool{xindex} described in \cite{Xindex061}
+shows poor quality and seemingly does not log errors and messages at all. 
+Thus still \tool{makeindex} is preferred usage, as described in Section~\ref{chap:tests}, 
+but it is easy to adapt \texttt{patternErrMakeIndex} and \texttt{patternErrMakeIndex} 
+also described in Table~\ref{tab:paramMakeIndex} to \tool{upmendex} 
+or even so these parameters apply to both \tool{makeindex} and \tool{upmendex}. 
+% TBD: this is planned for release 2.4 
+% details are in src/changes/Indices 
+
 
 Note that entries in the \gls{idx} file can occur more than once, 
 even with the same page number. 
