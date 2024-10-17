@@ -401,7 +401,7 @@ but not to \texttt{html}.
 For \texttt{targets=chk,html} it even takes no effect at all 
 without issuing a warning. 
 As explained above, \texttt{program} affects 
-only the targets \texttt{pdf} and \texttt{dvi} including also XDV files. 
+only the targets \texttt{pdf} and \texttt{dvi} including also \gls{xdv} files. 
 
 
 % Since the pattern \texttt{patternLatexMainFile} may never be appropriate for all situations 
@@ -641,7 +641,7 @@ but may also be configured to produce the old-fashioned \gls{doc} format.
 
 Be aware that the target \texttt{dvi} creates output in DVI format 
 only for \LaTeX{} engines \lualatex{} and \pdflatex{}, 
-whereas \xelatex{} creates the XDV (extended DVI) format for target \texttt{dvi}. 
+whereas \xelatex{} creates the \gls{xdv} (extended DVI) format for target \texttt{dvi}. 
 
 %\lstset{language=xml, basicstyle=\small}
 \begin{lstlisting}[language=xml, basicstyle=\small,
@@ -987,7 +987,7 @@ according to the function of the files injected:
   In general, header files are designed to run on all usual \LaTeX{} compilers, 
   with various document classes  
   and take creation of PDF into account but also of other formats like HTML 
-  and also of DVI/XDV which is an important intermediate format. 
+  and also of DVI/\gls{xdv} which is an important intermediate format. 
 
   The packages are loaded with minimum options, 
   but these can be modified outside the headers by \cmd{PassOptionsToPackage} 
@@ -1128,7 +1128,7 @@ Also, reproducibility check is supported including magic comments and all parame
 At time of this writing, \texttt{.latexmkrc} works for various \LaTeX{} generators 
 but supports target \texttt{pdf} only, 
 although in the long run also \texttt{chk} and \texttt{dvi} could be useful. 
-Still, creation of PDF files is supported in both variants, via DVI/XDV or directly. 
+Still, creation of PDF files is supported in both variants, via DVI/\gls{xdv} or directly. 
 Compilation via \tool{latexmk} is based on code in \texttt{.latexmkrc} 
 and this mimics a wide range of functionality offered by this tool. 
 Among these also build for reproducibility checks as described in Section~\ref{sec:chkReprod}
@@ -1327,7 +1327,7 @@ Note that \texttt{header.tex} is written for use of
   specifically \texttt{article}, \texttt{book}, \texttt{beamer} for presentations, 
   \texttt{leaflet} and the letter class \texttt{scrlttr2}. 
   \item for creating PDF files, but futher formats created with \pkg{tex4ht} as well
-  \item direct creation of PDF and via intermediate DVI/XDV 
+  \item direct creation of PDF and via intermediate DVI/\gls{xdv} 
 \end{itemize}
 
 Which packages are loaded at all and if loaded their options, 
@@ -1441,7 +1441,7 @@ injects the file \href{\urlSite fromMain/ntlatex}{ntlatex}
 which runs the \LaTeX{} compiler specified in the pom, or in the magic comments if present, 
 to create a PDF file. 
 As usual, magic comments override configuration in the pom. 
-Also, it takes into account whether the PDF file is created via intermediate DVI/XDV files or not, 
+Also, it takes into account whether the PDF file is created via intermediate DVI/\gls{xdv} files or not, 
 depending on the configuration. 
 
 This invocation takes also processing time and the timezone into account 

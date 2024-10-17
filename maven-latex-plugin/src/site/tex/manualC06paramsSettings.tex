@@ -250,7 +250,7 @@ One exception is \texttt{chk} which represents a check, i.e.\@ linting of the so
 
 While in general target \texttt{dvi} represents creation of output in DVI format, 
 if \texttt{\$latex2pdfCommand} is set to \xelatex, 
-the target \texttt{dvi} yields an output in extended DVI format, i.e.\@ in XDV\@. 
+the target \texttt{dvi} yields an output in extended DVI format, i.e.\@ in \gls{xdv}\@. 
 Also target \texttt{html} may represent creation of HTML files and of XHMTL files. 
 Analogously \texttt{docx} corresponds with DOCX format by default, 
 but can also be configured to mean DOC\@. 
@@ -342,7 +342,7 @@ The default value consists of two chunks:
   `\small{\texttt{beamer,leaflet,scrlttr2:chk,pdf,txt}}' beamer 
   allows mainly \texttt{pdf} and derived from that \texttt{txt}.  
   Checking with \texttt{chk} does not depend on the document class. 
-  Note that maybe leaflets or letters may work for DVI or XDV also, even for word formats and related, 
+  Note that maybe leaflets or letters may work for DVI or \gls{xdv} also, even for word formats and related, 
   we restrict ourselves to the given output for simplification. 
 \end{itemize}
 
@@ -1222,14 +1222,14 @@ Parameter        & Default  \\
 \begin{minipage}{0.95\linewidth}
 The \LaTeX{} command to create above all a PDF-file with, 
 i.e.\@ the \LaTeX{} engine. 
-Further formats are DVI and XDV and also other formats based on these. 
+Further formats are DVI and \gls{xdv} and also other formats based on these. 
 Expected values are \lualatex, \xelatex{} and \pdflatex. 
 CAUTION\@: This setting may be overwritten for individual \LaTeX{} main files 
 using magic comments as described in Section~\ref{subsubsec:openingMagComm}. 
 
 Note that for \xelatex{} dvi mode 
 (creating xdv-files instead of DVI-files) is not supported, 
-even not creating PDF or other formats via XDV\@. 
+even not creating PDF or other formats via \gls{xdv}\@. 
 See also the according options \texttt{\$latex2pdfOptions} and \texttt{\$pdfViaDvi}. 
 In particular, this maven plugin does not allow goal \texttt{dvi} and related 
 for \xelatex. 
@@ -1466,7 +1466,7 @@ Note that part of the default values is mandatory, in particular \texttt{nonstop
 but there are also options which are not allowed. 
 In most of the cases, the problem is that the latex engine does not create an output 
 or does not create it in the expected location or in the expected form. 
-This may apply to the main artifact, i.e.\@ PDF or DVI or XDV, 
+This may apply to the main artifact, i.e.\@ PDF or DVI or \gls{xdv}, 
 but it may also apply to log files and other files. 
 
 The following list of prohibited options is illustrative but not complete: 
@@ -1483,7 +1483,7 @@ The following list of prohibited options is illustrative but not complete:
   \item[-output-format=FORMAT] use FORMAT for job output; FORMAT is `dvi' or `pdf'
                    pdf is the only allowed \dots. 
                    This is not supported by \xelatex. 
-  \item[-no-pdf] generate XDV (extended DVI) output rather than PDF\@. 
+  \item[-no-pdf] generate \gls{xdv} (extended DVI) output rather than PDF\@. 
    This is specific for \xelatex. 
   \item[-progname=STRING] set program (and fmt) name to STRING
     only names also without -progname are possible 
@@ -1504,9 +1504,9 @@ because it prevents operation as intended for this software.
 Two options deserve particular notification, both specifying the output format: 
 %
 \begin{description}
-  \item[-no-pdf] which is specific to \xelatex, makes \xelatex{} create XDV files 
+  \item[-no-pdf] which is specific to \xelatex, makes \xelatex{} create \gls{xdv} files 
   which currently cannot be further processed by this software. 
-  As soon as this software supports XDV files, this option is set by this software, 
+  As soon as this software supports \gls{xdv} files, this option is set by this software, 
   not by the user. 
   \item[-output-format=FORMAT], which this software uses to set the output format, 
   either to \texttt{dvi} or to \texttt{pdf}. 
@@ -1514,7 +1514,7 @@ Two options deserve particular notification, both specifying the output format:
   For \xelatex, this software only supports \texttt{pdf}, 
   which \xelatex{} creates because \texttt{-no-pdf} is not given. 
   The option \texttt{-output-format=pdf} does no harm, because it is ignored. 
-  As soon as this software supports XDV creation, 
+  As soon as this software supports \gls{xdv} creation, 
   it will no longer pass \texttt{-output-format} to \xelatex. 
 \end{description}
 

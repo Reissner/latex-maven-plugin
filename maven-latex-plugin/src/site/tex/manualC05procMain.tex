@@ -318,7 +318,7 @@ should be a picture
 \import{}{F5_02aux2bbl.ptx}
 }
 \caption{\label{fig:aux2bbl}
-Conversion of an AUX file into a \gls{bbl} file using bibliographies}
+Conversion of an AUX file into a BBL file using bibliographies}% TBD: how to include \gls in captions? 
 \end{figure}
 
 Vital information on \tool{bibtex} is found in~\cite{BibPat} 
@@ -449,7 +449,7 @@ should be a picture
 }{
 \import{}{F5_03idx2ind.ptx}
 }
-\caption{\label{fig:idx2ind}Conversion of an \gls{idx} file into an \gls{ind} file}
+\caption{\label{fig:idx2ind}Conversion of an IDX file into an IND file}
 \end{figure}
 \medskip
 
@@ -511,7 +511,7 @@ and is thus not recommended and not supported by this software.
   \import{}{F5_04idx2indMult.ptx}
   }
   \caption{\label{fig:idx2indMult}
-  Not supported: Conversion of \gls{idx} files into ind files}
+  Not supported: Conversion of IDX files into IND files}
 \end{figure}
   
 
@@ -553,7 +553,7 @@ but it may be interested to generalize this to the version in the Lua language.
   }{
   \import{}{F5_05idx2indSplit.ptx}
   }
-  \caption{\label{fig:idx2indSplit}Conversion of an \gls{idx} file into ind files}
+  \caption{\label{fig:idx2indSplit}Conversion of an IDX file into IND files}
   \end{figure}
   \medskip
 
@@ -1052,10 +1052,10 @@ for which \LaTeX{} engines support communication out of the box.
 An example with more complicated communication 
 is \tool{makeglossaries} with associated package \pkg{makeglossaries} 
 which writes lines into the AUX file 
-and which typically writes the main glossary into a GLO file. 
+and which typically writes the main glossary into a \gls{glo} file. 
 The tool \tool{makeglossaries} which is invoked without ending, 
 reads the AUX file, determines which other files to read, 
-typically the GLO file also 
+typically the \gls{glo} file also 
 and writes the result into the GLS file. 
 This is read back by the package \pkg{makeglossaries} 
 in the next run of the \LaTeX{} engine. 
@@ -1391,7 +1391,7 @@ In addition, there is an environment variable forcing
 that the timestamp does not only affect metadata but also visual data of the PDF file 
 to be created, 
 as e.g.\@ typically the date at the front page. 
-Note that if the PDF file is created from TEX files via DVI/XDV files, 
+Note that if the PDF file is created from TEX files via DVI/\gls{xdv} files, 
 both engines need the appropriate environment. 
 
 After creating the new PDF file with this environment, 
@@ -1541,7 +1541,7 @@ Is content is immaterial.
 This section is on running the build process of \LaTeX{} main files 
 with \tool{latexmk} or equivalent. 
 Currently, that way only PDF files can be created. 
-% TBD: at least DVI/XDV is possible as well 
+% TBD: at least DVI/\gls{xdv} is possible as well 
 % and also chk are possible. 
 % what if magic comment specifies another target but a build using latexmk? 
 % This shall be a warning. 

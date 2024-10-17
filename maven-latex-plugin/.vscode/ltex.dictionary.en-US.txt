@@ -84,6 +84,4 @@ Postamble
 IllO
 SuSE
 KOMA
-GLO
-XDV
 eXtensible

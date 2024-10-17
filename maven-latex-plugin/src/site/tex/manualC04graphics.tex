@@ -84,7 +84,7 @@ which allows including graphics natively
 in the formats PDF, EPS, JPG and PNG at least. 
 For details see~\cite{GraX}. 
 Note that PDF and EPS are target formats for graphical preprocessing, 
-where PDF is embedded into PDF and EPS is embedded into DVI/XDV\@. 
+where PDF is embedded into PDF and EPS is embedded into DVI/\gls{xdv}\@. 
 As described in Section~\ref{sec:metapost}, 
 also \gls{mps}, the target format for metapost is included using \pkg{graphicx}. 
 \item[\pkg{transparent}]
@@ -250,7 +250,7 @@ recognizing the required format and generating the specific one if missing. }.
 That way, both, \pdflatex{} and \lualatex{} choose the EPS file or the PDF file 
 depending on whether the output format is \texttt{--output-format=dvi} 
 or \texttt{--output-format=pdf} which is the default. 
-Note that \xelatex, which always creates an intermediate XDV file 
+Note that \xelatex, which always creates an intermediate \gls{xdv} file 
 (which is a special kind of DVI file), 
 acts differently: If present, it prefers including the PDF file, 
 if absent, but there is an EPS file instead, it uses this without making any difference. 
@@ -1169,7 +1169,7 @@ containing an extended bounding box for \texttt{dvipdfmx}.
 The current implementation seems not to make any difference, 
 whether the bounding boxes are created or not. 
 
-Sizes seem to differ in DVI/XDV output after conversion to PDF, 
+Sizes seem to differ in DVI/\gls{xdv} output after conversion to PDF, 
 depending on whether \texttt{dvipdfm} or \texttt{dvipdfmx} is used. 
 Only the latter yields the same size as direct conversion to PDF creates. 
 
@@ -1216,9 +1216,9 @@ should be a picture
 \caption{\label{fig:asIsPng}Some PNG-picture, directly included }
 \end{figure}
 
-Note that in DVI/XDV mode all usual \LaTeX{} engines 
+Note that in DVI/\gls{xdv} mode all usual \LaTeX{} engines 
 can include BMP-pictures, whereas in PDF mode only \texttt{xelatex} 
-can do that, maybe because it creates XDV internally in any case. 
+can do that, maybe because it creates \gls{xdv} internally in any case. 
 In contrast, \texttt{lualatex} and \texttt{pdflatex} can not. 
 % The following works for lualatex but not for pdflatex 
 % And still the same picture, Figure~\ref{fig:asIsPng} shows the oboe 
