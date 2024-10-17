@@ -30,12 +30,16 @@ year    = {2024},
 note    = {Version 2.20, fits biblatex 3.20}
 }
 
-% bib on creating an index using makeindex 
+% bib on creating an index 
+
+% - using makeindex 
 @misc{MkIdxLam,
 author  = {Leslie Lamport},
 title   = {{M}ake{I}ndex : {A}n {I}ndex {P}rocessor {F}or {{\LaTeX}}},
 month   = {2},
-year    = {1987}
+year    = {1987}, 
+howpublished = {\url{https://ctan.org/pkg/makeindex?lang=en} Package documentation}},
+note    = {does not depend on the version}
 }
 
 
@@ -56,37 +60,48 @@ year    = {1998},
 howpublished   = {Katholische Universit{\"a}t Eichst{\"a}tt Universit{\"a}tsrechenzentrum},
 }
 
+% - using upmendex 
 
-@Manual{SplitidxP,
-title = 	 {Creating More Than One Index Using splitidx and SplitIndex},
-author = 	 {M. Kohm},
-address = 	 {\url{https://www.ctan.org/pkg/splitindex?lang=en}},
-edition = 	 {v1.2c},
-month = 	 {2},
-year = 	 {2016},
-note = 	 {komascript@gmx.info}
-}
 
-@Misc{UpMendex,
+Misc{UpMendex054,
 title = 	 {upmendex manual pages},
 author =       {Takuji Tanaka},
 howpublished = {\url{https://ctan.org/pkg/upmendex/} \url{https://github.com/t-tk/upmendex-package}},
 month = 	 {2},
 year = 	 {2020},
-note = 	 {Version 0.54, contact: ttk@t-lab.poal.ne.jp},
+note = 	 {Version 0.54, contact: ttk at t-lab.poal.ne.jp},
 annote = 	 {}
 }
 
-  % This is outdated 
-Misc{XindyMan,
-title        = {xindy manual pages},
-author       = {Joachim Schrod},
-howpublished = {\url{https://ctan.org/pkg/xindy}},
-month        = {5},
-year         = {2004},
-note         = {Version 1.2},
-annote       = {}
+@Misc{UpMendex109,
+title = 	 {upmendex manual pages},
+author =       {Takuji Tanaka},
+howpublished = {\url{https://ctan.org/pkg/upmendex/} \url{https://github.com/t-tk/upmendex-package}},
+month = 	 {7},
+year = 	 {2024},
+note = 	 {Version 1.09, contact: ttk(at)t-lab.poal.ne.jp}
 }
+
+
+
+@Misc{UpMendexSlide,
+title = 	 {Multilingual index processing by upmendex},
+author =       {Takuji Tanaka},
+howpublished = {\url{https://github.com/t-tk/upmendex-package/blob/master/doc/upmendex-slide-ctan.pdf}},
+month = 	 {3},
+year = 	 {2023}
+}
+
+@Misc{Xindex061,
+title = 	 {Program and package xindex},
+author =       {H. Voss},
+howpublished = {\url{https://ctan.org/pkg/xindex} \url{https://gitlab.com/hvoss49/xindex}},
+month = 	 {9},
+year = 	 {2024},
+note = 	 {Version 0.61, contact: hvoss@tug.org}
+}
+
+
 
 @Misc{XindyMan,
 title        = {xindy manual pages},
@@ -116,6 +131,27 @@ year         = {1997},
 note         = {Version 1.1},
 annote       = {}
 }
+
+@Manual{SplitidxP,
+title = 	 {{C}reating {M}ore {T}han {O}ne {I}ndex {U}sing splitidx and {S}plit{I}ndex},
+author = 	 {M. Kohm},
+address = 	 {\url{https://www.ctan.org/pkg/splitindex?lang=en}},
+edition = 	 {v1.2c},
+month = 	 {2},
+year = 	 {2016},
+note = 	 {komascript@gmx.info}
+}
+
+
+@Misc{IndexingPerfect,
+title        = {{I}ndexing {M}akes {Y}our {B}ook {P}erfect},
+author       = {Keiichiro Shikano},
+howpublished = {\url{https://www.slideshare.net/slideshow/imybp-light/27859358}},
+month        = {10},
+year         = {2013},
+note         = {K16.shikano@gmail.com}
+}
+
 
 @Manual{GloExB2Gintro,
 title = 	 {glossaries-extra and bib2gls: An Introductory Guide},
