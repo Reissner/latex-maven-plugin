@@ -1729,6 +1729,8 @@ The utilities MakeIndex and SplitIndex}
 The MakeIndex command to create an ind-file from an idx-file 
 logging on an ilg-file. 
 %The default value is '\texttt{makeindex}'. 
+% works also with upmendex with little adaption 
+% does not work neither for xindex nor for xindy
 \end{minipage}
 } \\
 \texttt{makeIndexOptions} & the empty string     \\
@@ -1736,6 +1738,7 @@ logging on an ilg-file.
 \begin{minipage}{0.95\linewidth}
 The options for the MakeIndex command. 
 % The default value is the empty string. 
+% upmendex has similar options but neither -t nor -o shall be used. 
 \end{minipage}
 } \\
 \texttt{patternErrMakeIndex} 
@@ -1746,8 +1749,16 @@ The pattern is applied line-wise to the ilg-file
 and matching indicates that \texttt{\$makeIndexCommand} failed. 
 The default value is chosen 
 according to the `\texttt{makeindex}' documentation.
+% \cite{MkIdxMoe}, Chapter 5.1 
+% To adapt to upmendex : 'Error: ' 
+% together '^(!! Input index error|Error:)\ '
+% Also possible: upmendex code: [1-9][0-9]* errors 
+% Together: ([0-9]+ entries accepted, [1-9][0-9]* rejected)
+% even [0-9]+ errors becuse comes only if not zero errors 
+
 \end{minipage}
 } \\
+% TBD: must it be `\ ' instead of mere blank?
 \texttt{patternWarnMakeIndex} & \texttt{(\#\# Warning )} \\% chktex 37
 \multicolumn2{|l|}{
 \begin{minipage}{0.95\linewidth}
@@ -1755,6 +1766,11 @@ The pattern is applied line-wise to the ilg-file
 and matching indicates a warning \texttt{\$makeIndexCommand} emitted. 
 The default value is chosen 
 according to the `\texttt{makeindex}' documentation.
+% \cite{MkIdxMoe}, Chapter 5.2, 
+% to adapt to upmendex: 'Warning: ' should be even '^Warning: '
+% Together '(\#\# Warning|Warning:)\ '
+% upmendex code: ^[1-9][0-9]* warning(s)?, written in .+
+% Together: '[1-9][0-9]* warning(s)?'
 \end{minipage}
 } \\
 \texttt{patternReRunMakeIndex} & \\
