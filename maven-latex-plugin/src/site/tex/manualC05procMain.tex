@@ -371,8 +371,8 @@ For example \cmd[\{ant-task\}]{index} occurring on page 3 creates an entry
 \indexentry{ant-task}{3}
 \end{lstlisting}
 %
-in the IDX file. 
-Caution: If the IDX file is not open, 
+in the \gls{idx} file. 
+Caution: If the \gls{idx} file is not open, 
 \cmd{index} has no significant impact and in particular no index is created, 
 without any warning. 
 
@@ -385,11 +385,11 @@ Whereas in the context of glossaries \tool{xindy} is still used,
 for pure index creation for which \tool{xindy} has been designed originally, 
 it seems widely abandoned. 
 
-Note that entries in the IDX file can occur more than once, 
+Note that entries in the \gls{idx} file can occur more than once, 
 even with the same page number. 
 % possible to create \indexentry with section() number)s instead of page numbers? 
 The task of \tool{makeindex} and related is, 
-to sort the index entries given in the IDX file 
+to sort the index entries given in the \gls{idx} file 
 and within each entry to sort the page numbers 
 unifying same page numbers and simplifying by using ranges 
 and writing the result to an \gls{ind} file, 
@@ -398,7 +398,7 @@ listing \cmd{item}s and \cmd{subitem}s.
 
 
 The behavior of the various \texttt{makeIndexCommand}-tools varies 
-if the IDX file is empty: \tool{upmendex} does not create an \gls{ind} file at all, 
+if the \gls{idx} file is empty: \tool{upmendex} does not create an \gls{ind} file at all, 
 \tool{makeindex} creates and empty one and only \tool{xindex} 
 creates an \gls{ind} file with an empty \env{theindex} environment. 
 
@@ -518,12 +518,12 @@ and is thus not recommended and not supported by this software.
 Instead, \pkg{splitidx} is supported without option \texttt{split}. 
 Then \texttt{latex2pdf} creates a single \gls{idx} file 
 but \cmd[{[y]}\{\dots\}]{sindex} 
-creates lines \cmd[{[y]}\{\dots\}]{indexentry} in the IDX file 
+creates lines \cmd[{[y]}\{\dots\}]{indexentry} in the \gls{idx} file 
 which allow to identify the index \texttt{y}. 
 For example \cmd[{[Packages]}\{pkg\}]{newindex} defines a new index of \LaTeX{} packages 
 and \cmd[{[pkg]}\{splitidx\}]{sindex} on page 3 indicates 
 that index there shall be an entry \texttt{splitidx} referring to page 3. 
-The according entry in the IDX file is as follows: 
+The according entry in the \gls{idx} file is as follows: 
 %
 \begin{lstlisting}[language=TeX]
   \indexentry[pkg]{splitidx}{3}
@@ -536,7 +536,7 @@ The program \tool{splitindex} splits up the single file \texttt{xxx.idx}
 into several \gls{idx} files \texttt{xxx-y.idx}. 
 Besides the lines \cmd[{[idx]}\{\dots\}]{indexentry} 
 also the lines \cmd[\{\dots\}]{indexentry} go into \texttt{xxx-idx.idx}. 
-Then \tool{splitindex} applies \tool{makeindex} to each of these IDX files separately 
+Then \tool{splitindex} applies \tool{makeindex} to each of these \gls{idx} files separately 
 creating files \texttt{xxx-y.ind} and according \gls{ilg} files, 
 as illustrated in Figure~\ref{fig:idx2indSplit}. 
 
@@ -564,7 +564,7 @@ The package \pkg{splitidx} is intended to be used
 in conjunction with the program \tool{splitindex}, 
 but it can also create a single index and if so, it is better to use it in conjunction with 
 \tool{makeindex} or that like. 
-This software can decide on the IDX file whether there is a line specifying an index like so, 
+This software can decide on the \gls{idx} file whether there is a line specifying an index like so, 
 %
 \begin{lstlisting}[language=TeX]
   \indexentry[pkg]{splitidx}{3}
