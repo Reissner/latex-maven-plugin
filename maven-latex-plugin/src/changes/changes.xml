@@ -1454,6 +1454,36 @@ We shall wait with rework until package glossaries-extra and tool bib2gls is int
           Note that in LatexProcessor.run... everything is prepared, 
           whereas in .latexmkrc it is not yet done. -->
 
+          <!-- This is some research on replacing makeindex by other index processors. 
+           xindy seems mostly abandoned, 
+           so remain only upmendex and xindex. 
+           Both allow processing of unicode and thus internationalization. 
+           See folder Index for details. 
+            Summarizing, xindex is far from replacing makeindex, it is programmed sloppily, 
+            does not indicate errors and warnings and yields results much different from makeindex. 
+            upmendex is much closer to makeindex. 
+            In particular has a reasonable subset of analogous options, 
+            but shows weaknesses in detection of errors and warnings. 
+            In particular, if `makeindex` shows warnings, the according IND file is weird. 
+            Also ordering is partially different ('\index' in front of 'index' vs converse order). 
+            In addition, formatting the ILG file (problems with newline and doubling information) 
+            has some deficiencies. 
+            Thus `upmendex` does not seem mature enough to replace `makeindex` as preferred usage. 
+            On the other hand, one can modify the default values of patters indicating errors/warnings 
+            to apply to both makeindex and upmendex. 
+            This could be done in a later version (planned for 2.4). 
+           -->
+
+           <!-- all index processors, makeindex, xindex and upmendex 
+            seem to support multiple index files. 
+            Maybe invoking once for all index files in particular in the context of splitindex is a good idea. 
+            It may save time. 
+            But this is a matter of splitindex. 
+            So we can only notify the authors of splitindex of this feature. 
+            Note that upmendex does not signify the file where errors/warnings occur. 
+            Also not clear what happens if one file shows an error... what about processing of the others? 
+-->
+
     <release version="2.1" date="2023-08-28" 
       description="build with latexmk and generalized reproducibility, readed glossary">
       <action dev='reissner' type='fix'>
