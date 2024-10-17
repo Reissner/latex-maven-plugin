@@ -1,0 +1,7 @@
+This is upmendex version 1.08 [ICU 75.1] (TeX Live 2024).
+Scanning input file tort.idx.
+Error: Extra `@' in tort.idx, line 3.
+Error: Extra `!' in tort.idx, line 4....done (32 entries accepted, 2 rejected).
+32 entries accepted, 2 rejected.
+2 errors, written in tort-u.ilg.
+Nothing written in output file.

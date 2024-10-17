@@ -1,0 +1,10 @@
+This is upmendex version 1.08 [ICU 75.1] (TeX Live 2024).
+Scanning input file tortW.idx....done (32 entries accepted, 0 rejected).
+32 entries accepted, 0 rejected.
+Sorting index....done(63 comparisons).
+Sorting pages....done(42 comparisons).
+Making index file.Warning: Unmatched range closing operator ')',missing(.
+Warning: Unmatched range opening operator '(',missing).
+...done.
+2 warnings, written in tortW-u.ilg.
+Output written in tortW-u.ind.

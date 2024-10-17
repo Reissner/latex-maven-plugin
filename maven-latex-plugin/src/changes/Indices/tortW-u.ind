@@ -1,0 +1,34 @@
+\begin{theindex}
+
+  \item 
+    \subitem illegal-null-field, 10
+  \item illegal-null-field, 9
+
+  \indexspace
+
+  \item bad-encaps, \ii{5--7}
+
+  \indexspace
+
+  \item implicit-range, 10--12
+  \item incons-encaps, \ii{6}, 5--7
+  \item incons-encaps2, \ii{5}, 5
+  \item incons-entries, \xx{6}, 6
+
+  \indexspace
+
+  \item missing(, 6
+  \item missing), 6
+  \item mixed-range, i--6
+  \item mixed-range1, i--6
+  \item mixed-range2, \xx{ii}, \yy{3}, i--6
+
+  \indexspace
+
+  \item ok-encaps, \ii{5--7}
+
+  \indexspace
+
+  \item too-may-bars, \x|{10}
+
+\end{theindex}

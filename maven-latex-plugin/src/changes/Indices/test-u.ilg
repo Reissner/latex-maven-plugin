@@ -1,0 +1,8 @@
+This is upmendex version 1.08 [ICU 75.1] (TeX Live 2024).
+Scanning input file test.idx....done (125 entries accepted, 0 rejected).
+125 entries accepted, 0 rejected.
+Sorting index....done(699 comparisons).
+Sorting pages....done(55 comparisons).
+Making index file....done.
+0 warnings, written in test-u.ilg.
+Output written in test-u.ind.
