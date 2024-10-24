@@ -161,7 +161,7 @@ enum Converter {
      * see {@link #getVersionPattern()}. 
      */
     String getVersionEnvironment() {
-      return "^pdfTeX 3\\.[0-9]*-[0-9]+\\.[0-9]+-%s \\(TeX Live [0-9]{4}(?:/.+)?\\)";
+      return "^pdfTeX 3\\.\\d*-\\d+\\.\\d+-%s \\(TeX Live \\d{4}(?:/.+)?\\)";
     }
 
     ConverterCategory getCategory() {
@@ -181,7 +181,7 @@ enum Converter {
 
     // The last symbol is either `)` indicating tol
     String getVersionEnvironment() {
-      return "^This is LuaHBTeX, Version %s \\(TeX Live [0-9]{4}(?:/.+)?\\)";
+      return "^This is LuaHBTeX, Version %s \\(TeX Live \\d{4}(?:/.+)?\\)";
     }
 
     ConverterCategory getCategory() {
@@ -211,7 +211,7 @@ enum Converter {
      * @see #getVersionEnvironment()
      */
     String getVersionPattern() {
-      return "((0\\.[0-9]*))";
+      return "((0\\.\\d*))";
     }
 
     /**
@@ -219,7 +219,7 @@ enum Converter {
      * see {@link #getVersionPattern()}. 
      */
     String getVersionEnvironment() {
-      return "^XeTeX 3\\.[0-9]*-[0-9]+\\.[0-9]+-%s \\(TeX Live [0-9]{4}(?:/.+)?\\)";
+      return "^XeTeX 3\\.\\d*-\\d+\\.\\d+-%s \\(TeX Live \\d{4}(?:/.+)?\\)";
     }
 
     ConverterCategory getCategory() {
@@ -240,12 +240,12 @@ enum Converter {
     }
 
     String getVersionPattern() {
-      return "(([0-9]+)\\.([0-9]+)\\.([0-9]+) r([0-9]+))";
+      return "((\\d+)\\.(\\d+)\\.(\\d+) r(\\d+))";
     }
 
     String getVersionEnvironment() {
       return "^" + getCommand()
-          + " %s \\(released [A-Z][a-z]{2} [0-9]+, [0-9]{4}\\)\\R";
+          + " %s \\(released [A-Z][a-z]{2} \\d+, \\d{4}\\)\\R";
     }
 
     ConverterCategory getCategory() {
@@ -303,13 +303,13 @@ enum Converter {
     }
 
     String getVersionPattern() {
-      return "(([0-9\\.]{4})\\.([0-9]))";
+      return "(([0-9\\.]{4})\\.(\\d))";
     }
 
     String getVersionEnvironment() {
       return "^This is " + getCommand() + "\\(k\\) %s "
-          + "(?:\\(TeX Live [0-9]+\\)  )?"
-          + "Copyright [0-9]+ Radical Eye Software \\(www\\.radicaleye\\.com\\)\\R";
+          + "(?:\\(TeX Live \\d+\\)  )?"
+          + "Copyright \\d+ Radical Eye Software \\(www\\.radicaleye\\.com\\)\\R";
     }
 
     ConverterCategory getCategory() {
@@ -415,7 +415,7 @@ enum Converter {
     }
 
     String getVersionPattern() {
-      return "(([0-9]{4})([0-9]{2})([0-9]{2})\\.([0-9]{4}))";
+      return "((\\d{4})(\\d{2})(\\d{2})\\.(\\d{4}))";
     }
 
     String getVersionEnvironment() {
@@ -444,7 +444,7 @@ enum Converter {
     }
 
     String getVersionEnvironment() {
-      //return "^GPL Ghostscript %s \\([0-9]{4}-[0-9]{2}-[0-9]{2}\\)\\R";
+      //return "^GPL Ghostscript %s \\(\\d{4}-\\d{2}-\\d{2}\\)\\R";
       return "^%s";
     }
 
@@ -463,7 +463,7 @@ enum Converter {
 
     String getVersionEnvironment() {
       return "^" + ChkTeX + " v%s - "
-          + "Copyright [0-9]{4}-[0-9]{2} Jens T. Berger Thielemann.\\R";
+          + "Copyright \\d{4}-\\d{2} Jens T. Berger Thielemann.\\R";
     }
 
     ConverterCategory getCategory() {
@@ -590,11 +590,11 @@ enum Converter {
     }
 
     String getVersionPattern() {
-      return "((0\\.[0-9]*)([a-z]))";
+      return "((0\\.\\d*)([a-z]))";
     }
 
     String getVersionEnvironment() {
-      return "^" + BibTeX + " %s \\(TeX Live [0-9]{4}(?:/.+)?\\)";
+      return "^" + BibTeX + " %s \\(TeX Live \\d{4}(?:/.+)?\\)";
     }
 
     ConverterCategory getCategory() {
@@ -623,9 +623,9 @@ enum Converter {
 
     String getVersionEnvironment() {
       return "^This is " + BibTeXu + ": a UTF-8 Big " + BibTeX
-          + " version .* \\(TeX Live [0-9]{4}\\)\\R"
+          + " version .* \\(TeX Live \\d{4}\\)\\R"
           + "Implementation: .*\\R"
-          + "Release version: %s \\([0-9]{2} [a-z]{3} [0-9]{4}\\)\\R";
+          + "Release version: %s \\(\\d{2} [a-z]{3} \\d{4}\\)\\R";
     }
 
     ConverterCategory getCategory() {
@@ -655,9 +655,9 @@ enum Converter {
 
     String getVersionEnvironment() {
       return "^This is 8-bit Big " + BibTeX
-          + " version .* \\(TeX Live [0-9]{4}\\)\\R"
+          + " version .* \\(TeX Live \\d{4}\\)\\R"
           + "Implementation: .*\\R"
-          + "Release version: %s \\([0-9]{2} [a-z]{3} [0-9]{4}\\)\\R";
+          + "Release version: %s \\(\\d{2} [a-z]{3} \\d{4}\\)\\R";
     }
 
     ConverterCategory getCategory() {
@@ -679,7 +679,7 @@ enum Converter {
 
     String getVersionEnvironment() {
       return "^This is " + getCommand() + ", version %s "
-          + "\\[TeX Live [0-9]{4}\\] \\(kpathsea \\+ Thai support\\).\\R";
+          + "\\[TeX Live \\d{4}\\] \\(kpathsea \\+ Thai support\\).\\R";
     }
 
     ConverterCategory getCategory() {
@@ -703,7 +703,7 @@ enum Converter {
 
     String getVersionEnvironment() {
       return "^" + getCommand()
-          + " - index processor, version %s \\(TeX Live [0-9]{4}\\).\\R";
+          + " - index processor, version %s \\(TeX Live \\d{4}\\).\\R";
     }
 
     ConverterCategory getCategory() {
@@ -778,7 +778,7 @@ enum Converter {
 
     String getVersionEnvironment() {
       return "^" + Makeglossaries + " Version %s "
-          + "\\([0-9]{4}-[0-9]{2}-[0-9]{2}\\)\\R";
+          + "\\(\\d{4}-\\d{2}-\\d{2}\\)\\R";
     }
 
     ConverterCategory getCategory() {
@@ -796,7 +796,7 @@ enum Converter {
 
     String getVersionEnvironment() {
       return "^" + Bib2Gls.getCommand() + " %s "
-          + "\\([0-9]{4}-[0-9]{2}-[0-9]{2}\\)\\R";
+          + "\\(\\d{4}-\\d{2}-\\d{2}\\)\\R";
     }
 
     ConverterCategory getCategory() {
@@ -847,12 +847,12 @@ enum Converter {
     }
 
     String getVersionPattern() {
-      return "(([0-9]+)\\.([0-9]+)([a-z]?))";
+      return "((\\d+)\\.(\\d+)([a-z]?))";
     }
 
     String getVersionEnvironment() {
       return "^(?:.*\\R)*" + Latexmk
-          + ", John Collins, .*[0-9]+ [A-Z][a-z]+\\.? [0-9]+. Version %s\\R";
+          + ", John Collins, .*\\d+ [A-Z][a-z]+\\.? \\d+. Version %s\\R";
     }
 
     ConverterCategory getCategory() {
@@ -869,7 +869,7 @@ enum Converter {
     }
 
     String getVersionEnvironment() {
-      return "^" + MetaPost + " %s \\(TeX Live [0-9]{4}(?:/.+)?\\)";
+      return "^" + MetaPost + " %s \\(TeX Live \\d{4}(?:/.+)?\\)";
     }
 
     ConverterCategory getCategory() {
@@ -900,7 +900,7 @@ enum Converter {
     }
 
     String getVersionPattern() {
-      return "(([0-9]+)\\.([0-9]+) patchlevel ([0-9]+))";
+      return "((\\d+)\\.(\\d+) patchlevel (\\d+))";
     }
 
     String getVersionEnvironment() {
@@ -923,7 +923,7 @@ enum Converter {
     // TBD: sometimes the pango line '    Pango version: 1.46.2' comes first. 
     String getVersionEnvironment() {
       return "^(?:.*\\R)?" // eliminates pango version popping up sparsely
-          + Inkscape + " %s \\([0-9a-f]+, [0-9]{4}-[0-9]{2}-[0-9]{2}\\)\\R";
+          + Inkscape + " %s \\([0-9a-f]+, \\d{4}-\\d{2}-\\d{2}\\)\\R";
     }
 
     ConverterCategory getCategory() {
@@ -945,7 +945,7 @@ enum Converter {
     }
 
     String getVersionPattern() {
-      return "(([0-9]+)\\.([0-9]+)\\.([0-9]+)([a-z])?)";
+      return "((\\d+)\\.(\\d+)\\.(\\d+)([a-z])?)";
     }
 
     String getVersionEnvironment() {
@@ -961,29 +961,29 @@ enum Converter {
   /**
    * Version pattern with major, minor and bugfix version. 
    */
-  private final static String X_X_X = "(([0-9]+)\\.([0-9]+)\\.([0-9]+))";
+  private final static String X_X_X = "((\\d+)\\.(\\d+)\\.(\\d+))";
 
   /**
    * Version pattern with major, minor and optional bugfix version. 
    */
-  private final static String VX_X__X = "(([0-9]+)\\.([0-9]+)(?:\\.([0-9]+))?)";
+  private final static String VX_X__X = "((\\d+)\\.(\\d+)(?:\\.(\\d+))?)";
 
-  private final static String V_JAVA = "(([0-9]+)(?:\\.([0-9]+))?(?:\\.([0-9]+))?(?:\\\\.([0-9]+))?)";
+  private final static String V_JAVA = "((\\d+)(?:\\.(\\d+))?(?:\\.(\\d+))?(?:\\\\.(\\d+))?)";
 
   /**
    * Version pattern with major, version and minor version. 
    */
-  private final static String VX_X = "(([0-9]+)\\.([0-9]+))";
+  private final static String VX_X = "((\\d+)\\.(\\d+))";
 
   /**
    * Version pattern with major version only. 
    */
-  private final static String VX = "(([0-9]+))";
+  private final static String VX = "((\\d+))";
 
   /**
    * Version signifying a date in standard ISO8601 but without hyphens. 
    */
-  private final static String VYYYYMMDD = "(([0-9]{4})([0-9]{2})([0-9]{2}))";
+  private final static String VYYYYMMDD = "((\\d{4})(\\d{2})(\\d{2}))";
 
   // TBC: needed? 
   private final static Map<String, Converter> cmd2conv;
