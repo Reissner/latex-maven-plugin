@@ -105,6 +105,29 @@ enum Converter {
       return ConverterCategory.Unparametrized;
     }
   },
+  Lua {
+    String getCommand() {
+      return "lua";
+    }
+
+    String getVersionOption() {
+      return "-v";
+    }
+
+    String getVersionPattern() {
+      return X_X_X;
+    }
+    // TBD: research: maybe better use javac because there the version environment is just javac %s 
+    // for java there is more information available 
+    // and also --help is better suited 
+    // and last but not least at runtime java is relevant not javac, so this would be a hack. 
+    String getVersionEnvironment() {
+      return "^Lua %s  Copyright \\(C\\) \\d{4}-\\d{4} Lua\\.org, PUC-Rio";
+    }
+    ConverterCategory getCategory() {
+      return ConverterCategory.Unparametrized;
+    }
+  },
   PdfLatex {
     String getCommand() {
       return "pdflatex";
