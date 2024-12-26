@@ -2624,20 +2624,20 @@ ranging from byte equivalence to some kind of visual equivalence.
     to check that the created pdf files are equivalent with prescribed ones. 
     CAUTION\@: There are two philsophies: 
     Either the latex source files are created in a way that they reproduce strictly. 
-    Then a strict diff command like \texttt{diff} is appropriate. 
+    Then a strict diff command like \tool{diff} is appropriate. 
     Else another diff command is required which checks for a kind of visual equality. 
     The default value is a mere \texttt{diff}. 
-    Alternatives are \texttt{diff-pdf} and \texttt{diff-pdf-visually} 
+    Alternatives are \tool{diff-pdf} and \tool{diff-pdf-visually} 
     both implementing a visual diff. 
     Note that unlike for other tools, no options can be passed in this case explicitly. 
   \end{minipage}
   } \\
-  \texttt{pdfMetainfoCommand}      & \texttt{pdfinfo}  \\
+  \texttt{pdfMetainfoCommand}      & \tool{pdfinfo}  \\
   \multicolumn2{|l|}{
   \begin{minipage}{0.95\linewidth}
     Command to retrieve metainfo from PDF files. 
     Essentially, there are two possibilities, 
-    \texttt{exiftool} or \texttt{pdfinfo} 
+    \tool{exiftool} or \tool{pdfinfo} \index{exiftool}\index{pdfinfo}
     but currently this software is restricted to the latter. 
     At time of this writing, only creation time is considered. 
     Note that meta info \texttt{CreationTime} is not identical 
@@ -2648,11 +2648,11 @@ ranging from byte equivalence to some kind of visual equivalence.
   \multicolumn2{|l|}{
   \begin{minipage}{0.95\linewidth}
     The options for the command \texttt{\$pdfMetainfoCommand} 
-    which is currently always \texttt{pdfinfo}. 
+    which is currently always \tool{pdfinfo}. 
     At time of this writing, only creation time is considered. 
     This software has little flexibility in treating various time formats, 
     so it must be decided. 
-    Format offered by \texttt{pdfinfo} 
+    Format offered by \tool{pdfinfo} 
     most commonly known and easily converted to the required epoch time, 
     is really according to ISO 8601. 
     This motivates \texttt{-isodates} to be a mandatory option. 
