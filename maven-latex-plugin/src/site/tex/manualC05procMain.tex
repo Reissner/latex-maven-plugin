@@ -1360,10 +1360,11 @@ and derived from these other values.
 There are two strategies to deal with the problem: 
 %
 \begin{itemize}
-  \item 
+  \item \index{diff}
   Make the build process reproducible. 
   The advantage of this approach is that diffing is quite simple, 
-  fast and reproducible: it is byte by byte. 
+  fast and reproducible: 
+  it is byte by byte as provided by command \tool{diff}. 
   This is easily done with a fixed installation 
   but tends to break with update of tools. 
   % TBD: allow own version check. 
@@ -1371,15 +1372,16 @@ There are two strategies to deal with the problem:
   % the different latex engines cannot be treated uniformly. 
   % TBD: a feature request to hyperref is already posted. 
   % let us keep an eye on that. 
-  \item 
+  \item \index{vmdiff}
   Use diff tools implementing a weaker notion of equivalence, 
   in a sense visibility equivalence of some degree. 
-  One approach is the script \texttt{vmdiff} % these scripts must be added to the index 
+  One approach is the script \tool{vmdiff} 
+  % these scripts must be added to the index 
   % THese are vmdiff and ntlatex
   % note that (de)pythontexW are included already
   % maybe also interesting in a general index: .chktexrc and .latexmkrc 
   % and even 
-  described in Section~\ref{subsec:pythontexW} % TBD: change {subsec:ntlatexVmdiff}
+  described in Section~\ref{subsec:ntlatexVmdiff}
   which combines visibility equivalence 
   with equivalence of part of metadata. 
 \end{itemize}%
@@ -1504,9 +1506,10 @@ compilation is repeated, e.g.\@ by \tool{ntlatex} and copied into \texttt{diffDi
 \medskip
 
 
+\index{exiftool}
 There are rare occasions where the timestamp shall be set explicitly. 
 This is not possible directly as it is read off from the original PDF file. 
-We suggest to use \texttt{exiftool} to modify the \texttt{CreationDate} 
+We suggest to use \tool{exiftool} to modify the \texttt{CreationDate} 
 of the original PDF file in \texttt{diffDirectory} before compilation. 
 This is done by something like
 %
@@ -1514,11 +1517,12 @@ This is done by something like
   exiftool -PDF:CreateDate=2020-01-01T00:01:02Z xxx.pdf 
 \end{verbatim}
 %
+\index{pdfinfo}
 Here, the option \texttt{PDF:CreateDate} is in fact the name of the tag to be written. 
 Note that the timezone must be UTC represented by the \texttt Z 
 signifying zero time offset compared to UTC\@. 
 The attentive reader may wonder why the option is \texttt{PDF:CreateDate} instead of \texttt{CreationDate}. 
-One may check with \texttt{pdfinfo}, that really \texttt{CreationDate} is modified. 
+One may check with \tool{pdfinfo}, that really \texttt{CreationDate} is modified. 
 Note that \tool{exiftool} writes the original PDF file into \texttt{xxx.pdf\_original}
 
 Two important details are not so obvious: 
@@ -1530,7 +1534,7 @@ in this case the trailer ID\@.
 This is to keep the PDF file consistent. 
 \item 
 The metadata is not really overwritten, but it is hidden by new metadata. 
-In fact, \texttt{exiftool} uses incremental update specified for the PDF format, 
+In fact, \tool{exiftool} uses incremental update specified for the PDF format, 
 adding a layer describing the modification. 
 All modifications done can also be undone by 
 %
