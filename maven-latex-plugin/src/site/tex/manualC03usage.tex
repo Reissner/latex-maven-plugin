@@ -938,26 +938,33 @@ We highlight
 
 The goal \texttt{inj} is to inject files 
 into the working directory \texttt{texSrcDirectory}, 
-by default in maven lifecycle phase \texttt{valiate} 
-or from command line in the root directory. 
-The injected files are in general adapted to the current configuration of the plugin. 
+during a maven lifecycle, by default in phase \texttt{valiate}, 
+or from command line invoked from the root directory and injecting into that root. 
+The files injected into \texttt{texSrcDirectory} 
+are in general adapted to the current configuration of the plugin; 
+the others are auxiliary files valid in any project using this \LaTeX{} plugin. 
 
 Note that each of these files is written only 
 if it is guaranteed that only files written by this plugin are overwritten. 
 This is the case, if no file is overwritten at all 
 or if the file to be overwritten is recognized to start with a comment 
 indicating that this file is written by this plugin. 
-Of course the guarantee holds only if the headline does not tell a lie. 
+Of course the guarantee holds only if the headline does not tell a lie: 
+one can always manipulate. 
 
 If the headline cannot be read or in some other exotic conditions, 
 it cannot be ensured that the files are written by this software, 
-and so they are not overwritten by goal \texttt{inj} 
-and by the way not erased by goal 
-\texttt{clr} as described in Section~\ref{subsec:develClear}. 
+and so they are not overwritten by goal \texttt{inj}. 
+Accordingly, as described in Section~\ref{subsec:develClear}, 
+the files not overwritten by goal \texttt{ini} 
+are precisely the files not erased by goal \texttt{clr}. 
 In case of such a doubt, a warning is displayed. 
+% TBD: which one? 
+% really in both cases? 
 
 That way, injected files written by the plugin can be updated each run, 
-which is necessary to keep them synchronized with the configuration of this plugin, 
+which is necessary to keep them synchronized 
+with the configuration of this plugin, 
 but according files written e.g.\@ by the user are protected. 
 
 A first description of the goal \texttt{inj} is given by 
@@ -976,7 +983,10 @@ according to the function of the files injected:
 \begin{itemize}
   \item
   Configuration files for \tool{latexmk} and \texttt{chktex}. 
-  These are hidden files and form the default. 
+  These are hidden files 
+  reflecting the settings of this plugin 
+  and form the default for \tool{latexmk} and for \texttt{chktex}, 
+  i.e.~\@ behavior without command line options. 
   In particular, the configuration file of \tool{latexmk} 
   is adapted to the configuration of this plugin, 
   to ensure that the results are the same whether created by \tool{latexmk} 
@@ -992,13 +1002,22 @@ according to the function of the files injected:
   The packages are loaded with minimum options, 
   but these can be modified outside the headers by \cmd{PassOptionsToPackage} 
   as described in Section~\ref{subsubsec:openingNoMagComm}. 
+
+  At the time of this writing, they are the same for all settings, 
+  but adapt to the settings by a system of if-statements. 
+  For example the headers are the same, independently of the \LaTeX{} compiler. 
+  Instead, the headers detect the compiler by need at runtime. 
   \item
   Script files which are intended to run by the user 
   supporting the automatic build process ``from outside''
   above all in the course of document development. 
   Thus, usually, their injection is triggered selectively from the command line 
-  as described below. 
-  In contrast to the files in the other categories, these are executable. 
+  invoked from the project root as described below. 
+  In contrast to the files in the other categories, these are executable 
+  are not injected into \texttt{texSrcDirectory}. 
+  They are not adapted to the configuration but shall be used globally. 
+  Thus, it makes sense to make them available for execution 
+  by moving them to appropriate places like \texttt{/usr/bin} on linux systems. 
 \end{itemize}
 
 Table~\ref{tab:injections} shows the possible injections 
@@ -1098,24 +1117,29 @@ For document development the tool \tool{latexmk} is a valuable build tool.
 Also, a linter like \texttt{chktex} is helpful 
 both for end control and for document development. 
 
-The file \href{\urlSite fromTex/.latexmkrc}{.latexmkrc} tied to the injection \texttt{latexmkrc} 
+The file \href{\urlSite fromTex/.latexmkrc}{.latexmkrc} 
+tied to the injection \texttt{latexmkrc} 
 is the configuration file for the build tool \tool{latexmk} 
-and likewise \href{\urlSite fromTex/.chktexrc}{.chktexrc} tied to the injection \texttt{chktexrc} 
+and likewise \href{\urlSite fromTex/.chktexrc}{.chktexrc} 
+tied to the injection \texttt{chktexrc} 
 is the configuration file for the style check tool \texttt{chktex}. 
-The configuration files determine the behavior of the two tools without further options. 
+The configuration files determine the behavior of the two tools without further options, 
+i.e.\@ the default behavior. 
 The user is kindly asked to help to improve these files, in particular \texttt{.chktexrc}. 
 
 Ideally, the injected \texttt{.latexmkrc} is adapted to the current settings of this plugin 
 and so invoking \tool{latexmk} invoked with its configuration file 
 behaves like this latex plugin. 
+Thus, \tool{latexmk} is intended to be used with additional options in exceptional cases only. 
 Currently, not all possible settings of this plugin 
-are taken into account in the \texttt{.latexmkrc}, 
+are taken into account in the \texttt{.latexmkrc}, % TBD: change that 
 but the magic comments in the source files described in Section~\ref{subsubsec:openingMagComm} 
 are read and taken into account as far as this makes sense. 
 
 For default settings, maybe partially overwritten by magic comments, 
 this maven plugin and \tool{latexmk} create the same target files. 
-This is true even for this manual. 
+This is true even for creating this manual 
+which presents and uses a maximum variety of features of this software. 
 In particular, the graphic formats 
 described in Chapter~\ref{chap:GraphConversions} are supported. 
 So are bibliographies, indices and glossaries and also material computed by \tool{pythontex} 
@@ -1131,7 +1155,8 @@ although in the long run also \texttt{chk} and \texttt{dvi} could be useful.
 Still, creation of PDF files is supported in both variants, via DVI/\gls{xdv} or directly. 
 Compilation via \tool{latexmk} is based on code in \texttt{.latexmkrc} 
 and this mimics a wide range of functionality offered by this tool. 
-Among these also build for reproducibility checks as described in Section~\ref{sec:chkReprod}
+Among these are also reproducibility checks 
+as described in Section~\ref{sec:chkReprod}
 
 A sensible config file \texttt{.chktexrc} mainly depends on the packages loaded. 
 In Section~\ref{subsec:header} we suggest injecting also a header file \texttt{header.tex} 
@@ -1154,11 +1179,16 @@ Since basic packages are loaded and basic commands are defined
 in the injected \texttt{header.tex} 
 which is described in Section~\ref{subsec:header}, 
 it makes sense, to synchronize \texttt{.chktex} and \texttt{header.tex}. 
-As an example, \texttt{header.tex} loads package \pkg{listings} 
-which provides the environment \texttt{lstlisting} and the command \cmd{listinputlisting}. 
+
+As an example, package \pkg{listings} which provides the environment \texttt{lstlisting} 
+and the command \cmd{listinputlisting}. 
 The content of both shall not be subject to checks via \texttt{chktex} 
 and must thus be excluded in \texttt{.chktexrc}. 
-
+The role of \texttt{header.tex} in this context is, 
+to detect whether \pkg{listings} and, if so, to patch it. 
+Among other things, this allows to compile the document 
+not only with the internal build mechanism of this plugin, 
+but also by \tool{latexmk} with good performance. 
 
 All this together illustrates why it is recommended to inject 
 besides the default \texttt{.chktexrc} and \texttt{.latexmkrc} 
@@ -1169,7 +1199,8 @@ also \texttt{header.tex}.
 As described in Sections~\ref{subsec:develLatexmk} and~\ref{subsec:develCheck}, 
 both tools \texttt{chktex} and \tool{latexmk} 
 are invoked directly by the user in the course of document development, 
-but they may be invoked by this \LaTeX{} builder in the course of a regular build, 
+but they may be invoked by this \LaTeX{} builder 
+in the course of a regular build, 
 i.e.\@ for maven goal \texttt{cfg} also. 
 % TBD: and ant task with the same name ... well, this will not work 
 % maybe when the ant task is adapted accordingly, including injections. 
@@ -1177,7 +1208,6 @@ So their respective configuration files must be injected
 in the maven build process before the \LaTeX{} build tools are invoked, 
 i.e.\@ prior to the phase \texttt{site}. 
 Thus, goal \texttt{inj} has default phase \texttt{validate}. 
-
 
 As described in~\cite{LatexMk23}, 
 Section~``CONFIGURATION/INITIALIZATION (RC) FILES'', 
@@ -1187,7 +1217,7 @@ and finally one specified by the command line option \texttt{-r}
 which is described in~\cite{LatexMk23}, 
 Section~``LATEXMK OPTIONS AND ARGUMENTS ON COMMAND LINE''. 
 
-Likewise,~\cite{ChkTeX22}, Section 6.1.3, shows that also \texttt{chktexrc} 
+Likewise,~\cite{ChkTeX22}, Section 6.1.3, shows that also \texttt{chktex} 
 has a global configuration file \texttt{chktexrc} 
 and a local one \texttt{.chktexrc} or \texttt{chktexrc}, 
 depending on the operating system. 
@@ -1411,34 +1441,40 @@ Calling from project root
 %
 injects the according files \href{\urlSite fromMain/instVScode4tex}{instVScode4tex.sh} and \texttt{.latexmkrc}. 
 
+The configuration file \texttt{.latexmkrc} 
+for the development tool \tool{latexmk} is in fact a Perl script 
+which is invoked at \tool{latexmk}'s startup. 
+
 If the editor VS Code is already installed, 
 the script \texttt{instVScode4tex.sh}, 
 installs and updates all extensions of VS Code the author used to write \LaTeX-code. 
 Project \url{https://github.com/Reissner/QMngMnt} 
 uses the script for automation of installation and update. 
-It is the only injected file which is executable. 
 
-Pasting \href{\urlSite fromTex/.latexmkrc}{.latexmkrc}, 
-which is just Perl code, 
-into VS Code, one can see the highlighting, 
-of course provided the extensions given by \texttt{instVScode4tex.sh} are installed; 
-The configuration file \texttt{.latexmkrc} 
-for the development tool \tool{latexmk} is in fact a Perl script. 
+Provided the extensions given by \texttt{instVScode4tex.sh} are installed, 
+opening \href{\urlSite fromTex/.latexmkrc}{.latexmkrc}, 
+which is just Perl code, in VS Code, one can see the highlighting.
 
 
-\subsection{Scripts in conjunction with reproducibility }\label{subsec:ntlatexVmdiff}
 
+\subsection{Scripts in conjunction with reproducibility }%
+\label{subsec:ntlatexVmdiff}
+
+\index{ntlatex}
+\index{vmdiff}
 Calling from project root 
 %
 \begin{Verbatim}
   mvn latex:inj -Dlatex.injections=ntlatex,vmdiff
 \end{Verbatim}
 %
-injects the according files \texttt{ntlatex} and \texttt{vmdiff} in the root directory. 
+injects the according files \tool{ntlatex} and \tool{vmdiff} 
+in the root directory. 
 
-The injection \texttt{ntlatex} 
+The injection \tool{ntlatex} 
 injects the file \href{\urlSite fromMain/ntlatex}{ntlatex} 
-which runs the \LaTeX{} compiler specified in the pom, or in the magic comments if present, 
+which runs the \LaTeX{} compiler specified in the pom, 
+or in the magic comments if present, 
 to create a PDF file. 
 As usual, magic comments override configuration in the pom. 
 Also, it takes into account whether the PDF file is created via intermediate DVI/\gls{xdv} files or not, 
@@ -1455,17 +1491,24 @@ For details see Section~\ref{sec:chkReprod} on reproducibility.
 
 But if \tool{ntlatex} so close to \tool{latexmk}, 
 why is it needed in addition? 
-It is because \tool{latexmk} won't recompile, if the expected PDF file exist already 
+It is because \tool{latexmk} won't recompile, 
+if the expected PDF file exist already 
 and no sources changed. 
 So \tool{ntlatex} is needed to force recompilation. 
+
+It is easy to see, that \tool{ntlatex} is helpful also during document development 
+for fixing bugs and to detect the cause of compilation errors. 
 \medskip
 
-Complementary to this \texttt{vmdiff} is a diff tool for PDF files 
-combining visual equality checked with \texttt{diff-pdf-visually} 
-with equality of metadata checked via \texttt{pdfinfo} 
+\index{pdfinfo}
+%\index{diff-pdf}
+\index{diff-pdf-visually}
+Complementary to this \tool{vmdiff} is a diff tool for PDF files 
+combining visual equality checked with \tool{diff-pdf-visually} 
+with equality of metadata checked via \tool{pdfinfo} 
 if the files are visually the same. 
 It is realized as a bash script \href{\urlSite fromMain/ntlatex}{vmdiff} and requires no installation 
-except \texttt{diff-pdf-visually} and \texttt{pdfinfo}. 
+except \tool{diff-pdf-visually} and \tool{pdfinfo}. 
 % TBD: clarify: elsewhere we also use exiftool for similar tasks. 
 % but the according output must be filtered a bit. 
 % There is a category for tools reading metadata, 
@@ -1923,7 +1966,7 @@ Whereas this software creates image files in advance before invoking a \LaTeX{} 
 \tool{latexmk} first calls the \LaTeX{} engine in \texttt{nonstopmode} 
 to avoid a stop because of a missing file. 
 Then the file is created using the appropriate rule (hopefully unique) 
-and the emgome is run again, 
+and the engine is run again, 
 this time passing the inclusion of the first created files 
 failing at the next one. 
 To find out that another rule is needed, \tool{latexmk} parses the LOG file of the latex compiler. 
