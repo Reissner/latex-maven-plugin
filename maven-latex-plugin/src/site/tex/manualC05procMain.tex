@@ -834,13 +834,13 @@ The package \pkg{pythontex}, described in~\cite{PythonTexP}
 originally allowed including Python code into a latex document. 
 Later on, further languages were added, most notably octave or Matlab, 
 and the user can easily extend it to further languages 
-as sketched in~\cite{PythonTexP}. Section 7. 
+as sketched in~\cite{PythonTexP}, Section 7. 
 Of course, to that end, the interpreter for the desired language must be installed.\index{pythontex}
 The meaning of the term ``including'' used above 
 ranges from mere listing to pure execution and comprises also inserting results of execution. 
 A field of application is also creating figures. 
 
-Note that like the package \pkg{splitindex}, also \pkg{pythonindex} 
+Note that like the package \pkg{splitindex}, also \pkg{pythontex} 
 comes with an according auxiliary program, 
 in this case, besides \texttt{pythontex} also \texttt{depythontex}. 
 Consequently,~\cite{PythonTexP} is not only on the package 
@@ -910,6 +910,16 @@ Thus, the author wrote a little wrapper,
 called \texttt{depythontexW} and described in Section~\ref{subsec:pythontexW}, 
 and place it where it can be found, e.g.~in the folder of \texttt{depythontex}\index{depythontexW}. 
 % TBD: evaluate: maybe it is a better solution to enable this software itself to write the output to a log file. 
+
+Unfortunately, as the original author of \pkg{pythontex} shifted his focus 
+away from \LaTeX{} towards Markdown, 
+he ceased development and so development slowed down next to zero. 
+In the meantime, python 2 came out of use 
+and having a link called \texttt{python}, 
+pointing to either \texttt{python2} or to \texttt{python3} 
+as \texttt{(de)pythontex} requires, 
+went out of fashion. 
+So, the user must add the link manually. 
 \medskip
 
 
@@ -1364,8 +1374,12 @@ There are two strategies to deal with the problem:
   \item 
   Use diff tools implementing a weaker notion of equivalence, 
   in a sense visibility equivalence of some degree. 
-  One approach is the script \texttt{vmdiff} 
-  described in Section~\ref{subsec:pythontexW} 
+  One approach is the script \texttt{vmdiff} % these scripts must be added to the index 
+  % THese are vmdiff and ntlatex
+  % note that (de)pythontexW are included already
+  % maybe also interesting in a general index: .chktexrc and .latexmkrc 
+  % and even 
+  described in Section~\ref{subsec:pythontexW} % TBD: change {subsec:ntlatexVmdiff}
   which combines visibility equivalence 
   with equivalence of part of metadata. 
 \end{itemize}%
