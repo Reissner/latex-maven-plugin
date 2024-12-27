@@ -56,11 +56,11 @@ Graphic format & editor & preprocessing tool\\
 \caption{\label{tab:graphicPreprocOverview} 
 Overview over the graphic formats supported via preprocessing}
 \endlastfoot%
-fig             & xfig, vscode     & \texttt{fig2devCommand}, e.g.~\texttt{fig2dev}    \\
-gnuplot (gp)    & vscode           & \texttt{gnuplotCommand}, e.g.~\texttt{gnuplot}          \\
-MetaPost (mp)   & vscode           & \texttt{metapostCommand}, e.g.~\texttt{mpost}          \\
-svg             & inkscape, vscode & \texttt{svg2devCommand}, e.g.~\texttt{inkscape}  \\
-jpg, png        & gimp             & \texttt{ebbCommand}, e.g.~\texttt{ebb}                   \\
+fig             & xfig, vscode     & \texttt{fig2devCommand}, e.g.~\tool{fig2dev}    \\
+gnuplot (gp)    & vscode           & \texttt{gnuplotCommand}, e.g.~\tool{gnuplot}          \\
+MetaPost (mp)   & vscode           & \texttt{metapostCommand}, e.g.~\tool{mpost}          \\
+svg             & inkscape, vscode & \texttt{svg2devCommand}, e.g.~\tool{inkscape}  \\
+jpg, png        & gimp             & \texttt{ebbCommand}, e.g.~\tool{ebb}                   \\
 \end{longtable}
 
 
@@ -319,7 +319,7 @@ but must be exported into a \LaTeX-readable format.
 
 To export a file \texttt{xxx.fig} residing in directory \texttt{yyy} 
 into several external formats, 
-\texttt{xfig} uses \texttt{fig2dev}. 
+\texttt{xfig} uses \tool{fig2dev}. 
 A look in~\cite{XFigF}, Section~3.4 shows that texts with set ``special''-flag 
 are interpreted as latex-code. 
 For these texts the appropriate export language would be \texttt{latex}. 
@@ -328,7 +328,7 @@ and \texttt{pdf} would be the ideal export format for all kinds of objects,
 except for texts with set ``special''-flag. 
 In \texttt{pdf} format, texts are interpreted literally, 
 independent of the ``special''-flag. 
-Thus, \texttt{fig2dev} offers a mixed solution: 
+Thus, \tool{fig2dev} offers a mixed solution: 
 export \texttt{xxx.fig} in format \texttt{pdftex} which yields a pdf-file 
 \texttt{xxx.pdf} containing all but text with set ``special''-flag 
 and complementary \texttt{pdftex\_t} which yields a tex-file \texttt{xxx.ptx} 
@@ -452,7 +452,7 @@ and ``inputting'' \texttt{xxx.ptx} works for both \LaTeX{} output formats.
 Table~\ref{tab:xfigSuffixes} relates the language specified with the \texttt{-L} option 
 with the suffix of the output file chosen canonically, the suffix we choose 
 and the actual file format. 
-In contrast to \texttt{fig2dev}, 
+In contrast to \tool{fig2dev}, 
 we choose the actual file format, except if this is TEX\@. 
 We opted for the quite unusual suffix \texttt{.ptx} 
 instead of \texttt{.tex} 
@@ -478,19 +478,19 @@ pdftex\_t                & pdf\_t      & pdf        & pdf \\
 
 
 Maybe xfig is intended to export from within the export dialog 
-and not directly via a script like \texttt{fig2dev}. 
+and not directly via a script like \tool{fig2dev}. 
 This may be the reason 
 why the magnification must be set in the export dialog, 
 but it is stored in the fig-file nevertheless. 
 
 Figure~\ref{fig:fig2dev} shows the transformation 
-of figures with \texttt{fig2dev} 
+of figures with \tool{fig2dev} 
 and the inclusion of the eps-file and of the pdf-file in the ptx-file. 
 Note that the \texttt{fig2dev}-command is configurable 
 via the parameter \texttt{fig2devCommand}, 
 but there will be hardly any command with the same command line interface 
 performing exactly the transformations given in Figure~\ref{fig:fig2dev}, 
-except \texttt{fig2dev} itself. 
+except \tool{fig2dev} itself. 
 
 At the same time, Figure~\ref{fig:fig2dev} is an example 
 for a \LaTeX-file \texttt{xxx.ptx} created from a fig-file 
@@ -1061,7 +1061,7 @@ can be integrated into the latex document as
 \import{yyy}{xxx.pdf\_tex}%
 \end{lstlisting}
 %
-Unlike \texttt{fig2dev} and \texttt{gnuplot}, 
+Unlike \tool{fig2dev} and \tool{gnuplot}, 
 specifying the files with their full path, 
 has no effect, i.e.~inclusion uses the file name only. 
 Thus, \cmd{import} cannot be replaced by \cmd{input} 
