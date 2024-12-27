@@ -12,6 +12,6 @@ sub add_cus_dep() {
   # with options from config and magic comments 
   # and additional option "-recorder" 
   # because this is how latexmk invokes *latex also  
-  mylatex($ARGV[0],("-recorder"));
+  run_latex($ARGV[0],("-recorder"));
 }
 
