@@ -1486,6 +1486,9 @@ We shall wait with rework until package glossaries-extra and tool bib2gls is int
 
     <release version="2.1" date="2023-08-28" 
       description="build with latexmk and generalized reproducibility, readed glossary">
+      <action dev='reissner' type='add'>
+        Now admits package showlabels also. 
+      </action>
       <action dev='reissner' type='fix'>
         Based on new rerun algorithm could reliably re-add classical glossary to manual. 
       </action>
