@@ -54,7 +54,7 @@ jobs:
     - name: install additional packages
       # graphics: transfig gnuplot inkscape 
       # pdf utilities: poppler-utils (pdfinfo, pdftotext)
-      run: sudo apt-get install -y transfig gnuplot inkscape poppler-utils
+      run: sudo apt-get install -y transfig gnuplot inkscape poppler-utils qpdf
 
     # - name: install additional packages 
     #   uses: awalsh128/cache-apt-pkgs-action@latest
