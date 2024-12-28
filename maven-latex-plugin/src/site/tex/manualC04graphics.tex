@@ -196,7 +196,7 @@ For historical reasons, still \gls{eps} is used.
 %in PDF format. 
 % FIXME\@: REALLY? 
 %FIXME\@: missing pdf als basic input format. What about (e)ps? 
-Section~\ref{sec:fig2dev} shows how \texttt{fig2dev} converts fig-files 
+Section~\ref{sec:fig2dev} shows how \tool{fig2dev} converts fig-files 
 into \LaTeX-files containing text and including graphics in as PDF files. 
 Likewise, Section~\ref{sec:gnuplot2dev} describes 
 how gnuplot converts gnuplot-files into PDF files. 
@@ -309,7 +309,7 @@ If adding it, one arrives at the EPS format.
 
 
 
-A simple but still useful tool to draw figures is \texttt{xfig}\index{xfig}\index{fig2dev} 
+A simple but still useful tool to draw figures is \tool{xfig} 
 which stores graphics in a native format 
 described in~\cite{XFigF} with file extension \texttt{.fig}. 
 The file extension \texttt{.fig} is also used by MATLAB to store plots, 
@@ -319,7 +319,7 @@ but must be exported into a \LaTeX-readable format.
 
 To export a file \texttt{xxx.fig} residing in directory \texttt{yyy} 
 into several external formats, 
-\texttt{xfig} uses \tool{fig2dev}. 
+\tool{xfig} uses \tool{fig2dev}. 
 A look in~\cite{XFigF}, Section~3.4 shows that texts with set ``special''-flag 
 are interpreted as latex-code. 
 For these texts the appropriate export language would be \texttt{latex}. 
@@ -406,7 +406,7 @@ fig2dev -L pdftex_t <fig2devGenOptions> <fig2devPtxOptions>    -p xxx xxx.fig xx
 %
 Both commands specify the input file \texttt{xxx.fig}, 
 both use the options given by the parameter \texttt{fig2devGenOptions} 
-while each invocation allows to specify also specific options, 
+while each invocation allows specifying also specific options, 
 \texttt{fig2devPdfEpsOptions} and \texttt{fig2devPtxOptions}, respectively, 
 and both use the option \texttt{-L} 
 to specify the output format (``language''). 
@@ -486,7 +486,7 @@ but it is stored in the fig-file nevertheless.
 Figure~\ref{fig:fig2dev} shows the transformation 
 of figures with \tool{fig2dev} 
 and the inclusion of the eps-file and of the pdf-file in the ptx-file. 
-Note that the \texttt{fig2dev}-command is configurable 
+Note that the \tool{fig2dev}-command is configurable 
 via the parameter \texttt{fig2devCommand}, 
 but there will be hardly any command with the same command line interface 
 performing exactly the transformations given in Figure~\ref{fig:fig2dev}, 
@@ -1123,8 +1123,8 @@ should be a picture
 
 In contrast to the FIG format, 
 SVG pictures can be created by several programs. 
-Among those, is also \texttt{inkscape} 
-which can be used like \texttt{xfig}  
+Among those, is also \tool{inkscape} 
+which can be used like \tool{xfig}  
 as a graphical editor with export functionality. 
 In contrast to FIG format, 
 SVG is essentially human-readable, 

@@ -10,20 +10,21 @@
 \IfPackageLoadedTF{tex4ht}{
   \newcommand{\cmd}[2][]{\texttt{\bs{}#2#1}}
   \newcommand{\pkg}[1]{\texttt{#1}}% without indexing 
+  \newcommand{\tool}[1]{\texttt{#1}}% without indexing 
 }{
   \newcommand{\cmd}[2][]{\texttt{\bs{}#2#1}\sindex[cmd]{#2@\texttt{\bs{}#2}}}
   \newcommand{\pkg}[1]{\texttt{#1}\sindex[pkg]{#1}} % TBD: this must be extracted 
+  \newcommand{\tool}[1]{\texttt{#1}\sindex[tool]{#1}}% TBD: this must be extracted 
 }
 
-% currently used for latexmk only 
-% but in the long shall be used for all tools 
-% this is the base for creating an index of tools. 
-\newcommand{\tool}[1]{\texttt{#1}}
+% marking tools without making an entry in the index. 
+% This is used for headlines/captions and in glossary 
+\newcommand{\toolg}[1]{\texttt{#1}}
 
 % TBD: the following 3 shall be replaced by \tool{...}
-\newcommand{\pdflatex}{\texttt{pdflatex}}
-\newcommand{\lualatex}{\texttt{lualatex}}
-\newcommand{\xelatex}{\texttt{xelatex}}
+\newcommand{\pdflatex}{\tool{pdflatex}}
+\newcommand{\lualatex}{\tool{lualatex}}
+\newcommand{\xelatex}{\tool{xelatex}}
 
 
 \newcommand{\texlive}{\TeX~Live}

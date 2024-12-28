@@ -11,14 +11,14 @@ These prerequisites are collected in Section~\ref{sec:prerequisites}.
 
 \section{Prerequisites}\label{sec:prerequisites}
 
-The ant-task is tested with\index{ant} 
+The ant-task requires \tool{ant} and is tested with version 
 %
 \begin{verbatim}
 Apache Ant(TM) version 1.10.12 compiled on December 14 1969
 \end{verbatim}
 %
 (of course the year is not correct, but this is the version string
-displayed by that release) and the maven-plugin with\index{maven} 
+displayed by that release) and the maven-plugin with \tool{mvn}\sindex[tool]{maven|see{mvn}} 
 %
 \begin{verbatim}
 Apache Maven 3.9.2 
@@ -86,24 +86,24 @@ the following programs are required:
 \begin{itemize}
 \item
 To convert the \gls{fig}-files into \gls{pdf}-files, 
-by default \texttt{fig2dev}\index{fig2dev} is used. 
-It makes sense to have \texttt{xfig}\index{xfig} installed 
+by default \tool{fig2dev} is used. 
+It makes sense to have \tool{xfig} installed 
 to create and edit fig-files, but this is not mandatory. 
 \item
 To convert gnuplot files into PDF-files, there is no alternative, 
-to have installed \texttt{gnuplot}\index{gnuplot}. 
+to have installed \tool{gnuplot}. 
 It serves as an interpreter and also as a converter. 
 Strictly speaking, only the latter functionality is required here. 
 \item
 To convert \gls{mp}-files into \gls{eps}-files, 
-the interpreter \texttt{mpost}\index{mpost}\index{metapost} or equivalent is required. 
+the interpreter \tool{mpost} or equivalent is required. 
 This comes with a standard \TeX{} installation. 
 With the standard configuration, 
 the resulting EPS-file can be viewed with \texttt{ghostscript} 
 and for developing it is recommended to have \texttt{ghostscript} installed. 
 \item
 To include \gls{svg}-files into \LaTeX\index{svg}, 
-\texttt{inkscape}\index{inkscape} must be installed. 
+\tool{inkscape} must be installed. 
 It also serves to create and to edit SVG-files. 
 \end{itemize}
 
@@ -111,11 +111,11 @@ It also serves to create and to edit SVG-files.
 Currently, for including PDF-files in both cases, 
 the driver \texttt{dvipdfmx} must be installed. 
 Strictly speaking, this is required only for HTML-creation and related. 
-Note that if no pictures created by \texttt{fig2dev}, \texttt{gnuplot}, 
-\texttt{mpost} or by \texttt{inkscape} are used, of course, 
-neither \texttt{fig2dev} nor \texttt{gnuplot},
-\texttt{mpost}, \texttt{inkscape} 
-nor \texttt{dvipdfmx} is needed. 
+Note that if no pictures created by \tool{fig2dev}, \tool{gnuplot}, 
+\texttt{mpost} or by \tool{inkscape} are used, of course, 
+neither \tool{fig2dev} nor \tool{gnuplot},
+\tool{mpost}, \tool{inkscape} 
+nor \tool{dvipdfmx} is needed. 
 To include graphics, the graphics bundle described in~\cite{GraX} is required, 
 except for SVG-files which requires the svg-package 
 described in~\cite{SvgP}. 
@@ -128,30 +128,30 @@ to be supported:
 \begin{itemize}
 \item
 To create PDF-files from \LaTeX-files we use \LaTeX{} engines like 
-\lualatex\index{lualatex}, \xelatex\index{xelatex} or \pdflatex\index{pdflatex}. 
+\lualatex, \xelatex or \pdflatex. 
 
 \LaTeX{} uses several auxiliary programs. 
-Above all \texttt{bibtex}\index{bibtex}, to create the bibliography 
-and \texttt{makeindex}\index{makeindex} 
-and \texttt{splitindex}\index{splitindex} for the index 
-and \texttt{makeglossaries}\index{makeglossaries} for the glossary. 
+Above all \tool{bibtex}, to create the bibliography 
+and \tool{makeindex} 
+and \tool{splitindex} for the index 
+and \tool{makeglossaries} for the glossary. 
 The latter two 
 also require the latex packages \pkg{makeidx}, optionally \pkg{showidx}, 
 both described in~\cite{MkidxShIdxP}, 
 the package \pkg{splitidx} documented in~\cite{SplitidxP}
 and \pkg{glossaries} specified in~\cite{GloP4_54}. 
-Note that \texttt{makeglossaries} either invokes \texttt{makeindex} 
-or \texttt{xindy}, depending on the parametrization of the package \pkg{glossaries}. 
-Both, \texttt{makeglossaries} and \texttt{xindy} are written in Perl, 
+Note that \texttt{makeglossaries} either invokes \tool{makeindex} 
+or \tool{xindy}, depending on the parametrization of the package \pkg{glossaries}. 
+Both, \tool{makeglossaries} and \tool{xindy} are written in Perl, 
 which shall also be installed if a glossary is required. 
 %TBD: do research: not really needed: makeglossaries-lite
 % TBD: GloP is referenced later again; 
 % seems to indicate inconsistency in presentation of this manual 
 
 To include program code in Python, octave and other language, 
-\texttt{pythontex}\index{pythontex} is needed; 
+\tool{pythontex} is needed; 
 to eliminate that code creating an equivalent TEX file, 
-one has to combine it with \texttt{depythontex}\index{depythontex}. 
+one has to combine it with \tool{depythontex}. 
 Both are written in Python3 which shall be installed also as a dependency. 
 To use them, one also needs to install the package \pkg{pythontex}. 
 
@@ -186,26 +186,27 @@ Currently, the author is not aware of any alternative to the two.
 This includes also creating OpenOffice documents like ODT-files. 
 Thus, OpenOffice documents are created in two steps, 
 the first is to create PDF-files with the according tools, 
-the second one is done by \texttt{htlatex}\index{htlatex} or that like.\index{htxelatex} 
+the second one is done by \tool{htlatex} or that like. 
+% TBD: unification in the long run neither htlatex nor htxelatex but makeht \index{htxelatex} 
 \item
-To create RTF-files, currently \texttt{latex2rtf}\index{latex2rtf} is used. 
+To create RTF-files, currently \tool{latex2rtf} is used. 
 Note that this does not require \pdflatex. 
 As a drawback, not all \LaTeX-packages are supported. 
 \item
 MS Word documents are created from OpenOffice documents 
-via the command \texttt{odt2doc}\index{odt2doc}  and thus require three steps 
+via the command \tool{odt2doc} and thus require three steps 
 and so the according tool chain. 
 \item
 Finally, there is a way, to create plain text files from the PDF-files 
-via \texttt{pdftotext}\index{pdftotext}. 
+via \tool{pdftotext}. 
 The way from \LaTeX{} to text via PDF makes sense 
 because that text is well formatted math mode symbols like $\pi$ 
 and because table of contents, index, glossary and that like are included. 
-So, for that task, besides \texttt{pdftotext} the whole tool chain to create
+So, for that task, besides \tool{pdftotext} the whole tool chain to create
 PDF-files is required. 
 \item
 An application which does not create a target, 
-i.e.~a file in the target directory is \texttt{chktex}\index{chktex} 
+i.e.~a file in the target directory is \tool{chktex} 
 which just checks the \glspl{gls:lmf} and associated files. 
 \end{itemize}
 

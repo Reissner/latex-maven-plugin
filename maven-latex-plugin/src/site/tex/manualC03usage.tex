@@ -64,7 +64,7 @@ BIB files typically describing a bibliography,  or, %TBD: support of biblatex
 not yet supported, a glossary or that like, % TBD: check when supported, mention glossaries-extra
 \item 
 program files, either included as a listing by package \pkg{listings} 
-or executed via the package \pkg{pythontex}\index{pythontex}. % chktex 24
+or executed via the package \pkg{pythontex}. % chktex 24
 \end{itemize}
 
 
@@ -819,7 +819,7 @@ but then the user is responsible to provide an appropriate version.
 An example for an unregistered converter 
 is given in Table~\ref{tab:paramPythontex} on page~\pageref{tab:paramPythontex}: 
 \texttt{pythontexW:pythontex} 
-indicating the converter \texttt{pythontexW} with category \texttt{pythontex}. 
+indicating the converter \tool{pythontexW} with category \texttt{pythontex}. 
 
 
 As one can see, a warning WMI02 indicates 
@@ -1054,8 +1054,8 @@ representing the configuration files.
   vscodeExt             & \texttt{\footnotesize instVScode4tex.sh} & installs VS Code extensions \\
   ntlatex               & \texttt{\footnotesize ntlatex}           & timeless \LaTeX{} compiler \\
   vmdiff                & \texttt{\footnotesize vmdiff}            & special diff tool for PDF files \\
-  pythontexW            & \texttt{\footnotesize pythontexW}        & surrogate for \texttt{pythontex} \\
-  depythontexW          & \texttt{\footnotesize depythontexW}      & surrogate for \texttt{depythontex} \\
+  pythontexW            & \texttt{\footnotesize pythontexW}        & surrogate for \tool{pythontex} \\
+  depythontexW          & \texttt{\footnotesize depythontexW}      & surrogate for \tool{depythontex} \\
   \end{longtable}
 
 
@@ -1461,8 +1461,6 @@ which is just Perl code, in VS Code, one can see the highlighting.
 \subsection{Scripts in conjunction with reproducibility }%
 \label{subsec:ntlatexVmdiff}
 
-\index{ntlatex}
-\index{vmdiff}
 Calling from project root 
 %
 \begin{Verbatim}
@@ -1501,9 +1499,7 @@ It is easy to see, that \tool{ntlatex} is helpful also during document developme
 for fixing bugs and to detect the cause of compilation errors. 
 \medskip
 
-\index{pdfinfo}
 %\index{diff-pdf}
-\index{diff-pdf-visually}
 Complementary to this \tool{vmdiff} is a diff tool for PDF files 
 combining visual equality checked with \tool{diff-pdf-visually} 
 with equality of metadata checked via \tool{pdfinfo} 
@@ -1755,7 +1751,7 @@ insofar as the goal \texttt{clr} described in Section~\ref{subsec:develClear}
 eliminates additional AUX files tied to included sections. 
 
 
-\subsection{The build tool \tool{latexmk}}\label{subsec:develLatexmk}
+\subsection{The build tool \toolg{latexmk}}\label{subsec:develLatexmk}
 
 Essentially, it is possible to compile latex files 
 only with editor, viewer and a console. 
@@ -1844,7 +1840,7 @@ or all intermediate files by \texttt{latexmk -c}, which does not erase the resul
 before using the basic tools. 
 \medskip
 
-\subsubsection{Differences of \tool{latexmk} with this \LaTeX{} builder}%
+\subsubsection{Differences of \toolg{latexmk} with this \LaTeX{} builder}%
 \label{subsubsec:latexmkDiff}
 
 
@@ -1974,7 +1970,7 @@ goal \texttt{clr} to clear created files is
 described in Section~\ref{subsec:develClear}. 
 \medskip
 
-\subsubsection{How \tool{latexmk} is integrated}\label{subsubsec:latexmkIntegration}
+\subsubsection{How \toolg{latexmk} is integrated}\label{subsubsec:latexmkIntegration}
 
 Finally, we show how this plugin may support \tool{latexmk}. 
 To understand in which sense, one must dive very deep. 
@@ -2195,7 +2191,7 @@ For example, if writing \LaTeX-files with Emacs,
 it is much more convenient, to compile the \LaTeX{} main file 
 via \pdflatex{} from within Emacs 
 or to create a PDF-file from a \gls{fig}-file 
-through \texttt{xfig}'s export dialog, 
+through \tool{xfig}'s export dialog, 
 than using this maven-plugin or this ant-task. 
 Also, these tools work best, if all is in one folder. 
 

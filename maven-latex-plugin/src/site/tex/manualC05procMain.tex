@@ -170,16 +170,16 @@ The package \pkg{pythontex} allows including python code or related
 in the \gls{tex} file and to evaluate it. 
 The first \texttt{latex2pdf} run creates a \gls{pytxcode} file 
 which contains essentially the code parts of the \LaTeX{} file. 
-Invoking \texttt{pythontex} creates by default 
+Invoking \tool{pythontex} creates by default 
 a folder \texttt{pythontex-files-xxx} 
 with material where code is already evaluated. 
 In the next \texttt{latex2pdf} run, this material is included in the document. 
 The \pkg{pythontex} comes with a second command line utility, 
-\texttt{depythontex}, eliminating all python code from the original TEX file. 
+\tool{depythontex}, eliminating all python code from the original TEX file. 
 Optionally, \texttt{latex2pdf} also creates a \gls{depytx} file 
 with all information to replace python code in the original TEX file 
 with evaluated material from \texttt{pythontex-files-xxx}. 
-Replacement is done by \texttt{depythontex} 
+Replacement is done by \tool{depythontex} 
 which by default, sends the result to stdout, 
 but there is an option to write into another \LaTeX{} file. 
 Converting this new \LaTeX{} file 
@@ -835,14 +835,15 @@ originally allowed including Python code into a latex document.
 Later on, further languages were added, most notably octave or Matlab, 
 and the user can easily extend it to further languages 
 as sketched in~\cite{PythonTexP}, Section 7. 
-Of course, to that end, the interpreter for the desired language must be installed.\index{pythontex}
+Of course, to that end, 
+the interpreter for the desired language must be installed. 
 The meaning of the term ``including'' used above 
 ranges from mere listing to pure execution and comprises also inserting results of execution. 
 A field of application is also creating figures. 
 
 Note that like the package \pkg{splitindex}, also \pkg{pythontex} 
 comes with an according auxiliary program, 
-in this case, besides \texttt{pythontex} also \texttt{depythontex}. 
+in this case, besides \tool{pythontex} also \tool{depythontex}. 
 Consequently,~\cite{PythonTexP} is not only on the package 
 but also on the corresponding command line tools. 
 Since~\cite{PythonTexP} is quite detailed, 
@@ -855,10 +856,10 @@ It could also be interesting for the user for debugging.
 Running the \LaTeX{} engine on a file \texttt{xxx.tex} 
 with package \pkg{pythontex} loaded 
 yields a file \texttt{xxx.pytxcode} 
-and if the package is loaded with option \texttt{depythontex} 
+and if the package is loaded with option \ttexttt{depythontex} 
 also a file \texttt{xxx.depytx}.
 If the file \texttt{xxx.pytxcode} is present, 
-this software invokes the command line tool \texttt{pythontex} 
+this software invokes the command line tool \tool{pythontex} 
 (same name as the according package) 
 to \texttt{xxx.pytxcode} (without ending) 
 which converts this into a variety of output files, 
@@ -866,9 +867,9 @@ which are, without further configuration,
 all in the folder \texttt{pythontex-files-xxx}
 as shown in Figure~\ref{fig:py2dir}, 
 which is described in more detail in~\cite{PyTexInOut}, Section~3. 
-Note that this software uses the wrapper \texttt{pythontexW}\index{pythontexW} 
-of \texttt{pythontex} described in Section~\ref{subsec:pythontexW}, 
-instead of \texttt{pythontex} itself. 
+Note that this software uses the wrapper \tool{pythontexW} 
+of \tool{pythontex} described in Section~\ref{subsec:pythontexW}, 
+instead of \tool{pythontex} itself. 
 The figure reflects this. 
 
 % TBD: later on, if \texttt{xxx.depytx} after \texttt{pythontex} also \texttt{pythontex} is invoked, 
@@ -886,29 +887,29 @@ An important remark is that \lualatex{} is the preferred engine,
 because files \texttt{*.stdout} can impose heavy memory usage 
 and currently \lualatex{} is the only engine allocating memory dynamically. 
 
-As one can see, \texttt{pythontex} cooperates with \lualatex{} in a way 
-also \texttt{bibtex} or the other auxiliary programs do. 
-Although \texttt{pythontex}, at time of this writing in version 0.18, 
+As one can see, \tool{pythontex} cooperates with \lualatex{} in a way 
+also \tool{bibtex} or the other auxiliary programs do. 
+Although \tool{pythontex}, at time of this writing in version 0.18, 
 is quite mature, it refrains from writing a log file and indicates errors and warnings 
 just on standard output or error output. 
-This is unlike all the other auxiliary programs in a line with \texttt{pythontex}. 
+This is unlike all the other auxiliary programs in a line with \tool{pythontex}. 
 As a consequence, in particular warnings are difficult to detect 
 and cannot be detected in a uniform way. 
-Thus, the author wrote a little wrapper, called \texttt{pythontexW} 
-and place it where it can be found, e.g.~in the folder of \texttt{pythontex}. 
+Thus, the author wrote a little wrapper, called \tool{pythontexW} 
+and place it where it can be found, e.g.~in the folder of \tool{pythontex}. 
 
-Accordingly, \texttt{depythontex} behaves in a non-standard way: 
+Accordingly, \tool{depythontex} behaves in a non-standard way: 
 Firstly, by default, it does not output a result file but outputs on standard output. 
 This can be changed using the option \texttt{--output} or \texttt{-o} for short. 
-Also, \texttt{depythontex} changes into interactive mode 
+Also, \tool{depythontex} changes into interactive mode 
 if the output file is already present. 
 To avoid this, the option \texttt{--overwrite} is required. 
 Overwriting without asking is the standard behavior of all other auxiliary programs. 
-As \texttt{pythontex} also \texttt{depythontex} does not write a log file 
+As \tool{pythontex} also \tool{depythontex} does not write a log file 
 but just prints its errors and warnings. 
 Thus, the author wrote a little wrapper, 
-called \texttt{depythontexW} and described in Section~\ref{subsec:pythontexW}, 
-and place it where it can be found, e.g.~in the folder of \texttt{depythontex}\index{depythontexW}. 
+called \tool{depythontexW} and described in Section~\ref{subsec:pythontexW}, 
+and place it where it can be found, e.g.~in the folder of \tool{depythontex}. 
 % TBD: evaluate: maybe it is a better solution to enable this software itself to write the output to a log file. 
 
 Unfortunately, as the original author of \pkg{pythontex} shifted his focus 
@@ -937,7 +938,7 @@ and its name is \texttt{pythontex-files-xxx}.
 Further, the package \pkg{pythontex} can be configured with package options when loading the package. 
 Since this software is designed for reproducibility, 
 most appropriate would be to specify \texttt{runall=true} meaning that even if no python code is modified 
-the auxiliary program \texttt{pythontex} executes the python code in the document. 
+the auxiliary program \tool{pythontex} executes the python code in the document. 
 Also, it is appropriate to specify \texttt{rerun=always}. 
 Note that the defaults are \texttt{runall=false} and \texttt{rerun=errors}. 
 This behavior makes sense to speed up creation of the document, 
@@ -950,26 +951,28 @@ that this makes a difference between \texttt{runall=true/false}
 and \texttt{rerun=always/errors} if external sources are modified, 
 but as is proved in~\cite{PyTexInOut}, Section 2.1, 
 the package translates package option \texttt{runall=true/false} into key value pair \texttt{rerun=always/errors} 
-and this is the only information \texttt{pythontex} obtains from the package, 
+and this is the only information \tool{pythontex} obtains from the package, 
 so there is no difference. 
 
-Also, the auxiliary program \texttt{pythontex} itself can be configured via command line arguments. 
+Also, the auxiliary program \tool{pythontex} itself can be configured via command line arguments. 
 For the package options \texttt{runall} and \texttt{rerun}, 
 there are according command line options \texttt{-{}-runall} and \texttt{-{}-rerun} with the same scope. 
 Whereas the package merges options \texttt{runall} and \texttt{rerun} silently, 
-the auxiliary program \texttt{pythontex} emits an error, if both are combined. 
+the auxiliary program \tool{pythontex} emits an error, if both are combined. 
 Essentially one can forget about \texttt{runall} and stick to \texttt{rerun}. 
 
 Strange enough, according to~\cite{PythonTexP}, Section 4.1, package options overwrite command line options. 
-This software shall invoke \texttt{pythontex} 
+This software shall invoke \tool{pythontex} 
 with the option \texttt{-{}-rerun=always} which is thus specified as the default. 
 To force unconditional update, this is not sufficient. 
-Instead, this software relies on an undocumented feature of auxiliary program \texttt{pythontex} 
+Instead, this software relies on an undocumented feature of auxiliary program \tool{pythontex} 
 which is likely not to change: 
-If one of the expected output files is missing, it recreates all output files, independent of command line options and package options. 
-Thus, this software deletes one output file if present, before executing \texttt{pythontex}. 
+If one of the expected output files is missing, 
+it recreates all output files, independent of command line options and package options. 
+Thus, this software deletes one output file if present, 
+before executing \tool{pythontex}. 
 
-When this software invokes \texttt{pythontex} 
+When this software invokes \tool{pythontex} 
 the exit codes may not be changed via \texttt{-{}-error-exit-code}, 
 i.e.~if specified then with value \texttt{true}. 
 Neither the options \texttt{-{}-interactive}, \texttt{-h}, \texttt{-{}-help} or \texttt{-{}-version} are allowed. 
@@ -999,10 +1002,12 @@ it is explicitly set to highlight the string created by python,
 but it is python which evaluates the little computation 
 and which prints the string. 
 
-Since \texttt{pythontex} is written in python, 
+Since \tool{pythontex} is written in python, 
 including python code in the \LaTeX{} document 
-uses the python interpreter already installed, as a prerequisite of \texttt{pythontex}. 
-To use another language, the according interpreter must be installed in addition to python. 
+uses the python interpreter already installed, a
+s a prerequisite of \tool{pythontex}. 
+To use another language, 
+the according interpreter must be installed in addition to python. 
 
 
 
@@ -1023,9 +1028,9 @@ To use another language, the according interpreter must be installed in addition
   \end{figure}
 
 
-  Figure~\ref{fig:depy2out} shows the files converted by \texttt{depythontex}. 
-  As for \texttt{depythontex}, this software uses the wrapper \texttt{depythontexW} 
-  of \texttt{depythontex} instead of \texttt{depythontex} itself. 
+  Figure~\ref{fig:depy2out} shows the files converted by \tool{depythontex}. 
+  As for \tool{depythontex}, this software uses the wrapper \tool{depythontexW} 
+  of \tool{depythontex} instead of \tool{depythontex} itself. 
   This is reflected in the figure. 
 
 
@@ -1164,7 +1169,7 @@ It may be surprising, that there are situations
 where even bibliography processors need to be rerun, 
 among these backlinks, and citations in headlines and glossaries. 
 Package \pkg{rerunfilecheck} does not take this into account. 
-Accordingly, even \texttt{pythontex} may need a rerun, 
+Accordingly, even \tool{pythontex} may need a rerun, 
 e.g.\@ if code is executed in headlines or in captions of floating objects, 
 because this may insert additional invocations and may change invocation order 
 which may lead to different results. 
@@ -1360,7 +1365,7 @@ and derived from these other values.
 There are two strategies to deal with the problem: 
 %
 \begin{itemize}
-  \item \index{diff}
+  \item
   Make the build process reproducible. 
   The advantage of this approach is that diffing is quite simple, 
   fast and reproducible: 
@@ -1372,7 +1377,7 @@ There are two strategies to deal with the problem:
   % the different latex engines cannot be treated uniformly. 
   % TBD: a feature request to hyperref is already posted. 
   % let us keep an eye on that. 
-  \item \index{vmdiff}
+  \item
   Use diff tools implementing a weaker notion of equivalence, 
   in a sense visibility equivalence of some degree. 
   One approach is the script \tool{vmdiff} 
@@ -1506,7 +1511,6 @@ compilation is repeated, e.g.\@ by \tool{ntlatex} and copied into \texttt{diffDi
 \medskip
 
 
-\index{exiftool}
 There are rare occasions where the timestamp shall be set explicitly. 
 This is not possible directly as it is read off from the original PDF file. 
 We suggest to use \tool{exiftool} to modify the \texttt{CreationDate} 
@@ -1517,7 +1521,6 @@ This is done by something like
   exiftool -PDF:CreateDate=2020-01-01T00:01:02Z xxx.pdf 
 \end{verbatim}
 %
-\index{pdfinfo}
 Here, the option \texttt{PDF:CreateDate} is in fact the name of the tag to be written. 
 Note that the timezone must be UTC represented by the \texttt Z 
 signifying zero time offset compared to UTC\@. 
@@ -1568,8 +1571,8 @@ Is content is immaterial.
 
 
 
-\section{Alternative build process with \protect\tool{latexmk}}\label{sec:latexmk}%\protect\tool{latexmk}
-\index{latexmk}
+\section{Alternative build process with \protect\toolg{latexmk}}\label{sec:latexmk}%\protect\tool{latexmk}
+\sindex[tool]{latexmk}
 
 This section is on running the build process of \LaTeX{} main files 
 with \tool{latexmk} or equivalent. 

@@ -6,6 +6,7 @@
 %\RequirePackage{lmodern} % does not work with htlatex
 %\directlua{pdf.setminorversion(7)}
 %\DocumentMetadata{pdfversion=1.7}%, lang=en-US}
+%DocumentMetadata{uncompressed}
 \documentclass[a4paper,12pt,german,english]{book}
 \newif\iflatextortf% false for latex but set true for latex2rtf internally 
 
@@ -138,14 +139,14 @@ if used with package \texttt{biblatex}}
 \newacronym{out}{OUT}{contains bookmarks: input and output format of \LaTeX{} engines 
 if used with package \texttt{hyperref}, file ending seems naive}
 \newacronym{ist}{IST}{(make-)Index Style File: output format of \LaTeX{} engines % chktex 36
-if used with package \texttt{glossaries} configured for \tool{makeindex} }
-\newacronym{xdy}{XDY}{index style file for \tool{xindy}: output format of \LaTeX{} engines 
-if used with package \texttt{glossaries} configured for \tool{xindy} }
+if used with package \texttt{glossaries} configured for \toolg{makeindex} }
+\newacronym{xdy}{XDY}{index style file for \toolg{xindy}: output format of \LaTeX{} engines 
+if used with package \texttt{glossaries} configured for \toolg{xindy} }
 
 
-\newacronym{log}{LOG}{LOGing file: for \LaTeX{} engines and \tool{mpost}}
+\newacronym{log}{LOG}{LOGing file: for \LaTeX{} engines and \toolg{mpost}}
 \newacronym{aux}{AUX}{auxiliary file: input and output file for \LaTeX{} engines; 
-read also e.g\@. by \tool{bibtex}}
+read also e.g\@. by \toolg{bibtex}}
 \newacronym{fls}{FLS}{FiLeS dependencies: list of files the according tex file depends on; 
 output format of \LaTeX{} engines if used with option \texttt{-recorder}}
 \newacronym{synctex.gz}{synctex.gz}{gnu-zipped synchronization files 
@@ -154,50 +155,50 @@ output format of \LaTeX{} engines if used with option \texttt{-synchtex=1}}
 
 % files in conjunction with bibliographies
 \newacronym{bib}{BIB}{BIBliography file: 
-In particular input file for the \tool{bibtex} tool}
+In particular input file for the \toolg{bibtex} tool}
 \newacronym{bbl}{BBL}{bibliography for a latex document in latex format: 
-written by the \tool{bibtex} tool and read by \LaTeX{} processors}
-\newacronym{bst}{BST}{Bibliography Style File read by the \tool{bibtex} tool}
-\newacronym{blg}{BLG}{Bibliography LoG file: for \tool{bibtex} and related}
+written by the \toolg{bibtex} tool and read by \LaTeX{} processors}
+\newacronym{bst}{BST}{Bibliography Style File read by the \toolg{bibtex} tool}
+\newacronym{blg}{BLG}{Bibliography LoG file: for \toolg{bibtex} and related}
 
 % files in conjunction with indices 
 \newacronym{idx}{IDX}{InDeX file containing unsorted and multiple index entries; 
-output format of \LaTeX{} engines with package \tool{makeindex} or similar}
+output format of \LaTeX{} engines with package \toolg{makeindex} or similar}
 \newacronym{ind}{IND}{%
 INDex file containing sorted, unified and formatted index entries, 
-output format of \tool{makeindex} and \tool{xindy}}
-\newacronym{ilg}{ILG}{Index LoG file:: for \tool{makeindex} and related; content depends strongly on the tool}
+output format of \toolg{makeindex} and \toolg{xindy}}
+\newacronym{ilg}{ILG}{Index LoG file:: for \toolg{makeindex} and related; content depends strongly on the tool}
 
 % files in conjunction with glossaries 
 \newacronym{glo}{GLO}{%
 GLOssary file containing unsorted and multiple glossary entries; 
-output format of \LaTeX{} engines with package \tool{makeglossaries}}
+output format of \LaTeX{} engines with package \toolg{makeglossaries}}
 \newacronym{glg}{GLG}{%
-\tool{makeglossaries} log file }
+\toolg{makeglossaries} log file }
 % TBD: clearify: really only makeglossary? makeglossary-lite? seee ILG
 \newacronym{gls}{GLS}{%
 glossary file containing sorted, unified and formatted glossary entries;
-output format of the \tool{makeglossaries} tool read by \LaTeX{} engines}
+output format of the \toolg{makeglossaries} tool read by \LaTeX{} engines}
 % TBD: one could add is and xdy files. 
 
 % files in conjunction with pythontex
 \newacronym{pytxcode}{PYTXCODE}{%
 Code file consisting mainly of code snippets from the TEX file; 
-output format of \LaTeX{} engines with package \tool{pythontex}}
+output format of \LaTeX{} engines with package \toolg{pythontex}}
 \newacronym{depytx}{DEPYTXC}{%
 File containing information to replace code snippets in the TEX file 
 by the result of their evaluation;  
-output format of \LaTeX{} engines with package \tool{pythontex} 
-if loaded with option \tool{depythontex}
+output format of \LaTeX{} engines with package \toolg{pythontex} 
+if loaded with option \toolg{depythontex}
 }
 \newacronym{plg}{PLG}{%
-\tool{pythontex} log file: home-brewed since the original application does not write log files 
+\toolg{pythontex} log file: home-brewed since the original application does not write log files 
 }
 \newacronym{dplg}{DPLG}{%
-\tool{depythontex} log file: home-brewed since the original application does not write log files 
+\toolg{depythontex} log file: home-brewed since the original application does not write log files 
 }
 
-\newacronym{mp}{MP}{MetaPost: input format for the graphic program \tool{mpost}}
+\newacronym{mp}{MP}{MetaPost: input format for the graphic program \toolg{mpost}}
 \newacronym{ps}{PS}{PostScript: 
 programming language for printers and printable file format; 
 today mostly replaced by PDF}
@@ -206,6 +207,7 @@ today mostly replaced by PDF}
 
 
 \newindex[General Index]{idx}
+\newindex[Tools related with LaTeX]{tool}
 \newindex[LaTeX Packages]{pkg}
 \newindex[LaTeX Commands]{cmd}
 }
@@ -283,6 +285,7 @@ Version \strippedVersionID}
 }{
 %\chapter{Indices}
   \printindex[idx]
+  \printindex[tool]
   \printindex[pkg]
   \printindex[cmd]
   \printglossaries%
