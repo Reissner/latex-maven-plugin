@@ -1486,6 +1486,18 @@ We shall wait with rework until package glossaries-extra and tool bib2gls is int
 
 <!-- add metadata with package hyperxmp -->
 
+<!-- test for reproducibility is based on PDF files. 
+These shall be checked in in git as text files. 
+Idea is to use qpdf either uncompressing or converting into JSON when staging. 
+Of course after, this must be undone. 
+But there are considerable problems with that approach. 
+There is a lack of idempotence. 
+
+On the other hand, qpdf seems as fast as diff. 
+I dream of that small and local changes in the TEX sources yield local changes in the JSON 
+and that JSON is the base for diffing. 
+-->
+
     <release version="2.1" date="2023-08-28" 
       description="build with latexmk and generalized reproducibility, readed glossary">
       <action dev='reissner' type='add'>
