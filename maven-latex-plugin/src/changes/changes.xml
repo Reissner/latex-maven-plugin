@@ -1484,6 +1484,8 @@ We shall wait with rework until package glossaries-extra and tool bib2gls is int
             Also not clear what happens if one file shows an error... what about processing of the others? 
 -->
 
+<!-- add metadata with package hyperxmp -->
+
     <release version="2.1" date="2023-08-28" 
       description="build with latexmk and generalized reproducibility, readed glossary">
       <action dev='reissner' type='add'>
