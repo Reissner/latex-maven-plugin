@@ -1498,6 +1498,27 @@ I dream of that small and local changes in the TEX sources yield local changes i
 and that JSON is the base for diffing. 
 -->
 
+<!-- consider \listfiles for displaying the versions of classes and packages. 
+This is to stabilize reproducibility. 
+new parameter with 3 settings: 
+  - noCheck, 
+    as now: no version check 
+  - checkIfListed, 
+    parses the .log file and gets the section after '*File List*'
+    Typical entries: 
+        trig.sty    2021/08/11 v1.11 sin cos tan (DPC)
+        graphics.cfg    2016/06/04 v1.11 sample graphics configuration
+    Note the american date style. 
+    ended by  '***********' 
+    Section one after last closing (). 
+
+    checks whether the versions v1.11 are within the ranges as done for executables. 
+    If the section starting with '*File List*' is absent: like noCheck
+
+  - checkForced 
+    like checkIfListed but warning if section starting with '*File List*' is absent
+-->
+
     <release version="2.1" date="2023-08-28" 
       description="build with latexmk and generalized reproducibility, readed glossary">
       <action dev='reissner' type='add'>
