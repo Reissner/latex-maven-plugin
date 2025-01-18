@@ -1034,6 +1034,11 @@ public class LatexPreProcessor extends AbstractLatexProcessor {
   // with full path in ptx-file
   // may throw BuildFailureException TEX01,
   // may log EEX01, EEX02, EEX03, WEX04, WEX05, EFU07, EFU08, EFU09
+  //
+  // Note: in inkscape 1.4 the following works: 
+  // inkscape --export-type=pdf,eps --export-area-drawing --export-latex F4_07someSvg.svg 
+  // so all files are created at once. 
+  // Currently, this is not used. 
   private void runSvg2Dev(File svgFile, LatexDev dev, boolean filterTex)
       throws BuildFailureException {
     // current:
