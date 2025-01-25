@@ -68,9 +68,9 @@ sub parseTexFile($fileName) {
       print("docClass: $+{docClass}\n");
       # Make default value explicit 
       my $chkDiffMagic = ($+{chkDiffMagic} and not $+{chkDiffMagicVal})
-      ? 'true' : $+{chkDiffMagicVal};
+        ? 'true' : $+{chkDiffMagicVal};
       # return the magic comments relevant in this context 
-      return ($+{programMagic}, $chkDiffMagic)
+      return ($+{programMagic}, $chkDiffMagic);
     }
     # Here, the line does not match: go on 
   }
@@ -89,11 +89,11 @@ use DateTime::Format::ISO8601;
 
 sub getTimestampDiff($fileName) {
   # The following is to determing PDF file to diff if chkDiff is set 
-  my $pdfFileOrg=catfile(getcwd, $fileName);
+  my $pdfFileOrg = catfile(getcwd, $fileName);
 
-  my $baseDirectory='${baseDirectory}/';# trailing '/' for concatenation 
-  my $texSrcDirectory='${texSrcDirectory}/';
-  my $diffDirectory='${diffDirectory}/';
+  my $baseDirectory   = '${baseDirectory}/'; # trailing '/' for concatenation 
+  my $texSrcDirectory = '${texSrcDirectory}/';
+  my $diffDirectory   = '${diffDirectory}/';
 
   $pdfFileOrg =~ s/\Q$baseDirectory$texSrcDirectory//;
   my $pdfFileDiff = "$baseDirectory$diffDirectory$pdfFileOrg";
@@ -102,8 +102,8 @@ sub getTimestampDiff($fileName) {
     return undef;
   }
   #die("File $pdfFileDiff to diff does not exist ") unless ;
-  my $epoch_timestamp = int((stat($pdfFileDiff))[9]);# epoch time of last modification # TBD: avoid magic number 9 
-
+  # epoch time of last modification # TBD: avoid magic number 9 
+  my $epoch_timestamp = int((stat($pdfFileDiff))[9]);
   my $creationDateEpoch = getCreationTimeMetaEpoch($pdfFileDiff);
   # my ($stdout, $res) = capture_stdout { system("${getPdfMetainfoCommand()} ${pdfMetainfoOptions} $pdfFileDiff") };
   # print ("metainfo ok: $res\n");
@@ -117,13 +117,16 @@ sub getTimestampDiff($fileName) {
 }
 
 sub getCreationTimeMetaEpoch($pdfFile) {
-  my ($stdout, $res) = capture_stdout { system("${getPdfMetainfoCommand()} ${pdfMetainfoOptions} $pdfFile") };
-  print ("metainfo ok: $res\n");
-  print ("metainfos: \n$stdout\n");
-  $stdout =~ /CreationDate:\s*(?<creationDate>.*)\R/ or die("${getPdfMetainfoCommand()} did not get CreationDate. ");
-  print ("CreationDate: $+{creationDate}\n");
+  my ($stdout, $res) = capture_stdout {
+      system("${getPdfMetainfoCommand()} ${pdfMetainfoOptions} $pdfFile")
+  };
+  print("metainfo ok: $res\n");
+  print("metainfos: \n$stdout\n");
+  $stdout =~ /CreationDate:\s*(?<creationDate>.*)\R/
+    or die("${getPdfMetainfoCommand()} did not get CreationDate. ");
+  print("CreationDate: $+{creationDate}\n");
   my $dt = DateTime::Format::ISO8601->parse_datetime($+{creationDate});
-  my $creationDateEpoch=$dt->epoch();
+  my $creationDateEpoch = $dt->epoch();
   print("internal epoch time: $creationDateEpoch\n");
   return $creationDateEpoch;
 }
@@ -165,11 +168,11 @@ sub run_latex($fileName, @opts) {
       # Here, the reference file exists 
       # For lualatex setting TZ=UTC is needed but FORCE_SOURCE_DATE is ignored 
       # For pdflatex setting TZ=UTC is superfluous but FORCE_SOURCE_DATE is needed; 
-      # the same for xelatex  
-      $timeEnv="TZ=UTC SOURCE_DATE_EPOCH=$epoch_timestamp FORCE_SOURCE_DATE=1 ";
+      # the same for xelatex 
+      $timeEnv = "TZ=UTC SOURCE_DATE_EPOCH=$epoch_timestamp FORCE_SOURCE_DATE=1 ";
     } else {
       # Here, the reference PDF file does not exist, so local time but with GMT timezone 
-      $timeEnv="TZ=UTC ";
+      $timeEnv = "TZ=UTC ";
     }
     # in both cases note the trailing blank 
     # The settings are required both for direct compilation into PDF and for compilation via DVI 
@@ -185,23 +188,20 @@ sub run_latex($fileName, @opts) {
     # Note that $timeEnv is first of all suitable for the latex compiler. 
     # strictly speaking FORCE_SOURCE_DATE is not needed; the other variables are needed 
     # to set up 
-    # TBC: ignores options %O from latexmk, acceptable
-    $res = $res or system("$timeEnv${getDvi2pdfCommand()} ${dvi2pdfOptions} $fileName");
+    # TBC: ignores options %O from latexmk, acceptable 
+    $res = $res or
+      system("$timeEnv${getDvi2pdfCommand()} ${dvi2pdfOptions} $fileName");
   }
   #print("invoke: ${getLatex2pdfCommand()} ${latex2pdfOptions} @opts $fileName\n");
   #return system("${getLatex2pdfCommand()} ${latex2pdfOptions} @opts $fileName");
   if ($chkDiffB) {
     if (not defined($epoch_timestamp)) {
-      $epoch_timestamp=getCreationTimeMetaEpoch("$fileName.pdf");
+      $epoch_timestamp = getCreationTimeMetaEpoch("$fileName.pdf");
     }
     $res = $res or utime($epoch_timestamp, $epoch_timestamp, "$fileName.pdf");
   }
   return $res;
 }
-
-
-
-
 
 #$postscript_mode = $dvi_mode = 0;
 
@@ -210,12 +210,10 @@ sub run_latex($fileName, @opts) {
 $bibtex_use = 2;
 $bibtex = "${bibtexCommand} ${bibtexOptions} %O %S";# default: bibtex %O %S
 
-
-
 # this cannot be done according to the according latex maven plugin, 
 # because the according parameter maxNumReRunsLatex may be set to -1 
 # which signifies an infinite number of runs. 
-$max_repeat=30;
+$max_repeat = 30;
 
 # default are tex and eps, but could also be pdf and ptx and mps
 # Currently, all those files are given with explicit endings, 
@@ -226,14 +224,13 @@ $max_repeat=30;
 $cleanup_includes_cusdep_generated = 1;
 $cleanup_includes_generated = 1;
 
-
 # TBD: clarify: xdv and dvi seem to be internal. 
-# maybe missing other extensions in conjunction with synctex
+# maybe missing other extensions in conjunction with synctex 
 # maybe better @generated_exts see below 
 $clean_ext .= " %R.synctex.gz";
 
 # bbl does not work
-#@generated_exts = (@generated_exts, 'lol', 'bbl', 'glo', 'ist') 
+#@generated_exts = (@generated_exts, 'lol', 'bbl', 'glo', 'ist')
 #print "Hello!"
 #foreach (@generated_exts) {
 #print "Generated exts: $_\n";
@@ -356,10 +353,7 @@ sub inkscape {
 # system( "fig2dev -Lpdf \"$_[0].fig\" \"$_[0].pdf\"" );
 # }
 
-
-
 $makeindex = 'internal run_makeSplitindex %A %O';
-
 
 # if used \sindex[idx]{} and no other index name, this is misleading: is a single multi-index
 sub parseIdxFileForMultiIdx($fileName) {
@@ -394,7 +388,7 @@ sub run_makeSplitindex($fileName, @opts) {
   if (@indexLabels) {
     # create dummy ind file 
     my $ind_fh = 'This is a dummy file. ';
-    open($ind_fh, '>>', "$fileName.ind" );
+    open($ind_fh, '>>', "$fileName.ind");
     close $ind_fh;
 
     foreach (@indexLabels) {
@@ -402,8 +396,8 @@ sub run_makeSplitindex($fileName, @opts) {
       # and then generates ind file each 
       rdb_add_generated("$fileName-$_.idx", "$fileName-$_.ind");
     }
-    
-    return system("${splitIndexCommand} -makeindex ${makeIndexCommand} ${splitIndexOptions} $fileName -- ${makeIndexOptions} @opts");
+
+    return system("${splitIndexCommand} --makeindex ${makeIndexCommand} ${splitIndexOptions} $fileName -- ${makeIndexOptions} @opts");
   } else {
     return system("${makeIndexCommand} ${makeIndexOptions} @opts $fileName");
   }
@@ -435,14 +429,12 @@ sub run_makeglossaries {
   if ($silent) {
     $options = "$options -q";
   }
-  return system("${makeGlossariesCommand} $options $file"); 
+  return system("${makeGlossariesCommand} $options $file");
 }
 
-
 # !!! ONLY WORKS WITH VERSION 4.54 or higher of latexmk
-#TBD: take into account: modified: 
+#TBD: take into account: modified:
 #  '$_[0]'->
-
 
 # #############
 # # makeindex #
@@ -451,8 +443,6 @@ sub run_makeglossaries {
 # if (scalar(@ist) > 0) {
 #         $makeindex = "makeindex -s $ist[0] %O -o %D %S";
 # }
-
-
 
 # Implementing glossary with bib2gls and glossaries-extra, with the
 #  log file (.glg) analyzed to get dependence on a .bib file.
@@ -470,8 +460,7 @@ sub run_bib2gls {
     $options = "--silent $options";
   }
   my $ret = system "bib2gls $options $_[0]";
-    
-  my ($base, $path) = fileparse( $_[0] );
+  my ($base, $path) = fileparse($_[0]);
   if ($path && -e "$base.glstex") {
     rename "$base.glstex", "$path$base.glstex";
   }
@@ -481,18 +470,15 @@ sub run_bib2gls {
   $LOG = "$_[0].glg";
   if (!$ret && -e $LOG) {
     open LOG, "<$LOG";
-	  while (<LOG>) {
+    while (<LOG>) {
       if (/^Reading (.*\.bib)\s$/) {
-		    rdb_ensure_file( $rule, $1 );
-	    }
-	  }
-	  close LOG;
+        rdb_ensure_file($rule, $1);
+      }
+    }
+    close LOG;
   }
   return $ret;
 }
-
-
-
 
 # The following code from John Collins is complementary to code in 
 # changes/PythonTeXdep
@@ -506,8 +492,9 @@ push @generated_exts, "depytx", "dplg";
 $clean_ext .= " ${prefixPytexOutFolder}%R/* ${prefixPytexOutFolder}%R";
 #$extra_rule_spec{'pythontex'}  = [ 'internal', '', 'mypythontex', "%Y%R.pytxcode", "%Y${prefixPytexOutFolder}-%R/%R.pytxmcr", "%R", 1 ];
 $extra_rule_spec{'pythontex'} = [
-  'internal', '', 'mypythontex', "%R.pytxcode", "${prefixPytexOutFolder}%R/%R.pytxmcr", "%R", 1
-  ];
+  'internal', '', 'mypythontex', 
+  "%R.pytxcode", "${prefixPytexOutFolder}%R/%R.pytxmcr", "%R", 1
+];
 
 # Explanation for PythonTeX dependency 
 # can be found in changes/PythonTeXdep 
