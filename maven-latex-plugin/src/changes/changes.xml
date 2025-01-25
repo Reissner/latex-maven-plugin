@@ -1519,6 +1519,16 @@ new parameter with 3 settings:
     like checkIfListed but warning if section starting with '*File List*' is absent
 -->
 
+<!-- latexmk with option -g -->
+<!-- to get a numbered glossary see 
+https://ctan.math.illinois.edu/macros/latex/contrib/glossaries-extra/glossaries-extra-manual.html
+\usepackage[numberedsection=〈value〉]{glossaries-extra} %value = nameref?
+does not work for me. 
+Instead, 
+usepackage[label=sec:gls]{glossaries-extra} 
+does work. 
+-->
+
     <release version="2.1" date="2023-08-28" 
       description="build with latexmk and generalized reproducibility, readed glossary">
       <action dev='reissner' type='add'>
