@@ -1529,6 +1529,71 @@ usepackage[label=sec:gls]{glossaries-extra}
 does work. 
 -->
 
+<!-- 
+have a look at https://github.com/James-Yu/LaTeX-Workshop/wiki/Compile#latex-recipes
+I think integration with latex workshop would be a good thing. 
+My idea is synchronization with the `.vscode/settings.json`. 
+I think this plugin shall be able to read the whole, 
+extract what is `latex-workshop.***`. 
+Parts shall be synchronized, parts shall be written back as is. 
+When writing, a backup shall be created. 
+
+Another point is magic comments: 
+latex-workshop supports its own ones, starting LW. 
+
+Now first the settings which are interesting: 
+latex-workshop.latex.tools
+
+
+latex-workshop.latex.magic.args
+refers to the latex compiler seemingly only for magic comment 
+`% !TEX program=lualatex`
+but precedence has `!TEX options =....`
+
+latex-workshop.latex.magic.bib.args 
+refers to the arguments to the bibtex like program eemingly only for magic comment 
+`% !BIB program = bibtex'
+but precedence has `!BIB options = "%DOCFILE%"''.
+
+This all has to be integrated 
+with the other requirement, 
+that all settings given in the maven file 
+can be overwritten by magic comments specific to this software. 
+According to the manual Section 3.1.1.2, these magic comments start with `% !LMP' 
+These special magic comments given by latex workshop 
+shall be treated as these internal magic comments. 
+The full range of magic comments at time of this writing is 
+
+% !TEX program=lualatex
+% !LMP chkDiff
+% !LMP latexmk
+% !LMP targets=chk,pdf,html
+
+So, missing: 
+!TEX options =
+!BIB program = 
+!BIB options = 
+
+latex-workshop.latex.clean.command = latexmk only option 
+latex-workshop.latex.clean.args refers to latexmk then. 
+This has to be researched more tightly. 
+
+latex-workshop.latex.clean.method: command or glob. 
+command can only be latexmk 
+glob, well. is closer to LMP: 
+latex-workshop.latex.clean.fileTypes
+
+latex-workshop.latex.outDir CAUTION: This is the sourcefolder!!
+
+
+latex-workshop.linting.chktex.enabled: depends on the target: 
+Setting and magic comment. 
+latex-workshop.linting.chktex.exec.args 
+
+latex-workshop.linting.lacheck.enabled: 
+discussion: currently disabled 
+-->
+
     <release version="2.1" date="2023-08-28" 
       description="build with latexmk and generalized reproducibility, readed glossary">
       <action dev='reissner' type='add'>
