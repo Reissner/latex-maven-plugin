@@ -795,7 +795,7 @@ enum Converter {
     }
 
     String getVersionEnvironment() {
-      return "^" + Bib2Gls.getCommand() + " %s "
+      return "^" + Bib2Gls.getCommand() + " version %s "
           + "\\(\\d{4}-\\d{2}-\\d{2}\\)\\R";
     }
 
