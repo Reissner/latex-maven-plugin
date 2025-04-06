@@ -876,18 +876,20 @@ enum Converter {
       return ConverterCategory.MetaPost;
     }
   },
-  Ebb {
+  Extractbb {
     String getCommand() {
-      return "ebb";
+      return "extractbb";
     }
 
     // 2nd line 
     String getVersionPattern() {
-      return VYYYYMMDD;
+      return X_X_X;
+      //return VYYYYMMDD; // from original ebb 
     }
 
     String getVersionEnvironment() {
-      return "^.*\\RThis is " + getCommand() + " Version %s\\R";
+      return "^" +  Extractbb.getCommand() + ".lua v%s \\(\\d{4}-\\d{2}-\\d{2}\\)";
+      //return "^.*\\RThis is " + getCommand() + " Version %s\\R";// from original ebb 
     }
 
     ConverterCategory getCategory() {

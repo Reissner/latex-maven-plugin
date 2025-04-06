@@ -901,17 +901,21 @@ public class Settings {
   /**
    * Whether for pixel formats like jpg and png 
    * command {@link #ebbCommand} is invoked to determine the bounding box. 
-   * This is relevant, if at all, only in dvi mode. 
+   * This is relevant, if at all, only in dvi-mode. 
    * Note that the package <code>bmpsize</code> is an alternative 
-   * to invoking <code>ebb</code>, 
+   * to invoking the {@link #ebbCommand}, 
    * which seems not to work for xelatex. 
    * Moreover, all seems to work fine with neither of these techniques. 
    * The {@link #dvi2pdfCommand} given by the default, <code>dvipdfmx</code>, 
    * seems the only which yields the picture sizes as in PDF mode 
    * which fit well. 
+   * 
+   * In 2025 the author realized that the {@link #ebbCommand} <code>ebb</code> 
+   * was in fact replaced by <code>extractbb</code> 
+   * and the original command <code>ebb</code> survived just as a link.
    * Note also that miktex does not offer neither package <code>bmpsize</code> 
-   * nor <code>ebb</code>. 
-   * This alone requires to switch off invocation of <code>ebb</code> by default. 
+   * nor <code>e(xtract)bb</code>. 
+   * This alone requires to switch off invocation of <code>e(xtract)bb</code> by default. 
    * So the default value is <code>false</code>. 
    */
   @RuntimeParameter
@@ -926,17 +930,18 @@ public class Settings {
    * to create <code>.bb</code>-files for driver <code>dvipdfm</code> and 
    * once with parameter <code>-x</code> 
    * to create <code>.xbb</code>-files for driver <code>dvipdfmx</code>. 
-   * The default value is <code>ebb</code>. 
+   * The default value is <code>extractbb</code> 
+   * but maybe the installation requires the original <code>ebb</code>. 
    */
   @RuntimeParameter
-  @Parameter(name = "ebbCommand", defaultValue = "ebb")
-  private String ebbCommand = "ebb";
+  @Parameter(name = "ebbCommand", defaultValue = "extractbb")
+  private String ebbCommand = "extractbb";
 
   /**
    * The options for the command {@link #ebbCommand} 
    * except <code>-m</code> and <code>-x</code> 
    * which are added automatically. 
-   * The default value is <code>-v</code> to make <code>ebb<code> verbose. 
+   * The default value is <code>-v</code> to make <code>e(xtract)bb<code> verbose. 
    */
   // without -x and -m 
   @RuntimeParameter

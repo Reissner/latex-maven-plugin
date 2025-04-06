@@ -60,7 +60,7 @@ fig             & xfig, vscode     & \texttt{fig2devCommand}, e.g.~\tool{fig2dev
 gnuplot (gp)    & vscode           & \texttt{gnuplotCommand}, e.g.~\tool{gnuplot}          \\
 MetaPost (mp)   & vscode           & \texttt{metapostCommand}, e.g.~\tool{mpost}          \\
 svg             & inkscape, vscode & \texttt{svg2devCommand}, e.g.~\tool{inkscape}  \\
-jpg, png        & gimp             & \texttt{ebbCommand}, e.g.~\tool{ebb}                   \\
+jpg, png        & gimp             & \texttt{ebbCommand}, e.g.~\tool{extractbb}                   \\
 \end{longtable}
 
 
@@ -1150,9 +1150,12 @@ According to the documentation~\cite{GraX}, page 13,
 the bounding box must be provided somehow. 
 
 This may be done via the package \pkg{bmpsize} 
-but alternatively also using the command \texttt{ebb}. 
+but alternatively also using the command \texttt{extractbb}. 
 There is some hint, that \pkg{bmpsize} does not work with \texttt{xelatex}. 
-So maybe \texttt{ebb} is the better alternative. 
+So maybe \texttt{extractbb} is the better alternative. 
+In older installations, the command was \texttt{ebb}, 
+and \texttt{ebb} may have survived as a link to \texttt{extractbb}. 
+Else, the command must be adapted in the configuration. 
 Note that both techniques are available in distribution \texlive, 
 but not in \miktex. 
 
@@ -1160,7 +1163,7 @@ Research shows, that inclusion is seamlessly if PDF files are created.
 So the problem addressed is specific for creating DVI files. 
 Also, at time of this writing, it seems that also in DVI mode, no problems occur. 
 Nevertheless, the author experienced errors on missing bounding box 
-and to be safe, provides a way to invoke \texttt{ebb} on the file \texttt{xxx.jpg}. 
+and to be safe, provides a way to invoke \texttt{extractbb} on the file \texttt{xxx.jpg}. 
 
 With parameter \texttt{-m}, this creates a file \texttt{xxx.bb} 
 containing the bounding box for \texttt{dvipdfm}, 
@@ -1175,7 +1178,7 @@ Only the latter yields the same size as direct conversion to PDF creates.
 
 Since bounding boxes seem superfluous, 
 we control their creation with a parameter \texttt{createBoundingBoxes} 
-whether to invoke \texttt{ebb}, which is false by default. 
+whether to invoke \texttt{extractbb}, which is false by default. 
 Nevertheless, if we invoke, then we do twice, 
 creating bounded boxes and extended bounding boxes. 
 

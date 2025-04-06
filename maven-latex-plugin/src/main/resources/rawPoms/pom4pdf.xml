@@ -512,15 +512,20 @@ The default value is the minimal value,
    command '$ebbCommand' is invoked to determine the bounding box. 
    This is relevant, if at all, only in dvi mode. 
    Note that the package 'bmpsize' is an alternative 
-   to invoking 'ebb', 
+   to invoking the '$ebbCommand', 
    which seems not to work for 'xelatex'. 
    Moreover, all seems to work fine with neither of these techniques. 
    The '$dvi2pdfCommand' given by the default, 'dvipdfmx', 
    seems the only which yields the picture sizes as in PDF mode 
    which fit well. 
+
+   In 2025 the author realized that the {@link #ebbCommand} <code>ebb</code> 
+   was in fact replaced by <code>extractbb</code> 
+   and the original command <code>ebb</code> survived just as a link.
+
    Note also that miktex does not offer neither package 'bmpsize' 
-   nor 'ebb'. 
-   This alone requires to switch off invocation of 'ebb' by default. 
+   nor 'e(xtract)bb'. 
+   This alone requires to switch off invocation of 'e(xtract)bb' by default. 
    So the default value is 'false'. -->
             <createBoundingBoxes>false</createBoundingBoxes>
 
@@ -531,7 +536,8 @@ once with parameter '-m'
 to create '.bb'-files for driver 'dvipdfm' and 
 once with parameter '-x' 
 to create '.xbb'-files for driver 'dvipdfmx'. 
-The default value is 'ebb'. -->
+The default value is 'extractbb' 
+but maybe the installation requires the original 'ebb'. -->
             <ebbCommand>${ebbCommand}</ebbCommand>
 
             <!-- The options for the command $ebbCommand 

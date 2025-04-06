@@ -1088,19 +1088,23 @@ For more details see Section~\ref{subsec:svg2devOptions}.
    command \texttt{\$ebbCommand} is invoked to determine the bounding box. 
    This is relevant, if at all, only in dvi-mode. 
    Note that the package \texttt{bmpsize} is an alternative 
-   to invoking \texttt{ebb}, 
+   to invoking the \texttt{\$ebbCommand}, 
    which seems not to work for \texttt{xelatex}. 
    Moreover, all seems to work fine with neither of these techniques. 
    The \texttt{\$dvi2pdfCommand} given by the default, \texttt{dvipdfmx}, 
    seems the only which yields the picture sizes as in PDF mode 
    which fit well. 
+
+   In 2025 the author realized that the \texttt{\$ebbCommand} \texttt{ebb} 
+   was in fact replaced by \texttt{extractbb} 
+   and the original command \texttt{ebb} survived just as a link.
    Note also that \miktex{} offers neither package \pkg{bmpsize} 
-   nor \texttt{ebb}. 
-   This alone requires to switch off invocation of \texttt{ebb} by default. 
+   nor \texttt{e(xtract)bb}. 
+   This alone requires to switch off invocation of \texttt{e(xtract)bb} by default. 
    So the default value is \texttt{false}. 
   \end{minipage}
 } \\
-\texttt{ebbCommand} & \texttt{ebb} \\
+\texttt{ebbCommand} & \texttt{extractbb} \\
 \multicolumn2{|l|}{
 \begin{minipage}{0.95\linewidth}
 The command to create bounding box information 
@@ -1110,7 +1114,8 @@ once with parameter `\texttt{-m}'
 to create `.bb'-files for driver `\texttt{dvipdfm}' and 
 once with parameter `\texttt{-x}' 
 to create `.xbb'-files for driver `\texttt{dvipdfmx}'. 
-% The default value is 'ebb'. 
+The default value is '\texttt{extractbb}' 
+but maybe the installation requires the original '\texttt{ebb}'. 
 \end{minipage}
 } \\
 \texttt{ebbOptions} & \texttt{-v} \\
@@ -1339,12 +1344,12 @@ given by the \texttt{.bb} or the \texttt{.xbb}-file.
 These are both created by \texttt{\$ebbCommand}. 
 
 Of course, the target dvi is not affected: 
-This uses always the dvi-format. 
+This always uses the dvi-format. 
 What is also affected are the tasks 
 creating HTML, ODT or docs: 
 Although these are based on \texttt{htlatex} which is always dvi-based, 
 the preprocessing is done in dvi or in pdf. 
-Also the task TXT is affected. 
+Also, the task TXT is affected. 
 
 As indicated in \texttt{\$latex2pdfCommand}, 
 the processor \xelatex{} does not create \texttt{dvi} 
@@ -1353,7 +1358,7 @@ In a sense, the \texttt{xdv} format is an extension of \texttt{dvi}
 but as for he \texttt{xdv} format there is no viewer, 
 no way \texttt{htlatex} or other applications (except the \xelatex-internal \texttt{xdvidpfmx}) 
 and also no according mime type, 
-we refrained from subsumming this under ``kind of dvi''. 
+we refrained from subsuming this under ``kind of dvi''. 
 Thus, with \xelatex{} the flag \texttt{\$pdfViaDvi} may not be set. 
 
 %The default value is '\texttt{false}'. 
