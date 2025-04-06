@@ -364,7 +364,11 @@ see the manual~\cite{LatexPlugin}, Chapter 6.
 \mode<article>{
 % not allowed for presentation itself: 
 % no theindex-environment defined in beamer class 
+\IfPackageLoadedTF{tex4ht}{%
+  % no index and no glossaries with tex4ht 
+}{
 \printindex
+}
 \bibliographystyle{alpha}
 \bibliography{../lit,../litLMPpub}
 }
