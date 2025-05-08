@@ -802,9 +802,12 @@ i.e.\@ converters intended to be invoked by this software.
 The goal yields a full list of registered converters, 
 signifying which of them are excluded 
 according to parameter \texttt{convertersExcluded}, 
-which are not installed, 
+which are not installed, i.e.\@ not found, 
 and for each of the rest, the actual version, the allowed range 
 and a warning if the actual version is out of range. 
+Note that the listing is not the copy of a real output for goal \texttt{vrs}: 
+\tool{latexmk} is listed as not found but at the same time gives its version. 
+This is just illustrative. 
 
 The parameter \texttt{convertersExcluded} 
 is described in Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen}. 
@@ -853,59 +856,64 @@ of course only converters need to be installed which are really needed.
 \begin{lstlisting}[basicstyle=\tiny,
 float, captionpos=b, label={lst:vrsOut}, 
 caption={Output of goal \texttt{latex:vrs}}]
-[INFO] --- latex:2.0-SNAPSHOT:vrs (default-cli) @ latex-maven-plugin ---
+[INFO] --- latex:2.1-SNAPSHOT:vrs (default-cli) @ latex-maven-plugin ---
 [INFO] Manifest properties: 
 [INFO] MANIFEST: (1.0)
-[INFO]        Implementation-Version: '2.0-SNAPSHOT'
-[INFO] PackageImplementation-Version: '2.0-SNAPSHOT'
-[INFO] pom properties:
-[INFO] coordinate.groupId:    'eu.simuline.m2latex'
-[INFO] coordinate.artifactId: 'latex-maven-plugin'
-[INFO] coordinate.version:    '2.0-SNAPSHOT'
+[INFO]        Implementation-Version: '2.1-SNAPSHOT'
+[INFO] PackageImplementation-Version: '2.1-SNAPSHOT'
+[INFO] pom properties: coordinates
+[INFO] groupId:    'eu.simuline.m2latex'
+[INFO] artifactId: 'latex-maven-plugin'
+[INFO] version:    '2.1-SNAPSHOT'
 [INFO] git properties: 
-[INFO] build version:  '2.0-SNAPSHOT'
-[INFO] commit id desc: 'latex-maven-plugin-1.8-209-g5ac27b7-dirty'
-[INFO] buildTime:      '2023-06-25T23:31:20+0200'
+[INFO] build version:  '2.1-SNAPSHOT'
+[INFO] commit id desc: 'latex-maven-plugin-2.0-368-g960eb5c-dirty'
+[INFO] buildTime:      '2025-04-06T10:53:30+0200'
 [INFO] tool versions: 
 [INFO] ?warn?    command             'actual version'(not)in[expected version interval]
-[INFO]           mvn:                '3.9.4'in[3.9.1;3.9.4]
-[INFO]           ant:                '1.10.14'in[1.10.12;1.10.14]
-[INFO]           java:               '17.0.9'in[17.0.9]
-[INFO]           python:             '3.11.6'in[3.11.6]
-[INFO]           perl:               '5.38.2'in[5.38.2]
-[INFO]           pdflatex:           '1.40.25'in[1.40.21;1.40.25]
-[INFO]           lualatex:           '1.17.0'in[1.12.0;1.17.0]
-[INFO]           xelatex:            '0.999995'in[0.999992;0.999995]
+[INFO]           mvn:                '3.9.9'in[3.9.1;3.9.9]
+[INFO]           ant:                '1.10.15'in[1.10.12;1.10.15]
+[INFO]           java:               '17.0.14'in[17.0.9;17.0.14]
+[INFO]           python:             '3.13.2'in[3.10.12;3.13.2]
+[INFO]           perl:               '5.40.1'in[5.34.0;5.40.1]
+[INFO]           lua:                '5.4.7'in[5.4.7;5.4.7]
+[INFO]           pdflatex:           '1.40.27'in[1.40.21;1.40.27]
+[INFO]           lualatex:           '1.22.0'in[1.12.0;1.22.0]
+[INFO]           xelatex:            '0.999997'in[0.999992;0.999997]
 [INFO]           latex2rtf:          '2.3.18 r1267'in[2.3.16 r1254;2.3.18 r1267]
 [INFO]           odt2doc:            '0.9.0'in[0.9.0]
-[INFO]           pdftotext:          '23.11.0'in[21.04.0;23.11.0]
-[INFO]           dvips:              '2023.1'in[2020.1;2023.1]
-[INFO]           dvipdfm:            '20220710'in[20210318;20220710]
-[INFO]           dvipdfmx:           '20220710'in[20200315;20220710]
-[INFO]           xdvipdfmx:          '20220710'in[20200315;20220710]
+[INFO]           pdftotext:          '25.03.0'in[21.04.0;25.03.0]
+[INFO]           dvips:              '2025.1'in[2020.1;2025.1]
+[INFO]           dvipdfm:            '20250205'in[20210318;20250205]
+[INFO]           dvipdfmx:           '20250205'in[20200315;20250205]
+[INFO]           xdvipdfmx:          '20250205'in[20200315;20250205]
 [INFO]           dvipdft:            '20090604.0046'in[20090604.0046]
-[INFO]           gs:                 '9.56.1'in[9.52.0;9.56.1]
-[INFO]           chktex:             '1.7.8'in[1.7.8]
-[INFO]           diff-pdf-visually:  '1.7.0'in[1.6.4;1.7.0]
+[INFO]           gs:                 '10.05.0'in[9.52.0;10.05.0]
+[INFO]           chktex:             '1.7.9'in[1.7.9]
+[INFO]           diff-pdf-visually:  '1.8.1'in[1.6.4;1.8.1]
 [INFO]           diff-pdf:           '300'in[300]
-[INFO]           diff:               '3.10'in[3.8;3.10]
-[INFO]           pdfinfo:            '23.11.0'in[22.01.0;23.11.0]
-[INFO]           exiftool:           '12.71'in[12.39;12.71]
+[INFO]           diff:               '3.11'in[3.8;3.11]
+[INFO]           pdfinfo:            '25.03.0'in[22.01.0;25.03.0]
+[INFO]           exiftool:           '13.24'in[12.39;13.24]
 [INFO]           bibtex:             '0.99d'in[0.99d]
-[INFO]           bibtexu:            '4.00'in[4.00;4.00]
-[INFO]           bibtex8:            '4.00'in[4.00;4.00]
-[WARNING] WMI02: makeindex:          '2.17'not in[2.15;2.16]
+[INFO]           bibtexu:            '4.02'in[4.00;4.02]
+[INFO]           bibtex8:            '4.02'in[4.00;4.02]
+[INFO]           makeindex:          '2.17'in[2.15;2.17]
+[INFO]           upmendex:           '1.11'in[0.54;1.11]
+[INFO]           xindex:             '0.64'in[0.55;0.64]
 [INFO]           splitindex:         '0.1'in[0.1]
-[INFO]           makeglossaries:     '4.51'in[4.45;4.51]
+[INFO]           makeglossaries:     '4.56'in[4.45;4.56]
+[INFO]           bib2gls:            '4.4'in[4.4]
 [INFO]           pythontex:          '0.18'in[0.17;0.18]
 [INFO]           depythontex:        '0.18'in[0.17;0.18]
-[INFO]           mpost:              '2.02'in[2.00;2.02]
-[INFO]           ebb:                '20220710'in[20200315;20220710]
-[INFO]           gnuplot:            '5.4 patchlevel 10'in[5.4 patchlevel 0;5.4 patchlevel 10]
-[INFO]           inkscape:           '1.3.2'in[1.0.2;1.3.2]
-[INFO]           fig2dev:            '3.2.9'in[3.2.7b;3.2.9]
+[INFO]           latexmk:            '4.86a'in[4.70b;4.86a]
+[INFO]           mpost:              '2.11'in[2.00;2.11]
+[INFO]           extractbb:          '1.1.0'in[1.1.0]
+[INFO]           gnuplot:            '6.0 patchlevel 2'in[5.4 patchlevel 0;6.0 patchlevel 2]
+[INFO]           inkscape:           '1.4'in[1.0.2;1.4]
+[INFO]           fig2dev:            '3.2.9a'in[3.2.7b;3.2.9a]
 [INFO] tools excluded: 
-[INFO] upmendex, xindy
+[INFO] xindy
 [INFO] tools not found: 
 [INFO] latexmk
 [INFO] ------------------------------------------------------------------------
@@ -919,8 +927,8 @@ caption={Output of goal \texttt{latex:vrs}}]
 It is a design goal to notify the user of formal deficiencies of the created documents 
 by tight logging of errors and warnings 
 to give high confidence in the formal quality of the result in the absence of errors and warnings. 
-Logging is devoted all of Chapter~\ref{chap:exceptionLogging}. 
-Of particular intestest is Table~\ref{tab:WarnALP} on failures running a tool 
+Logging is devoted all of the Chapter~\ref{chap:exceptionLogging}. 
+Of particular interest is Table~\ref{tab:WarnALP} on failures running a tool 
 on page~\pageref{tab:WarnALP}. 
 We highlight 
 %
