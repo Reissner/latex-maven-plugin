@@ -174,14 +174,14 @@
     <!-- checked during validation -->
     <versionMvn>3.9.2</versionMvn>
     <versionJava>17</versionJava>
-    <versionTestPlugins>3.3.1</versionTestPlugins>
+    <versionTestPlugins>3.5.3</versionTestPlugins>
     <versionJunit5>5.8.2</versionJunit5>
     <!--versionJunit5Platform>5.8.2</versionJunit5Platform-->
     <versionJunit4>4.13.2</versionJunit4>
     <versionItf>0.11.0</versionItf>
-    <versionAnt>1.10.14</versionAnt>
+    <versionAnt>1.10.15</versionAnt>
     <versionSlf4j>2.1.0-alpha1</versionSlf4j>
-    <versionsACCM>4.0.0-alpha-7</versionsACCM><!-- 4.0.0-alpha-13 does not work -->
+    <versionsACCM>4.0.0-alpha-7</versionsACCM><!-- 4.0.0-alpha-7 works 4.0.0-alpha-13, 4.0.0-rc-3 do not work -->
     <versionStripped>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}</versionStripped>
     <urlSite>https://www.simuline.eu/LatexMavenPlugin/</urlSite>
   </properties>
@@ -348,13 +348,13 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-text</artifactId>
-      <version>1.12.0</version>
+      <version>1.13.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
-      <version>4.0.1</version>
+      <version>4.0.2</version>
     </dependency>
 
     <dependency>
@@ -367,7 +367,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>5.12.0</version>
+      <version>5.17.0</version>
       <!--scope>test</scope-->
     </dependency>
 
@@ -375,7 +375,7 @@
     <dependency>
       <groupId>org.apache.maven.plugin-testing</groupId>
       <artifactId>maven-plugin-testing-harness</artifactId>
-      <version>4.0.0-alpha-2</version><!-- 4.0.0-beta-1 does not work-->
+      <version>4.0.0-alpha-2</version><!-- 4.0.0-alpha-2 works 4.0.0-beta-4 does not exist 4.0.0-beta-1 does not work-->
       <scope>test</scope>
     </dependency>
 
@@ -384,7 +384,7 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.16.1</version>
+      <version>2.19.0</version>
     </dependency>
 
     <dependency>
@@ -566,7 +566,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-help-plugin</artifactId>
-        <version>3.4.1</version>
+        <version>3.5.1</version>
       </plugin>
 
       <!-- read/write property values -->
@@ -600,7 +600,7 @@
       </plugin>
 -->
 
-      <plugin>
+      <!-- <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
         <version>3.2.4</version>
@@ -610,14 +610,14 @@
             <phase>verify</phase>
             <goals>
               <goal>sign</goal>
-            </goals>
+            </goals> -->
             <!--configuration>
               <keyname>${gpg.keyname}</keyname>
               <passphraseServerId>${gpg.keyname}</passphraseServerId>
             </configuration-->
-          </execution>
+          <!-- </execution>
         </executions>
-      </plugin>
+      </plugin> -->
 
       <!-- used to create version without SNAPSHOT suffix and timestamp for documentation -->
       <plugin>
@@ -833,7 +833,7 @@
       <!-- configuration for clean plugin -->
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
-        <version>3.4.0</version>
+        <version>3.4.1</version>
         <configuration>
           <filesets>
             <fileset>
@@ -870,7 +870,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.7.1</version>
+        <version>3.8.1</version>
         <executions>
           <execution>
             <?m2e execute onConfiguration,onIncremental?>
@@ -888,7 +888,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.13.0</version>
+        <version>3.14.0</version>
         <configuration>
           <compilerArgs>
             <arg>-g</arg>
@@ -1011,20 +1011,20 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-install-plugin</artifactId>
-        <version>3.1.2</version>
+        <version>3.1.4</version>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
-        <version>3.1.2</version>
+        <version>3.1.4</version>
       </plugin>
 
       <!-- javadoc plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.8.0</version>
+        <version>3.11.2</version>
         <configuration>
           <breakiterator>true</breakiterator>
           <show>private</show>
@@ -1070,7 +1070,7 @@
           <dependency>
             <groupId>org.apache.maven.doxia</groupId>
             <artifactId>doxia-module-markdown</artifactId>
-            <version>2.0.0-M12</version>
+            <version>2.0.0</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -1170,7 +1170,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>3.6.2</version>
+        <version>3.9.0</version>
         <configuration>
           <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
           <skipEmptyReport>false</skipEmptyReport>
@@ -1181,7 +1181,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
-        <version>3.4.0</version>
+        <version>3.6.0</version>
       </plugin>
 
 
@@ -1195,7 +1195,7 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>versions-maven-plugin</artifactId>
         <!-- TBD: uniform version -->
-        <version>2.17.1</version>
+        <version>2.18.0</version>
         <reportSets>
           <reportSet>
             <reports>
@@ -1223,7 +1223,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changes-plugin</artifactId>
-        <version>2.12.1</version>
+        <version>3.0.0-M2</version>
         <reportSets>
           <reportSet>
             <reports>
