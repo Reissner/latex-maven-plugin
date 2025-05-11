@@ -181,21 +181,21 @@ public class LatexProcessor extends AbstractLatexProcessor {
   private Optional<String> latex2PdfCmdMagic = Optional.empty();
 
   /**
-   * Index of the group in {@link #patternMultiIndex}
+   * Index of the group in {@link Settings#patternMultiIndex}
    * containing the string <code>\indexentry</code>. 
    * The default is 3 and this may hardly change. 
    */
   final static int GRP_IDX_KEYPAGE = 3;
 
   /**
-   * Index of the group in {@link #patternMultiIndex}
+   * Index of the group in {@link Settings#patternMultiIndex}
    * containing the identifier of the index. 
    * The default is 2 and this may hardly change. 
    */
   final static int GRP_IDX_IDENT = 2;
 
   /**
-   * Index of the group in {@link #patternMultiIndex}
+   * Index of the group in {@link Settings#patternMultiIndex}
    * containing the string <code>\indexentry</code>. 
    * The default is 1 and this may hardly change. 
    */

@@ -20,6 +20,7 @@ package eu.simuline.m2latex.mojo;
 
 import eu.simuline.m2latex.core.BuildFailureException;
 import eu.simuline.m2latex.core.Target;
+import eu.simuline.m2latex.core.LatexProcessor;// for javadoc only 
 
 import org.apache.maven.plugin.MojoFailureException;
 
@@ -77,7 +78,7 @@ public class CfgLatexMojo extends AbstractLatexMojo {
    *    exists already as a regular file. 
    *    <li> TFU03, TFU04, TFU05, TFU06 if 
    *    copy of output files to target folder fails. 
-   *    For details see {@link LatexProcessor#create(SortedSet<Target>)}. 
+   *    For details see {@link LatexProcessor#create(SortedSet)}. 
    *    </ul>
    */
   public void execute() throws MojoFailureException {
