@@ -247,8 +247,7 @@ push @generated_exts, "%R.synctex.gz", "%R.synctex";;
 # this may cause problems with extensions containing a dot. 
 # Also this is not general enough 
 # if the generated file deviates from %R by more than an extension. 
-# In this case, use $clean_ext$
-# Here, $clean_ext is empty. 
+# In this case, use the form with explicit '%R'. 
 # list of listings, whereas lof and lot are already present. 
 push @generated_exts, "lol";
 push @generated_exts, "dvi", "xdv";
@@ -262,7 +261,7 @@ push @generated_exts, "clg";# log file for chktex: specific for latex builder LM
 # $clean_ext .= " stateMachine.log"; does not work, because stateMachine.log is the extension! 
 
 # should be under indexing 
-$clean_ext .= " %R.ist %R.xdy %R-*.ind %R-*.idx %R-*.ilg %R-*.ind";
+push @generated_exts, '%ist', '%xdy', '%R-*.ind', '%R-*.idx', '%R-*.ilg', '%R-*.ind';
 
 # many arguments shall be quoted 
 # but in many cases it is immaterial; except in metapost 
@@ -487,9 +486,9 @@ sub run_bib2gls {
 $pythontex = '${getPythontexCommand()} ${pythontexOptions} %R';#'pythontexW %O %R';
 
 push @generated_exts, "pytxcode", "plg";
-push @generated_exts, "depytx", "dplg";
+push @generated_exts, "depytx", "%R.depytx.tex", "dplg";
 
-$clean_ext .= " ${prefixPytexOutFolder}%R/* ${prefixPytexOutFolder}%R";
+push @generated_exts, '${prefixPytexOutFolder}%R/*', '${prefixPytexOutFolder}%R';
 #$extra_rule_spec{'pythontex'}  = [ 'internal', '', 'mypythontex', "%Y%R.pytxcode", "%Y${prefixPytexOutFolder}-%R/%R.pytxmcr", "%R", 1 ];
 $extra_rule_spec{'pythontex'} = [
   'internal', '', 'mypythontex', 
