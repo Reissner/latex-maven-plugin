@@ -280,7 +280,7 @@ and contains processed \texttt{pygments} code according to~\cite{PythonTexP}, pa
 \subsection{Errors and Warnings at standard/error output}\label{subsec:pytexErrWarn}
 
 {\small
-\begin{longtable}{|rlll|}
+\begin{longtable}{rlll}
 \toprule
 Line No       & * & Message & RC \\
 \midrule
@@ -353,7 +353,7 @@ Also, they are non-fatal because they don't lead to an immediate exit with failu
 
 
 {\small
-\begin{longtable}{|rlll|}
+\begin{longtable}{rlll}
   \toprule
   Line No       & * & Message & inc err/warn  \\
   \midrule
@@ -394,7 +394,7 @@ that a non-fatal error is if the error counter is incremented
 or the message starts with \texttt{* PythonTeX error}. 
 
 {\small
-\begin{longtable}{|rlll|}
+\begin{longtable}{rlll}
   \toprule
   Line No       & * & Message & inc err/warn  \\
   \midrule
@@ -419,7 +419,7 @@ Table~\ref{tab:pytexWarn} contains proper warnings
 always incrementing the warnings counter. 
 So definition of warnings is simple: A warning is what increases the warning counter. 
 
-\begin{longtable}{|rlll|}
+\begin{longtable}{rlll}
   \toprule
   Line No       & * & Message & inc warn \\
   \endfirsthead%
@@ -430,7 +430,7 @@ So definition of warnings is simple: A warning is what increases the warning cou
    413 & warning & Invalid value for package option fvextfile  & yes \\%temp_data['warnings'] += 1
    484 & warning & Unknown option \dots                        & yes \\%temp_data['warnings'] += 1
    685 & warning & Session xxx has rerun=never                 & yes \\%temp_data['warnings'] += 1
-       &   & But its code or dependencies have been modified & \\
+       &         & But its code or dependencies have been modified & \\
   1446 & warning & The following have dependencies that have been modified & yes \\%warnings += 1
   1737 & warning & Custom code for xxx attempted to print or write to stdout & yes \\%ewarnings += 1
    \end{longtable}
@@ -442,13 +442,13 @@ The according message is identified by its setart \texttt{* PythonTeX stderr}.
 
 
 
-   \begin{longtable}{|rll|}
-    \toprule
-    Line Number       & * & Message  \\
-    \endfirsthead%
-    \bottomrule
-    \caption{\label{tab:pytexNotice} Notices of \texttt{pythontex}  }
-    \endlastfoot%
+\begin{longtable}{rll}
+  \toprule
+  Line No       & * & Message  \\
+  \endfirsthead%
+  \bottomrule
+  \caption{\label{tab:pytexNotice} Notices of \texttt{pythontex}  }
+  \endlastfoot%
   2276 & notice & Line number \dots could not be synced with the document \\
   2336 & notice & x message(s) could not be classified          \\% chktex 36
        &        & Interpreted as y, based on the return code(s) \\% chktex 36
