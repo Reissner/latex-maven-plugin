@@ -227,7 +227,7 @@ $cleanup_includes_generated = 1;
 # TBD: clarify: xdv and dvi seem to be internal. 
 # maybe missing other extensions in conjunction with synctex 
 # maybe better @generated_exts see below 
-$clean_ext .= " %R.synctex.gz";
+push @generated_exts, "%R.synctex.gz", "%R.synctex";;
 
 # bbl does not work
 #@generated_exts = (@generated_exts, 'lol', 'bbl', 'glo', 'ist')

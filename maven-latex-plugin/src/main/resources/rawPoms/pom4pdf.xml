@@ -331,7 +331,8 @@ and notify the developer of this plugin of the deficiency.
 The default value is given below. -->
             <patternCreatedFromLatexMain>
 ^(
-T$T(                        \.([^.]*|synctex\.gz|out\.ps)|
+T$T(\.([^.]*|synctex(\(busy\))?(\.gz)?|
+        out\.ps|run\.xml|\d_\.vrb|depytx(\.tex)?)|
 (-|ch|se|su|ap|li)?\d+\.x?html?|
                  \d+x\.x?bb|
                 \d+x?\.png|
