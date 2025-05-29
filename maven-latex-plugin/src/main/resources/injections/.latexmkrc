@@ -283,7 +283,7 @@ add_cus_dep('fig', 'ptx', 0, 'fig2dev');
 sub fig2dev {
   $file = $_[0];
   print("create from $file.fig\n");
-  rdb_add_generated("$file.ptx", "$file.pdf", "$file.eps");
+  rdb_add_generated("$file.pdf", "$file.eps");
   #fig2dev -L pstex    <fig2devGenOptions> <fig2devPdfEpsOptions>        xxx.fig xxx.eps   
   #fig2dev -L pdftex   <fig2devGenOptions> <fig2devPdfEpsOptions>        xxx.fig xxx.pdf   
   #fig2dev -L pdftex_t <fig2devGenOptions> <fig2devPtxOptions>    -p xxx xxx.fig xxx.ptx
@@ -300,7 +300,7 @@ add_cus_dep('gp', 'ptx', 0, 'gnuplot');
 sub gnuplot {
   $file = $_[0];
   print("create from $file.gp\n");
-  rdb_add_generated("$file.ptx", "$file.pdf", "$file.eps");
+  rdb_add_generated("$file.pdf", "$file.eps");
   # here in the java code no quoting occurs 
   #my $gnuplotOptionsQ = quote(qq/${gnuplotOptions}/);
   my $ret1 = system(qq/${getGnuplotCommand()} -e "set terminal cairolatex pdf ${gnuplotOptions};\
@@ -318,7 +318,7 @@ add_cus_dep('mp', 'mps', 0, 'mpost');
 sub mpost {
   my $file = $_[0];
   print("create from $file.mp\n");
-  rdb_add_generated("$file.mps", "$file.mpx", "$file.fls", "$file.log");
+  rdb_add_generated("$file.mpx", "$file.fls", "$file.log");
   my ($name, $path) = fileparse($file);
   pushd($path);
   my $metapostOptionsQ = quote(qq/${metapostOptions}/);
@@ -333,7 +333,7 @@ add_cus_dep('svg', 'ptx', 0, 'inkscape');
 sub inkscape {
   my $file = $_[0];
   print("create from $file.svg\n");
-  rdb_add_generated("$file.ptx", "$file.pdf");
+  rdb_add_generated("$file.pdf", "$file.eps");
   my $ret1 = system(qq/${getSvg2devCommand()} --export-filename=$file.pdf ${svg2devOptions} $file.svg/);
   #my $ret2 = system("inkscape --export-filename=$file.eps -D --export-latex $file.svg ");
   #use File::Copy;
