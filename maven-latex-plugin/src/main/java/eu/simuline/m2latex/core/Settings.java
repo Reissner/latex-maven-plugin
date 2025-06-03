@@ -574,6 +574,8 @@ public class Settings {
           "(cmsy)\\d+(-c)?-\\d+c?\\.png|" +
           // The following occurs sporadic when using latexmk 
           "(pdf|xe|lua)?latex\\d+\\.fls|" +
+          // created by package pdfx or with \DocumentMetadata
+          "pdf[xae]\\.xmpi?|" +
           // Seemingly for errors 
           "texput\\.(fls|log))$";
 

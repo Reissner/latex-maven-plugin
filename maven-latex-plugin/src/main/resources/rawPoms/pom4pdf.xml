@@ -338,9 +338,12 @@ T$T(\.([^.]*|synctex(\(busy\))?(\.gz)?|
                 \d+x?\.png|
                  -\d+\.svg|
                   -.+\.(idx|ind|ilg))|
+pythontex-files-T$T|
 zzT$T\.e?ps|
 (cmsy)\d+(-c)?-\d+c?\.png|
-(pdf)?latex\d+\.fls)$
+(pdf|xe|lua)?latex\d+\.fls|
+pdf[xae]\.xmpi?|
+texput\.(fls|log))$
             </patternCreatedFromLatexMain>
 
             <!-- The fig2dev command for conversion of fig-files 
