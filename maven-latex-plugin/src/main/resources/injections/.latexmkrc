@@ -448,7 +448,26 @@ sub run_makeglossaries {
 
 # !!! ONLY WORKS WITH VERSION 4.54 or higher of latexmk
 
-push @generated_exts, 'glstex', 'glg';
+push @generated_exts, 'glg', '%R*.glstex';
+# TBD: clarify 
+#push @generated_exts, 'glg', '%R*.glstex';
+
+# TBD: clarify treatment of encoding. 
+# why we can avoid  
+#        "--tex-encoding", "UTF-8",
+#        "--log-encoding", "UTF-8",
+# We need tex sources encoding in editor: utf8 
+# in header 
+# \iftutex%
+#   \usepackage{fontspec}% sets utf8
+# \else
+#   % this seems to work with beamer also 
+#   \usepackage[utf8]{inputenc}
+#   \usepackage[T1]{fontenc}
+# \fi
+# in bib file: 1st line: 
+# % Encoding: UTF-8
+
 
 add_cus_dep('aux', 'glstex', 0, 'run_bib2gls');
 # Explanation can be found in 
@@ -459,23 +478,37 @@ sub run_bib2gls {
     $options = "--silent $options";
   }
   my $ret = system "bib2gls $options $_[0]";
-  my ($base, $path) = fileparse($_[0]);
-  if ($path && -e "$base.glstex") {
-    rename "$base.glstex", "$path$base.glstex";
+
+  if ($ret) {
+    warn "Run_bib2gls: Error, running bib2gls\n";
+    return $ret;
   }
 
+  # my ($base, $path) = fileparse($_[0]);
+  # if ($path && -e "$base.glstex") {
+  #   rename "$base.glstex", "$path$base.glstex";
+  # }
+
   # Analyze log file to find the bib-files.
-  local *LOG;
-  $LOG = "$_[0].glg";
-  if (!$ret && -e $LOG) {
-    open LOG, "<$LOG";
-    while (<LOG>) {
-      if (/^Reading (.*\.bib)\s$/) {
-        rdb_ensure_file($rule, $1);
-      }
-    }
-    close LOG;
+  my $glg= "$_[0].glg";
+  $isopen = open(my $glg_fh, '<', $glg);
+  if (not $isopen) {
+    warn "Run_bib2gls: Error opening log file '$glg'\n";
+    return not @isopen;
   }
+  rdb_add_generated($glg); 
+ 
+  while (<$glg_fh>) {
+    s/\s*$//;
+    if (/^Reading\s+(.+)$/) {
+      rdb_ensure_file($rule, $1);
+    }
+    if (/^Writing\s+(.+)$/) {
+      rdb_add_generated($1);
+    }
+  }
+  close $glg_fh;
+
   return $ret;
 }
 
