@@ -42,10 +42,15 @@ $code --force --install-extension mathematic.vscode-latex
 # [lua]: Couldn't find message for key config.runtime. ...
 #code --force --install-extension sumneko.lua
 
+$code --force --install-extension xilaitl.latex-pix
+$code --force --install-extension andreaalberti.latex-log-syntax-highlighter
+
 # bib
 $code --force --install-extension phr0s.bib
 $code --force --install-extension twday.bibmanager
 $code --force --install-extension zfscgy.bibtex-helper
+$code --force --install-extension matthiasschedel.bibtex-manager
+
 
 # nothing found for tikz
 # metapost 
