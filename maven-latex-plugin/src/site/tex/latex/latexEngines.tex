@@ -139,7 +139,7 @@ as given in Table~\ref{tab:versions}.
 Moreover, our research refers to a specific distribution, \texlive. 
 
 
-\begin{longtable}{|ll|}
+\begin{longtable}{ll}
   \toprule
   \LaTeX{} engine & version \\
   \midrule
@@ -176,7 +176,7 @@ Some options are common to all \LaTeX{} engines
 
 
 {\footnotesize
-\begin{longtable}{|lllll|}
+\begin{longtable}{lllll}
 \toprule
 option & \multicolumn{3}{l}{included} & explanation \\
 \midrule
@@ -304,7 +304,7 @@ One has to clarify,
 whether the maven latex plugin under consideration really works for \miktex. 
 
 {\footnotesize
-\begin{longtable}{|lllll|}
+\begin{longtable}{lllll}
   \toprule
   option & \multicolumn{3}{l}{included} & explanation \\
   \midrule
@@ -508,7 +508,7 @@ To display metadata, we use \texttt{exiftool} and \texttt{pdfinfo}.
 
 \subsection{The tool chains}\label{subsec:toolchain}
 
-Although \xelatex{} always produces a XDV file ias an intermediate step, 
+Although \xelatex{} always produces a XDV file as an intermediate step, 
 when creating a PDF file this is eliminated. 
 In contrast, with the option \texttt{-no-pdf} 
 one can eliminate creation of the PDF file and the XDV is not erased. 
@@ -570,8 +570,9 @@ which is agreed to be
   1970-01-01T00:00:00Z
 \end{verbatim}
 %
-i.e.\@ the point in time, where in timezone UTC (represented by the \texttt Z, zero deviation from UTC) 
-it was start of year 1970, i.e.\@ date \texttt{1970--01--01} and midnight, time \texttt{00:00:00}. 
+i.e.\@ the point in time, where in timezone UTC 
+(represented by the \texttt Z, zero deviation from UTC, also called Zulu-time) 
+it was start of year 1970, i.e.\@ date \texttt{1970-01-01} and midnight, time \texttt{00:00:00}. 
 It is called epoch time, although nothing special happened like Christs birth. 
 Zero and negative time is allowed. 
 Note, that this does not depend on a time zone, 
@@ -580,8 +581,8 @@ conversion from and to epoch time must take time zone into account.
 
 In fact, the above date is an example of a representation given by~\cite{ISO8601-1}. 
 More general, the timezone is either \texttt Z representing UTC 
-or some deviation from UTC for example with two digits for hours and two digits for minutes. 
-For example the same date as above in time zone two hours earlier (more east) than UTC writes 
+or some deviation from UTC for example given with two digits for hours and two digits for minutes. 
+The same date as above in time zone two hours earlier (more east) than UTC writes 
 %
 \begin{verbatim}
   1970-01-01T02:00:00+0200
@@ -598,7 +599,7 @@ We only use the forms based on UTC like so:
 %
 CAUTION\@: The number is understood as to be added to given time to get UTC, 
 so east of UTC has negative numbers. 
-This is the sign opposite to the representation given by ISO 8601 
+This is the sign opposite to the representation given by ~\cite{ISO8601-1} 
 which is the offset to be added to UTC to get time given. 
 
 In Unix and similar operating systems, conversion can be done with \texttt{date}. 
@@ -916,7 +917,7 @@ but only those which are observed as created by a \LaTeX{} engine.
 Observe that the XMP keys with namespace \texttt{pdf} are not specified in~\cite{ISO16684-1}. 
 
 
-\begin{longtable}{|lll|}
+\begin{longtable}{lll}
   \toprule
   DID & XMP & remark \\
   \midrule
