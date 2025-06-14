@@ -254,6 +254,7 @@ push @generated_exts, "dvi", "xdv";
 # for beamer class 
 push @generated_exts, "nav", "snm", "vrb", 'run.xml';
 push @generated_exts, "clg";# log file for chktex: specific for latex builder LMP 
+push @generated_exts, "soc";# package changes, also adding toc if not present 
 
 # why are .ist and xdy not under generated_exts? 
 # note that currently, either %R or what is present is the extension only! 
