@@ -1,0 +1,73 @@
+\documentclass[a4paper]{article}
+
+%\input{../headerSuppressMetaPDF.tex}
+
+\usepackage[style=iso]{datetime2}
+\usepackage{geometry}
+\usepackage{bookmark}
+\PassOptionsToPackage{destlabel}{hyperref}
+\usepackage[a-2b,mathxmp]{pdfx}
+%\usepackage[cmy]{xcolor}
+%\usepackage{hyperref}%pdfx loads hyperref
+%\hypersetup{destlabel}
+
+
+\title{On using pdfx}
+\author{E. Reißner}
+\date{\today}
+
+\newcommand{\keywords}{pdfx\string\sep\space xmpdata}
+\newcommand{\subject}{writing xmpdata and using it in pdfx}
+
+%\newcommand{\writexmp}[2]{\immediate\write\xmpfile{\string\#1{#2}}}
+
+% \makeatletter
+% \newcommand{\mydate}{\@title}
+% \makeatother
+
+\newwrite\xmpfile
+\begin{document}
+\immediate\openout\xmpfile=\jobname.xmpdata
+% \immediate\write\tempfile{this is interesting}
+% \immediate\write\tempfile{}
+% \immediate\write\tempfile{this too}
+% \immediate\write\tempfile{\string\Title{Baking through the ages}}
+\makeatletter
+%\writexmp{Title}{\@title}
+\immediate\write\xmpfile{\string\Title{\@title}}
+\immediate\write\xmpfile{\string\Author{\@author}}
+\immediate\write\xmpfile{\string\Date{\@date}}% valid only with iso yyyy-mm-dd 
+\immediate\write\xmpfile{\string\Keywords{\keywords}}
+\immediate\write\xmpfile{\string\Subject{\subject}}
+\immediate\write\xmpfile{\string\Language{en-US}}
+\immediate\write\xmpfile{\string\CreatorTool{unknownX}}% in info directory: Creator but affects also pdf:Producer and producer in info directory
+\immediate\write\xmpfile{\string\Producer{unknownY}}
+\immediate\write\xmpfile{\string\Identifier{unknownZ}}
+%\immediate\write\xmpfile{\string\URLlink{en-US}}%gives a URL address for an online copy of the document.
+%\immediate\write\xmpfile{\string\Issue{en-US}}%maybe interesting for certain documents. 
+%\immediate\write\xmpfile{\string\Identier{en-US}}%maybe interesting for certain documents. 
+\makeatother
+\immediate\closeout\xmpfile
+
+% \hypersetup{%
+%   pdfinfo={
+%     Creator     ={unknown}, 
+%     Producer     ={unknown}
+%   }
+%   }
+
+% \makeatletter
+% \@title
+% \makeatother
+
+\maketitle
+
+Some text. 
+
+
+% \Title{Baking through the ages}
+% \Author{A. Baker\sep C. Kneader}
+% \Language{en-GB}
+% \Keywords{cookies\sep muffins\sep cakes}
+% \Publisher{Baking International}
+\end{document}
