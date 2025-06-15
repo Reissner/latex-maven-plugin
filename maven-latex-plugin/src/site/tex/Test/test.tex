@@ -71,3 +71,30 @@ Some text.
 % \Keywords{cookies\sep muffins\sep cakes}
 % \Publisher{Baking International}
 \end{document}
+
+% \documentclass{article}
+
+% \title{New Feature of Filecontents}
+% \author{Som One}
+
+% \def\sep{,}%?
+
+% \begin{document}
+
+% {\obeylines
+%  \newlinechar=\endlinechar
+% \makeatletter
+% \newwrite\xmp
+% \immediate\openout\xmp=\jobname.xmpdata
+% \immediate\write\xmp{
+% \string\Title{\@title}
+% \string\Author{\@author}
+% \string\Language{en-US}
+% \string\Keywords{pdfx \sep filecontents}
+% \string\Publisher{Baking International}
+% }
+% }
+% \makeatother
+% \maketitle
+  
+\end{document}
