@@ -255,8 +255,11 @@ push @generated_exts, "dvi", "xdv";
 push @generated_exts, "nav", "snm", "vrb", 'run.xml';
 push @generated_exts, "clg";# log file for chktex: specific for latex builder LMP 
 push @generated_exts, "soc";# package changes, also adding toc if not present 
+push @generated_exts, "sil";# package silence
+push @generated_exts, "tdo";# package todonotes
+push @generated_exts, "xmpdata";# written by filecontents for pdfx 
 
-# why are .ist and xdy not under generated_exts? 
+# why are 'ist' and 'xdy' not under generated_exts? 
 # note that currently, either %R or what is present is the extension only! 
 # this does not make sense very much. 
 # $clean_ext .= " stateMachine.log"; does not work, because stateMachine.log is the extension! 
