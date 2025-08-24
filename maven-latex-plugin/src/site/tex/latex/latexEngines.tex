@@ -2,6 +2,7 @@
 \RequirePackage[l2tabu, orthodox]{nag}
 \DocumentMetadata{uncompress,xmp=true}%
 \documentclass[a4paper, english]{article}%scrartcl [12pt, a4paper]
+%\usepackage{lua-visual-debug}
 %\pdfvariable compresslevel 0
 %\pdfcompresslevel 0
 %\pdfobjcompresslevel 0
@@ -57,7 +58,6 @@
   }
   %pdfsource   ={no latex main file}
 }
-%\usepackage{datetime2}% not with dvi
 
 \ExplSyntaxOn%
 
@@ -74,7 +74,8 @@
 
 \title{Special and common aspects of pdf/dvi/xdvi generators }
 \author{Ernst Reissner (rei3ner@arcor.de)}
-\date{\the\year-\the\month-\the\day{}T\printtime}%***\today***\DTMnow }%\today \DTMnow
+\date{\Today}
+%\date{\the\year-\the\month-\the\day{}T\printtime}%***\today***\DTMnow }%\today \DTMnow
 
 \newcommand{\pdflatex}{\texttt{pdflatex}}
 \newcommand{\lualatex}{\texttt{lualatex}}
@@ -125,7 +126,7 @@ and those for \miktex{} in Section~\ref{sec:optionsMiktex}.
 
 The second subject is privacy as part of security 
 and reproducible builds of documents, e.g.\@ for tests. 
-The focus is here on PDF files and comprises besids visible data 
+The focus is here on PDF files and comprises besides visible data 
 also metadata. 
 The results of our research is collected in Section~\ref{sec:PDFreprSec}. 
 
@@ -160,8 +161,8 @@ shows options of the \LaTeX{} engines under consideration.
 Note that in contrast to the other \LaTeX{} engines, 
 \lualatex{} defines options starting with \texttt{-{}-} 
 but it can also process the options if given with a single dash. 
-Conversely, \LaTeX{} engines other than \lualatex{} 
-can also deal with options starting with double dash. 
+Conversely, \LaTeX{} engines other than \lualatex{} can also deal with options 
+starting with single dash. 
 Options unknown to a \LaTeX{} engine never result in an error or even a warning; 
 instead just an info message `unrecognized option' is displayed. 
 This allows to create a configuration which works for all \LaTeX{} engines. 
@@ -554,15 +555,17 @@ Clearly, creation times affect reproducibility quite directly,
 because usually the date is given in the head page of a document, 
 but it goes also into metadata both directly and indirectly. 
 
-Before discussing aspects of time in the context of PDF creation from \LaTeX, 
+Before discussing aspects of time in the context of PDF creation from \LaTeX{} 
+in Section~\ref{subsubsec:dateTimeZoneTexPdf}, 
+Section~\ref{subsubsec:dateTimeZones} provides the general foundation. 
 
 
 \subsubsection{Date/time formats and time zones}\label{subsubsec:dateTimeZones}
 
-This section introduces date/time formats, time zones and conversions between. 
+This section introduces time zones, date/time formats and conversions between them. 
 
-The description is started with \emph{epoch time} 
-which is the most important although not well human-readable. 
+We start with \emph{epoch time} 
+which is the most important date/time format, although not well human-readable. 
 It is the number of seconds from start of computer time history, 
 which is agreed to be 
 %
@@ -582,25 +585,26 @@ conversion from and to epoch time must take time zone into account.
 In fact, the above date is an example of a representation given by~\cite{ISO8601-1}. 
 More general, the timezone is either \texttt Z representing UTC 
 or some deviation from UTC for example given with two digits for hours and two digits for minutes. 
-The same date as above in time zone two hours earlier (more east) than UTC writes 
+The same date and time as above in time zone two hours earlier (more east) than UTC writes 
 %
 \begin{verbatim}
   1970-01-01T02:00:00+0200
 \end{verbatim}
 
-Among the standard environment variables in POSIX operating systems 
-is also \texttt{TZ} specifying the time zone 
-as described in \url{https://www.gnu.org/software/libc/manual/html_node/Standard-Environment.html}. 
+In POSIX operating systems, among the standard environment variables is also \texttt{TZ} 
+specifying the time zone as described in 
+\url{https://www.gnu.org/software/libc/manual/html_node/Standard-Environment.html}. 
 We only use the forms based on UTC like so: 
 %
 \begin{verbatim}
   TZ=UTC, TZ=UTC-02
 \end{verbatim}
 %
-CAUTION\@: The number is understood as to be added to given time to get UTC, 
-so east of UTC has negative numbers. 
+CAUTION\@: 
+The number is understood as to be added to given time in the current time zone 
+to get UTC, so east of UTC has negative numbers. 
 This is the sign opposite to the representation given by ~\cite{ISO8601-1} 
-which is the offset to be added to UTC to get time given. 
+which is the offset to be added to UTC to get the time in the given time zone. 
 
 In Unix and similar operating systems, conversion can be done with \texttt{date}. 
 If a time is given with option \texttt{-d}, 
@@ -777,17 +781,20 @@ overwriting internal timezone but also the value of \texttt{TZ} if provided.
 \medskip
 
 
-Finally, we have to consider the visible date and time 
-displayed by commands like \cmd{date} or \cmd{time}, to be 
-and \cmd{DTMnow} provided by package \texttt{datetime2}. 
-Unfortunately, \cmd{time}, the number of minutes since midnight is not well human-readable. 
-Thus, for experiments we use \cmd{printdate} defined in Listing~\ref{lst:printdate} 
+Finally, we have to consider the visible date and time. 
+These are typically displayed by commands like \cmd{date} or \cmd{time}. 
+We prefer \cmd{Today} 
+provided by package \texttt{datetime2} with option \texttt{style=iso} 
+which displays the date in the form \texttt{yyy-mm-dd}. 
+This can be used also in the metadata. % TBD: reference missing 
+Note that it is not secure to use \cmd{today} because packages overwrite this. 
+For experiments, we may use \cmd{printdatetime} defined in Listing~\ref{lst:printdatetime} 
 which is based on \cmd{time}. 
 
-\lstinputlisting[linerange={58-69},
+\lstinputlisting[linerange={62-73},
 language=tex, %basicstyle=\scriptsize,
-float, captionpos=b, label={lst:printdate}, 
-caption={Definition of \cmd{printdate} }]{latexEngines.tex}
+float, captionpos=b, label={lst:printdatetime}, 
+caption={Definition of \cmd{printdatetime} }]{latexEngines.tex}
 
 
 
