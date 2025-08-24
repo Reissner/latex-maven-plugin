@@ -443,11 +443,19 @@ public class MetaInfo {
 		private final static String VERSION_UNKNOWN = "version";
 
 		private final String text;
+
 		private final Matcher matcher;
+
 		/**
 		 * The version as a string of the form as given by the converter
 		 */
 		private final String versionStr;
+
+    /**
+     * The segments of the version string. 
+     * Typically these are separated by a dot, 
+     * but other separators or the lack of a separator may happen also. 
+     */
 		private final List<Number> segments;
 
 		/**
@@ -497,7 +505,7 @@ public class MetaInfo {
 		 */
 		Version(String patternEnv, String patternVrs, String text) {
 			this.text = text;
-			this.matcher =
+ 			this.matcher =
 					Pattern.compile(String.format(patternEnv, patternVrs)).matcher(text);
 			if (!this.matcher.find()) {
 				this.versionStr = VERSION_UNKNOWN;

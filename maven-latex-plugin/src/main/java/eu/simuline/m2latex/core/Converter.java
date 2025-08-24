@@ -919,13 +919,14 @@ enum Converter {
     }
 
     String getVersionPattern() {
-      return VX_X__X;
+      return X_X_X;
     }
 
     // TBD: sometimes the pango line '    Pango version: 1.46.2' comes first. 
     String getVersionEnvironment() {
       return "^(?:.*\\R)?" // eliminates pango version popping up sparsely
-          + Inkscape + " %s \\([0-9a-f]+, \\d{4}-\\d{2}-\\d{2}\\)\\R";
+      // the 'unknown' is for certain distributions without hash 
+          + Inkscape + " %s \\((?:[0-9a-f]+, \\d{4}-\\d{2}-\\d{2}|unknown)\\)\\R";
     }
 
     ConverterCategory getCategory() {
@@ -965,10 +966,10 @@ enum Converter {
    */
   private final static String X_X_X = "((\\d+)\\.(\\d+)\\.(\\d+))";
 
-  /**
+  /*
    * Version pattern with major, minor and optional bugfix version. 
    */
-  private final static String VX_X__X = "((\\d+)\\.(\\d+)(?:\\.(\\d+))?)";
+  //private final static String VX_X__X = "((\\d+)\\.(\\d+)(?:\\.(\\d+))?)";
 
   private final static String V_JAVA = "((\\d+)(?:\\.(\\d+))?(?:\\.(\\d+))?(?:\\\\.(\\d+))?)";
 
