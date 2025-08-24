@@ -15,11 +15,21 @@
 
 \iftutex%
   \usepackage{fontspec}
+  \ifluatex
+    \ifpdf
+    \else
+      % solves a problem of datetime2 for lualatex --output-format=dvi. 
+      % TBD: check from time to time whether the bug is fixed already 
+      \usepackage{luatex85}
+    \fi
+  \fi
 \else
   % this seems to work with beamer also 
   \usepackage[utf8]{inputenc}
   \usepackage[T1]{fontenc}
 \fi
+\usepackage[style=iso]{datetime2}
+
 %\usepackage{textalpha}
 
 % internationalization 
