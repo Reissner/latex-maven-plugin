@@ -159,11 +159,11 @@ Table~\ref{tab:latexOptionsCommonTexlive}
 shows options of the \LaTeX{} engines under consideration. 
 Note that in contrast to the other \LaTeX{} engines, 
 \lualatex{} defines options starting with \texttt{-{}-} 
-but it can also process the options if given with a single dash also. 
-Conversely, \LaTeX{} engines other than \lualatex{} can also deal with options 
-starting with single dash. 
+but it can also process the options if given with a single dash. 
+Conversely, \LaTeX{} engines other than \lualatex{} 
+can also deal with options starting with double dash. 
 Options unknown to a \LaTeX{} engine never result in an error or even a warning; 
-instead just an info message is displayed. 
+instead just an info message `unrecognized option' is displayed. 
 This allows to create a configuration which works for all \LaTeX{} engines. 
 
 In Table~\ref{tab:latexOptionsCommonTexlive} column ``included'', 
@@ -883,7 +883,7 @@ in a way that it fits the other engines.
 
 \subsection{Metadata in the PDF trailer and info dictionary}\label{subsec:trailerInfoDict}
 
-The root for metadata in PDF file is the trailer dictionary. 
+The root for metadata in PDF file is the \emph{trailer dictionary}. 
 As described in~\cite{Pdf20}, Section 7.5.5, 
 it contains references to several other dictionaries, 
 the size and the \emph{trailer identifier} with key \texttt{ID}. 
@@ -968,7 +968,7 @@ at creation time and on \texttt{CreateDate}.
 The second hash in contrast shall depend on content of the file after last incremental update 
 and on time of last update, i.e.\@ on \texttt{ModDate}. 
 
-In the \LaTeX{} world incremental update is not supported 
+In the \LaTeX{} world, incremental update is not supported 
 so that \texttt{CreateDate} and \texttt{ModDate} coincide 
 and so do the contents. 
 As a consequence, the two hashes of the trailer identifier coincide as well. 
@@ -1271,10 +1271,16 @@ Partially, it is a surrogate for the document information dictionary
 as described in Section~\ref{subsec:trailerInfoDict}. 
 
 Readers who refuse using \cmd{DocumentMetadata} and  use use \xelatex{} 
-may take refuge to switching off compression via 
+may take refuge to switching off compression from within the document via 
 %
 \begin{verbatim}
-  \special{dvipdfmx:config z 0}
+  \special{xdvipdfmx:config z 0}
+\end{verbatim}
+
+Equivalently one can use the command line 
+%
+\begin{verbatim}
+  xelatex –shell-escape -output-driver="xdvipdfmx -z 0" <filename>.tex
 \end{verbatim}
 
 \subsubsection{Manipulating the trailer identifier}\label{subsubsec:trailerId}
