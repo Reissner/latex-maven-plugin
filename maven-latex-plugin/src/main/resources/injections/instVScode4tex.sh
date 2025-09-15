@@ -66,7 +66,9 @@ $code --force --install-extension fizzybreezy.gnuplot
 $code --force --install-extension jock.svg
 $code --force --install-extension simonsiefke.svg-preview
 
-# spellchecker
+# spell and grammar checker 
+$code --force --install-extension ltex-plus.vscode-ltex-plus
+# the following is outdated 
 $code --force --install-extension valentjn.vscode-ltex
 
 # perl (e.g. to configure latexmk)
