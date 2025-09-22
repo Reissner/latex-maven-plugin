@@ -1735,6 +1735,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
   /**
    * Runs the MakeIndex command
    * given by {@link Settings#getMakeIndexCommand()}.
+   * Note that xindy is not supported in this context. 
    * <p>
    * Logging:
    * <ul>
@@ -1931,6 +1932,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
     this.executor.executeEnvR0(desc.parentDir, // workingDir
         this.settings.getTexPath(), command, args, desc.glsFile);
     // TBD: check whether more than one gls file is possible. 
+
+    this.fileUtils.withMakindexLike(desc.auxFile);
 
     // detect errors and warnings makeglossaries wrote into xxx.glg
     File glgFile = desc.glgFile;

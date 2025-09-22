@@ -18,6 +18,7 @@ class LatexMainDesc implements Comparable<LatexMainDesc> {
   final File xdvFile;
 
   final File logFile;
+  final File auxFile;
 
   final File idxFile;
   final File indFile;
@@ -74,6 +75,7 @@ class LatexMainDesc implements Comparable<LatexMainDesc> {
     this.dviFile = withSuffix(LatexProcessor.SUFFIX_DVI);
     this.xdvFile = withSuffix(LatexProcessor.SUFFIX_XDV);
     this.logFile = withSuffix(LatexProcessor.SUFFIX_LOG);
+    this.auxFile = withSuffix(LatexProcessor.SUFFIX_AUX);
 
     this.idxFile = withSuffix(LatexProcessor.SUFFIX_IDX);
     this.indFile = withSuffix(LatexProcessor.SUFFIX_IND);
