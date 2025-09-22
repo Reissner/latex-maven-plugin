@@ -1639,8 +1639,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
     // determine the explicit given identifiers of indices
     final Set<String> explIdxIdent =
-        this.fileUtils.collectMatches(desc.idxFile,
-                                      this.settings.getPatternMultiIndex(),
+        this.fileUtils.collectMatchesForIdx(desc.idxFile,
+                                      Pattern.compile(this.settings.getPatternMultiIndex()),
                                       GRP_IDX_IDENT);
     if (explIdxIdent == null) {
       this.log.warn("WLP04: Cannot read idx file '" + desc.idxFile.getName()
@@ -1850,8 +1850,10 @@ public class LatexProcessor extends AbstractLatexProcessor {
         .debug("Running " + splitInxCmd + " on '" + desc.xxxFile.getName() + "'. ");
     // buildArguments(this.settings.getMakeIndexOptions(), idxFile);
     // NOTE: named groups are not compatible with the lua version of splitindex 
+
+    // set the options of splitindex set internally and not passed to makeindex or that like 
     String groupIdent = Settings.GRP_IDENT;
-    String[] argsDefault = new String[] {
+    String[] argsSplitIndexDefault = new String[] {
         "-m " + this.settings.getCommand(ConverterCategory.MakeIndex),
         // **** no splitindex.tlu
         // TBD: take over in .latexmkrc also: else latexmk cannot be used with splitindex.tlu. 
@@ -1863,17 +1865,24 @@ public class LatexProcessor extends AbstractLatexProcessor {
         "-s " + SEP_IDENT_IDX + groupIdent + GRP_IDX_IDENT
     };
 
-    String argsOption = this.settings.getMakeIndexOptions();
-    String[] args = argsOption.isEmpty() ? new String[argsDefault.length + 1]
-        : new String[argsDefault.length + 2];
-    System.arraycopy(argsDefault, 0, args, 0, argsDefault.length);
-    if (!argsOption.isEmpty()) {
-      args[args.length - 2] = argsOption;
+    // add the single allowed option for splitindex given by the user 
+    String argSplitindexOption = this.settings.getSplitIndexOptions();
+    assert(argSplitindexOption.indexOf(' ')) == -1;// contains no blank, is single option or empty 
+    // Arguments are default arguments, possibly option given explicitly and file name 
+    // This is true only if getMakeIndexOptions() is not empty 
+
+    // arguments: default options, user defined option filename 
+    String[] args = new String[argsSplitIndexDefault.length + (argSplitindexOption.isEmpty() ? 0 : 1) + 1];
+    System.arraycopy(argsSplitIndexDefault, 0, args, 0, argsSplitIndexDefault.length);
+    if (!argSplitindexOption.isEmpty()) {
+      args[args.length - 2] = argSplitindexOption;
     }
     args[args.length - 1] = desc.xxxFile.getName();
 
+    // Add the options to be passed to makeindex or that like 
     String optionsMakeIndex = this.settings.getMakeIndexOptions();
     if (!optionsMakeIndex.isEmpty()) {
+      // Here 'args' must be replaced by 'args -- optionsMakeIndex' 
       String[] optionsMake_IndexArr = optionsMakeIndex.split(" ");
       String[] optionsSplitIndexArr = args;
       args = new String[optionsMake_IndexArr.length + 1

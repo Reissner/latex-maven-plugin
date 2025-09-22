@@ -37,6 +37,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.florianingerl.util.regex.Matcher;
 import com.florianingerl.util.regex.Pattern;
@@ -765,6 +766,11 @@ class TexFileUtils {
   private static final Pattern PATTERN_IDX_LINE =
       Pattern.compile("^(\\\\indexentry)(\\[([^]]*)\\])?(.*)$");
 
+/**
+   * A pattern that matches all strings. 
+   */
+  private static final Pattern PATTERN_MATCH_ALL = Pattern.compile("");
+
   /**
    * The default label of an index as assigned by package splitidx. 
    * This is <code>idx</code>. 
@@ -804,7 +810,7 @@ class TexFileUtils {
    * @param file
    *    an existing proper file, not a folder. 
    *    In practice this is an idx file. 
-   * @param regex
+   * @param pattern
    *    the pattern (regular expression) to look for in <code>file</code>. 
    * @param idxGroupIdx
    *    the number of a group of the pattern {@link Settings#getPatternMultiIndex()} 
@@ -823,9 +829,21 @@ class TexFileUtils {
    */
   // used in LatexProcessor.runMakeIndexByNeed only 
   // **** a lot of copying from method matchInFile 
-  Set<String> collectMatches(File file, String regex, int idxGroupIdx) {
+  Set<String> collectMatchesForIdx(File file, Pattern pattern, int idxGroupIdx) {
+    AtomicBoolean doesMatchAll = new AtomicBoolean();
+    Set<String> res = collectMatches(file, pattern, PATTERN_IDX_LINE, idxGroupIdx, doesMatchAll);
+    if (res == null) {
+      return res;
+    }
+    if (!(doesMatchAll.get() || res.isEmpty())) {
+      // if there is a default label and non-default ones, one has to add
+      res.add(DEFAULT_IDX_LABEL);
+    }
+    return res;
+  }
+
+    Set<String> collectMatches(File file, String regex, Pattern patternAll, int idxGroupIdx, AtomicBoolean matchAll) {
     Set<String> res = new TreeSet<String>();
-    Pattern pattern = Pattern.compile(regex);
 
     // may throw FileNotFoundException < IOExcption 
     try (FileReader fileReader = new FileReader(file)) {
@@ -833,7 +851,7 @@ class TexFileUtils {
       BufferedReader bufferedReader = new BufferedReader(fileReader);
 
       Matcher matcher;
-      boolean foundDefaultEntry = false;
+      matchAll.set(true);
 
       // readLine may throw IOException 
       for (String line = bufferedReader.readLine();
@@ -841,21 +859,23 @@ class TexFileUtils {
           // readLine may throw IOException
           line = bufferedReader.readLine()) {
 
-        assert PATTERN_IDX_LINE.matcher(line).find() 
-          : "Found unexpected line '" + line + "' in IDX file. ";
+        //assert PATTERN_MATCH_ALL.matcher(line).find();
+        assert patternAll.matcher(line).find() 
+          : "Found unexpected line '" + line + "' in file '" + file + "'. ";
         matcher = pattern.matcher(line);
         if (matcher.find()) {
           // Here, a match has been found 
           res.add(matcher.group(idxGroupIdx));
         } else {
-          foundDefaultEntry = true;
+          //foundDefaultEntry = true;
+          matchAll.set(false);
         }
       } // for 
 
-      if (foundDefaultEntry && !res.isEmpty()) {
-        // if there is a default label and non-default ones, one has to add 
-        res.add(DEFAULT_IDX_LABEL);
-      }
+    //  if (!(matchAll.get() || res.isEmpty())) {
+    //     // if there is a default label and non-default ones, one has to add 
+    //     res.add(DEFAULT_IDX_LABEL);
+    //   }
 
       return res;
     } catch (IOException ioe) {
