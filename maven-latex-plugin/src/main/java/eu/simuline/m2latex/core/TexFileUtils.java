@@ -904,8 +904,13 @@ class TexFileUtils {
     return null;
   }
   
+  Set<String> collectLogsForGloss(File auxFile) {
+    AtomicBoolean doesMatchAll = new AtomicBoolean();
+    return collectMatches(auxFile, PATTERN_MATCH_GLOSSARY_DESC, PATTERN_MATCH_ALL, 2, doesMatchAll);
+  }
 
-  Set<String> collectMatches(File file, Pattern pattern, Pattern patternAll, int idxGroupIdx, AtomicBoolean matchAll) {
+
+  private Set<String> collectMatches(File file, Pattern pattern, Pattern patternAll, int idxGroupIdx, AtomicBoolean matchAll) {
     Set<String> res = new TreeSet<String>();
 
     // may throw FileNotFoundException < IOExcption 
