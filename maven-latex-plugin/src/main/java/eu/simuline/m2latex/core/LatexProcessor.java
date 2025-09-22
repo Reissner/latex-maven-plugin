@@ -1640,8 +1640,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
     // determine the explicit given identifiers of indices
     final Set<String> explIdxIdent =
         this.fileUtils.collectMatchesForIdx(desc.idxFile,
-                                      Pattern.compile(this.settings.getPatternMultiIndex()),
-                                      GRP_IDX_IDENT);
+            Pattern.compile(this.settings.getPatternMultiIndex()),
+            GRP_IDX_IDENT);
     if (explIdxIdent == null) {
       this.log.warn("WLP04: Cannot read idx file '" + desc.idxFile.getName()
           + "'; skip creation of index. ");
@@ -1734,7 +1734,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
   /**
    * Runs the MakeIndex command
-   * given by {@link Settings#getMakeIndexCommand()}.
+   * given by {@link Settings#getMakeIndexCommand()}. 
    * Note that xindy is not supported in this context. 
    * <p>
    * Logging:
@@ -1919,31 +1919,42 @@ public class LatexProcessor extends AbstractLatexProcessor {
     }
   }
 
-  boolean runMakeGlossary(LatexMainDesc desc) 
-    throws BuildFailureException {
+  boolean runMakeGlossary(LatexMainDesc desc)
+      throws BuildFailureException {
     // file name without ending: parameter for makeglossaries
     File xxxFile = desc.xxxFile;
     String command = this.settings.getCommand(ConverterCategory.MakeGlossaries);
     this.log.debug("Running " + command + " on '" + xxxFile.getName() + "'. ");
     String[] args =
-        buildArguments(this.settings.getMakeGlossariesOptions(), xxxFile);
+      buildArguments(this.settings.getMakeGlossariesOptions(), xxxFile);
     // may throw BuildFailureException TEX01,
     // may log warning EEX01, EEX02, EEX03, WEX04, WEX05
     this.executor.executeEnvR0(desc.parentDir, // workingDir
         this.settings.getTexPath(), command, args, desc.glsFile);
-    // TBD: check whether more than one gls file is possible. 
+    // TBD: check whether more than one gls file is possible.
 
-    this.fileUtils.withMakindexLike(desc.auxFile);
+    boolean isMakeIndexOrLike = this.fileUtils.withMakindexLike(desc.auxFile);
+    // assert isMakeIndexOrLike;
+    String patternErr, patternWarn;
+    if (isMakeIndexOrLike) {
+      patternErr = this.settings.getPatternErrMakeIndex();
+      patternWarn = this.settings.getPatternWarnMakeIndex();
+    } else {
+      patternErr = this.settings.getPatternErrXindy();
+      patternWarn = this.settings.getPatternWarnXindy();
+    }
+    Set<String> extLogFiles = this.fileUtils.collectLogsForGloss(desc.auxFile);
+    for (String ext : extLogFiles) {
+      // detect errors and warnings makeglossaries wrote into xxx.glg
+      File logFile = desc.withSuffix(ext);
+      // may log EAP01, EAP02, WAP04, WFU03
+      logErrs(logFile, command, patternErr);
+      // may log warnings WFU03, WAP03, WAP04
+      logWarns(logFile, command, patternWarn);
+    }
 
-    // detect errors and warnings makeglossaries wrote into xxx.glg
-    File glgFile = desc.glgFile;
-    // may log EAP01, EAP02, WAP04, WFU03
-    logErrs(glgFile, command, this.settings.getPatternErrMakeGlossaries());
-    // may log warnings WFU03, WAP03, WAP04
-    logWarns(glgFile, command, this.settings.getPatternWarnMakeIndex() + "|"
-        + this.settings.getPatternWarnXindy());
-        return true;
-      } // runMakeGlossary
+    return true;
+  } // runMakeGlossary
 
   boolean runPythontex(LatexMainDesc desc)
       throws BuildFailureException {

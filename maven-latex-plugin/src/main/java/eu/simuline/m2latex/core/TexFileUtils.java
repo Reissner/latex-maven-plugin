@@ -766,11 +766,6 @@ class TexFileUtils {
   private static final Pattern PATTERN_IDX_LINE =
       Pattern.compile("^(\\\\indexentry)(\\[([^]]*)\\])?(.*)$");
 
-/**
-   * A pattern that matches all strings. 
-   */
-  private static final Pattern PATTERN_MATCH_ALL = Pattern.compile("");
-
   /**
    * The default label of an index as assigned by package splitidx. 
    * This is <code>idx</code>. 
@@ -779,6 +774,49 @@ class TexFileUtils {
    * without optional parameter which is the label. 
    */
   private static final String DEFAULT_IDX_LABEL = "idx";
+
+/**
+   * A pattern that matches all strings. 
+   */
+  private static final Pattern PATTERN_MATCH_ALL = Pattern.compile("");
+
+  /**
+   * File ending occurring in {@link #PATTERN_ISTFILE_LINE} 
+   * indicating that <code>makeglossaries</code> whether to use 
+   * a makeindex-like indexing program. 
+   */
+  private static final String INDICATOR_IDX_MAKEINDEX_LIKE = "ist";
+
+  /**
+   * File ending occurring in {@link #PATTERN_ISTFILE_LINE} 
+   * indicating that <code>makeglossaries</code> whether to use 
+   * indexing program xindy. 
+   */
+  private static final String INDICATOR_IDX_XINDY = "xdy";
+ 
+  /**
+   * A pattern that matches an IST file name in an AUX file which has the form
+   * <code>\@istfilename){]<jobname>.(ist|xdy)}</code> 
+   * and indicates to <code>makeglossaries</code> whether to use 
+   * a makeindex-like indexing program ({!link #INDICATOR_IDX_MAKEINDEX_LIKE}) 
+   * or xindy (INDICATOR_IDX_XINDY). 
+   */
+  private static final Pattern PATTERN_ISTFILE_LINE = 
+    Pattern.compile("^\\\\@istfilename\\{.*\\.(" 
+    + INDICATOR_IDX_MAKEINDEX_LIKE + "|" + INDICATOR_IDX_XINDY + ")\\}$");
+
+
+  /**
+   * A pattern that matches a declaration of a glossary in an AUX file which has the form
+   * <code>\\@newglossary{ident}{glg}{gls}{glo}</code> 
+   * and indicates to <code>makeglossaries</code> when invoking makeindex or related 
+   * which files should be used as input (glo), as output glossary (gls) and as log file (glg). 
+   * The identifier (ident) is irrelevant. 
+   */
+  private static final Pattern PATTERN_MATCH_GLOSSARY_DESC = 
+    Pattern.compile("^\\\\@newglossary\\{(.+)\\}\\{(.+)\\}\\{(.+)\\}\\{(.+)\\}$");
+
+  //\@newglossary{main}{glg}{gls}{glo}
 
   /**
    * Returns the set of strings representing the <code>idxGroup</code> 
@@ -807,7 +845,7 @@ class TexFileUtils {
    * Logging:
    * WFU03 cannot close <br>
    * 
-   * @param file
+   * @param idxFile
    *    an existing proper file, not a folder. 
    *    In practice this is an idx file. 
    * @param pattern
@@ -829,9 +867,9 @@ class TexFileUtils {
    */
   // used in LatexProcessor.runMakeIndexByNeed only 
   // **** a lot of copying from method matchInFile 
-  Set<String> collectMatchesForIdx(File file, Pattern pattern, int idxGroupIdx) {
+  Set<String> collectMatchesForIdx(File idxFile, Pattern pattern, int idxGroupIdx) {
     AtomicBoolean doesMatchAll = new AtomicBoolean();
-    Set<String> res = collectMatches(file, pattern, PATTERN_IDX_LINE, idxGroupIdx, doesMatchAll);
+    Set<String> res = collectMatches(idxFile, pattern, PATTERN_IDX_LINE, idxGroupIdx, doesMatchAll);
     if (res == null) {
       return res;
     }
@@ -842,7 +880,32 @@ class TexFileUtils {
     return res;
   }
 
-    Set<String> collectMatches(File file, String regex, Pattern patternAll, int idxGroupIdx, AtomicBoolean matchAll) {
+  Boolean withMakindexLike(File auxFile) {
+    AtomicBoolean doesMatchAll = new AtomicBoolean();
+    Set<String> res = collectMatches(auxFile, PATTERN_ISTFILE_LINE, PATTERN_MATCH_ALL, 1, doesMatchAll);
+    if (res == null) {
+      return null;
+    }
+    if (res.size() != 1) {
+      this.log.warn("WFUXX: For makeglossaries found " + res.size() + " specifications of index creator. ");
+      return null;
+    }
+
+    String ind = res.iterator().next();
+    switch (ind) {
+      case INDICATOR_IDX_MAKEINDEX_LIKE:
+        return Boolean.TRUE;
+      case INDICATOR_IDX_XINDY:
+        return Boolean.FALSE;
+      default:
+        this.log.warn(
+            "WFUXX: For makeglossaries found unknown specification of index creator '" + ind + "'. ");
+    }
+    return null;
+  }
+  
+
+  Set<String> collectMatches(File file, Pattern pattern, Pattern patternAll, int idxGroupIdx, AtomicBoolean matchAll) {
     Set<String> res = new TreeSet<String>();
 
     // may throw FileNotFoundException < IOExcption 

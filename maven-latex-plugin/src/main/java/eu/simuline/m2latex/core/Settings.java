@@ -1527,18 +1527,6 @@ public class Settings {
   private String makeGlossariesOptions = "";
 
   /**
-   * The Pattern in the glg-file 
-   * indicating that {@link #makeGlossariesCommand} failed. 
-   * The default value is <code>(^\*\*\* unable to execute: )</code>. 
-   * If this is not appropriate, please modify 
-   * and notify the developer of this plugin. 
-   */
-  @RuntimeParameter
-  @Parameter(name = "patternErrMakeGlossaries",
-      defaultValue = "^\\*\\*\\* unable to execute: ")
-  private String patternErrMakeGlossaries = "^\\*\\*\\* unable to execute: ";
-
-  /**
    * The pattern in the glg-file 
    * indicating that running <code>xindy</code> 
    * via {@link #makeGlossariesCommand} failed. 
@@ -2824,12 +2812,12 @@ public class Settings {
     return this.makeGlossariesOptions;
   }
 
-  public String getPatternErrMakeGlossaries() {
-    return this.patternErrMakeGlossaries;
-  }
-
   public String getPatternWarnXindy() {
     return this.patternWarnXindy;
+  }
+
+  public String getPatternErrXindy() {
+    return this.patternErrXindy;
   }
 
 
@@ -3452,13 +3440,12 @@ public class Settings {
     this.makeGlossariesOptions = beautifyOptions(makeGlossariesOptions);
   }
 
-  public void setPatternErrMakeGlossaries(String patternErrMakeGlossaries) {
-    this.patternErrMakeGlossaries =
-        patternErrMakeGlossaries.replaceAll("\n+", "").trim();
-  }
-
   public void setPatternWarnXindy(String patternWarnXindy) {
     this.patternWarnXindy = patternWarnXindy.replaceAll("\n+", "").trim();
+  }
+
+  public void setPatternErrXindy(String patternErrXindy) {
+    this.patternErrXindy = patternErrXindy.replaceAll("\n+", "").trim();
   }
 
   public void setPythontexCommand(String pythontexCommand) {
