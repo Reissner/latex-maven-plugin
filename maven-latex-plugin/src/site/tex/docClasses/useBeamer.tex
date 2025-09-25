@@ -50,7 +50,9 @@
 
 \section{Introduction and Purpose}
 
-This is some additional text 
+This is some additional text ignored in the presentation 
+because of option \texttt{ignorenonframetext} 
+but showing up in the handout. 
 
 \begin{frame}
   \frametitle{Purpose of these documents }
@@ -287,7 +289,7 @@ This is a side effect of configuring the \texttt{maven-jxr-plugin}.
   \frametitle{Usage: adding executions for build and clean}
   Configuring executions for build and clean looks like this. 
 
-\begin{Verbatim}[fontsize=\scriptsize]
+\begin{Verbatim}[fontsize=\tiny]
     <plugin>
       <groupId>eu.simuline.m2latex</groupId>
       <artifactId>latex-maven-plugin</artifactId>
@@ -314,7 +316,7 @@ This is a side effect of configuring the \texttt{maven-jxr-plugin}.
   \frametitle{Usage: adding further executions }
   It is recommended to add executions for injection and version check also 
 
-\begin{Verbatim}[fontsize=\scriptsize]
+\begin{Verbatim}[fontsize=\tiny]
     <plugin>
       <groupId>eu.simuline.m2latex</groupId>
       <artifactId>latex-maven-plugin</artifactId>

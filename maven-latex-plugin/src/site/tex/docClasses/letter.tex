@@ -3,6 +3,8 @@
 \documentclass[english,german,a4paper,fontsize=10pt,version=last]{scrlttr2}
 
 \input{../header.tex}
+\selectlanguage{german}
+\DTMsetup{useregional=text}%numeric
 \LoadLetterOption{DIN}% reload to make consistent again after loading geometry 
 % else text does not reach lower boundary 
 \input{descSender.tex}
@@ -66,7 +68,6 @@
 
 %\input{../header}
 
-\selectlanguage{german}
 
 %\KOMAoptions{firstfoot=false}
 % keep traditional date format. This cannot be used in metadata. TBD: rethink
