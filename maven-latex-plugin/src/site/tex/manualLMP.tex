@@ -46,7 +46,7 @@
 
   % note that this is eliminated from header: there only splitindex is loaded 
   \makeindex
-
+  \usepackage{datatool}[=v2.32]
   \usepackage[toc, acronym, nohypertypes={acronym},style=tree]{glossaries}%nomain, 
   % , xindy or even [xindy={language=english,codepage=utf8}]
   % mainly for index and glossaries 
@@ -214,6 +214,7 @@ today mostly replaced by PDF}
 \newindex[Tools related with LaTeX]{tool}
 \newindex[LaTeX Packages]{pkg}
 \newindex[LaTeX Commands]{cmd}
+\newindex[Parameters]{param}
 }
 
 % \newglossaryentry{latex}{name={latex},description={%
@@ -292,6 +293,7 @@ Version \strippedVersionID}
   \printindex[tool]
   \printindex[pkg]
   \printindex[cmd]
+  \printindex[param]
   \printglossaries%
 }
 

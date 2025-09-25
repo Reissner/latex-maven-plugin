@@ -114,15 +114,15 @@ So check whether the file under consideration is processed if
   \item 
   its opening  is changed or
   \item 
-  the parameter \texttt{patternLatexMainFile} is changed 
+  the parameter \param{patternLatexMainFile} is changed 
 \end{itemize}
 %
 If you distrust the recognition mechanism via pattern matching altogether, 
 you can explicitly specify each \LaTeX{} main file 
-in the parameter \texttt{mainFilesIncluded} 
+in the parameter \param{mainFilesIncluded} 
 described in Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen}. 
-This is safe because if a file specified in \texttt{mainFilesIncluded} 
-that like is not a \LaTeX{} main file according to the pattern \texttt{patternLatexMainFile}, 
+This is safe because if a file specified in \param{mainFilesIncluded} 
+that like is not a \LaTeX{} main file according to the pattern \param{patternLatexMainFile}, 
 a warning is emitted. 
 That way one can check whether the pattern is matched. 
 We could have decided that these files are compiled with or without warning, 
@@ -152,7 +152,7 @@ The attentive reader may realize
 that the built-in document class \texttt{report} is not mentioned. 
 It shall work but is currently not tested. 
 
-Nevertheless, the pattern \texttt{patternLatexMainFile} 
+Nevertheless, the pattern \param{patternLatexMainFile} 
 matches all possible document classes. 
 Typically, the document class is loaded with options. 
 The most frequent class may be \texttt{article} 
@@ -218,7 +218,7 @@ before \cmd{documentclass} by
   \RequirePackage[l2tabu, orthodox]{nag}
 \end{Verbatim}
 %
-Thus the pattern \texttt{patternLatexMainFile} 
+Thus the pattern \param{patternLatexMainFile} 
 allows \cmd{RequirePackage} with its options preceding \cmd{documentclass}. 
 
 There are cases, where one and the same document 
@@ -259,7 +259,7 @@ except special options like \texttt{notumble}.
 \end{Verbatim}
 
 The same is true for letters of type \texttt{scrlttr2}, 
-except for the special specification of font size and versioning of the class: 
+except for the special specification of font size and versioning of the class\sindex[cmd]{documentclass}: 
 
 \begin{Verbatim}[fontsize=\footnotesize]
 \documentclass[english,german,a4paper,fontsize=10pt,version=last]{scrlttr2}
@@ -276,7 +276,7 @@ Without it may happen, that the text does not reach until the bottom of the fram
 
 What is special for beamer presentations is, 
 that in general two documents with the same identifier, e.g.\@ title are created, 
-the proper presentation, e.g.\@ 
+the proper presentation, e.g.\@\sindex[cmd]{documentclass} 
 % TBD: eliminate change of font size: long line must be breakable 
 \begin{Verbatim}[fontsize=\scriptsize]
 \RequirePackage[l2tabu, orthodox]{nag}
@@ -387,7 +387,7 @@ What follows is a full range of magic comments:
 
 Section~\ref{subsec:patternLatexMainFile} 
 describes the meaning of the individual comments 
-in the course of explaining the pattern \texttt{patternLatexMainFile}. 
+in the course of explaining the pattern \param{patternLatexMainFile}. 
 Note that there the names of the magic comments is given, whereas the above listing refers to the content, 
 but it is easy to identify the according magic comments. 
 The relation of the magic comments is described in the following. 
@@ -465,10 +465,10 @@ In addition, to targets and goals \texttt{pdf} and \texttt{txt},
 it can be checked with target or goal \texttt{chk}. 
 Other targets are skipped, and a message is displayed. 
 The relations are configurable 
-through settings \texttt{targets} and \texttt{docClassesToTargets} 
+through settings \param{targets} and \param{docClassesToTargets} 
 both in Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen}. 
 Also, if a document class occurs, 
-which is not registered in \texttt{docClassesToTargets}, 
+which is not registered in \param{docClassesToTargets}, 
 a warning \texttt{WLP09} described in Table~\ref{tab:WarnLPP} 
 on page~\pageref{tab:WarnLPP} is displayed. 
 % TBD: clarify whether this is not an exception 
@@ -592,14 +592,14 @@ Thus, for these graphic files no file with the same name
 up to the ending is allowed. 
 \item
 For \LaTeX{} main files more general files are created, 
-but they all must match those in pattern \texttt{patternCreatedFromLatexMain} 
+but they all must match those in pattern \param{patternCreatedFromLatexMain} 
 described in Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen}. 
 So it is save to add files not matching this pattern. 
 \end{itemize}
 
 
 Note Section~\ref{sec:injFiles}  which is on goal \texttt{inj} 
-injecting diles in the \TeX{} source directory and 
+injecting files in the \TeX{} source directory and 
 Section~\ref{subsec:develGraph} on goal \texttt{grp} 
 processing graphic files which creates intermediate files therein also. 
 
@@ -698,7 +698,7 @@ the classes \texttt{beamer}, \texttt{leaflet} and the letter class \texttt{scrlt
 directly support only target \texttt{pdf} 
 and because texts are created from PDF files, also target \texttt{txt}. 
 The mapping from document classes to allowed targets 
-is given in setting \texttt{docClassesToTargets} given in 
+is given in setting \param{docClassesToTargets} given in 
 Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen}. 
 This parameter restricts the targets given in parameter \texttt{targets}. 
 As explained in detail in Section~\ref{subsubsec:openingMagComm}, 
@@ -709,7 +709,7 @@ it can be specified by a magic comment directly.
 Finally, the targets can be specified individually for each \LaTeX{} main file 
 using a magic comment as described in Section~\ref{subsubsec:openingMagComm}. 
 A target specification in a magic comment overwrites all settings in 
-\texttt{targets} and in \texttt{docClassesToTargets}. 
+\param{targets} and in \param{docClassesToTargets}. 
 If a magic comment specifies the targets directly, 
 the document class need not be known. 
 In particular, a magic comment only specifying targets identifies already a \LaTeX{} main file 
@@ -719,7 +719,7 @@ As a magic comment can be used
 to specify the target formats for a \LaTeX{} main file individually, 
 Section~\ref{subsubsec:openingMagComm} shows 
 how to specify the \LaTeX{} engine to be used for this file 
-overwriting the general setting \texttt{latex2pdfCommand} in the pom 
+overwriting the general setting \param{latex2pdfCommand} in the pom 
 given in Table~\ref{tab:paramLatex2pdf} on page~\pageref{tab:paramLatex2pdf}. 
 
 % The code shows that allowed is only what is defined in enum Target. 
@@ -801,7 +801,7 @@ i.e.\@ converters intended to be invoked by this software.
 
 The goal yields a full list of registered converters, 
 signifying which of them are excluded 
-according to parameter \texttt{convertersExcluded}, 
+according to parameter \param{convertersExcluded}, 
 which are not installed, i.e.\@ not found, 
 and for each of the rest, the actual version, the allowed range 
 and a warning if the actual version is out of range. 
@@ -809,7 +809,7 @@ Note that the listing is not the copy of a real output for goal \texttt{vrs}:
 \tool{latexmk} is listed as not found but at the same time gives its version. 
 This is just illustrative. 
 
-The parameter \texttt{convertersExcluded} 
+The parameter \param{convertersExcluded} 
 is described in Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen}. 
 Excluded converters are prevented from being used: 
 if tried, Exception TSS07 
@@ -828,7 +828,7 @@ indicating the converter \tool{pythontexW} with category \texttt{pythontex}.
 As one can see, a warning WMI02 indicates 
 that the version of a converter is out of the intended range, 
 provided, the converter is installed, and it is not excluded 
-according to the configuration \texttt{convertersExcluded}.
+according to the configuration \param{convertersExcluded}.
 
 Note that in the given version and in the installation of the author,
 of course, all converters are installed and are up-to-date
@@ -946,10 +946,10 @@ We highlight
 \section{Injection of files}\label{sec:injFiles}
 
 The goal \texttt{inj} is to inject files 
-into the working directory \texttt{texSrcDirectory}, 
+into the working directory \param{texSrcDirectory}, 
 during a maven lifecycle, by default in phase \texttt{valiate}, 
 or from command line invoked from the root directory and injecting into that root. 
-The files injected into \texttt{texSrcDirectory} 
+The files injected into \param{texSrcDirectory} 
 are in general adapted to the current configuration of the plugin; 
 the others are auxiliary files valid in any project using this \LaTeX{} plugin. 
 
@@ -1023,10 +1023,10 @@ according to the function of the files injected:
   Thus, usually, their injection is triggered selectively from the command line 
   invoked from the project root as described below. 
   In contrast to the files in the other categories, these are executable 
-  are not injected into \texttt{texSrcDirectory}. 
+  are not injected into \param{texSrcDirectory}. 
   They are not adapted to the configuration but shall be used globally. 
   Thus, it makes sense to make them available for execution 
-  by moving them to appropriate places like \texttt{/usr/bin} on linux systems. 
+  by moving them to appropriate places like \texttt{/usr/bin} on Linux systems. 
 \end{itemize}
 
 Table~\ref{tab:injections} shows the possible injections 
@@ -1071,7 +1071,7 @@ As described in Section~\ref{subsec:xmlPomExecutions},
 by default the goal \texttt{inj} is tied to the maven phase \texttt{validate}, 
 an early phase preparing the proper build process, 
 because the injected files are a prerequisite for building. 
-Then the files are injected in the TEX root directory \texttt{texSrcDirectory}. 
+Then the files are injected in the TEX root directory \param{texSrcDirectory}. 
 
 On the other hand, injections can be also invoked by command line via \texttt{mvn latex:inj} 
 with the default injections or, with given list of injections, 
@@ -1187,7 +1187,7 @@ and on the commands and environments defined in addition.
 Since basic packages are loaded and basic commands are defined 
 in the injected \texttt{header.tex} 
 which is described in Section~\ref{subsec:header}, 
-it makes sense, to synchronize \texttt{.chktex} and \texttt{header.tex}. 
+it makes sense, to synchronize \texttt{.chktexrc} and \texttt{header.tex}. 
 
 As an example, package \pkg{listings} which provides the environment \texttt{lstlisting} 
 and the command \cmd{listinputlisting}. 
@@ -1365,7 +1365,7 @@ Note that \texttt{header.tex} is written for use of
   \item various document classes, 
   specifically \texttt{article}, \texttt{book}, \texttt{beamer} for presentations, 
   \texttt{leaflet} and the letter class \texttt{scrlttr2}. 
-  \item for creating PDF files, but futher formats created with \pkg{tex4ht} as well
+  \item for creating PDF files, but further formats created with \pkg{tex4ht} as well
   \item direct creation of PDF and via intermediate DVI/\gls{xdv} 
 \end{itemize}
 
@@ -2100,15 +2100,15 @@ and also to compile smoothly with \tool{latexmk}.
 \subsection{Goal Clear \texttt{clr}}\label{subsec:develClear}
 
 When invoking this plugin as a final build, 
-\texttt{cleanUp} is set to its default \texttt{true}. 
+\param{cleanUp} is set to its default \texttt{true}. 
 Thus, all files not present at the beginning of the build process are removed. 
 As a consequence, there is no need for a separate goal \texttt{clr}. 
 This comes into the game only in the context of document development. 
-Either \texttt{cleanUp} was set to \texttt{false} 
+Either \param{cleanUp} was set to \texttt{false} 
 or other more basic tools created intermediate files which must be deleted by \texttt{clr}. 
 
 Cleaning is vital because it makes the next build independent of the previous one. 
-Deletion is driven by a regular expression \texttt{patternCreatedFromLatexMain} 
+Deletion is driven by a regular expression \param{patternCreatedFromLatexMain} 
 described in Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen}. 
 Completeness can be guaranteed only 
 if the set of loaded packages is limited. 
@@ -2244,7 +2244,7 @@ Likewise, to keep the log-file or the aux-file, just touch it.
 This technique is really valuable for debugging. 
 
 To keep all created files after a run of this maven-plugin, 
-set the parameter \texttt{cleanUp} in the pom 
+set the parameter \param{cleanUp} in the pom 
 to \texttt{false} as illustrated in Listing~\ref{lst:noCleanup}. 
 For the ant-task likewise. 
 
@@ -2433,7 +2433,7 @@ for the goal \texttt{latex:inj} which determines injected the files.
 Section~\ref{sec:outputFormats} treats goal \texttt{cfg} 
 to create output from one source in various formats 
 and also check which is without output. 
-The target formats and also the checks are specified in the parameter \texttt{targets}. 
+The target formats and also the checks are specified in the parameter \param{targets}. 
 
 There is an according ant task \texttt{cfg} 
 doing the same also based on parameter \texttt{targets}. 

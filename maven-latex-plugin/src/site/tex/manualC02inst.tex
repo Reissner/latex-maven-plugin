@@ -533,7 +533,7 @@ one has to specify in the executions only
 when deviating from the default. 
 
 Typically, this plugin, to be more precise its goal \texttt{cfg}, 
-which allows configuring checks and the output formats in setting \texttt{targets},  
+which allows configuring checks and the output formats in setting \param{targets},  
 is used in the \texttt{site} lifecycle phase 
 to process latex sources. 
 It is perfectly ok to stick to a single format like \texttt{pdf} 
@@ -543,7 +543,7 @@ Alternatively, one may define an execution with the required goals like \texttt{
 but then the phase must be specified explicitly, because there is no default phase. 
 Of course, then no additional check is performed. 
 
-The goal \texttt{inj} injects files into the working directory \texttt{texSrcDirectory} 
+The goal \texttt{inj} injects files into the working directory \param{texSrcDirectory} 
 as described in detail in Section~\ref{sec:injFiles}. 
 For some files it makes sense to do this independent of the build process 
 e.g.\@ by invoking \texttt{mvn latex:inj}, 
@@ -551,14 +551,14 @@ but in general it is preferable to perform the injection each build process anew
 because that way the injected file can be adapted 
 to the current settings of this plugin. 
 Note that the execution of the goal \texttt{inj} has its own configuration, 
-which allows a single parameter, \texttt{injections}. 
+which allows a single parameter, \param{injections}. 
 Listing~\ref{lst:executions} gives a recommended parameter value, 
 although not the default. 
 
 Normally, all created files in the source directory are removed 
 after the output has been copied to the target, 
 but during document development, described in Section~\ref{sec:devel}, 
-cleanup may be deactivated by setting \texttt{cleanUp} 
+cleanup may be deactivated by setting \param{cleanUp} 
 and so the source directory may be polluted. 
 This may happen if other tools are used in conjunction with this plugin. 
 
@@ -567,7 +567,7 @@ Thus, for document development, there is a dedicated goal \texttt{clr}
 to clean up the source directory in phase \texttt{clean}. 
 Note that also the configuration files created by goal \texttt{inj} are cleared. 
 Since cleanup occurs in the course of the build and not with goal \texttt{clr} 
-the parameter \texttt{cleanUp} is given in the general settings. 
+the parameter \param{cleanUp} is given in the general settings. 
 The goal \texttt{clr} cannot be configured. 
 
 Finally, it is recommended to add a check of the versions of the programs called \emph{converters} used 

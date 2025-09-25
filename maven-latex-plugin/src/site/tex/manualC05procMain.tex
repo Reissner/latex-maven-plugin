@@ -1554,17 +1554,17 @@ To know that changing metadata is done by incremental update is important,
 insofar as a PDF file with modified timestamp and timezone  
 differs from a PDF file compiled directly with the given timestamp and timezone; 
 it is shorter. 
-So, updating the timestamp of the PDF file in \texttt{diffDirectory} 
+So, updating the timestamp of the PDF file in \param{diffDirectory} 
 does not yield a PDF file which is reproduced. 
 Compilation leads to another PDF file and only the updated timestamp is reproduced. 
 This compiled PDF file is reproduced, so 
-copying it the into \texttt{diffDirectory} solves the problem: 
+copying it the into \param{diffDirectory} solves the problem: 
 Next compilation yields a PDF file with the correct timestamp and timezone, 
-and it coincides with the PDF file in \texttt{diffDirectory}. 
+and it coincides with the PDF file in \param{diffDirectory}. 
 
 When subjecting a document under reproduction control with a predefined timestamp, 
 then initially there is no original PDF file. 
-One could place any PDF file in \texttt{diffDirectory}, 
+One could place any PDF file in \param{diffDirectory}, 
 overwrite the timestamp and timezone by \tool{exiftool}. 
 Is content is immaterial. 
 

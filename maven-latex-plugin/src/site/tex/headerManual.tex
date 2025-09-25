@@ -11,10 +11,13 @@
   \newcommand{\cmd}[2][]{\texttt{\bs{}#2#1}}
   \newcommand{\pkg}[1]{\texttt{#1}}% without indexing 
   \newcommand{\tool}[1]{\texttt{#1}}% without indexing 
-}{
+  \newcommand{\param}[1]{\texttt{#1}}% without indexing 
+}
+{
   \newcommand{\cmd}[2][]{\texttt{\bs{}#2#1}\sindex[cmd]{#2@\texttt{\bs{}#2}}}
   \newcommand{\pkg}[1]{\texttt{#1}\sindex[pkg]{#1}} % TBD: this must be extracted 
   \newcommand{\tool}[1]{\texttt{#1}\sindex[tool]{#1}}% TBD: this must be extracted 
+  \newcommand{\param}[1]{\texttt{#1}sindex[param]{#1}}% TBD: this must be extracted 
 }
 
 % marking tools without making an entry in the index. 

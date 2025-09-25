@@ -748,11 +748,11 @@ controlling how the following figure is compiled.
 Most of them even in comments. 
 
 The compiler for \texttt{MetaPost} 
-is given by the parameter \texttt{metapostCommand} 
-which defaults to \texttt{mpost}, occasionally just \texttt{mp}. 
+is given by the parameter \param{metapostCommand} 
+which defaults to \tool{mpost}, occasionally just \texttt{mp}. 
 
 Each internal variable which can be set in the MP file 
-can also be set when invoking \texttt{mpost} 
+can also be set when invoking \tool{mpost} 
 using the option \texttt{-s \textlangle{}variable\textrangle=\textlangle{}value\textrangle} 
 as described in~\cite{MPost24},~Section~B.2.1. 
 There it is stated that the option is read just before the file is read, 
@@ -762,7 +762,7 @@ Caution: in the manual, the variable is referred to as ``key''.
 The most basic setting is \texttt{outputformat:="eps"} %chktex 18
 which is the only setting appropriate for latex. 
 So don't change\footnote%
-{Note that \texttt{metapostCommand} may also besides \gls{eps} 
+{Note that \param{metapostCommand} may also besides \gls{eps} 
 output \gls{svg} and \gls{png}, 
 just by setting \texttt{outputformat:="svg"} or that like. %chktex 18
 Caution: case-sensitive, assuming silently \texttt{eps} if the format is not recognized. 
