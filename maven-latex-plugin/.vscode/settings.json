@@ -26,5 +26,21 @@
   "latex-workshop.view.pdf.external.synctex.args": [
       "--unique",
       "%PDF%#src:%LINE%%TEX%"
-  ]
+  ],
+  "ltex.latex.commands": {
+    "\\RequirePackage[]{}": "dummy",
+    "\\PassOptionsToPackage{}{}": "ignore",
+    "\\cmd{}": "dummy",
+    "\\pkg{}": "dummy",
+    "\\param{}": "dummy",
+    "\\TeX{}": "dummy",
+    "\\cmd[]{}": "dummy",
+    "\\tool{}": "dummy",
+    "\\toolg{}": "dummy",
+    "\\IfPackageLoadedTF{}": "dummy",
+    "\\lualatex{}": "dummy",
+    "\\xelatex{}": "dummy",
+    "\\pdflatex{}": "dummy",
+    "\\lstinputlisting[]{}": "ignore"
+  }
 }

@@ -250,13 +250,13 @@ recognizing the required format and generating the specific one if missing. }.
 That way, both, \pdflatex{} and \lualatex{} choose the EPS file or the PDF file 
 depending on whether the output format is \texttt{--output-format=dvi} 
 or \texttt{--output-format=pdf} which is the default. 
-Note that \xelatex, which always creates an intermediate \gls{xdv} file 
+Note that \xelatex{}, which always creates an intermediate \gls{xdv} file 
 (which is a special kind of DVI file), 
 acts differently: If present, it prefers including the PDF file, 
 if absent, but there is an EPS file instead, it uses this without making any difference. 
 
 Although this is beyond necessity, 
-let me state that \pdflatex{} and \lualatex, 
+let me state that \pdflatex{} and \lualatex{}, 
 while not accepting inclusion of PDF files in DVI mode, 
 EPS files are accepted in PDF mode for more modern versions of the \LaTeX{} engines, 
 but this leads to creation of intermediate files \texttt{xxx-eps-converted-to.pdf}, 
