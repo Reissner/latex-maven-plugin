@@ -342,16 +342,16 @@ The default value consists of two chunks:
   `\small{\texttt{article,report,book,minimal:chk,dvi,pdf,html,odt,docx,rtf,txt}}' 
 \end{center}
 %
-  ensures that article and book and others allow all targets. 
+ensures that article and book and others allow all targets. 
 
 \begin{center}
   `\small{\texttt{beamer,leaflet,scrlttr2:chk,pdf,txt}}' 
 \end{center}
 %
 allows for beamer mainly \texttt{pdf} and derived from that \texttt{txt}.  
-  Checking with \texttt{chk} does not depend on the document class. 
-  Note that maybe leaflets or letters may work for DVI or \gls{xdv} also, even for word formats and related, 
-  we restrict ourselves to the given output for simplification. 
+Checking with \texttt{chk} does not depend on the document class. 
+Note that maybe leaflets or letters may work for DVI or \gls{xdv} also, even for word formats and related, 
+we restrict ourselves to the given output for simplification. 
 
 CAUTION\@: Due to a 
 \href{https://issues.apache.org/jira/projects/MNG/issues/MNG-7927?filter=reportedbyme}{bug in maven}, 
