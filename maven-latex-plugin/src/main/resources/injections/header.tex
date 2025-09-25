@@ -15,8 +15,8 @@
 
 \iftutex%
   \usepackage{fontspec}
-  \ifluatex
-    \ifpdf
+  \ifluatex%
+    \ifpdf%
     \else
       % solves a problem of datetime2 for lualatex --output-format=dvi. 
       % TBD: check from time to time whether the bug is fixed already 
@@ -28,12 +28,12 @@
   \usepackage[utf8]{inputenc}
   \usepackage[T1]{fontenc}
 \fi
-\usepackage[style=iso]{datetime2}
 
 %\usepackage{textalpha}
 
 % internationalization 
 \usepackage{babel}
+\usepackage[style=iso]{datetime2}
 \usepackage{csquotes}% use \PassOptionsToPackage{autostyle}{csquotes}
 
 % absolutely necessary. 
