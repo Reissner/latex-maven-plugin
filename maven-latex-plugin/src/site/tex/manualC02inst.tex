@@ -99,8 +99,8 @@ To convert \gls{mp}-files into \gls{eps}-files,
 the interpreter \tool{mpost} or equivalent is required. 
 This comes with a standard \TeX{} installation. 
 With the standard configuration, 
-the resulting EPS-file can be viewed with \texttt{ghostscript} 
-and for developing it is recommended to have \texttt{ghostscript} installed. 
+the resulting EPS-file can be viewed with \tool{ghostscript} 
+and for developing it is recommended to have \tool{ghostscript} installed. 
 \item
 To include \gls{svg}-files into \LaTeX\index{svg}, 
 \tool{inkscape} must be installed. 
@@ -117,7 +117,7 @@ neither \tool{fig2dev} nor \tool{gnuplot},
 \tool{mpost}, \tool{inkscape} 
 nor \tool{dvipdfmx} is needed. 
 To include graphics, the graphics bundle described in~\cite{GraX} is required, 
-except for SVG-files which requires the svg-package 
+except for SVG-files which requires the package \pkg{svg} 
 described in~\cite{SvgP}. 
 
 As the set of required software depends on the graphic formats 
@@ -181,7 +181,7 @@ To support this, the package \pkg{hyperref} is required.
 \item
 To create \gls{html}-files, 
 or to be more precise any kind of \gls{sgml} and \gls{xml}, 
-from \LaTeX-files, \texttt{htlatex} or alternatively \texttt{htxelatex} is used. 
+from \LaTeX-files, \tool{htlatex} or alternatively \tool{htxelatex} is used. 
 Currently, the author is not aware of any alternative to the two. 
 This includes also creating OpenOffice documents like ODT-files. 
 Thus, OpenOffice documents are created in two steps, 
@@ -296,12 +296,12 @@ if pixel graphics is used.
 \pkg{import} described in~\cite{ImpoP} 
 e.g.~to import nested graphic files from arbitrary directories. 
 \item
-\texttt{inputenc} described in~\cite{InputencP} 
+\pkg{inputenc} described in~\cite{InputencP} 
 to select an input encoding 
-\texttt{fontenc} to select a font encoding. 
+\pkg{fontenc} to select a font encoding. 
 Font selection is described in~\cite{FontSel} in general, 
 with Section 5 on font encoding and 
-Section 5.1 on the \texttt{fontenc} package. 
+Section 5.1 on the \pkg{fontenc} package. 
 This package is almost indispensable if you do not write English, 
 e.g.~to access German umlauts. 
 Note that~\cite{FontEnc} describes font encoding in more detail. 

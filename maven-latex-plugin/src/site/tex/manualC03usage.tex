@@ -702,8 +702,8 @@ is given in setting \texttt{docClassesToTargets} given in
 Table~\ref{tab:paramGen} on page~\pageref{tab:paramGen}. 
 This parameter restricts the targets given in parameter \texttt{targets}. 
 As explained in detail in Section~\ref{subsubsec:openingMagComm}, 
-if a document class cannot be identified by the command \texttt{documentclass} 
-or the outdated \texttt{documentstyle}, 
+if a document class cannot be identified by the command \cmd{documentclass} 
+or the outdated \cmd{documentstyle}, 
 it can be specified by a magic comment directly. 
 
 Finally, the targets can be specified individually for each \LaTeX{} main file 
@@ -759,7 +759,7 @@ For sake of uniformity,
 the name of the ant-task is \texttt{latex:cfg}, 
 and it can be invoked via \texttt{ant latex:cfg}. 
 Unlike the maven-plugin, the ant-task 
-does not allow to specify a target on the command line. 
+does not allow specifying a target on the command line. 
 The \texttt{-d} switch activates debugging 
 which results in a more verbose output. 
 Example: \texttt{ant -d latex:cfg}. 
@@ -927,7 +927,7 @@ caption={Output of goal \texttt{latex:vrs}}]
 It is a design goal to notify the user of formal deficiencies of the created documents 
 by tight logging of errors and warnings 
 to give high confidence in the formal quality of the result in the absence of errors and warnings. 
-Logging is devoted all of the Chapter~\ref{chap:exceptionLogging}. 
+Logging is devoted all of Chapter~\ref{chap:exceptionLogging}. 
 Of particular interest is Table~\ref{tab:WarnALP} on failures running a tool 
 on page~\pageref{tab:WarnALP}. 
 We highlight 
@@ -938,8 +938,8 @@ We highlight
   \item
   absent/outdated target files or log files
   \item
-  log files containing errors and warnings (provided by many but not all tools). 
-  Among those notification of bad boxes. 
+  errors and warnings in log files (provided by many but not all tools). 
+  Among those, notification of bad boxes. 
 \end{itemize}
 
 
@@ -995,7 +995,7 @@ according to the function of the files injected:
   These are hidden files 
   reflecting the settings of this plugin 
   and form the default for \tool{latexmk} and for \texttt{chktex}, 
-  i.e.~\@ behavior without command line options. 
+  i.e.\@ behavior without command line options. 
   In particular, the configuration file of \tool{latexmk} 
   is adapted to the configuration of this plugin, 
   to ensure that the results are the same whether created by \tool{latexmk} 
@@ -1347,7 +1347,7 @@ After this is fixed, the \cmd{setMinorVersionPdf} shall be removed again.
 
 Another class of commands provided is represented by \cmd{textttNoChk} 
 which sets the argument in typewriter font 
-just like \cmd{texttt} but for which checks by \texttt{chktex} are suppressed. 
+just like \cmd{texttt} but for which checks by \tool{chktex} are suppressed. 
 Another example for this kind of command is \cmd{inputNoChk} 
 which may be used to input either generated material like TikZ,
 or text which is no \LaTeX{} at all. 
@@ -1440,7 +1440,7 @@ and how this software treats the handles the issues
 see Section~\ref{sec:chkReprod}. 
 
 
-\subsection{An installation script for VS Code Extensions }\label{subsec:instExtVsCode}
+\subsection{An installation script for VS Code Extensions}\label{subsec:instExtVsCode}
 
 Calling from project root 
 %
@@ -1466,7 +1466,7 @@ which is just Perl code, in VS Code, one can see the highlighting.
 
 
 
-\subsection{Scripts in conjunction with reproducibility }%
+\subsection{Scripts in conjunction with reproducibility}%
 \label{subsec:ntlatexVmdiff}
 
 Calling from project root 
@@ -1679,7 +1679,7 @@ are to highlight the code of the various file types,
 one, \ltex{} is a spell and grammar checker, 
 but the central extension is \texttt{james-yu.latex-workshop} 
 which also provides build functionality. 
-Among the build ``recipies'' is \texttt{latexmk (latexmkrc)} 
+Among the build ``recipes'' is \texttt{latexmk (latexmkrc)} 
 which is recommended because it integrates well with build tool \tool{latexmk} 
 described in Section~\ref{subsec:develLatexmk} 
 in a way which integrates \tool{latexmk} well with this \LaTeX{} builder. 
@@ -1687,7 +1687,7 @@ Note that \LaTeX{} Workshop also offers a command ``clean up'',
 corresponding with goal \texttt{clr} of this software 
 which is described in more detail in Section~\ref{subsec:develClear}
 
-As a PDF viewer, we use \texttt{okular} 
+As a PDF viewer, we use \tool{okular} 
 with settings given by the menu ``settings'' 
 and submenu ``configure okular''. 
 To make \texttt{okular} update as soon as the PDF changes, 
@@ -1724,7 +1724,7 @@ then the created PDF has the according information.
 Then for VS Code with \LaTeX{} Workshop offers forward search: 
 the keystroke \texttt{ctrl-alt-j} 
 makes the viewer move to the site corresponding with the cursor position. 
-For the viewer \texttt{okular}, backward search is configured in tab ``editor'' 
+For the viewer \tool{okular}, backward search is configured in tab ``editor'' 
 as described above, 
 and it works with the browse tool just hovering over the location of interest 
 and pressing shift plus mouse left key. 
@@ -2343,7 +2343,7 @@ Note that, with default configuration,
 \texttt{chktex} requires the \LaTeX-package \pkg{booktabs} 
 described in~\cite{BooktP}. 
 
-Besides the basic configuration packaged with \texttt{chktex}, 
+Besides the basic configuration packaged with \tool{chktex}, 
 there can be an additional configuration file \texttt{.chktexrc} 
 which partially overwrites variables set by the basic configuration file, 
 partially, for list-valued variables, adds entries. 

@@ -1539,13 +1539,13 @@ This is to keep the PDF file consistent.
 The metadata is not really overwritten, but it is hidden by new metadata. 
 In fact, \tool{exiftool} uses incremental update specified for the PDF format, 
 adding a layer describing the modification. 
-All modifications done can also be undone by 
+Via
 %
 \begin{verbatim}
   exiftool -PDF-update:All= xxx.pdf
 \end{verbatim}
 %
-unless the PDF file has been linearized. 
+modifications done can also be undone unless the PDF file is linearized. 
 \LaTeX{} to PDF compilers always create linearized PDF files and never update incrementally. 
 \end{itemize}
 
@@ -1609,11 +1609,17 @@ which must be made available in each subfolder by adding a link,
 the config \texttt{.latexmkrc} by this \LaTeX{} builder 
 may be replaced by a hand-crafted config file for each folder separately. 
 
-Another advantage being able to run \tool{latexmk} from within this builder: 
+Another advantage being able to run \tool{latexmk} from within this \LaTeX{} builder: 
 It is conceivable, that the artifacts created in the course of document development 
-using \tool{latexmk} cannot be reproduced by this builder. 
-Most likely because \texttt{.latexmkrc} does not reimplement the internal functionality properly. 
-Invoking \tool{latexmk} in a final build reduces this risk to a minimum. 
+using \tool{latexmk} cannot be reproduced by this builder in the final build. 
+The problem is not the difference in the build algorithm, 
+because they shall both lead to the same result, 
+but because the \LaTeX{} compiler and the other tools may be invoked differently. 
+Most likely because \texttt{.latexmkrc} 
+does not reimplement the internal functionality of this builder properly. 
+Note that \texttt{.latexmkrc} is essentially a reimplementation of neuralgic elements 
+of the internal build process in Perl. 
+Invoking \tool{latexmk} in a final build for critical documents reduces this risk to a minimum. 
 
 Further motivations for integrating latexmk in this builder, 
 in particular for individual files: 

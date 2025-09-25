@@ -273,8 +273,7 @@ described in Section~\ref{subsec:header},
 whereas the ones specific for graphics, above all \pkg{graphicx}, 
 are loaded in \texttt{headerGrp.tex} 
 as described in Section~\ref{subsec:headerGrp}. 
-The packages actually to be loaded and their respective options 
-depend on the configuration. 
+The packages actually to be loaded and their respective options both depend on the configuration. 
 
 Note that PDF and EPS file may be created by preprocessing 
 but also as proper sources not created at all, 
@@ -332,7 +331,7 @@ Thus, \tool{fig2dev} offers a mixed solution:
 export \texttt{xxx.fig} in format \texttt{pdftex} which yields a pdf-file 
 \texttt{xxx.pdf} containing all but text with set ``special''-flag 
 and complementary \texttt{pdftex\_t} which yields a tex-file \texttt{xxx.ptx} 
-including the pdf-file and the texts with set ``special''-flag\index{special-flag}. %maybe glossary 
+including the PDF-file and the texts with set ``special''-flag\index{special-flag}. %maybe glossary 
 The exported files are in the same directory \texttt{yyy} 
 as the original file \texttt{xxx.fig}. 
 
@@ -369,9 +368,9 @@ the latter is chosen if no suffix is specified.
 As we will see below, 
 omitting the suffix is crucial to make \texttt{xxx.ptx} work 
 for both \LaTeX-output formats: 
-the pdf-format can include pdf-files, 
-whereas the dvi-format which is required to create html- and
-odt-files can include eps-files. 
+the PDF-format can include PDF-files, 
+whereas the DVI-format which is required to create HTML- and
+ODT-files can include EPS-files. 
 \item
 If \texttt{xxx.pdf} is included in \texttt{xxx.ptx} 
 with the full path name, 
@@ -711,7 +710,7 @@ Since \texttt{MetaPost} is very versatile,
 it is impossible to give an impression by a single example. 
 We decided to choose an example 
 using a MetaPost library, \texttt{MetaUML}, 
-described in~\cite{MetaUml} for some reasons apparent later. 
+described in~\cite{MetaUml} for some reason apparent later. 
 The example file is given in Listing~\ref{lst:metapost} 
 and also on the web as 
 \href{\urlSite fromTex/F4_05someMetapost.mp}{\texttt{F4\_05someMetapost.mp}}. 
@@ -815,7 +814,7 @@ and overwriting by need as in Listing~\ref{lst:metapost}, line 2.
 
 As mentioned above, \texttt{input xxx} includes a library 
 making the program dependent on a file \texttt{xxx.mp}. 
-As for latex processors, also \texttt{mpost} records dependencies recursively 
+As for latex processors, also \tool{mpost} records dependencies recursively 
 in an FLS file if invoked with option \texttt{-recorder}. 
 Also like latex processors, an error shall not cause break or interaction 
 so adding the option \texttt{-interaction=nonstopmode}. 
@@ -839,7 +838,7 @@ Thus, we arrive finally at the default invocation
 
 
 Figure~\ref{fig:mp2mps} illustrates 
-how \texttt{mpost} converts an \gls{mp}-file \texttt{xxx.mp} 
+how \tool{mpost} converts an \gls{mp}-file \texttt{xxx.mp} 
 with the given settings into various result files: 
 %
 \begin{itemize}
@@ -863,7 +862,7 @@ should be a picture
 }{
 \import{}{F4_04mp2mps.ptx}
 }
-\caption{\label{fig:mp2mps}Conversion of a MetaPost-file into an mps-file}
+\caption{\label{fig:mp2mps}Conversion of a MetaPost-file into an MPS-file}
 \end{figure}
 
 
@@ -873,7 +872,7 @@ created from the MetaPost file
 and embedded in this \LaTeX-file 
 with the \cmd{includegraphics}-command. 
 Normally, \cmd{includegraphics} is invoked with the filename without extension, 
-but for mps-files, the extension is needed. 
+but for MPS-files, the extension is needed. 
 As for inclusion of fig-files, the package \pkg{graphicx} is needed. 
 
 \begin{figure}[htb]
@@ -1018,7 +1017,7 @@ is required also, depending on the features used in \texttt{xxx.svg}.
 As indicated in~\cite{SvgP}, Section~1, 
 the \pkg{svg}-package delegates the transformation 
 of \texttt{xxx.svg} \texttt{xxx.pdf} and \texttt{xxx.pdf\_tex} 
-to \texttt{inkscape}. 
+to \tool{inkscape}. 
 This is a graphical editor with export functions 
 which can be invoked in batch-mode also. 
 Of course using the \pkg{svg}-package has the advantage 
@@ -1043,14 +1042,14 @@ it does not work on Windows platforms.
 
 
 Some research shows,
-that \texttt{inkscape} in the version current at time of this writing
+that \tool{inkscape} in the version current at time of this writing
 exports mixed PDF and latex: If invoked as 
 %
 \begin{Verbatim}[fontsize=\footnotesize]
 inkscape --export-filename=xxx.pdf --export-area-drawing --export-latex xxx.svg 
 \end{Verbatim}
 %
-\texttt{inkscape} creates a file \texttt{xxx.pdf}
+\tool{inkscape} creates a file \texttt{xxx.pdf}
 containing all graphics but text and another file \texttt{xxx.pdf\_tex}
 containing text and including \texttt{xxx.pdf}.
 The file \texttt{xxx.pdf\_tex}
@@ -1080,7 +1079,7 @@ inkscape --export-filename=xxx.eps --export-area-drawing --export-latex xxx.svg
 %
 exports files \texttt{xxx.eps\_tex} and \texttt{xxx.eps}.
 
-In older versions of \texttt{inkscape},
+In older versions of \tool{inkscape},
 there was a configuration allowing \texttt{xxx.eps\_tex}
 to include uniformly both \texttt{xxx.pdf} and \texttt{xxx.eps}.
 Thus, \texttt{xxx.pdf\_tex} could be deleted
@@ -1088,14 +1087,14 @@ and \texttt{xxx.eps\_tex} moved to \texttt{xxx.ptx}
 which in turn could be included into the main document.
 
 As shown in Figure~\ref{fig:svg2pdf},
-for the current version of \texttt{inkscape},
+for the current version of \tool{inkscape},
 this software filters \texttt{xxx.eps\_tex} into \texttt{xxx.ptx}
 ``manually'' so that both \texttt{xxx.pdf} and \texttt{xxx.eps}
 are included in \texttt{xxx.ptx}.
 Then it deletes the original files
 \texttt{xxx.pdf\_tex} and \texttt{xxx.eps\_tex}.
 
-The author has filed a bug report to the inkscape team,
+The author has filed a bug report to the tool{inkscape} team,
 to avoid this workaround in the future. 
 
 \begin{figure}[htb]
@@ -1118,7 +1117,7 @@ should be a picture
 }{
   \import{}{F4_07someSvg.ptx}% this should be the standard
 }
-\caption{\label{fig:svgWithText}Some svg-picture with text FIXME\@: uniformity  }
+\caption{\label{fig:svgWithText}Some svg-picture with text FIXME\@: uniformity}
 \end{figure}
 
 In contrast to the FIG format, 
@@ -1178,7 +1177,7 @@ Only the latter yields the same size as direct conversion to PDF creates.
 
 Since bounding boxes seem superfluous, 
 we control their creation with a parameter \texttt{createBoundingBoxes} 
-whether to invoke \texttt{extractbb}, which is false by default. 
+whether to invoke \tool{extractbb}, which is false by default. 
 Nevertheless, if we invoke, then we do twice, 
 creating bounded boxes and extended bounding boxes. 
 
@@ -1186,7 +1185,7 @@ creating bounded boxes and extended bounding boxes.
 FIXME\@: further research and further documentation is required. 
 
 Note that both for \pdflatex{} and siblings creating PDF-output 
-and for \texttt{htlatex} in conjunction with \texttt{dvipdfmx} 
+and for \tool{htlatex} in conjunction with \tool{dvipdfmx} 
 files in the format \gls{pdf}, \gls{png}, \gls{jpg} are supported. 
 % **** what about \gls{gif}? 
 This list may be incomplete. 
@@ -1206,7 +1205,7 @@ should be a picture
 As an example, Figure~\ref{fig:asIsPng} shows the same picture 
 as PNG-file. 
 
-FIXME\@: At the moment, \texttt{htlatex} does not work with pictures at all. 
+FIXME\@: At the moment, \tool{htlatex} does not work with pictures at all. 
 
 \begin{figure}[htb]
 \centering
