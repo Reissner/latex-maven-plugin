@@ -157,7 +157,7 @@ matches all possible document classes.
 Typically, the document class is loaded with options. 
 The most frequent class may be \texttt{article} 
 followed by \texttt{report} and \texttt{book}. 
-For these, we suggest something like
+For these, we suggest something like\sindex[cmd]{documentclass} 
 %
 \begin{Verbatim}
 \documentclass[a4paper,12pt,english]{article}
@@ -252,7 +252,7 @@ may be used to define a lecture with and without solution
 or any other kind of variant. 
 
 Documents of class \texttt{leaflet} resemble \texttt{article}s, 
-except special options like \texttt{notumble}. 
+except special options like \texttt{notumble}\sindex[cmd]{documentclass}. 
 
 \begin{Verbatim}[fontsize=\footnotesize]
   \documentclass[a4paper,notumble,10pt,english]{leaflet}% 12pt,notumble
@@ -373,7 +373,7 @@ They take the form \texttt{\%~!LMP \dots}.
 Like the general magic comments, the specific ones are all optional, 
 but in contrast, they come in a fixed order without repetition. 
 
-What follows is a full range of magic comments: 
+What follows is a full range of magic comments\sindex[cmd]{documentclass}: 
 %
 \begin{Verbatim}
 % !TEX program=lualatex
@@ -1361,7 +1361,7 @@ As the configuration files described above,
 Note that \texttt{header.tex} is written for use of 
 %
 \begin{itemize}
-  \item various \LaTeX{} enginess, \lualatex, \xelatex{} and \pdflatex{} 
+  \item various \LaTeX{} engines, \lualatex, \xelatex{} and \pdflatex{} 
   \item various document classes, 
   specifically \texttt{article}, \texttt{book}, \texttt{beamer} for presentations, 
   \texttt{leaflet} and the letter class \texttt{scrlttr2}. 
