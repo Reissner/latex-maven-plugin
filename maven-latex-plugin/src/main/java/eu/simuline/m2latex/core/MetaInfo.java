@@ -926,7 +926,13 @@ public class MetaInfo {
 
 			// headlines 
 			this.log.info("tool versions: ");
-			this.log.info(String.format(TOOL_VERSION_FORMAT, "?warn?    ", "command",
+      // Note that 
+      // "?warning? " in the headline lines up with 
+      // "          " the placeholder if no warning occurs. 
+      // Both are preceeded by "[INFO] "
+      // Also, 
+      // " W"
+			this.log.info(versionLine("?warning? ", "command",
 					versionQuote, "actual version", "(not)in",
 					"[expected version interval]"));
 		} else {
@@ -969,14 +975,41 @@ public class MetaInfo {
 		return doWarnAny;
 	}
 
-  private boolean treatConverter(Converter conv,
+  // used to print to headline of a version table 
+  // but also the other lines of a version table 
+  // and finally, with special 'versionQuote', warning if versions does not fit only. 
+  private static String versionLine(String warnStr, String cmdStr, String versionQuote,
+        String versionStr, String inclStr, String expVersionInterval) {
+    return String.format(TOOL_VERSION_FORMAT, warnStr, cmdStr,
+					versionQuote, versionStr, inclStr, expVersionInterval);
+  }
+
+  /**
+   * Logs info or warning on the given converter 
+   * and returns whether a warning was emitted; else it was an info line or nothing at all. 
+   * @param conv
+   *    The converter under consideration. 
+   * @param includeVersionInfo
+	 *    whether to include plain version info; else warnings only.
+   * @param convertersExcluded
+   *    set of excluded converters. 
+   * @param convertersNotFound
+   *    to collect the set of converters not found. 
+   *    This shall be empty when invoking this method. 
+   * @param versionProperties
+   * @param versionQuote
+   * @return
+	 *    whether a warning has been logged. 
+   * @throws BuildFailureException
+   */
+  private boolean logConverterInfo(Converter conv,
         boolean includeVersionInfo,
         SortedSet<Converter> convertersExcluded,
         SortedSet<Converter> convertersNotFound,
         Properties versionProperties,
         String versionQuote) throws BuildFailureException {
-      boolean doWarn = false;
 
+    assert(convertersNotFound.isEmpty());
 			if (convertersExcluded.contains(conv)) {
 				// Note that for excluded converters, no warnings are emitted. 
       return false;
@@ -1009,24 +1042,37 @@ public class MetaInfo {
 			VersionInterval expVersionInterval = new VersionInterval(conv, expVersionStr);
 
       String warnStr, inclStr;
+    boolean doWarn = false;
       if (actVersionObj.isMatching()) {
+      // Here, we can find out, 
+      // whether the version of the converter fits the interval 
         doWarn = !expVersionInterval.contains(actVersionObj);
         if (doWarn) {
           inclStr = "not in";
           warnStr = "WMI02: ";
         } else {
+        // "[WARNING] WMI02: " and 
+        // "[INFO]           " must line up. 
           warnStr = "          ";
+        // warnStr is the sting after "[INFO] "
           inclStr = "in";
         }
       } else {
+      // Here, we cannot find out, 
+      // whether the version of the converter fits the interval 
 				doWarn = true;
 				this.log.warn("WMI01: Version string from converter " + conv
 						+ " did not match expected form: \n" + actVersionObj.getText());
         inclStr = "not?in";
-        warnStr = "       ";// no warning number, still the above is valid
+      // no warning number, still the above is valid 
+      // The warn string must line up with 
+      // "[WARNING] WMI01: ", means have the same length as "WMI01: "
+      warnStr =    "       ";
       }
 
-			String logMsg = String.format(TOOL_VERSION_FORMAT, warnStr, cmdStr + ":", versionQuote,
+    // String logMsg = String.format(TOOL_VERSION_FORMAT, warnStr, cmdStr + ":", versionQuote,
+    //     actVersionObj.getString(), inclStr, expVersionStr);
+    String logMsg = versionLine(warnStr, cmdStr, versionQuote,
 					actVersionObj.getString(), inclStr, expVersionStr);
     // this.log.info("actVersion: "+actVersionObj.getSegments());
     // this.log.info("expVersion: "+expVersionObj.getSegments());
