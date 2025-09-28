@@ -950,68 +950,6 @@ public class MetaInfo {
 		// TBD: try to deal with makeindex using stdin instead of dummy file: 
 		// InputStream sysInBackup = System.in;
 		for (Converter conv : Converter.values()) {
-      // boolean doWarn = false;
-			// if (convertersExcluded.contains(conv)) {
-			// 	// Note that for excluded converters, no warnings are emitted. 
-			// 	continue;
-			// }
-			
-			// //System.setIn(new ByteArrayInputStream("\u0004\n".getBytes()));
-			// String cmdStr = conv.getCommand();
-
-      // CmdResult resultWhich = this.executor.executeEmptyEnv(TexFileUtils.getEmptyIdx().getParentFile(),
-      //               null,
-      //               CMD_WHICH,
-      //               CommandExecutor.ReturnCodeChecker.Never,
-      //               new String[] {cmdStr});
-      // if (resultWhich.returnCode == 1) {
-      //   // skip if command cmd is unknown to command which. 
-			// 	// Note that converters which are not accessible (typically not installed) 
-			// 	// do not cause warnings here, because when using them, the situation is pretty clear. 
-			// 	// This is different for unexpected behavior caused by version not taken into account. 
-			// 	// Nevertheless, the converters not found are listed as an information, 
-			// 	// as the excluded are. 
-      //   convertersNotFound.add(conv);
-      //   continue;
-      // }
-
-			// // get actual version of the converter and expected version interval 
-			// Version actVersionObj = new Version(conv, this.executor);
-			// String expVersionStr = versionProperties.getProperty(cmdStr);
-			// VersionInterval expVersionInterval = new VersionInterval(conv, expVersionStr);
-
-      // String warnStr, inclStr;
-      // if (actVersionObj.isMatching()) {
-      //   doWarn = !expVersionInterval.contains(actVersionObj);
-      //   if (doWarn) {
-      //     inclStr = "not in";
-      //     warnStr = "WMI02: ";
-      //   } else {
-      //     warnStr = "          ";
-      //     inclStr = "in";
-      //   }
-      // } else {
-      //   doWarn = true;
-      //   this.log.warn("WMI01: Version string from converter " + conv
-      //       + " did not match expected form: \n" + actVersionObj.getText());
-      //   inclStr = "not?in";
-      //   warnStr = "       ";// no warning number, still the above is valid
-      // }
-
-			// String logMsg = String.format(TOOL_VERSION_FORMAT, warnStr, cmdStr + ":", versionQuote,
-			// 		actVersionObj.getString(), inclStr, expVersionStr);
-			// //	    this.log.info("actVersion: "+actVersionObj.getSegments());
-			// //	    this.log.info("expVersion: "+expVersionObj.getSegments());
-			// //	    this.log.info("actVersion: "+actVersionObj.getSegmentsAsStrings());
-			// //	    this.log.info("expVersion: "+expVersionObj.getSegmentsAsStrings());
-			// //this.log.info("actVersion?expVersion: "+actVersionObj.compareTo(expVersionObj));
-			// if (doWarn) {
-			// 	this.log.warn(logMsg);
-			// } else {
-			// 	if (includeVersionInfo) {
-			// 		this.log.info(logMsg);
-			// 	}
-			// }
 			doWarnAny |= treatConverter(conv, includeVersionInfo, convertersExcluded, convertersNotFound, versionProperties, versionQuote);
 		} // for 
 
