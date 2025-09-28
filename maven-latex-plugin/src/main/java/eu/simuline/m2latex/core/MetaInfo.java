@@ -440,7 +440,7 @@ public class MetaInfo {
 
  	static class Version implements Comparable<Version> {
 
-		private final static String VERSION_UNKNOWN = "version";
+		private final static String VERSION_UNKNOWN = "<unknown>";
 
 		private final String text;
 
