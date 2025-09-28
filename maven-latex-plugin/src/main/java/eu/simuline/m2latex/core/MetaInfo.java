@@ -965,7 +965,7 @@ public class MetaInfo {
 		// TBD: try to deal with makeindex using stdin instead of dummy file: 
 		// InputStream sysInBackup = System.in;
 		for (Converter conv : Converter.values()) {
-			doWarnAny |= logConverterInfo(conv, includeVersionInfo, convertersExcluded, convertersNotFound, versionProperties, versionQuote);
+			doWarnAny |= logConverterInfo(conv, includeVersionInfo, convertersExcluded, convertersNotFound, versionProperties);
 		} // for 
 
 		if (includeVersionInfo) {
@@ -1009,7 +1009,6 @@ public class MetaInfo {
    * @param versionProperties
    *    The properties describing the allowed version intervals 
    *    for all registered converters. 
-   * @param versionQuote
    * @return
 	 *    whether a warning has been logged. 
    * @throws BuildFailureException
@@ -1019,8 +1018,7 @@ public class MetaInfo {
         boolean includeVersionInfo,
         SortedSet<Converter> convertersExcluded,
         SortedSet<Converter> convertersNotFound,
-        Properties versionProperties,
-        String versionQuote) throws BuildFailureException {
+        Properties versionProperties) throws BuildFailureException {
 
     assert(convertersNotFound.isEmpty());
 			if (convertersExcluded.contains(conv)) {
@@ -1068,7 +1066,8 @@ public class MetaInfo {
         if (!includeVersionInfo) {
           return false;
         }
-        // "[WARNING] WMI02: " and 
+        // Here, an INFO must be logged. 
+        // "[WARNING] WMIxx: " and 
         // "[INFO]           " must line up. 
           warnStr = "          ";
         // warnStr is the sting after "[INFO] "
@@ -1088,8 +1087,6 @@ public class MetaInfo {
       warnStr =    "       ";
       }
 
-    // String logMsg = String.format(TOOL_VERSION_FORMAT, warnStr, cmdStr + ":", versionQuote,
-    //     actVersionObj.getString(), inclStr, expVersionStr);
     String logMsg = versionLine(warnStr, cmdStr, includeVersionInfo, 
 					actVersionObj.getString(), inclStr, expVersionStr);
     // this.log.info("actVersion: "+actVersionObj.getSegments());
