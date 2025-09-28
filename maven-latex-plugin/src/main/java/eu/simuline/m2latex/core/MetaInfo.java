@@ -872,7 +872,6 @@ public class MetaInfo {
                               SortedSet<Converter> convertersExcluded)
 			throws BuildFailureException {
 
-		String versionQuote = "";
 		if (includeVersionInfo) {
       // may throw TMI01, TMI03
 			ManifestInfo manifestInfo = new ManifestInfo();
@@ -944,8 +943,6 @@ public class MetaInfo {
 			this.log.info(versionLine("?warning? ", "command",
 					includeVersionInfo, "actual version", "(not)in",
 					"[expected version interval]"));
-		} else {
-			versionQuote = VERSION_QUOTE;
 		}
 
 		Properties versionProperties = getProperties(VERSION_PROPS_FILE);
