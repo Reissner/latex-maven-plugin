@@ -833,6 +833,15 @@ public class MetaInfo {
                            properties.getProperty("version"));
   }
 
+  /**
+   * The string 'version' to be inserted in a warning 
+   * that the version of a converter is not in the expected range. 
+   * TBD: more precise information. 
+   * Is invoked in {@link #versionLine(String, String, boolean, String, String, String)} 
+   * but only in the context where this is needed for clarification. 
+   */
+  private final static String VERSION_QUOTE = "version ";
+
 	// CAUTION, depends on the maven-jar-plugin and its version 
 	/**
 	 * Prints meta information, mainly version information 
@@ -933,10 +942,10 @@ public class MetaInfo {
       // Also, 
       // " W"
 			this.log.info(versionLine("?warning? ", "command",
-					versionQuote, "actual version", "(not)in",
+					includeVersionInfo, "actual version", "(not)in",
 					"[expected version interval]"));
 		} else {
-			versionQuote = "version ";
+			versionQuote = VERSION_QUOTE;
 		}
 
 		Properties versionProperties = getProperties(VERSION_PROPS_FILE);
@@ -978,10 +987,10 @@ public class MetaInfo {
   // used to print to headline of a version table 
   // but also the other lines of a version table 
   // and finally, with special 'versionQuote', warning if versions does not fit only. 
-  private static String versionLine(String warnStr, String cmdStr, String versionQuote,
+  private static String versionLine(String warnStr, String cmdStr, boolean includeVersionInfo, 
         String versionStr, String inclStr, String expVersionInterval) {
     return String.format(TOOL_VERSION_FORMAT, warnStr, cmdStr,
-					versionQuote, versionStr, inclStr, expVersionInterval);
+					includeVersionInfo ? VERSION_QUOTE : "", versionStr, inclStr, expVersionInterval);
   }
 
   /**
@@ -1081,7 +1090,7 @@ public class MetaInfo {
 
     // String logMsg = String.format(TOOL_VERSION_FORMAT, warnStr, cmdStr + ":", versionQuote,
     //     actVersionObj.getString(), inclStr, expVersionStr);
-    String logMsg = versionLine(warnStr, cmdStr, versionQuote,
+    String logMsg = versionLine(warnStr, cmdStr, includeVersionInfo, 
 					actVersionObj.getString(), inclStr, expVersionStr);
     // this.log.info("actVersion: "+actVersionObj.getSegments());
     // this.log.info("expVersion: "+expVersionObj.getSegments());
