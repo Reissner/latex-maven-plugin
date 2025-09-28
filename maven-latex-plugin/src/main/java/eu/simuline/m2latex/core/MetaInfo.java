@@ -956,7 +956,7 @@ public class MetaInfo {
 		// TBD: try to deal with makeindex using stdin instead of dummy file: 
 		// InputStream sysInBackup = System.in;
 		for (Converter conv : Converter.values()) {
-			doWarnAny |= treatConverter(conv, includeVersionInfo, convertersExcluded, convertersNotFound, versionProperties, versionQuote);
+			doWarnAny |= logConverterInfo(conv, includeVersionInfo, convertersExcluded, convertersNotFound, versionProperties, versionQuote);
 		} // for 
 
 		if (includeVersionInfo) {
@@ -987,6 +987,7 @@ public class MetaInfo {
   /**
    * Logs info or warning on the given converter 
    * and returns whether a warning was emitted; else it was an info line or nothing at all. 
+   * 
    * @param conv
    *    The converter under consideration. 
    * @param includeVersionInfo
@@ -997,10 +998,13 @@ public class MetaInfo {
    *    to collect the set of converters not found. 
    *    This shall be empty when invoking this method. 
    * @param versionProperties
+   *    The properties describing the allowed version intervals 
+   *    for all registered converters. 
    * @param versionQuote
    * @return
 	 *    whether a warning has been logged. 
    * @throws BuildFailureException
+   *    TBD
    */
   private boolean logConverterInfo(Converter conv,
         boolean includeVersionInfo,
@@ -1051,6 +1055,10 @@ public class MetaInfo {
           inclStr = "not in";
           warnStr = "WMI02: ";
         } else {
+        // Here is the only branch, where no warning is logged. 
+        if (!includeVersionInfo) {
+          return false;
+        }
         // "[WARNING] WMI02: " and 
         // "[INFO]           " must line up. 
           warnStr = "          ";
@@ -1065,6 +1073,7 @@ public class MetaInfo {
 						+ " did not match expected form: \n" + actVersionObj.getText());
         inclStr = "not?in";
       // no warning number, still the above is valid 
+      // and so this line is a warning (doWarn=true) 
       // The warn string must line up with 
       // "[WARNING] WMI01: ", means have the same length as "WMI01: "
       warnStr =    "       ";
@@ -1083,10 +1092,8 @@ public class MetaInfo {
 			if (doWarn) {
 				this.log.warn(logMsg);
 			} else {
-				if (includeVersionInfo) {
 					this.log.info(logMsg);
 				}
-			}
     return doWarn;
   } // treatConverter
 
