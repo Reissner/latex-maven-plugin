@@ -981,9 +981,46 @@ public class MetaInfo {
 		return doWarnAny;
 	}
 
-  // used to print to headline of a version table 
-  // but also the other lines of a version table 
-  // and finally, with special 'versionQuote', warning if versions does not fit only. 
+  /**
+   * Returns a so called version line describing the version of a converter named {@code cmdStr} 
+   * if invoked by {@link #logConverterInfo(Converter, boolean, SortedSet, SortedSet, Properties)}. 
+   * If {@code includeVersionInfo}, then the version lines form a table 
+   * and this method is also used to create the header of this table 
+   * which is the case if invoked by {@link #printMetaInfo(boolean, SortedSet)} directly. 
+   * 
+   * Except {@code includeVersionInfo} the parameters describe the columns of the table 
+   * and so it is clear that if used to create the header, the values are quite special. 
+
+   * It consists of 
+   * a <code>warnStr</code> which may be a warning specifier or empty, either because it is not a warning 
+   * or because the warning was displayed before (in case the version cannot be detected)
+   * @param warnStr
+   *    the warning string or the header of the warning column 
+   *    The warning string is either {@code 'WMI02: '} indicating that the version of {@code cmdStr} does not fit the expectation, 
+   *    or an empty string of appropriate length indicating that the version fits (in an {@code [INFO]} line), 
+   *    or an empty string if the version cannot be determined. 
+   *    In the latter case, warning {@code WMI01} is displayed in the line before clarifying the problem. 
+   *    Thus no further warning indication is needed and the {@code warnStr} is empty. 
+   *    On the other hand the line starts with {@code [WARNING]} so the empty {@code warnStr} is shorter than for an {@code [INFO]} line. 
+   * @param cmdStr
+   *    the name of the converter under consideration or the header of the command column. 
+   * @param includeVersionInfo
+   *    an indication whether this line is among lines displaying info also which means it is in a table, 
+   *    possibly the header of that table. 
+   *    Else for clarification of the context {@link #VERSION_QUOTE} is included. 
+   * @param versionStr
+   *    the version string of {@code cmdStr} or the header of the according column. 
+   *    If the version of {@code cmdStr} cannot be determined, it is given by {@link MetaInfo.Version#VERSION_UNKNOWN}. 
+   * @param inclStr
+   *    the string {@code not?in} or in the context of the header, 
+   *    {@code in} if the version of {@code cmdStr} is known to be in range, 
+   *    {@code not in} if the version of {@code cmdStr} is known to be not in range, 
+   *    {@code not?in} if it is unknown whether the version of {@code cmdStr} is in range, 
+   * @param expVersionInterval
+   *    the interval of allowed versions of {@code cmdStr} or in the context of the header. 
+   * @return
+   *    the version line of a converter {@code cmdStr} or the header of the table of version lines. 
+   */
   private static String versionLine(String warnStr, String cmdStr, boolean includeVersionInfo, 
         String versionStr, String inclStr, String expVersionInterval) {
     return String.format(TOOL_VERSION_FORMAT, warnStr, cmdStr,
