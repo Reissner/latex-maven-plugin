@@ -832,10 +832,16 @@ The default value is 'makeindex'. -->
 The default value is the empty string. -->
             <makeIndexOptions>-c</makeIndexOptions>
 
-            <!-- The pattern is applied linewise to the ilg-file 
-and matching indicates that $makeIndexCommand failed. 
-The default value '(!! Input index error )' 
-is chosen according to the 'makeindex' documentation. -->
+            <!-- The pattern is applied line-wise to the log file of the '$makeIndexCommand'  
+and matching indicates that '$makeIndexCommand' failed with an error. 
+Note that '$makeIndexCommand' is invoked either directly, 
+via '$splitIndexCommand' or via '$makeGlossariesCommand'. 
+In the first two cases, the log file is an ilg-file. 
+For the last case, not the actual value for \texttt{\$makeIndexCommand} is used 
+but the default value. 
+
+The default value for the pattern '(!! Input index error )' 
+is chosen according to the `makeindex' documentation. -->
             <patternErrMakeIndex>
 (!! Input index error )
             </patternErrMakeIndex>
@@ -893,17 +899,20 @@ With option '-L german', this is added.
 Options '-M<' for 'xindy' '-s' for 'makeindex' and '-t' and '-o' for both, 'xindy' and 'makeindex'. -->
             <makeGlossariesOptions />
 
-            <!-- The pattern is applied linewise to the glg-file 
-and matching indicates that $makeGlossariesCommand failed. 
-The default value '(^\*\*\* unable to execute: )' 
-is chosen according to the 'makeindex' documentation. 
+            <!--    * **This parameter is deprecated since version 2.1.** 
+The pattern is applied line-wise to each log file of the index processor, 
+invoked by '$makeGlossairesCommand' which is either 'makeindex' or 'xindy' 
+It is appended to the log file by 'makeglossaries' in case the according index processor had an error. 
 
-If the current default value is not appropriate, 
-please overwrite it in the configuration 
-and notify the developer of this plugin of the bug. -->
-            <patternErrMakeGlossaries>
- (^\*\*\* unable to execute: )
-            </patternErrMakeGlossaries>
+Note that from the point of view of a build tool, 
+this is a redundant piece of information. 
+It is only written to help an end-user to understand the error message of the index processor better. 
+Also note that there is no according message for warnings of the index processor 
+and that the above message 
+is written by 'makeglossaries' but not by 'makeglossaries-lite'. -->
+            <!-- <patternErrMakeGlossaries>
+^makeglossaries diagnostic messages:$
+            </patternErrMakeGlossaries> -->
 
             <!-- The pattern in the glg-file 
 indicating an error when running 'xindy' 
