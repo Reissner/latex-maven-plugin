@@ -1604,6 +1604,12 @@ discussion: currently disabled
 <!-- add ltex as a command line tool like chktex. Already installed but need some feedback from the authors to use properly. 
  Define a goal latex:ltex analogously to latex:chk -->
 
+ <!-- reimplement internally the build mechanism of latexmk. 
+  This offers the possibility to add the supervision. 
+  I made the experience that <latexmkUsage>AsBackend</latexmkUsage> easily is added unnoticed 
+  which eliminates all supervision. 
+  Maybe the meaning shall be changed: AsBackendInvokeLatexk with really invoking latexmk and AsBackendReimplement -->
+
     <release version="2.1" date="2023-08-28" 
       description="build with latexmk and generalized reproducibility, readed glossary">
       <action dev='reissner' type='add'>
