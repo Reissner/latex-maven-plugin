@@ -1757,10 +1757,18 @@ The options for the MakeIndex command.
 & \texttt{(!! Input index error\ )} \\% chktex 36 % chktex 37
 \multicolumn2{|l|}{
 \begin{minipage}{0.95\linewidth}
-The pattern is applied line-wise to the ilg-file 
-and matching indicates that \texttt{\$makeIndexCommand} failed. 
-The default value is chosen 
-according to the `\texttt{makeindex}' documentation.
+The pattern is applied line-wise to the log file of the \texttt{\$makeIndexCommand}  
+and matching indicates that \texttt{\$makeIndexCommand} failed with an error. 
+Note that \texttt{\$makeIndexCommand} is invoked either directly, 
+via \texttt{\$splitIndexCommand} or via \texttt{\$makeGlossariesCommand}. 
+In the first two cases, the log file is an ilg-file. 
+For the last case, not the actual value for \texttt{\$makeIndexCommand} is used 
+but the default value. 
+% TBD: have a look at correspondence with Nicola Talbot, 
+% i remember she wanted to change that. 
+
+The default value for the pattern is chosen 
+according to the `\tool{makeindex}' documentation.
 % \cite{MkIdxMoe}, Chapter 5.1 
 % To adapt to upmendex : 'Error: ' 
 % together '^(!! Input index error|Error:)\ '
@@ -1900,21 +1908,35 @@ Options `\texttt{-M<}' for `\texttt{xindy}'
 \end{minipage}
 } \\
 \texttt{patternErrMakeGlossaries} & 
-\texttt{(\^{}\textbackslash*\textbackslash*\textbackslash* unable to execute:\ )} \\% chktex 37
+\texttt{(\^{}makeglossaries diagnostic messages:\$} \\% chktex 37
 \multicolumn2{|l|}{
 \begin{minipage}{0.95\linewidth}
-The pattern is applied line-wise to the `glg'-file 
-and matching indicates that \texttt{\$makeGlossariesCommand} failed. 
-The default value `\texttt{(\^\*\*\* unable to execute:~)}' 
-is chosen according to the \texttt{makeindex} documentation. 
-If the default value is not appropriate, please modify 
-and notify the developer of this plugin. 
+\textbf{This parameter is deprecated since version 2.1.} 
+The pattern is applied line-wise to each log file of the index processor, 
+invoked by \texttt{\$makeGlossairesCommand} which is either \tool{makeindex} or \tool{xindy}. 
+It is appended to the log file by \texttt{makeglossaries} in case the according index processor had an error. 
+
+Note that from the point of view of a build tool, 
+this is a redundant piece of information. 
+It is only written to help an end-user to understand the error message of the index processor better. 
+Also note that there is no according message for warnings of the index processor 
+and that the above message is written by \tool{makeglossaries} 
+but not by \tool{makeglossaries-lite}. 
 \end{minipage}
 } \\
 \texttt{patternErrXindy} & \texttt{(\^{}ERROR:\ )} \\% chktex 36 chktex 37
 \multicolumn2{|l|}{
 \begin{minipage}{0.95\linewidth}
-The pattern in the \gls{glg}-file 
+The pattern is applied line-wise to each log file of the index processor \tool{xindy}, 
+invoked by \texttt{\$makeGlossariesCommand}. 
+
+
+%  The pattern is applied line-wise to the ilg-file 
+%and matching indicates a warning \texttt{\$makeIndexCommand} emitted. 
+%The default value is chosen 
+%saccording to the `\texttt{makeindex}' documentation.
+
+The pattern in each log file 
 which indicates an error when running `\texttt{xindy}' 
 via \texttt{\$makeGlossariesCommand}. 
 If the default value is not appropriate, please modify 
