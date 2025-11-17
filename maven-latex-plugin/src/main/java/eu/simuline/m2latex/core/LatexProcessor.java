@@ -463,7 +463,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
                     + " (" + timestampSec + "sec)");
 
               assert pdfFileCmpOpt.isPresent();
-              this.executor.envSetTimestamp(timestampSec);
+              this.executor.envSetTimestampAndTZutc(timestampSec);
             } else {
               // just a placeholder to signify that a reproducible artifact must be created 
               // but there is no original 

@@ -230,7 +230,7 @@ class CommandExecutor {
     this.env = ENV_TIMEZONE;
   }
 
-  void envSetTimestamp(long timestampSec) {
+  void envSetTimestampAndTZutc(long timestampSec) {
     ENV_TIMESTAMP_FORCE_TZ.put(DATE_EPOCH, Long.toString(timestampSec));
     this.env = ENV_TIMESTAMP_FORCE_TZ;
   }
