@@ -118,7 +118,7 @@ sub getTimestampDiff($fileName) {
 
 sub getCreationTimeMetaEpoch($pdfFile) {
   my ($stdout, $res) = capture_stdout {
-      system("${getPdfMetainfoCommand()} ${pdfMetainfoOptions} $pdfFile")
+      system("${getPdfMetainfoCommand()} ${pdfMetainfoOptions} $pdfFile"); # TBD: evaluate return value 
   };
   print("metainfo ok: $res\n");
   print("metainfos: \n$stdout\n");
@@ -183,6 +183,7 @@ sub run_latex($fileName, @opts) {
   # the other is ignored. 
   # TBD: eliminate: xelatex emits a warning because -output-format is unknown 
   my $addArgs = $pdfViaDvi ? "-no-pdf -output-format=dvi " : "";
+  # TBD: evaluate return values properly.  
   my $res = system("$timeEnv$latexCommand ${latex2pdfOptions} $addArgs @opts $fileName");
   if ($pdfViaDvi) {
     # Note that $timeEnv is first of all suitable for the latex compiler. 
@@ -291,7 +292,7 @@ sub fig2dev {
   #fig2dev -L pstex    <fig2devGenOptions> <fig2devPdfEpsOptions>        xxx.fig xxx.eps   
   #fig2dev -L pdftex   <fig2devGenOptions> <fig2devPdfEpsOptions>        xxx.fig xxx.pdf   
   #fig2dev -L pdftex_t <fig2devGenOptions> <fig2devPtxOptions>    -p xxx xxx.fig xxx.ptx
-
+  # TBD: evaluate return values properly 
   my $ret1 = system(qq/${getFig2devCommand()} -L  pstex   ${fig2devGenOptions} ${fig2devPdfEpsOptions}       $file.fig $file.eps/);
   my $ret2 = system(qq/${getFig2devCommand()} -L pdftex   ${fig2devGenOptions} ${fig2devPdfEpsOptions}       $file.fig $file.pdf/);
   my $ret3 = system(qq/${getFig2devCommand()} -L pdftex_t ${fig2devGenOptions} ${fig2devPtxOptions} -p $file $file.fig $file.ptx/);
@@ -313,6 +314,7 @@ sub gnuplot {
   # my $ret2 = system("gnuplot -e \"set terminal cairolatex eps ${gnuplotOptions};\
   #           set output '$file.ptx';\
   #           load '$file.gp'\"");
+  $res >>= 8; # reconstruct return value of the application 
   return $ret;
 }
 
@@ -329,6 +331,7 @@ sub mpost {
   #print "quoted: $metapostOptionsQ\n";
   my $return = system(qq/${getMetapostCommand()} $metapostOptionsQ $name/);
   popd();
+  $res >>= 8; # reconstruct return value of the application 
   return $return;
 }
 
@@ -344,6 +347,7 @@ sub inkscape {
   # This works only for pdf, not for eps. 
   #unlink($file.pdf_tex) or die "cannot unlink $file.pdf_tex";
   rename("$file.pdf_tex", "$file.ptx");# or die "cannot move $file.pdf_tex";
+  $res >>= 8; # reconstruct return value of the application 
   return $ret1;# or $ret2;
 }
 
@@ -400,10 +404,12 @@ sub run_makeSplitindex($fileName, @opts) {
       rdb_add_generated("$fileName-$_.idx", "$fileName-$_.ind");
     }
 
-    return system("${splitIndexCommand} --makeindex ${makeIndexCommand} ${splitIndexOptions} $fileName -- ${makeIndexOptions} @opts");
+    $res = system("${splitIndexCommand} --makeindex ${makeIndexCommand} ${splitIndexOptions} $fileName -- ${makeIndexOptions} @opts");
   } else {
-    return system("${makeIndexCommand} ${makeIndexOptions} @opts $fileName");
+    $res = system("${makeIndexCommand} ${makeIndexOptions} @opts $fileName");
   }
+  $res >>= 8; # reconstruct return value of the application 
+  return $res
 }
 
 # This set of dependencies is only complete 
@@ -432,7 +438,9 @@ sub run_makeglossaries {
   if ($silent) {
     $options = "$options -q";
   }
-  return system("${makeGlossariesCommand} $options $file");
+  $res = system("${makeGlossariesCommand} $options $file");
+  $res >>= 8; # reconstruct return value of the application 
+  return $res;
 }
 
 # !!! ONLY WORKS WITH VERSION 4.54 or higher of latexmk
@@ -481,10 +489,10 @@ sub run_bib2gls {
   if ($silent) {
     $options = "--silent $options";
   }
-  my $ret = system "bib2gls $options $_[0]";
-
+  my $ret = system("bib2gls $options $_[0]");
+  $ret >>= 8; # reconstruct return value of the application 
   if ($ret) {
-    warn "Run_bib2gls: Error, running bib2gls\n";
+    warn "Run_bib2gls: Error, running bib2gls; return value $ret.\n";
     return $ret;
   }
 
