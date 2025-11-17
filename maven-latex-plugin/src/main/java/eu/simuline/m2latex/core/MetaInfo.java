@@ -513,9 +513,10 @@ public class MetaInfo {
 				return;
 			}
 			this.versionStr = this.matcher.group(1);
-			this.segments = new ArrayList<Number>(this.matcher.groupCount());
+			this.segments = new ArrayList<Number>(this.matcher.groupCount()-1);
 			String segment;
 			Number num;
+      // group 1 is the enclosing group. Thus we start with the second one 
 			for (int idx = 2; idx <= this.matcher.groupCount(); idx++) {
 				segment = this.matcher.group(idx);
 				if (segment == null) {
@@ -526,6 +527,13 @@ public class MetaInfo {
 			}
 		}
 
+    /**
+     * Returns a number representing the segment of a version string. 
+     * This is a Byte if the segment is a lower case letter, 
+     * an Integer if it is an integer and a Double if it has the form number.number
+     * @param segment
+     * @return
+     */
 		private static Number segStr2Num(String segment) {
 			if (segment.isEmpty()) {
 				// TBD: very weak. 

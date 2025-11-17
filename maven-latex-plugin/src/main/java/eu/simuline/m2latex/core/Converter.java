@@ -773,7 +773,7 @@ enum Converter {
     }
 
     String getVersionPattern() {
-      return VX_X;
+      return VD;
     }
 
     String getVersionEnvironment() {
@@ -791,7 +791,7 @@ enum Converter {
     }
 
     String getVersionPattern() {
-      return VX_X;
+      return VD;
     }
 
     String getVersionEnvironment() {
@@ -982,6 +982,14 @@ enum Converter {
    * Version pattern with major version only. 
    */
   private final static String VX = "((\\d+))";
+
+  /**
+   * Special version pattern where the sequence after dot is considered fractions. 
+   * Thus 1.3=1.30 which is bigger than 1.104. 
+   * 
+   * @see #VX_X
+   */
+  private final static String VD = "((\\d+\\.\\d+))";
 
   /**
    * Version signifying a date in standard ISO8601 but without hyphens. 
