@@ -969,7 +969,7 @@ public class MetaInfo {
 		SortedSet<Converter> convertersNotFound = new TreeSet<Converter>();
 		// TBD: try to deal with makeindex using stdin instead of dummy file: 
 		// InputStream sysInBackup = System.in;
-		for (Converter conv : Converter.values()) {
+    for (Converter conv : Converter.values()) {
 			doWarnAny |= logConverterInfo(conv, includeVersionInfo, convertersExcluded, convertersNotFound, versionProperties);
 		} // for 
 
@@ -1063,47 +1063,47 @@ public class MetaInfo {
         Properties versionProperties) throws BuildFailureException {
 
     assert(convertersNotFound.isEmpty());
-			if (convertersExcluded.contains(conv)) {
-				// Note that for excluded converters, no warnings are emitted. 
+    if (convertersExcluded.contains(conv)) {
+      // Note that for excluded converters, no warnings are emitted.
       return false;
-			}
-			
-    // System.setIn(new ByteArrayInputStream("\u0004\n".getBytes()));
-			String cmdStr = conv.getCommand();
+    }
 
-      CmdResult resultWhich = this.executor.executeEmptyEnv(TexFileUtils.getEmptyIdx().getParentFile(),
-                    null,
-                    CMD_WHICH,
-                    CommandExecutor.ReturnCodeChecker.Never,
+    // System.setIn(new ByteArrayInputStream("\u0004\n".getBytes()));
+    String cmdStr = conv.getCommand();
+
+    CmdResult resultWhich = this.executor.executeEmptyEnv(TexFileUtils.getEmptyIdx().getParentFile(),
+        null,
+        CMD_WHICH,
+        CommandExecutor.ReturnCodeChecker.Never,
         new String[] { cmdStr });
-      if (resultWhich.returnCode == 1) {
-        // skip if command cmd is unknown to command which. 
-				// Note that converters which are not accessible (typically not installed) 
+    if (resultWhich.returnCode == 1) {
+      // skip if command cmd is unknown to command which.
+      // Note that converters which are not accessible (typically not installed)
       // do not cause warnings here, because when using them, the situation is pretty
       // clear.
       // This is different for unexpected behavior caused by version not taken into
       // account.
-				// Nevertheless, the converters not found are listed as an information, 
-				// as the excluded are. 
-        convertersNotFound.add(conv);
+      // Nevertheless, the converters not found are listed as an information,
+      // as the excluded are.
+      convertersNotFound.add(conv);
       return false;
-      }
+    }
 
-			// get actual version of the converter and expected version interval 
-			Version actVersionObj = new Version(conv, this.executor);
-			String expVersionStr = versionProperties.getProperty(cmdStr);
-			VersionInterval expVersionInterval = new VersionInterval(conv, expVersionStr);
+    // get actual version of the converter and expected version interval
+    Version actVersionObj = new Version(conv, this.executor);
+    String expVersionStr = versionProperties.getProperty(cmdStr);
+    VersionInterval expVersionInterval = new VersionInterval(conv, expVersionStr);
 
-      String warnStr, inclStr;
+    String warnStr, inclStr;
     boolean doWarn = false;
-      if (actVersionObj.isMatching()) {
+    if (actVersionObj.isMatching()) {
       // Here, we can find out, 
       // whether the version of the converter fits the interval 
-        doWarn = !expVersionInterval.contains(actVersionObj);
-        if (doWarn) {
-          inclStr = "not in";
-          warnStr = "WMI02: ";
-        } else {
+      doWarn = !expVersionInterval.contains(actVersionObj);
+      if (doWarn) {
+        inclStr = "not in";
+        warnStr = "WMI02: ";
+      } else {
         // Here is the only branch, where no warning is logged. 
         if (!includeVersionInfo) {
           return false;
@@ -1111,37 +1111,37 @@ public class MetaInfo {
         // Here, an INFO must be logged. 
         // "[WARNING] WMIxx: " and 
         // "[INFO]           " must line up. 
-          warnStr = "          ";
+        warnStr = "          ";
         // warnStr is the sting after "[INFO] "
-          inclStr = "in";
-        }
-      } else {
+        inclStr = "in";
+      }
+    } else {
       // Here, we cannot find out, 
       // whether the version of the converter fits the interval 
-				doWarn = true;
-				this.log.warn("WMI01: Version string from converter " + conv
-						+ " did not match expected form: \n" + actVersionObj.getText());
-        inclStr = "not?in";
+      doWarn = true;
+      this.log.warn("WMI01: Version string from converter " + conv
+          + " did not match expected form: \n" + actVersionObj.getText());
+      inclStr = "not?in";
       // no warning number, still the above is valid 
       // and so this line is a warning (doWarn=true) 
       // The warn string must line up with 
       // "[WARNING] WMI01: ", means have the same length as "WMI01: "
       warnStr =    "       ";
-      }
+    }
 
     String logMsg = versionLine(warnStr, cmdStr, includeVersionInfo, 
-					actVersionObj.getString(), inclStr, expVersionStr);
+        actVersionObj.getString(), inclStr, expVersionStr);
     // this.log.info("actVersion: "+actVersionObj.getSegments());
     // this.log.info("expVersion: "+expVersionObj.getSegments());
     // this.log.info("actVersion: "+actVersionObj.getSegmentsAsStrings());
     // this.log.info("expVersion: "+expVersionObj.getSegmentsAsStrings());
     // this.log.info("actVersion?expVersion:
     // "+actVersionObj.compareTo(expVersionObj));
-			if (doWarn) {
-				this.log.warn(logMsg);
-			} else {
-					this.log.info(logMsg);
-				}
+    if (doWarn) {
+      this.log.warn(logMsg);
+    } else {
+      this.log.info(logMsg);
+    }
     return doWarn;
   } // treatConverter
 
