@@ -577,3 +577,30 @@ push @generated_exts, "4tc", "4ct", "tmp", "xref", "css", "idv", "lg";
 # biblatex
 # push @generated_exts, "run.xml";# does run.xml work? 
 # $clean_ext .= " %R-blx.bib";
+
+
+$success_cmd="internal run_onSuccess %D";
+
+sub run_onSuccess {
+  $target = $_[0];
+
+  if ($target !~ m/.pdf$/) {
+    print("created no pdf\n");
+    return;
+  }
+  # currently, postprocessing occurs for pdf files only 
+  my $res = system("verapdf -f 0 --format text $target");
+  $res >>= 8; # reconstruct return value of the application 
+  print("verapdf return value: $res\n");
+  if ($res == 0) {
+    print("Conformance as requested. \n");
+  } else {
+    print("Conformance **not*** as requested. \n");
+  }
+
+};
+
+
+$failure_cmd="echo '...compilation failed'";
+
+$failure_cmd="echo '...compilation succeeded with warnings'";
