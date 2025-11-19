@@ -1,0 +1,168 @@
+\DocumentMetadata{pdfversion=1.7,pdfstandard=a-2b,lang=en-US}
+\RequirePackage[l2tabu, orthodox]{nag}
+\documentclass[10pt, a4paper]{article}
+\input{../header.tex}
+\input{../headerSuppressMetaPDF.tex}
+%\pdfusetitle
+\usepackage{fancyvrb}
+
+\hypersetup{
+  pdfinfo={
+    % in newest version also in custom dictionary 
+    %Author      ={Ernst Reißner},
+    %Title       ={The DVI-format and the program DVItype},
+    Subject     ={DVI and DVItype},
+    Keywords    ={LaTeX;dvi;DVItype},
+    unicode % TBD: clarify 
+  }
+}
+%\pdfcatalog{/Lang (de-DE)}
+
+
+
+
+\newcommand{\bs}{\symbol{'134}} % backslash in typewriter T1/T1 
+
+\IfPackageLoadedTF{tex4ht}{
+  \newcommand{\cmd}[2][]{\texttt{\bs{}#2#1}}
+  % \newcommand{\pkg}[1]{\texttt{#1}}% without indexing 
+  % \newcommand{\tool}[1]{\texttt{#1}}% without indexing 
+  % \newcommand{\param}[1]{\texttt{#1}}% without indexing 
+}
+{
+  \newcommand{\cmd}[2][]{\texttt{\bs{}#2#1}\sindex[cmd]{#2@\texttt{\bs{}#2}}}
+  % \newcommand{\pkg}[1]{\texttt{#1}\sindex[pkg]{#1}} % TBD: this must be extracted 
+  % \newcommand{\tool}[1]{\texttt{#1}\sindex[tool]{#1}}% TBD: this must be extracted 
+  % \newcommand{\param}[1]{\texttt{#1}\sindex[param]{#1}}% TBD: this must be extracted 
+}
+
+\title{The command \cmd{DocumentMetadata} and conformance with PDF/A and PDF/UE}
+\author{Ernst Reissner (rei3ner@arcor.de)}
+\date{\Today}
+
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\listoftables
+
+\section{Introduction}\label{sec:intro}
+
+This document is about using \cmd{DocumentMetadata}. 
+This is the canonical way to force modern \LaTeX{} compilers to include metadata. 
+Metadata in turn is the base for creating certain more strict flavors of PDF, 
+namely PDF/A, PDF/X and PDF/UA\@. 
+Whereas at time of this writing, PDF/X is not very much supported, 
+this is different for the other standards. 
+
+In general, one can specify the standard in \cmd{DocumentMetadata}, 
+and the compiler tries to reach conformance, but there is no guarantee, 
+even in absence of warnings. 
+Thus, verification is mandatory and the canonical trustable and free verification tool 
+with long term support is \texttt{verapdf} sponsored by the EU\@. 
+Since this document also describes the circumstances under which conformance can be reached, 
+we added a short description of \texttt{verapdf} in Section~\ref{sec:veraPdf}. 
+
+
+%https://ctan.math.washington.edu/tex-archive/macros/latex-dev/required/latex-lab/documentmetadata-support-code.pdf
+% parser for DocumentMetadata: 
+% nested values only for key tagging-setup and debug but inside, no further nesting, 
+% so regular expressions are still appropriate. 
+% key may also comprise comments. 
+% with only on level of nesting, we have w*<key>(={[~{}]})?(,\w*<key>(={[~{}]})?)*
+% A bit restrictive, means no nested values, and no comments. 
+%
+%documentmetadata-support-doc.pdf 
+% maybe in the manual a small section on pdfa: 
+% neither hyperxmp nor pdfx is required. 
+% just setting pdfstandard={A=2B}
+% even colorscheme is not required. 
+% Validation goes wrong for pdfversion={2.0} 
+% but if nothing is given, it works out. 
+% I think it does not work for pdflatex, but it works for lualatex 
+% visual diff has differences but only in link colors: 
+% internal links, links to bibliography and links to external three colors but now different. 
+% we leave it as is, to indicate it must be PDF/A. 
+% debug={xmp-export},
+% one can do xmp-export=true or =\jobname.xmpi, nothing else, 
+% because else the file cannot be erased. 
+% TBD: what if standard is A-3x or even A=4, what if X- or UE=?
+% debug={xmp-export} returns the same as pdfinfo -meta
+
+% how shall we check pdfstandard? 
+% we assume that neither pdfx nor hyperxmp are used. 
+% only \DocumentMetadata. 
+% The parser indicating latex main files 
+% also finds \DocumentMetadata and the key pdfstandard. 
+% Then https://ctan.math.illinois.edu/macros/latex/contrib/pdfmanagement-testphase/l3pdfmeta.pdf section 1.2:
+%ocumentMetadata
+% {
+% %other options
+% pdfstandard=A-2b,
+% colorprofiles=
+% {
+% A = sRGB.icc, %or longer GTS_PDFA1 = sRGB.icc
+% X = sRGB.icc,
+% ISO_PDFE1=sRBG.icc
+%
+% another problem: TZ: latexmk always uses UTC do does ntlatex
+% main application partially uses local time zone. 
+% Then the according document is not reproducible if coming from another timezone 
+% one would have to get from the pdf not only the time but also the timezone. 
+% then one could create the new file with correct time and timezone. 
+%
+
+%\DocumentMetadata{lang=en,pdfversion=1.7,pdfstandard=A-2B}
+
+% \DocumentMetadata{
+%   %pdfversion={2.0}, %then not compliant
+%   pdfstandard={A-2B},
+%   %tagging={on}, %seems not available although documented
+%   lang={en-US}, 
+%   colorprofiles={A = sRGB.icc}
+% }
+
+\section{On \cmd{DocumentMetadata}}\label{sec:docMeta}
+
+
+\section{On \texttt{verapdf}}\label{sec:veraPdf}% should remain section 3... else check dependencies. 
+
+The list of return values given in Table~\ref{tab:exitCodesVeraPdf}. 
+As can be seen, one code, 0, indicates that all checks were performed 
+and all validation succeeded, one result means, the test could be performed and failed, 
+and the other return values more or less indicate, 
+that the proper tests could not be performed. 
+Parsing errors means, it is no valid PDF file at all, so the proper tests could not be performed. 
+Note that this application invoked \texttt{verapdf} with exactly one PDF file. 
+
+\begin{table}[htb]
+\centering
+\begin{tabular}{lrl}
+  \toprule
+Enum                     & Exit code & Explanation \\
+\midrule%
+\midrule%
+\Verb|VALID|                     &  0 & all files parsed and valid. \\    %VALID(0 & All files validated."), % also if option -o
+\Verb|INVALID|                   &  1 & Invalid PDF/A file(s) found. \\
+\Verb|BAD_PARAMS|                &  2 & Invalid command line parameters. \\
+\Verb|OOM|                       &  3 & Out of Java heap space (memory). \\
+\Verb|NO_FILES|                  &  4 & No files to process, also if no given files exist. \\% TBD: the latter must be added to docs of verapdf 
+\Verb|IO_EXCEPTION|              &  6 & I/O Exception while processing. \\{}
+--                               &  5 & Does not occur. \\
+\Verb|FAILED_PARSING|            &  7 & Failed to parse one or more files. \\
+\Verb|ENCRYPTED_FILES|           &  8 & Some PDFs encrypted. \\% TBD: what if --password is given but wrong? 
+\Verb|VERAPDF_EXCEPTION|         &  9 & VeraPDF exception while processing. \\
+\Verb|JAXB_EXCEPTION|            & 10 & Java XML marshalling exception \\
+                                 &    &while processing result. \\
+\Verb|FAILED_MULTIPROCESS_START| & 11 & Failed to start multiprocess. \\
+\Verb|INTERRUPTED_EXCEPTION|     & 12 & Interrupted exception while processing. \\
+\bottomrule%
+\end{tabular}
+\caption{\label{tab:exitCodesVeraPdf}The exit codes of \texttt{verapdf}}
+\end{table}
+
+
+
+\end{document}
