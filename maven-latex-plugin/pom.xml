@@ -894,8 +894,7 @@
             <arg>-g</arg>
             <arg>-Xlint:unchecked</arg>
           </compilerArgs>
-          <source>${versionJava}</source>
-          <target>${versionJava}</target>
+          <release>${versionJava}</release>
         </configuration>
       </plugin>
 
