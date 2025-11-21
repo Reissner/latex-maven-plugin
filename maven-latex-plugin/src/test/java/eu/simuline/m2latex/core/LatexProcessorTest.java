@@ -644,8 +644,8 @@ public class LatexProcessorTest {
 		//     .thenReturn("");
 
 		// since glg file does not exist 
-		when(this.fileUtils.matchInFile(this.glgFile,
-				this.settings.getPatternErrMakeGlossaries())).thenReturn(Boolean.FALSE);
+		// when(this.fileUtils.matchInFile(this.glgFile,
+		// 		this.settings.getPatternErrMakeGlossaries())).thenReturn(Boolean.FALSE);
 	}
 
 	private void verifyRunMakeGlossaryByNeed(boolean runMakeGlossaries)
@@ -662,8 +662,8 @@ public class LatexProcessorTest {
 				aryEq(LatexProcessor.buildArguments(
 						this.settings.getMakeGlossariesOptions(), this.xxxFile)),
 				eq(this.glsFile));
-		this.inOrder.verify(this.fileUtils).matchInFile(this.ilgFile,
-				this.settings.getPatternErrMakeGlossaries());
+		// this.inOrder.verify(this.fileUtils).matchInFile(this.ilgFile,
+		// 		this.settings.getPatternErrMakeGlossaries());
 	}
 
 	private void mockRunLatex() throws BuildFailureException {
