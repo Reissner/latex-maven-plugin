@@ -70,6 +70,8 @@ The converter of PDF-files into TXT-files.
 \item[chktex]
 A code-checker converting in a sense a \LaTeX{} main file into a log-file 
 containing errors, warnings and further messages. 
+\item[verifyPdf]
+A PDF checker verifying conformance to standards like PDF/A. 
 \item[diffPdf]
 A diff tool comparing the PDF file created with an expected PDF file. 
 This is relevant only if a PDF file has been created 
@@ -2596,12 +2598,11 @@ in~\cite{ChkTeX22}, Section 6.1.2. % chktex 17 bug: rest but in 1674
 
 Among the applications used by this software, 
 the PDF verifyer plays a special role: 
-it is not really a converter and resembles more a code checker as described in Section~\label{sec:chkTex}. 
+It is not really a converter and resembles more a code checker as described in Section~\ref{sec:chkTex}. 
 Like for the most converters also for the codechecker 
 we can specify the command ant its options, both given in Table~\ref{tab:paramVeraPdf}. 
-Note that this is invoked only if a PDF file is created 
-and if the according \LaTeX{} main file specifies a PDF standard via \cmd{DocumentMetadata} 
-as specified in Section~\ref{****}. 
+For a general description of the validation feature consult Section~\ref{sec:verify}. 
+
 
 \begin{longtable}{|ll|}
   \toprule
@@ -2625,7 +2626,7 @@ as specified in Section~\ref{****}.
   \item[0] for check executed and passed, 
   \item[1] executed but failed, 
   \item and possibly other codes indicating that the test could not be executed, 
-  i.e.\@ a failure; these must be in 2-12 except 5. 
+  i.e.\@ a failure; these must be in 2--12 except 5. 
   \end{itemize}
   %
   The default options \texttt{\$verifyStdOptions} are adapted to the default command \texttt{verapdf}. 
@@ -2657,6 +2658,28 @@ as specified in Section~\ref{****}.
   because this shows only the standards checked and the result as pass or fail. 
   This is appropriate to get a true overview. 
   This shall be kept but it is possible to add further options. 
+  \end{minipage}
+  } \\
+  \texttt{verifyByCmp}      & \texttt{true}  \\
+  \multicolumn2{|l|}{
+  \begin{minipage}{0.95\linewidth}
+  Whether verification can be done implicitly by comparison. 
+  Means, if for an actually created artifact, 
+  %
+  \begin{itemize}
+  \item
+  a comparison with an original is requested 
+  either by a magic comment for the latex main file individually 
+  or, if not specified, globally, by \texttt{\$chkDiff} 
+  \item
+  this original artifact exists, means is stored at proper place, so that the comparison is executed and 
+  \item
+  the comparison between actually created file and original one confirms equality
+  \end{itemize}
+  %
+  then it is assumed, that the original file had been verified and so comparison validates the actual artifact 
+  and need not longer be verified using \texttt{\$verifyStdCommand}. 
+  Setting this to \texttt{false} forces explicit verification. 
   \end{minipage}
   } \\
 \end{longtable}
