@@ -1341,6 +1341,58 @@ Note that, if a package requires running other programs
 between two runs of \texttt{latex2pdf}, 
 this may require a change in this software. 
 
+% TBD: add a section on chktex 
+\section{Verifying}\label{sec:verify}
+
+In particular in safety and security sensitive fields of application, 
+frequently the artifacts are not only required to be in a particular format, 
+but shall satisfy particular standards. 
+Also, the print industry and organizations which want to provide accessible documents 
+impose their particular standards. 
+
+For the PDF format, which is a standard in itself, 
+as e.g.\@ PDF 1.7 (see~\cite{Pdf17}) or PDF 2.0 described in~\cite{Pdf20}, 
+the newest standard at time of this writing 
+the sub-standards families PDF/A, for archiving, PDF/X for print and PDF/UA for unlimited accessibility are defined. 
+
+This software uses \tool{verapdf} for verification 
+and is thus restricted to PDF standards PDF/A and PDF/UA\@. 
+Note that these families consist of individual parts, 
+partially tied to an according PDF version. 
+So, the PDF/A-2 is tied to PDF 1.7. 
+It consists of two conformance levels b for basic and a for accessible. 
+
+
+As described in Section~\ref{****}, 
+\cmd{DocumentMetadata} among other things, allows specifying the PDF version and the PDF standard, as e.g. \texttt{a-2b}. 
+This is the so called \emph{claimed standard}, 
+which is stored in the XMP metadata standardized in~\cite{ISO16684-2} of the PDF artifact. 
+An example for such metadata which can be retrieved via \texttt{pdfinfo -meta xxx.pdf} follows. 
+
+\begin{lstlisting}
+   <pdf:PDFVersion>1.7</pdf:PDFVersion>
+   <pdfaid:part>2</pdfaid:part>
+   <pdfaid:conformance>B</pdfaid:conformance>
+   <pdfaid:year>2011</pdfaid:year>
+\end{lstlisting}
+
+Because of this metadata \tool{verapdf} applied to the PDF file, knows the precise standard(s) with part and level to be verified 
+and if verification succeeds, returns whether the document is conforming. 
+
+This software can apply the validator itself, or it can create a \texttt{.latexmkrc} file 
+which makes \tool{latexmk} invoke the validator. % TBD: more precise, add text on injections. 
+Note that the validator is invoked only, if \cmd{DocumentMetadata} in the \LaTeX{} main file specifies 
+one or more standards. 
+
+Note also, that by default, a successful reproducibility check as described in Section~\ref{sec:chkReprod} 
+is seen as an indirect validation because the original PDF file is assumed to be conforming. 
+Section~\ref{sec:verapdf} allows configuring the validator to some extent 
+and in particular the parameter \texttt{verifyByCmp} described there 
+controls whether a reproduced PDF artifact substitutes the invocation of a validator tool. 
+
+
+
+
 \section{Checking reproducibility}\label{sec:chkReprod}
 
 There are use cases, where it is extremely important 
