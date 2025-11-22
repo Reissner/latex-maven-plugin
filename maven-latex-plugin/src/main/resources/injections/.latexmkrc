@@ -578,6 +578,13 @@ push @generated_exts, "4tc", "4ct", "tmp", "xref", "css", "idv", "lg";
 # push @generated_exts, "run.xml";# does run.xml work? 
 # $clean_ext .= " %R-blx.bib";
 
+$compiling_cmd = "internal run_preDecideCompilation %T %D";
+
+sub run_preDecideCompilation {
+  $source = $_[0];
+  $target = $_[1];
+  print("compiling $source to $target\n");
+};
 
 $success_cmd="internal run_onSuccess %D";
 
@@ -589,9 +596,9 @@ sub run_onSuccess {
     return;
   }
   # currently, postprocessing occurs for pdf files only 
-  my $res = system("verapdf -f 0 --format text $target");
+  my $res = system("${verifyStdCommand} ${verifyStdOptions} $target");
   $res >>= 8; # reconstruct return value of the application 
-  print("verapdf return value: $res\n");
+  print("${verifyStdCommand} return value: $res\n");
   if ($res == 0) {
     print("Conformance as requested. \n");
   } else {

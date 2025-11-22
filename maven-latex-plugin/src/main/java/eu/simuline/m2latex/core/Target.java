@@ -66,6 +66,10 @@ public enum Target {
     public boolean hasDiffTool() {
       return true;
     }
+
+    public boolean hasVerificationTool() {
+      return true;
+    }
   },
   /**
    * Based on {@link #pdf}
@@ -190,6 +194,10 @@ public enum Target {
    *    Currently this is the case for {@link #pdf} only. 
    */
   public boolean hasDiffTool() {
+    return false;
+  }
+
+  public boolean hasVerificationTool() {
     return false;
   }
 }

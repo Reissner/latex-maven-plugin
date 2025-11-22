@@ -153,6 +153,11 @@ enum ConverterCategory {
 			return "latexmk";
 		}
 	},
+  StandardValidator() {
+		String getExtName() {
+			return "verifyStd";
+		}
+  },
 	// Those are not usable
 	// TBD: clarify: For latex to html/odt
 	// dvips: for conversion to ps??

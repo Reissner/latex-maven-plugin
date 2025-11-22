@@ -524,14 +524,14 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
 
           // but this shall be clear also above before trying to copy to target folder 
-          boolean coincide = runDiffPdf(pdfFileCmpOpt.get(), pdfFileAct);
-          if (coincide) {
+          boolean coincideChecked = runDiffPdf(pdfFileCmpOpt.get(), pdfFileAct);
+          if (coincideChecked) {
             this.log.info("Checked result: coincides with expected artifact. ");
             continue;
           }
           throw new BuildFailureException(
               "TLP01: Artifact '" + pdfFileAct.getName() + 
-              "' from '" + texFile + "' could not be reproduced. ");
+              "' from '" + texFile + "' could not be savely reproduced. ");
 
         } // target
       } // texFile
@@ -2440,7 +2440,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
   void processCheck(LatexMainDesc desc) throws BuildFailureException {
     this.log.info("Checking source. ");
-    runCheck(desc);
+    runChktex(desc);
   }
 
   /**
@@ -2463,7 +2463,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    *     TEX01 if invocation of the check command
    *     returned by {@link Settings#getChkTexCommand()} failed.
    */
-  private void runCheck(LatexMainDesc desc) throws BuildFailureException {
+  private void runChktex(LatexMainDesc desc) throws BuildFailureException {
     File texFile = desc.texFile;
     File clgFile = desc.withSuffix(SUFFIX_CLG);
     String command = this.settings.getCommand(ConverterCategory.LatexChk);
@@ -2484,6 +2484,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
         break;
       case 1: // execution error already treated in executor; 
         // nothing to be done. 
+        // see CommandExecutor.ReturnCodeChecker.isOne.hasFailed
         break;
       case 3: // no execution error but check found error 
         this.log.error("ELP02: Checker '" + command + "' logged an error in '"
@@ -2494,8 +2495,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
             + clgFile.getName() + "'. ");
         break;
       default:
-        this.log.error("ELP01: For command '" + command
-            + "' found unexpected return code " + res.returnCode + ". ");
+        logErrUnexpectedReturnCode(command, res);
     }
     // Possibly, if not using the -q option 
     // the status messages delivers even more pieces of information. 
@@ -2542,7 +2542,9 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * Returns whether the given pdf files coincide
    * running the diff tool specified
    * by {@link Settings#getCommand(ConverterCategory)}
-   * with {@link ConverterCategory#DiffPdf}.
+   * with {@link ConverterCategory#DiffPdf}. 
+   * For a checker method the return value is quite unusual: 
+   * It causes a break of the process. 
    *
    * Logging:
    * <ul>
@@ -2556,12 +2558,14 @@ public class LatexProcessor extends AbstractLatexProcessor {
    * @param pdfFileAct
    *     the pdf file actually created.
    * @return
-   *     whether <code>pdfFileAct</code> coincides with
-   *     <code>pdfFileCmp</code>.
+   *     whether <code>pdfFileAct</code> could be checked to be coincideswith
+   *     <code>pdfFileCmp</code>. 
+   *     This is false whether the check failed or the check could not be performed. 
    * @throws BuildFailureException
-   *      TEX01 if invocation of the check command failed.
+   *      TEX01 if invocation of the check command failed. 
+   * @see #runChktex(LatexMainDesc)
    */
-  boolean runDiffPdf(File pdfFileCmp, File pdfFileAct)
+  private boolean runDiffPdf(File pdfFileCmp, File pdfFileAct)
       throws BuildFailureException {
     //
     // File clgFile = TexFileUtils.replaceSuffix(texFile, SUFFIX_CLG);
@@ -2575,14 +2579,33 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
     // may throw BuildFailureException TEX01,
     // may log warning EEX01, EEX02, EEX03, WEX04, WEX05
-    int returnCode = this.executor.executeEmptyEnv(null, // texFile.getParentFile(),
+    CmdResult res = this.executor.executeEmptyEnv(null, // texFile.getParentFile(),
         this.settings.getTexPath(), command,
-        CommandExecutor.ReturnCodeChecker.IsNotZeroOrOne, args).returnCode;
+        CommandExecutor.ReturnCodeChecker.IsNotZeroOrOne, args);
     // other value 2 caused an exception before 
     //assert returnCode == 0 || returnCode == 1 : "diff unexpected return value "+returnCode;
     // 0 means that the files 'coincide', 
     // where as 2 means that there is a significant difference 
-    return returnCode == 0;
+    int returnCode = res.returnCode;
+    switch (returnCode) {
+      case 0:
+        // Here, files could be diffed and coincide. 
+        // treated outside via return value 
+       break;
+      case 1:
+        // Here, files could be diffed but do not coincide 
+        // treated outside via return value 
+        break;
+     case 2:
+        // Here, files could not be diffed because of an error in command 
+        // This is already treated in executor 
+        // see CommandExecutor.ReturnCodeChecker.IsNotZeroOrOne
+        // Nevertheless, the return value is part of the treatment. 
+        break;
+      default:
+        logErrUnexpectedReturnCode(command, res);
+    }
+      return returnCode == 0;
   }
 
   // run pdfinfo or that like

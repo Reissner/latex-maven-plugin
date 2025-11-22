@@ -1138,6 +1138,18 @@ The default value is the empty string. -->
             <pdf2txtOptions />
 
             <!-- The chktex-command for checking latex main files. 
+            Note that the allowed return values are
+            - 1 if an error in execution occurs,
+                e.g. option -neee although -n requires a number.</li>
+            - 3 if an error was found except if case 1 occurs.
+                Note that all findings are warnings
+                if not configured as errors with -exx, xx a number.</li>
+            - 2 if a warning was found, except if one of the above cases occur.
+                one can deactivate always.</li>
+            - 0 if neither of the above occurred.
+                Note that still warnings could be given but deactivated,
+                e.g. excluded linewise. 
+
 The default value is 'chktex'. -->
             <chkTexCommand>chktex</chkTexCommand>
 
@@ -1239,6 +1251,43 @@ avoiding verbose output and backing up the output log-file. -->
                  So add options with care. 
                  The default value is the empty string. -->
             <latexmkOptions></latexmkOptions>
+
+            <!-- The command for a tool to verify a PDF standard, 
+                 which is one of kinds of PDF/A, PDF/X or PDF/UA at the time of this writing 
+                 or some else in future. 
+                 It must provide return values 
+                 - 0 for check executed and passed, 
+                 - 1 executed but failed, 
+                 - and possibly other codes indicating that the test could not be executed, 
+                   i.e. a failure, these must be in 2-12 except 5. 
+                   
+                 The default value is <code>verapdf</code> 
+                 and the according default options {@link #verifyStdOptions} are adapted to this. -->
+                 <verifyStdCommand>verapdf</verifyStdCommand>
+
+            <!-- The options for the command {@link #verifyStdCommand}. 
+                 The default value is adapted to the default command. 
+                 Since in the given context, 
+                 it is the TEX file itself which determines the standard(s) 
+                 it shall conform with via
+
+                 \DocumentMetadata{...pdfstandard=}
+
+                 one shall neither give a profile via <code>- -profile</code> or that like, 
+                 nor a flavor via <code>- -defaultflavor</code> or <code>- -flavor</code> 
+                 except flavor 0 which means, 
+                 use flavor determined by the PDF file itself, 
+                 which is what is specified in the according TEX file. 
+                 For obvious reason, <code>- -off</code>, <code>- -help</code>, 
+                 <code>- -list</code> and <code>- -version</code> 
+                 are not allowed either. 
+                 <p>
+                 Note that <code>- -format</code> is set to <code>text</code> 
+                  because this shows only the standards checked and the result as pass or fail. 
+                 This is appropriate to get a true overview. 
+                 This shall be kept but it is possible to add further options. -->
+                 <verifyStdOptions>-f 0 --format text</verifyStdOptions>
+
 
           </settings>
           <!--injections>latexmkrc,chktexrc,header,headerGrp,headerSuppressMetaPDF</injections-->

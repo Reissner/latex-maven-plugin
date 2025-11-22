@@ -2403,6 +2403,21 @@ we can specify the command ant its options, both given in Table~\ref{tab:paramCh
   \multicolumn2{|l|}{
   \begin{minipage}{0.95\linewidth}
   The chktex-command for checking \LaTeX{} main files. 
+  Note that the allowed return values are 
+  %
+  \begin{enumerate}
+  \item[1] if an error in execution occurs,
+   e.g.\@ option -neee although -n requires a number.</li>
+  \item[3] if an error was found except if case 1 occurs.
+  Note that all findings are warnings
+  if not configured as errors with -exx, xx a number.</li>
+  \item[2] if a warning was found, except if one of the above cases occur.
+  one can deactivate always.</li>
+  \item[0]
+  if neither of the above occurred.
+  Note that still warnings could be given but deactivated,
+   e.g.\@ excluded linewise. 
+  \end{enumerate}
   %The default value is 'chktex'. 
   \end{minipage}
   } \\
@@ -2576,6 +2591,78 @@ On this behavior this software bases its failure messages.
 The options of \texttt{chktex} are described in detail 
 in~\cite{ChkTeX22}, Section 6.1.2. % chktex 17 bug: rest but in 1674
 
+
+\section{Parameters for a PDF verifyer like \texttt{verapdf}}\label{sec:verapdf}
+
+Among the applications used by this software, 
+the PDF verifyer plays a special role: 
+it is not really a converter and resembles more a code checker as described in Section~\label{sec:chkTex}. 
+Like for the most converters also for the codechecker 
+we can specify the command ant its options, both given in Table~\ref{tab:paramVeraPdf}. 
+Note that this is invoked only if a PDF file is created 
+and if the according \LaTeX{} main file specifies a PDF standard via \cmd{DocumentMetadata} 
+as specified in Section~\ref{****}. 
+
+\begin{longtable}{|ll|}
+  \toprule
+  Parameter        & Default  \\
+  \multicolumn2{|l|}{Explanation }  \\
+  \midrule
+  \midrule
+  \endfirsthead%
+  \bottomrule
+  \caption{\label{tab:paramVeraPdf} The parameters of a PDF validator }
+  \endlastfoot%
+  \texttt{verifyStdCommand}      & \texttt{verapdf}        \\
+  \multicolumn2{|l|}{
+  \begin{minipage}{0.95\linewidth}
+  The command for a tool to verify a PDF standard, 
+  which is one of kinds of PDF/A, PDF/X or PDF/UA at the time of this writing 
+  or some else in future. 
+  It must provide return values 
+  %
+  \begin{itemize}
+  \item[0] for check executed and passed, 
+  \item[1] executed but failed, 
+  \item and possibly other codes indicating that the test could not be executed, 
+  i.e.\@ a failure; these must be in 2-12 except 5. 
+  \end{itemize}
+  %
+  The default options \texttt{\$verifyStdOptions} are adapted to the default command \texttt{verapdf}. 
+  That \texttt{verapdf} yields the according return values is documented in~\cite{DocMeta}, Section~3. 
+  \end{minipage}
+  } \\
+  \texttt{verifyStdOptions}      & \texttt{-f 0 -{}-format text}  \\
+  \multicolumn2{|l|}{
+  \begin{minipage}{0.95\linewidth}
+  The options for the command \texttt{\$verifyStdCommand}. 
+  The default value is adapted to the default command. 
+  Since in the given context, 
+  it is the TEX file itself which determines the standard(s) 
+  it shall conform with via
+  %
+  %\begin{verbatim}
+  \Verb|\DocumentMetadata{...pdfstandard=}|
+  %\end{verbatim}
+  %
+  one shall neither give a profile via \texttt{-{}-profile} or that like, 
+  nor a flavor via \texttt{-{}-defaultflavor} or \texttt{-{}-flavor} 
+  except flavor 0 which means, 
+  use flavor determined by the PDF file itself, 
+  which is what is specified in the according TEX file. 
+  For obvious reason, \texttt{-{}-off}, \texttt{-{}-help}, 
+  \texttt{-{}-list} and \texttt{-{}-version} are not allowed either. 
+
+  Note that \texttt{-{}-format} is set to \texttt{text} 
+  because this shows only the standards checked and the result as pass or fail. 
+  This is appropriate to get a true overview. 
+  This shall be kept but it is possible to add further options. 
+  \end{minipage}
+  } \\
+\end{longtable}
+
+The options of \texttt{chktex} 
+are described in detail in~\cite{VeraPdf} and links therein. 
 
 \section{Parameters for ensuring reproducibility}\label{sec:paramRepro}
 

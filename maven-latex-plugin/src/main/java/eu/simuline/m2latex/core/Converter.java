@@ -272,27 +272,6 @@ enum Converter {
     }
 
   },
-  Pdf2txt {
-    String getCommand() {
-      return "pdftotext";
-    }
-
-    String getVersionOption() {
-      return "-v";
-    }
-
-    String getVersionPattern() {
-      return X_X_X;
-    }
-
-    String getVersionEnvironment() {
-      return "^" + getCommand() + " version %s\\R";
-    }
-
-    ConverterCategory getCategory() {
-      return ConverterCategory.Pdf2Txt;
-    }
-  },
   Dvips {
     String getCommand() {
       return "dvips";
@@ -470,6 +449,24 @@ enum Converter {
       return ConverterCategory.LatexChk;
     }
   },
+  VeraPdf {
+    String getCommand() {
+      return "verapdf";
+    }
+
+    String getVersionPattern() {
+      return X_X_X;
+    }
+
+    String getVersionEnvironment() {
+      return "^veraPDF %s\\R";
+    }
+
+    ConverterCategory getCategory() {
+      return ConverterCategory.StandardValidator;
+    }
+
+  },
   DiffPdfVisualLy {
     String getCommand() {
       return "diff-pdf-visually";
@@ -533,6 +530,27 @@ enum Converter {
     // TBD: make specific 
     ConverterCategory getCategory() {
       return ConverterCategory.DiffPdf;
+    }
+  },
+  Pdf2txt {
+    String getCommand() {
+      return "pdftotext";
+    }
+
+    String getVersionOption() {
+      return "-v";
+    }
+
+    String getVersionPattern() {
+      return X_X_X;
+    }
+
+    String getVersionEnvironment() {
+      return "^" + getCommand() + " version %s\\R";
+    }
+
+    ConverterCategory getCategory() {
+      return ConverterCategory.Pdf2Txt;
     }
   },
   PdfInfo {
@@ -730,24 +748,6 @@ enum Converter {
     }
 
   },
-
-  Splitindex {
-    String getCommand() {
-      return "splitindex";
-    }
-
-    String getVersionPattern() {
-      return VX_X;
-    }
-
-    String getVersionEnvironment() {
-      return "^" + getCommand() + ".pl %s\\R";
-    }
-
-    ConverterCategory getCategory() {
-      return ConverterCategory.SplitIndex;
-    }
-  },
   // TBC: which of the versions is the relevant one? 
   Xindy {
     String getCommand() {
@@ -765,6 +765,23 @@ enum Converter {
 
     ConverterCategory getCategory() {
       return ConverterCategory.Unspecific;
+    }
+  },
+  Splitindex {
+    String getCommand() {
+      return "splitindex";
+    }
+
+    String getVersionPattern() {
+      return VX_X;
+    }
+
+    String getVersionEnvironment() {
+      return "^" + getCommand() + ".pl %s\\R";
+    }
+
+    ConverterCategory getCategory() {
+      return ConverterCategory.SplitIndex;
     }
   },
   Makeglossaries {

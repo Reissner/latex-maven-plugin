@@ -1856,10 +1856,24 @@ public class Settings {
 
 
   /**
-   * The chktex-command for checking latex main files. 
-   * The default value is <code>chktex</code>. 
+   * The chktex-command for checking latex main files.
+   * Note that the allowed return values are
+   * <ul>
+   * <li>1 if an error in execution occurs,
+   * e.g. option -neee although -n requires a number.</li>
+   * <li>3 if an error was found except if case 1 occurs.
+   * Note that all findings are warnings
+   * if not configured as errors with -exx, xx a number.</li>
+   * <li>2 if a warning was found, except if one of the above cases occur.
+   * one can deactivate always.</li>
+   * <li>0 if neither of the above occurred.
+   * Note that still warnings could be given but deactivated,
+   * e.g. excluded linewise.</li>
+   * </ul>
+   * The default value is <code>chktex</code>.
    *
    * @see #chkTexOptions
+   * @see CommandExecutor.ReturnCodeChecker#IsOne
    */
   @RuntimeParameter
   @Parameter(name = "chkTexCommand", defaultValue = "chktex")
@@ -2180,6 +2194,56 @@ public class Settings {
   @RuntimeParameter
   @Parameter(name = "latexmkOptions", defaultValue = "")
   private String latexmkOptions = "";
+
+  /**
+   * The command for a tool to verify a PDF standard, 
+   * which is one of kinds of PDF/A, PDF/X or PDF/UA at the time of this writing 
+   * or some else in future. 
+   * It must provide return values 
+   * <ul>
+   * <li> 0 for check executed and passed, 
+   * <li> 1 executed but failed, 
+   * <li> and possibly other codes indicating that the test could not be executed, 
+   * i.e. a failure, these must be in 2-12 except 5. 
+   * <ul>
+   * The default value is <code>verapdf</code> 
+   * and the according default options {@link #verifyStdOptions} are adapted to this. 
+   * 
+   */
+  @RuntimeParameter
+  @Parameter(name = "verifyStdCommand", defaultValue = "verapdf")
+  private String verifyStdCommand = "verapdf";
+
+  /**
+   * The options for the command {@link #verifyStdCommand}. 
+   * The default value is adapted to the default command. 
+   * Since in the given context, 
+   * it is the TEX file itself which determines the standard(s) 
+   * it shall conform with via
+   * 
+   * <pre>
+   * \DocumentMetadata{...pdfstandard=}
+   * </pre>
+   * 
+   * one shall neither give a profile via <code>--profile</code> or that like, 
+   * nor a flavor via <code>--defaultflavor</code> or <code>--flavor</code> 
+   * except flavor 0 which means, 
+   * use flavor determined by the PDF file itself, 
+   * which is what is specified in the according TEX file. 
+   * For obvious reason, <code>--off</code>, <code>--help</code>, 
+   * <code>--list</code> and <code>--version</code> 
+   * are not allowed either. 
+   * <p>
+   * Note that <code>--format</code> is set to <code>text</code> 
+   * because this shows only the standards checked and the result as pass or fail. 
+   * This is appropriate to get a true overview. 
+   * This shall be kept but it is possible to add further options. 
+   */
+  @RuntimeParameter
+  @Parameter(name = "verifyStdOptions", defaultValue = "-f 0 --format text")
+  private String verifyStdOptions = "-f 0 --format text";
+
+
 
   //TBD: add options; 
   // diff: no sensible options are available. 
@@ -2905,6 +2969,15 @@ public class Settings {
     return this.chkTexOptions;
   }
 
+
+  public String getVerifyStdCommand() throws BuildFailureException {
+    return getCommand(ConverterCategory.StandardValidator);
+  }
+
+  String getVerifyStdOptions() {
+    return this.verifyStdOptions;
+  }
+
   // for ant task only if needed TBD
   //@RuntimeParameter
   public String getDiffPdfCommand() throws BuildFailureException {
@@ -3539,6 +3612,14 @@ public class Settings {
 
   public void setChkTexOptions(String chkTexOptions) {
     this.chkTexOptions = beautifyOptions(chkTexOptions);
+  }
+
+  public void setVerifyStdCommand(String verifyStdCommand) {
+    this.verifyStdCommand = verifyStdCommand;
+  }
+
+  public void setVerifyStdOptions(String verifyStdOptions) {
+    this.verifyStdOptions = beautifyOptions(verifyStdOptions);
   }
 
   public void setDiffPdfCommand(String diffPdfCommand) {

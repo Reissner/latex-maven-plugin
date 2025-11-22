@@ -84,6 +84,7 @@ class CommandExecutor {
   enum ReturnCodeChecker {
     /**
      * Never detect fail of execution. 
+     * At time of this writing, this is not used. 
      */
     Never {
       boolean hasFailed(int returnCode) {
@@ -92,6 +93,9 @@ class CommandExecutor {
     },
     /**
      * Detect fail of execution if return code is nonzero. 
+     * This is the usual case. 
+     * Deviation is only for check tools which must decide problems of the check tool itself 
+     * from failed checks. 
      */
     IsNonZero {
       boolean hasFailed(int returnCode) {
@@ -115,6 +119,9 @@ class CommandExecutor {
      *     Note that still warnings could be given but deactivated, 
      *     e.g. excluded linewise. </li>
      * </ul>
+     * 
+     * @see LatexProcessor#runChktex(LatexMainDesc)
+     * @see Settings#getChkTexCommand()
      */
     IsOne {
       boolean hasFailed(int returnCode) {
@@ -122,19 +129,36 @@ class CommandExecutor {
       }
     },
     /**
-     * Detect fail of execution if return code is neither 0 nor 1. 
+     * Detect fail of execution if return code is neither 0 nor 1.
      * <p>
-     * Currently used for diff only. 
-     * It is applicable to the diff tool: 0 same, 1 difference, 2 trouble. 
-     * Unfortunately diff-pdf-visually has encoding 0 same, 2 difference, 1 trouble. 
-     * Thus it is not directly usable, only via a wrapper exchanging 1 and 3
+     * Currently used for diff and for verapdf only.
+     * It is applicable to the diff tool:
+     * <ul>
+     * <li>0 checked that the files coincide,
+     * <li>1 checked that the files differ,
+     * <li>2 could not check files. 
+     * </ul>
+     * Unfortunately diff-pdf-visually has encoding 0 same, 2 difference, 1 trouble.
+     * Thus it is not directly usable, only via a wrapper exchanging 1 and 3.
+     * <p>
+     * It is also usable for verapdf which is 0 for tests passed, 1 for tests failed
+     * and the many other codes for reasons for not carrying out the tests, so no
+     * decision. 
+     * 
+     * @see LatexProcessor#runDiffPdf(File, File)
+     * @see Settings#getDiffPdfCommand()
+     * @see LatexProcessor#runValidatePdf(LatexMainDesc)
+     * @see Settings#getVerifyStdCommand()
      */
     IsNotZeroOrOne {
       boolean hasFailed(int returnCode) {
-        return returnCode == 1;
+        return !(returnCode == 0 || returnCode == 1);
       }
     };
 
+    /**
+     * Given a <code>returnCode</code> decides whether the tool failed. 
+     */
     abstract boolean hasFailed(int returnCode);
   } // enum ReturnCodeChecker 
 

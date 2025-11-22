@@ -538,10 +538,11 @@ This is mainly because of writing permissions.
   \caption{\label{tab:TLP} The \texttt{BuildFailureException}s of the class \texttt{LatexProcessor} }
   \endlastfoot%
   \texttt{\footnotesize TLP01} 
-  & \texttt{\footnotesize Artifact '\$pdfFileAct' from '\$texFile' could not be reproduced. }  \\
+  & \texttt{\footnotesize Artifact '\$pdfFileAct' from '\$texFile' could not be savely reproduced. }  \\
   \multicolumn2{|l|}{
   \begin{minipage}{0.95\linewidth}
-  Processing \texttt{\$texFile} yields \texttt{\$pdfFileAct} which is not ``alike'' the stored version. 
+  Processing \texttt{\$texFile} yields \texttt{\$pdfFileAct} which is not ``alike'' the stored version 
+  or the difference check failed at all. 
   Currently, that kind of check can be performed for PDF files only. 
   Also, the diff check is executed only if parameter \texttt{\$chkDiff} 
   described in Section~\ref{sec:paramRepro} is set. 
