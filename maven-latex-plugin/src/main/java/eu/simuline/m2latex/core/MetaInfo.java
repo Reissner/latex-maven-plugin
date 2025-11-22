@@ -52,8 +52,7 @@ public class MetaInfo {
 	 *    TMI01: if the stream to <code>fileName</code> could not be created.
 	 */
 	static InputStream getStream(String fileName) throws BuildFailureException {
-		InputStream res =
-				MetaInfo.class.getClassLoader().getResourceAsStream(fileName);
+    InputStream res = MetaInfo.class.getClassLoader().getResourceAsStream(fileName);
 		if (res == null) {
 			throw new BuildFailureException(
 					"TMI01: Cannot get stream to file '" + fileName + "'. ");
@@ -1032,7 +1031,7 @@ public class MetaInfo {
   private static String versionLine(String warnStr, String cmdStr, boolean includeVersionInfo, 
         String versionStr, String inclStr, String expVersionInterval) {
     return String.format(TOOL_VERSION_FORMAT, warnStr, cmdStr,
-					includeVersionInfo ? VERSION_QUOTE : "", versionStr, inclStr, expVersionInterval);
+					includeVersionInfo ? "" : VERSION_QUOTE, versionStr, inclStr, expVersionInterval);
   }
 
   /**
