@@ -50,7 +50,7 @@ public class VersionMojo extends AbstractLatexMojo {
    * in case something goes wrong. 
    */
   @Parameter(name = "versionsWarnOnly", defaultValue = "false")
-  private boolean versionsWarnOnly;
+  private boolean versionsWarnOnly = false;
 
   /**
    * Prints meta information, mainly version information 
