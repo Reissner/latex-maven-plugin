@@ -959,6 +959,11 @@ is \texttt{dc:source}.
 One may think of eliminating it using package \texttt{hyperxmp}, 
 described in~\cite{HyperXmpP}. 
 This is deferred because it collides with \cmd{DocumentMetadata}. 
+The package can even not be loaded if \cmd{DocumentMetadata} as shown in \cite{HyperXmpP}, Section~3.1. 
+For this task consider post-processing combining \texttt{exiftool} unlinking metainformation and 
+\texttt{qpdf} removing by linearizing. 
+%https://cyberrunner.medium.com/removing-metadata-from-pdf-files-using-exiftool-and-qpdf-20090b75d7f0
+At least, \texttt{pdfinfo} makes meta info visible, questionable whether completely. 
 
 Besides a reference to the document information dictionary, 
 the trailer dictionary also contains the trailer identifier 
