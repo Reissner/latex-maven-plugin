@@ -29,63 +29,63 @@ import java.util.jar.Manifest;
 public class MetaInfo {
 
 
-	/**
-	 * Name of the folder <code>META-INF</code> in the jar file which provides this
-	 * class.
-	 * This contains
-	 * <ul>
-	 * <li>the folder <code>maven</code> created by maven and containing information
-	 * like pom properties and pom itself which we currently do not consider</li>
-	 * <li>the manifest file named {@link MetaInfo.ManifestInfo#MANIFEST_FILE}.</li>
-	 * </ul>
-	 */
-	private final static String META_FOLDER = "META-INF/";
+  /**
+   * Name of the folder <code>META-INF</code> in the jar file which provides this 
+   * class. 
+   * This contains 
+   * <ul>
+   * <li>the folder <code>maven</code> created by maven and containing information 
+   * like pom properties and pom itself which we currently do not consider</li>
+   * <li>the manifest file named {@link MetaInfo.ManifestInfo#MANIFEST_FILE}.</li>
+   * </ul>
+   */
+  private final static String META_FOLDER = "META-INF/";
 
-	/**
-	 * Creates the stream for the file given by <code>fileName</code>.
-	 * 
-	 * @param fileName
-	 *    a filename
-	 * @return
-	 *    a non-null input stream to read from <code>fileName</code>.
-	 * @throws BuildFailureException
-	 *    TMI01: if the stream to <code>fileName</code> could not be created.
-	 */
-	static InputStream getStream(String fileName) throws BuildFailureException {
+  /**
+   * Creates the stream for the file given by <code>fileName</code>. 
+   * 
+   * @param fileName
+   *    a filename
+   * @return
+   *    a non-null input stream to read from <code>fileName</code>. 
+   * @throws BuildFailureException
+   *    TMI01: if the stream to <code>fileName</code> could not be created.
+   */
+  static InputStream getStream(String fileName) throws BuildFailureException {
     InputStream res = MetaInfo.class.getClassLoader().getResourceAsStream(fileName);
-		if (res == null) {
-			throw new BuildFailureException(
-					"TMI01: Cannot get stream to file '" + fileName + "'. ");
-		}
-		return res;
-	}
+    if (res == null) {
+      throw new BuildFailureException(
+          "TMI01: Cannot get stream to file '" + fileName + "'. ");
+    }
+    return res;
+  }
 
-	/**
+  /**
    * Returs properties read from the given file named <code>fileName</code>. 
    * 
-	 * @param fileName
-	 *    an input stream to read from <code>fileName</code>. 
-	 * @return
-	 *    Properties read from <code>fileName</code>. 
-	 * @throws BuildFailureException
-	 *    <ul>
-	 *    <li>TMI01: if the stream to <code>fileName</code> could not be created. </li>
-	 *    <li>TMI02: if the properties could not be read from <code>fileName</code>. </li>
-	 *    </ul>
-	 */
-	static Properties getProperties(String fileName)
-			throws BuildFailureException {
-		try {
-			Properties properties = new Properties();
-			// may throw TMI01, also TFU01? 
-			properties.load(MetaInfo.getStream(fileName));
-			return properties;
-		} catch (IOException e) {
-			// TBD: assign exception identifier 
-			throw new BuildFailureException(
-					"TMI02: Cannot load properties from file '" + fileName + "'. ");
-		}
-	}
+   * @param fileName
+   *    an input stream to read from <code>fileName</code>. 
+   * @return
+   *    Properties read from <code>fileName</code>. 
+   * @throws BuildFailureException
+   *    <ul>
+   *    <li>TMI01: if the stream to <code>fileName</code> could not be created. </li>
+   *    <li>TMI02: if the properties could not be read from <code>fileName</code>. </li>
+   *    </ul>
+   */
+  static Properties getProperties(String fileName)
+      throws BuildFailureException {
+    try {
+      Properties properties = new Properties();
+      // may throw TMI01, also TFU01?
+      properties.load(MetaInfo.getStream(fileName));
+      return properties;
+    } catch (IOException e) {
+      // TBD: assign exception identifier
+      throw new BuildFailureException(
+          "TMI02: Cannot load properties from file '" + fileName + "'. ");
+    }
+  }
   
     
 
