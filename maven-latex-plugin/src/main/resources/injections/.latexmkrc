@@ -588,7 +588,21 @@ sub run_preDecideCompilation {
 
 $success_cmd="internal run_onSuccess %D";
 
+$warning_cmd="internal run_onWarn %D";
+
+$failure_cmd="echo '...compilation with failure'";
+
 sub run_onSuccess {
+  print("Compilation succeeded without warning.\n");
+  run_onSuccessWarn($_[0]);
+}
+
+sub run_onWarn {
+  print("Compilation succeeded with warning(s).\n");
+  run_onSuccessWarn($_[0]);
+}
+
+sub run_onSuccessWarn {
   $target = $_[0];
 
   if ($target !~ m/.pdf$/) {
@@ -606,8 +620,3 @@ sub run_onSuccess {
   }
 
 };
-
-
-$failure_cmd="echo '...compilation failed'";
-
-$failure_cmd="echo '...compilation succeeded with warnings'";
