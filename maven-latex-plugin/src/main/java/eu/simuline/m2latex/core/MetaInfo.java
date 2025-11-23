@@ -1030,7 +1030,7 @@ public class MetaInfo {
    */
   private static String versionLine(String warnStr, String cmdStr, boolean includeVersionInfo, 
         String versionStr, String inclStr, String expVersionInterval) {
-    return String.format(TOOL_VERSION_FORMAT, warnStr, cmdStr,
+    return String.format(TOOL_VERSION_FORMAT, warnStr, cmdStr+":",
 					includeVersionInfo ? "" : VERSION_QUOTE, versionStr, inclStr, expVersionInterval);
   }
 
