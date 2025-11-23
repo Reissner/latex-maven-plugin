@@ -97,7 +97,7 @@ The default value is '.'.  -->
      used for diffing actually created artifact against prescribed one in this directory. 
      This is relevant only if 'chkDiff' is set. 
      The according file is given by 'diffDirectoryFile'. 
-     The default value is <code>.</code>. -->
+     The default value is '.'. -->
             <diffDirectory>src/main/resources/docsCmp</diffDirectory>
 
             <!-- A comma separated list of targets without blanks to be stored in '\$targetSet'. 
@@ -121,7 +121,7 @@ but depending on the document class, there may be further restrictions
 given by 'docClassesToTargets'. 
 Currently, only the class 'beamer' has restrictions. 
 
-The default value is <code>chk,pdf,html</code>. 
+The default value is 'chk,pdf,html'. 
         -->
 
             <targets>pdf</targets>            <!-- chk,pdf,html -->
@@ -523,9 +523,9 @@ The default value is the minimal value,
    seems the only which yields the picture sizes as in PDF mode 
    which fit well. 
 
-   In 2025 the author realized that the {@link #ebbCommand} <code>ebb</code> 
-   was in fact replaced by <code>extractbb</code> 
-   and the original command <code>ebb</code> survived just as a link.
+   In 2025 the author realized that the ${ebbCommand} 'ebb' 
+   was in fact replaced by 'extractbb' 
+   and the original command 'ebb' survived just as a link.
 
    Note also that miktex does not offer neither package 'bmpsize' 
    nor 'e(xtract)bb'. 
@@ -1205,7 +1205,7 @@ avoiding verbose output and backing up the output log-file. -->
       both implementing a visual diff. 
       Note that unlike for other tools, no options can be passed in this case explicitly. 
       CAUTION: Expected return value 0 means same, 1 normal difference, all other values: failure. 
-      Thus <code>diff-pdf-visually</code> is not allowed, 
+      Thus 'diff-pdf-visually' is not allowed, 
       because uses different return code: exchanging 1 and 2. 
       Thus usable for a wrapper only. -->
             <diffPdfCommand>diff</diffPdfCommand>
@@ -1237,14 +1237,14 @@ avoiding verbose output and backing up the output log-file. -->
             <pdfMetainfoOptions>-isodates</pdfMetainfoOptions>
 
             <!-- The latexmk command to create a pdf-file from a latex file and other files. 
-              The default value is <code>latexmk</code> there will be hardly a reason to change it. 
+              The default value is 'latexmk' there will be hardly a reason to change it. 
               Conceivable is a wrapper around, unlikely is a reimplementation. 
             -->
             <latexmkCommand>latexmk</latexmkCommand>
 
             <!-- The options for the command {$latexmkCommand}. 
                  Since this command is controlled 
-                 to a wide extend by the config file <code>.latexmkrc</code>, 
+                 to a wide extend by the config file '.latexmkrc', 
                  the options are of minor importance. 
                  On the other hand, there are options not allowed for this software 
                  because they change behavior in a way not taken into account. 
@@ -1261,11 +1261,11 @@ avoiding verbose output and backing up the output log-file. -->
                  - and possibly other codes indicating that the test could not be executed, 
                    i.e. a failure, these must be in 2-12 except 5. 
                    
-                 The default value is <code>verapdf</code> 
-                 and the according default options {@link #verifyStdOptions} are adapted to this. -->
+                 The default value is 'verapdf' 
+                 and the according default options ${verifyStdOptions} are adapted to this. -->
                  <verifyStdCommand>verapdf</verifyStdCommand>
 
-            <!-- The options for the command {@link #verifyStdCommand}. 
+            <!-- The options for the command ${verifyStdCommand}. 
                  The default value is adapted to the default command. 
                  Since in the given context, 
                  it is the TEX file itself which determines the standard(s) 
@@ -1273,16 +1273,16 @@ avoiding verbose output and backing up the output log-file. -->
 
                  \DocumentMetadata{...pdfstandard=}
 
-                 one shall neither give a profile via <code>- -profile</code> or that like, 
-                 nor a flavor via <code>- -defaultflavor</code> or <code>- -flavor</code> 
+                 one shall neither give a profile via '- -profile' or that like, 
+                 nor a flavor via '- -defaultflavor' or '- -flavor' 
                  except flavor 0 which means, 
                  use flavor determined by the PDF file itself, 
                  which is what is specified in the according TEX file. 
-                 For obvious reason, <code>- -off</code>, <code>- -help</code>, 
-                 <code>- -list</code> and <code>- -version</code> 
+                 For obvious reason, '- -off', '- -help', 
+                 '- -list' and '- -version' 
                  are not allowed either. 
                  <p>
-                 Note that <code>- -format</code> is set to <code>text</code> 
+                 Note that '- -format' is set to 'text' 
                   because this shows only the standards checked and the result as pass or fail. 
                  This is appropriate to get a true overview. 
                  This shall be kept but it is possible to add further options. -->
