@@ -2243,6 +2243,23 @@ public class Settings {
   @Parameter(name = "verifyStdOptions", defaultValue = "-f 0 --format text")
   private String verifyStdOptions = "-f 0 --format text";
 
+  /**
+   * Whether verification can be done implicitly by comparison. 
+   * Means, if for an actually created artifact, 
+   * <ul>
+   * <li> a comparison with an original is requested either by a magic comment for the latex main file individually 
+   *      or, if not specified, globally, by {@link #chkDiff} 
+   * <li> this original artifact exists, means is stored at proper place, so that the comparison is executed and 
+   * <li> the comparison between actually created file and original one confirms equality
+   * </ul>
+   * then it is assumed, that the original file had been verified and so comparison validates the actual artifact 
+   * and need not longer be verified using {@link #verifyStdCommand}. 
+   * Setting this to <code>false</code> forces explicit verification. 
+   * The default value is <code>true</code>. 
+   */
+  @RuntimeParameter
+  @Parameter(name = "verifyByCmp", defaultValue = "true")
+  private boolean verifyByCmp = true;
 
 
   //TBD: add options; 
