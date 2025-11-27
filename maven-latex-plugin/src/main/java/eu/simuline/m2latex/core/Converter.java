@@ -716,7 +716,7 @@ enum Converter {
     }
 
     String getVersionPattern() {
-      return VX_X;
+      return VD;
     }
 
     String getVersionEnvironment() {
@@ -735,7 +735,7 @@ enum Converter {
     }
 
     String getVersionPattern() {
-      return VX_X;
+      return VD;
     }
 
     String getVersionEnvironment() {
