@@ -2995,6 +2995,11 @@ public class Settings {
     return this.verifyStdOptions;
   }
 
+  boolean getVerifyByCmp() {
+    return this.verifyByCmp;
+  }
+  
+
   // for ant task only if needed TBD
   //@RuntimeParameter
   public String getDiffPdfCommand() throws BuildFailureException {
@@ -3637,6 +3642,10 @@ public class Settings {
 
   public void setVerifyStdOptions(String verifyStdOptions) {
     this.verifyStdOptions = beautifyOptions(verifyStdOptions);
+  }
+
+  public void setVerifyByCmp(boolean verifyByCmp) {
+    this.verifyByCmp = verifyByCmp;;
   }
 
   public void setDiffPdfCommand(String diffPdfCommand) {
