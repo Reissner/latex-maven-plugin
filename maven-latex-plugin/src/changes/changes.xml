@@ -1610,6 +1610,53 @@ discussion: currently disabled
   which eliminates all supervision. 
   Maybe the meaning shall be changed: AsBackendInvokeLatexk with really invoking latexmk and AsBackendReimplement -->
 
+  <!-- documentclass[english] seems to be superfluous because of \DocumentMetadata{lang=en-US} 
+   This also affects the manual which recommends using /documentclass[english]{...}. 
+   what about passing to babel? what about multilingual documents? 
+   Some pieces of information is in the babel documentation: 
+   lang is read by babel also, but there is more detailed information in many cases, 
+   so for example german-austrian-traditional which goes beyond de-AT. 
+   -->
+  <!-- take care of output: first of listings no longer applied.. at least in latexEngines.tex... do research.. maybe simplification possible.  -->
+   <!-- trigger bugfix for diff-pdf-visually: like diff-pdf: marking differences.  
+    Also the new features shall be described in the manual section 5.9. -->
+
+   <!-- in letter it becomes apparent, that to check reproducibility, 
+    it is not always good to have UTC. 
+    In fact, the timezone has to be discussed: 
+    
+    To set fixed time zone, this may be important for checking reproducibility. 
+    The idea to use utc always was, that then all over the world one can reproduce. 
+    But if a comparison file is present, one can take the time and the timezone to reproduce. 
+    If something new is created with latexmk, or ntlatex or something else, one could set TZ=UTC or something else, or nothing. 
+    Maybe the pdf for comparison can be created with lmp also, but then we need a timezone setting which is uniform or in the document.. 
+    Uniform timezone would generalize uniform utc. 
+    One could think that for an organization it is the timezone for the headquater. 
+
+    Another problem addressed with timezone is privacy. 
+    Maybe the concrete location of the server shall be hidden. 
+    Also this could be a use case for a uniform timezone. 
+
+    Empty time zone given shall indicate: use local time zone, no overwrite. 
+    Timezones shall be, as in the long run all parameters be able to be overwritten in individual document 
+    by means of magic comments. 
+    -->
+
+    <!-- ignored error Infinite glue shrinkage  maybe to be treated like a warning. -->
+
+    <!-- when using \DocumentMetadata, this does not play with package nag. 
+     Seems as if it is not a general problem, but with the manual at least. 
+     Maybe the author of nag must be found to fix. 
+     A certain dr. ulrich michael schwarz who wrote it at the univ. of kiel at prof janssen. -->
+
+     <!-- .latexmkrc: realize the TBD concerning return values. 
+      This requires some research. -->
+
+
+      <!-- TBD: headerLetter.tex: extend. 
+       Differentiate between the flavors or German and also between the flavors of english, at least US and UK. 
+       I think this new headerLetter.tex would be worth serving as injection. -->
+
     <release version="2.1" date="2023-08-28" 
       description="build with latexmk and generalized reproducibility, readed glossary">
       <action dev='reissner' type='add'>
