@@ -38,8 +38,15 @@ whereas Section~\ref{sec:rerunLatex}
 essentially describes the exchange of information 
 between individual runs of the \LaTeX{} engine. 
 
-Section~\ref{sec:chkReprod} is special in that it is not related with conversion 
-but with checking reproducibility. 
+Section~\ref{sec:verify} is special in that it is not related with conversion, 
+but it is on specifying and verifying PDF standards, 
+with a focus on PDF/A and PDF/UA\@. 
+Modern \LaTeX{} compiler support creating PDF artifacts conform with these standards 
+to a wide extent, but this \LaTeX{} builder provides real validation. 
+Note that without, the artifact just claims conformance. 
+
+Section~\ref{sec:chkReprod} is also on checking but 
+but under the aspect of reproducibility. 
 This \LaTeX{} builder has some built-in build algorithm, 
 but one can also use \tool{latexmk} as a build tool 
 in a way that invokes all tools with parameters given by the configuration. 
@@ -1352,23 +1359,99 @@ In particular in safety and security sensitive fields of application,
 frequently the artifacts are not only required to be in a particular format, 
 but shall satisfy particular standards. 
 Also, the print industry and organizations which want to provide accessible documents 
-impose their particular standards. 
+impose particular standards. 
 
 For the PDF format, which is a standard in itself, 
 as e.g.\@ PDF 1.7 (see~\cite{Pdf17}) or PDF 2.0 described in~\cite{Pdf20}, 
-the newest standard at time of this writing 
-the sub-standards families PDF/A, for archiving, PDF/X for print and PDF/UA for unlimited accessibility are defined. 
+the newest standard at time of this writing, 
+the sub-standards families PDF/A, for archiving, 
+PDF/X (from eXchange) for print and PDF/UA for unlimited accessibility are defined. 
 
-This software uses \tool{verapdf} for verification 
-and is thus restricted to PDF standards PDF/A and PDF/UA\@. 
 Note that these families consist of individual parts, 
 partially tied to an according PDF version. 
-So, the PDF/A-2 is tied to PDF 1.7. 
-It consists of two conformance levels b for basic and a for accessible. 
+For example, the PDF/A-2 is tied to PDF 1.7. 
+Parts 1,2 and 3 have conformance levels b for basic and a for accessible. 
+Table~\ref{tab:versPdfStd} shows the possible combinations. 
+PDF/X-2 extends PDF/X-3 and thus is listed after PDF/X-3. 
+
+\begin{table}[htb]
+  \centering
+\begin{tabular}{lccccc}
+\toprule
+                & PDF 1.3 & PDF 1.4 & PDF 1.6 & PDF 1.7 & PDF 2.0 \\
+  \midrule
+  \midrule
+  PDF/A-1b,a    & ---     & x       & ---     & ---     & ---     \\
+  PDF/A-2b,a,u  & ---     & ---     & ---     & x       & ---     \\
+  PDF/A-3b,a,u  & ---     & ---     & ---     & x       & ---     \\
+  PDF/A-4f,e    & ---     & ---     & ---     & ---     & x       \\
+  \midrule
+  PDF/UA-1      & ---     & ---     & ---     & x       & ---     \\
+  PDF/UA-2      & ---     & ---     & ---     & ---     & x       \\
+  \midrule
+  PDF/X-1a      & x       & x       & ---     & ---     & ---     \\
+  PDF/X-3       & x       & x       & ---     & ---     & ---     \\
+  PDF/X-2       & ---     & x       & ---     & ---     & ---     \\
+  PDF/X-4,4p    & ---     & ---     & x       & ---     & ---     \\
+  PDF/X-5g,pg,n & ---     & ---     & x       & ---     & ---     \\
+  PDF/X-6p,n    & ---     & ---     & ---     & ---     & x       \\
+ \bottomrule
+  % maybe missing  (see verapdf -l): Well-Tagged PDF 
+  % - wt1r WTPDF 1.0 reuse validation profile, 
+  % - wt1a WTPDF 1.0 accessibility validation profile 
+  % Also missing: PDF/VT (variant type?) VDP variable document printing is a subtype of PDF/X
+  % VT-1 X-4
+  % VT-2 X-4p X-5G, X-5pg  (above list seems incomplete)
+  % VT-2s for streaming 
+  % Interesting may be PDF/E (engineering) for which only PDF/E-1 exists and it uses PDF 1.6. 
+  % According to https://en.wikipedia.org/wiki/PDF/E for PDF2.0 it is superseded by PDF/A-4e. 
+\end{tabular}
+\caption{\label{tab:versPdfStd} versions fitting of PDF and standards}
+\end{table}
+
+
+
+
+As~\cite{PdfxP}, Section~2.1 shows, the package \pkg{pdfx} supports creation of roughly the standards 
+listed in Table~\ref{tab:versPdfStd}. 
+It goes beyond these standards supporting PDF/E, which has just one part, PDF/E-1, applies from PDF 1.6 on 
+and is superseded by PDF/A-4e, but which requires PDF 2.0. 
+Another standard not mentioned above is PDF/VT the various parts of which 
+are superseded by according PDF/X standards. 
+
+One requirement all these standards have in common is, 
+that certain pieces of metadata are available in the XMP (Extensible metadata platform) format. 
+This is described in a series of norms, 
+but for an overview, 
+
+
+An alternative to create documents conform with the above standards is package \pkg{hyperxmp} 
+described in~\cite{HyperXmpP} although, its focus is on metadata. 
+
+Nevertheless, the modern technique to reach these standards 
+is by the command \cmd{DocumentMetadata}, which must be the first command in a \LaTeX{} main file 
+even in front of \cmd{documentclass}, 
+and it provides a list of key, value pairs, described in~\cite{DocMetaDataSuppCode}, Section~3. 
+As noted in~\cite{L3PdfMeta}, Section~2, packages like \pkg{pdfx} and \pkg{hyperxmp} are incompatible 
+but still their manuals prove helpful. 
+
+
+
+
+
+The \LaTeX{} compiler do not know all these specifications in detail, 
+sometimes the conformance level cannot be specified, sometimes it must be defined. 
+Also, there are case where the compiler cannot guess an appropriate 
+
+This software uses \tool{verapdf} for verification 
+and verification is thus restricted to PDF standards PDF/A and PDF/UA at time of this writing. 
+For a list of supported parts and levels invoke \texttt{verapdf -l}. 
+
 
 
 As described in Section~\ref{****}, 
-\cmd{DocumentMetadata} among other things, allows specifying the PDF version and the PDF standard, as e.g. \texttt{a-2b}. 
+\cmd{DocumentMetadata} among other things, allows specifying the PDF version and the PDF standard, 
+as e.g. \texttt{a-2b}. 
 This is the so called \emph{claimed standard}, 
 which is stored in the XMP metadata standardized in~\cite{ISO16684-2} of the PDF artifact. 
 An example for such metadata which can be retrieved via \texttt{pdfinfo -meta xxx.pdf} follows. 
@@ -1380,16 +1463,20 @@ An example for such metadata which can be retrieved via \texttt{pdfinfo -meta xx
    <pdfaid:year>2011</pdfaid:year>
 \end{lstlisting}
 
-Because of this metadata \tool{verapdf} applied to the PDF file, knows the precise standard(s) with part and level to be verified 
+Because of this metadata \tool{verapdf} applied to the PDF file, 
+knows the precise claimed standard(s) with part and level to be verified 
 and if verification succeeds, returns whether the document is conforming. 
+Verification is needed to show that the document conforms with the standard claimed. 
 
 This software can apply the validator itself, or it can create a \texttt{.latexmkrc} file 
 which makes \tool{latexmk} invoke the validator. % TBD: more precise, add text on injections. 
 Note that the validator is invoked only, if \cmd{DocumentMetadata} in the \LaTeX{} main file specifies 
 one or more standards. 
+So in the course of document development, \tool{latexmk} performs verification and displays whether the document passed. 
 
 Note also, that by default, a successful reproducibility check as described in Section~\ref{sec:chkReprod} 
 is seen as an indirect validation because the original PDF file is assumed to be conforming. 
+Note that this is valid only if reproducibility checks follow the hard strategy of bytewise equality. 
 Section~\ref{sec:verapdf} allows configuring the validator to some extent 
 and in particular the parameter \texttt{verifyByCmp} described there 
 controls whether a reproduced PDF artifact substitutes the invocation of a validator tool. 
