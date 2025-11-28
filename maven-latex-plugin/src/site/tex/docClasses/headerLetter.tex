@@ -7,13 +7,19 @@
 % Die beiden Anreden im Briefkopf und im Text müssen unterschieden werden. 
 % VORSICHT: Ms. Mr. usw in Amerikanischem Englisch. 
 \newboolean{isMale}
+\newcommand{\germanOther}[2]{%
+ \ifthenelse{\equal{\localeinfo{language.tag.bcp47}}{de}}{#1}%
+{\ifthenelse{\equal{\localeinfo{language.tag.bcp47}}{en}}{#2}{\GenericError{...}{Unsupported language \localeinfo{language.tag.bcp47}.}{}{}%
+}}%% chktex 11
+}
+% CAUTION: swissgerman is not german `de', but `gsw', likewise lowgerman is nds (niederdeutsch)
 %\newcommand*{\AdressatTitel}{}
 \newcommand*{\AnredeKopf}%
 {\ifthenelse{\boolean{isMale}}%
-{\iflanguage{german}{Herrn}{Mr}}{\iflanguage{german}{Frau}{Ms}}}
+{\germanOther{Herrn}{Mr}}{\germanOther{Frau}{Ms}}}
 \newcommand*{\AnredeText}%
 {\ifthenelse{\boolean{isMale}}%
-{\iflanguage{german}{r Herr}{ Mr}}{\iflanguage{german}{ Frau}{ Ms}}}
+{\germanOther{r Herr}{ Mr}}{\germanOther{ Frau}{ Ms}}}
 % wenn unbekannt: 
 % Dear Sir or Madam	eher brit. Englisch
 % Ladies and Gentlemen eher amerik. Englisch
@@ -40,9 +46,9 @@
 % Anrede im Brief
 \newcommand*{\Anrede}%
 {%
-\iflanguage{german}{Sehr geehrte}{Dear}%
+\germanOther{Sehr geehrte}{Dear}%
 \AnredeText{} \AdressatTitel\AdressatNachname%
-\iflanguage{german}{,}{}%
+\germanOther{,}{}%
 }
 % Deutsch: ',' 
 % britisch: '' (nix)
@@ -51,7 +57,7 @@
 
 \newcommand*{\AnredeAnonym}%
 {%
-\iflanguage{german}{Sehr geehrte Damen und Herren,}{Dear Sir or Madam}%
+\germanOther{Sehr geehrte Damen und Herren,}{Dear Sir or Madam}%
 }
 % Deutsch: ',' 
 % britisch: '' (nix)
@@ -62,7 +68,7 @@
 % Hier kommt der Text 
 
 \newcommand{\Grussworte}{%
-\iflanguage{german}{Mit freundlichen Grüßen,}{Yours sincerely}%
+\germanOther{Mit freundlichen Grüßen,}{Yours sincerely}%
 % Deutsch: mit Komma, 
 % britisch: ohne Komma, 
 % amerikanisch: mit Komma 
@@ -80,7 +86,7 @@
 }
 
 
-% \iflanguage{german}
+% \germanOther
 % {\LoadLetterOption{../absenderDE}}
 % {\LoadLetterOption{../absenderUK}}
 
@@ -99,7 +105,7 @@
 %refline=nodate
 }
 
-\iflanguage{german}
+\germanOther%
 {
     % Erklaerungen zu den Optionen sind in
   % http://www.tex.ac.uk/tex-archive/macros/latex/contrib/koma-script/scrguide.pdf
@@ -125,7 +131,7 @@
 \setkomavar{fromname}{\SenderFullName}
 \setkomavar{fromemail}[]{\EMail}
 
-\iflanguage{german}
+\germanOther%
 {
   % Absenderdaten:
   \setkomavar{frommobilephone}[]{\Mobil}

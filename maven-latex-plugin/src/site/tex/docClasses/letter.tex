@@ -1,6 +1,6 @@
 \RequirePackage[l2tabu, orthodox]{nag}
 
-\documentclass[english,german,a4paper,fontsize=10pt,version=last]{scrlttr2}
+\documentclass[english,ngerman,a4paper,fontsize=10pt,version=last]{scrlttr2}%german,
 
 \input{../header.tex}
 \selectlanguage{german}
@@ -25,53 +25,6 @@
 }
 
 
-
-% % % Layout
-% % \clubpenalty=10000           % Keine "Schusterjungen"
-% % \widowpenalty=10000          % Keine "Hurenkinder"
-% % \displaywidowpenalty=10000
-
-% % % Linie im Kopf ausblenden und im Fuß eine feine Linie
-% % %\newcommand*{\headrulewidth}{0pt}
-% % %\newcommand*{\footrulewidth}{0.4pt}
-
-% % % Eigene Fusszeile festlegen, Kopfzeile leeren
-% % \pagestyle{empty}% no header and no footer 
-% % %\pagestyle{fancy}
-% % %\fancyhead{}
-
-
-% % \newcommand{\cpp}{C$\mathrel{++}$}
-
-
-% % % Makro für Ort und Unterschrift
-% % \newcommand*{\UnterschriftOrt}{%
-% %     \Unterschrift\\
-% %     \OrtDatum\\
-% % }
-
-% % %\selectlanguage{english}
-% % \newcommand*{\signaturePlace}{%
-% %     \Unterschrift\\
-% %     \placeDate\\
-% % }
-% % %\selectlanguage{german}
-
-% % % Unterschrift als Bilddatei einfügen
-% % \newcommand*{\Unterschrift}[1][0.0cm]{%
-% %     \hspace*{#1}\import{\baseDir}{unterschriftWrapper}\\
-% % \VollerName%
-% % }
-
-
-% % \input{./headerLetter.tex}
-
-%\input{../header}
-
-
-%\KOMAoptions{firstfoot=false}
-% keep traditional date format. This cannot be used in metadata. TBD: rethink
-
 \begin{document}
 
 \newcommand{\AdressatFirma}{CapMini GmbH}
@@ -85,7 +38,7 @@
 \begin{letter}{\Anschrift} 
   %\opening{Lieber Egon,}
   \opening{\Anrede}
-
+%'\localeinfo{language.tag.bcp47}'
   Wie Sie wissen, haben wir einen Teil des Projektantrages in \LaTeX{} verfasst. 
   Nun habe ich alle Dokumentation bei jedem \foreignlanguage{english}{Build} 
   der Software oder der zugehörigen Seite 
@@ -94,10 +47,10 @@
   sodass ich zwar meine Diplomarbeit kompilieren kann, 
   nicht aber die \LaTeX{} Dokumente des Projektantrages. 
 
-  Die aktuelle Version 2.0 des Plugins bringt uns dem Ziel näher, 
+  Die Version 2.0 des Plugins bringt uns dem Ziel näher, 
   alle Dokumente, auch die nach neuester Technik zu kompilieren. 
-  Zudem ist es nun auch möglich in qualitativ akzeptabler Weise 
-  Briefe zu kompilieren. 
+  Zudem ist es jetzt auch möglich in qualitativ akzeptabler Weise 
+  Briefe zu erstellen. 
   Insbesondere dieser Brief ist mit dem Plugin generiert. 
 
   %\lipsum{1}
