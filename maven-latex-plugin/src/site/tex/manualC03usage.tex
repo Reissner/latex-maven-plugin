@@ -160,7 +160,7 @@ followed by \texttt{report} and \texttt{book}.
 For these, we suggest something like\sindex[cmd]{documentclass} 
 %
 \begin{Verbatim}
-\documentclass[a4paper,12pt,english]{article}
+\documentclass[a4paper,12pt,USenglish]{article}
 \end{Verbatim}
 %
 where \texttt{a4paper} is a setting, typical for Europe or, not the US\@. 
@@ -181,6 +181,70 @@ but~\cite{BabelP24} Sections~1.7 and 1.8 show how to change language,
 here temporarily into German, 
 which requires specifying \texttt{german} in front of \texttt{english} 
 in the document class. 
+
+Note that there are languages with variants like English, 
+but then it makes more sense to specify which kind of English, 
+so maybe \texttt{english-us} or \texttt{english-uk} 
+although unspecific \texttt{english} is possible also. 
+Then problem is, that it may depend on the configuration what kind of English this means. 
+Note that \texttt{english-US} corresponds with language code \texttt{en-US}, 
+\texttt{english-UK} with \texttt{en-UK} and \texttt{english} just with \texttt{en}. 
+% TBD: mention \DocumentMetadata lang=en
+Unfortunately, at time of this writing, %TBD check, bugreport filed already 
+%TBDL abbreviation ldf and ini
+the package \pkg{csquotes} does not support this kind of language specifications 
+based on ini\footnote{maybe short for initialization} files (see~\cite{BabelP24} Sections~1.8) 
+but it supports the more traditional ones based on ldf\footnote{language definition file} files 
+described in~\cite{BabelP24} Sections~1.1, 
+like \texttt{USenglish} and \texttt{UKenglish} 
+together with the less systematic \texttt{british} and \texttt{american}. 
+
+For German, language code \texttt{de} it is similar, as there are three locales, 
+\texttt{de-DE}, \texttt{de-AT}, \texttt{de-CH}, for German in the Federal Republic of Germany, 
+Austria and Switzerland (Confoederatio Helvetica), respectively. 
+By the way, Liechtenstein's official language is German as well with language code \texttt{de-LI}, 
+but from \pkg{babel} point of view it is the Swiss variant. 
+Likewise, German is one of the official languages in Luxembourg with code \texttt{de-LU} 
+but \pkg{babel} treats it as \texttt{de-DE}. 
+But compared to English, for the German language, 
+things are even more complicated: 
+There is a traditional spelling and hyphenation pre-1996 and a ``new'' one since 1996 with some later modifications. 
+Then there are two ways to specify ldf and ini (maybe for initializing?). 
+In ini style specifications, all goes smooth: \texttt{german} is the modern language, \texttt{german-traditional}, 
+like \texttt{chinese} and \texttt{chinese-traditional}. 
+As \pkg{csquotes} does not support these names currently, 
+we refrain from further discussion. 
+% Consequently, 
+% for the other traditional variants use \texttt{german-austria-traditional} and \texttt{german-switzerland-traditional}, 
+% respectively and for the contemporary ones use \texttt{german-austria} and \texttt{german-Switzerland}. 
+% The only bad thing is, that 
+
+
+In ldf specifications supported by \pkg{csquotes} in contrast, 
+new German is called \texttt{ngerman} whereas \texttt{german} is the traditional one. 
+It is absurd, that the current language is called new. 
+But even worse: if you use \texttt{german} then the ldf is used even if the ini is present on the system, 
+but at least ldf takes precedence. 
+% To be sure to get the correct variant, the author recommends using \texttt{ngerman} (definitively ldf) 
+% and \texttt{german-traditional} (definitively ini). 
+The new writing for Austria and Switzerland are \texttt{naustrian} and \texttt{nswissgerman}, 
+the traditional for Austria is \texttt{austrian} which fits \texttt{german}, 
+but although \texttt{swissgerman} exists, this is a dialect not official German language, 
+and the traditional Swiss variant is called  \texttt{swisshighgerman}. 
+This is all very confusing. 
+
+% % We hope that once \texttt{german-de} is defined and means contemporary German 
+% % in analogy to \texttt{german-at} and \texttt{german-ch} for contemporary Austrian and Swiss German. 
+% % This would unify naming of contemporary German a lot. 
+
+
+% % Although we do not recommend \texttt{swissgerman} be aware that this is in fact not traditional German 
+% % in the variant of Switzerland, it is a particular German dialect spoken in Switzerland. 
+% % In contrast, \texttt{swisshighgerman} is just \texttt{nswissgerman}. 
+% % Of course in Switzerland also \texttt{swissfrench} which is \texttt{french-ch} is spoken. 
+% % Also, \texttt{italian} is used but \pkg{babel} treats it the same as the language spoken in Italy, although 
+% % language codes \texttt{it} and \texttt{it-CH} exist. 
+
 Note the quotes and the correct hyphenation in the following paragraph. 
 
 %   \begin{center}
