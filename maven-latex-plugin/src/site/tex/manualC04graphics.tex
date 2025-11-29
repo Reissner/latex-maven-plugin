@@ -79,7 +79,7 @@ We also describe in which sense these packages support graphical preprocessing.
 \begin{itemize}
 \item[\pkg{graphicx}]
 is the basic graphics package which provides above all the 
-\cmd{includegraphics}{} command 
+command \cmd{includegraphics} 
 which allows including graphics natively 
 in the formats PDF, EPS, JPG and PNG at least. 
 For details see~\cite{GraX}. 
@@ -881,7 +881,7 @@ As for inclusion of fig-files, the package \pkg{graphicx} is needed.
 should be a picture 
 }{ 
 %\includegraphics{F4_05someMetapost1.mps}
-\includegraphics{F4_05someMetapost.mps}
+\includegraphics[alt=typical metapost]{F4_05someMetapost.mps}
 }
 \caption{\label{fig:metapost}
 Converted sample MetaPost-file included as mps-file  }
@@ -928,7 +928,7 @@ that the redefinition really influences rendering in the MetaPost file.
   \inputmpcode{F4_05someMetapost}
   }% to recover from redefine 
   \else
-  \includegraphics{F4_05someMetapost.mps}
+  \includegraphics[alt=typical metapost]{F4_05someMetapost.mps}
   \fi
   }%texFhtLoaded
   \caption{\label{fig:metapostLua}
@@ -1196,7 +1196,7 @@ This list may be incomplete.
 should be a picture 
 }{
 \setkeys{Gin}{width=0.9\textwidth}
-\includegraphics%[width=0.9\textwidth]
+\includegraphics[alt=typical jpg]%[width=0.9\textwidth]
 {F4_08someJpgOboeBaroqueDennerMIR370}%.jpg
 }
 \caption{\label{fig:asIsJpg}Some JPG-picture, directly included }
@@ -1212,7 +1212,7 @@ FIXME\@: At the moment, \tool{htlatex} does not work with pictures at all.
 \IfPackageLoadedTF{tex4ht}{%
 should be a picture 
 }{
-\includegraphics[width=0.9\textwidth]
+\includegraphics[width=0.9\textwidth, alt=typical png]
 {F4_09somePngOboeBaroqueDennerMIR370}%.png
 }
 \caption{\label{fig:asIsPng}Some PNG-picture, directly included }
@@ -1231,7 +1231,7 @@ In contrast, \texttt{lualatex} and \texttt{pdflatex} can not.
 %   \IfPackageLoadedTF{tex4ht}{%
 %   should be a picture 
 %   }{
-%   \includegraphics[width=0.9\textwidth]
+%   \includegraphics[width=0.9\textwidth, alt=typicalbmp]
 %   {F4_10someBmpOboeBaroqueDennerMIR370.bmp}%.bmp
 %   }
 %   \caption{\label{fig:asIsBmp}Some bmp-picture, directly included }
