@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
@@ -445,8 +446,10 @@ public class LatexProcessor extends AbstractLatexProcessor {
         // may throw BuildFailureException TSS04
         for (Target target : targetsForBuild) {
           Optional<File> pdfFileCmpOpt = Optional.empty();
-          boolean doDiff = target.hasDiffTool() && isChkDiff(desc);
-          if (doDiff) {
+          // Do it really, if an original artifact exists 
+          boolean doTryVeri = target.hasVerificationTool() && claimsStdMetadata(desc);
+          boolean doTryDiff = target.hasDiffTool() && isChkDiff(desc);
+          if (doTryDiff) {
             File pdfFileCmp = TexFileUtils.getPdfFileDiff(desc.pdfFile,
                 this.settings.getTexSrcDirectoryFile(),
                 this.settings.getDiffDirectoryFile().getAbsoluteFile());
@@ -487,8 +490,10 @@ public class LatexProcessor extends AbstractLatexProcessor {
           // log warning EEX01, EEX02, EEX03, WEX04, WEX05
           //target.processSource(this, desc, timestampOpt);
 
+          // perform the proper processing 
           target.processSource(this, desc);
 
+          // copy the resulting artifacts to the target folder 
           FileFilter fileFilter = TexFileUtils.getFileFilter(texFile,
               target.getPatternOutputFiles(this.settings), false);
           // may throw BuildFailureException
@@ -497,42 +502,39 @@ public class LatexProcessor extends AbstractLatexProcessor {
           Set<File> targetFiles = this.fileUtils
               .copyOutputToTargetFolder(texFile, fileFilter, targetDir);
 
-          if (!doDiff) {
-            this.log.debug("No artifact diff specified.");
+          // Here, we assume that targets viable for verification and comparison
+          // have a single file as an artifact
+          if (targetFiles.size() != 1) {
             continue;
           }
 
-          assert targetFiles.size() == 1 : "Expected one target file, found "
-              + targetFiles + ". ";
           File pdfFileAct = targetFiles.iterator().next();
           this.log.debug(String.format("act file %s", pdfFileAct));
-          assert pdfFileAct.exists();// TBD: ensure that this file really exists. 
-
-
-          File pdfFileCmp = pdfFileCmpOpt.get();
-          if (!pdfFileCmp.exists()) {
-            // TBD: adapt identifier of warning 
-            // THis shall occur only if a newly created or changed file shall be reproducible 
-            // in the message: 'Modification of reproducible file?' - add artifact as original file ' 
-            // TBD: pdfFileCmp is absolute but shall be relative to project base directory 
-            this.log.warn("TLP02: Add file '" + pdfFileCmp
-                   + "' to compare with artifact '" + pdfFileAct + "'! ");
+          if (!pdfFileAct.exists()) {
+            // Here, the logging is done already above
             continue;
           }
-          this.log.debug("Prepare verification by diffing: ");
 
+          // // but this shall be clear also above before trying to copy to target folder
+          // boolean coincideChecked = runDiffPdf(pdfFileCmpOpt.get(), pdfFileAct);
+          // null: not checked, else the result of the check as a boolean. 
+          Boolean coincideChecked = diffByNeedAndReturnEqual(doTryDiff, pdfFileAct, pdfFileCmpOpt);
 
-
-          // but this shall be clear also above before trying to copy to target folder 
-          boolean coincideChecked = runDiffPdf(pdfFileCmpOpt.get(), pdfFileAct);
-          if (coincideChecked) {
-            this.log.info("Checked result: coincides with expected artifact. ");
-            continue;
+          // Of course, verification can be done only if supported by the target. 
+          // If so, for !this.settings.getVerifyByCmp(), validation must be run. 
+          // else, it must only be done if no check, i.e. coincideChecked==null:
+          // or comparison did not yiels confirmation that the files coincide 
+          if (doTryVeri 
+            && (!this.settings.getVerifyByCmp() || coincideChecked == null || !coincideChecked)) {
+            runValidatePdf(desc);
           }
+
+          // for coincideChecked == null diffByNeedAndReturnEqual emitted an according warnind already
+          if (coincideChecked != null && !coincideChecked) {
           throw new BuildFailureException(
               "TLP01: Artifact '" + pdfFileAct.getName() + 
               "' from '" + texFile + "' could not be savely reproduced. ");
-
+          }
         } // target
       } // texFile
     } finally {
@@ -544,6 +546,58 @@ public class LatexProcessor extends AbstractLatexProcessor {
           : "No cleanup");
       this.latex2PdfCmdMagic = Optional.empty();// superfluous
     }
+  }
+
+  /**
+   * Runs {@link #runDiffPdf(File, File)} by need 
+   * and returns whether the comparison was not executed, passed for failed. 
+   * Note that currently, a diff is performed for PDF files only. 
+   * 
+   * @param doTryDiff
+   *    whether a diff check was resquested, i.e. possible by target (PDF only) 
+   *    and requested globally or particularly for the actual document. 
+   * @param pdfFileAct
+   *    The actual PDF file 
+   * @param pdfFileCmpOpt
+   *    An Optional carrying another PDF file for comparison, if available. 
+   * @return 
+   *    <code>null</code> if it was not tried to compare. 
+   *    This is if <code>doTryDiff</code> is false 
+   *    or if <code>pdfFileCmpOpt</code> contains not original PDF file for comparison. 
+   *    Else it returns whether the trial succeeded and showed equality. 
+   * @throws BuildFailureException
+   *      TEX01 if invocation of the diff command failed. 
+   */
+  private Boolean diffByNeedAndReturnEqual(boolean doTryDiff,
+      File pdfFileAct,
+      Optional<File> pdfFileCmpOpt)
+      throws BuildFailureException {
+    if (!doTryDiff) {
+      this.log.debug("No artifact diff specified.");
+      return null;
+    }
+
+    File pdfFileCmp = pdfFileCmpOpt.get();
+    if (!pdfFileCmp.exists()) {
+      // TBD: adapt identifier of warning
+      // THis shall occur only if a newly created or changed file shall be
+      // reproducible
+      // in the message: 'Modification of reproducible file?' - add artifact as
+      // original file '
+      // TBD: pdfFileCmp is absolute but shall be relative to project base directory
+      this.log.warn("TLP02: Add file '" + pdfFileCmp
+          + "' to compare with artifact '" + pdfFileAct + "'! ");
+      return null;
+    }
+    this.log.debug("Prepare verification by diffing: ");
+
+    // but this shall be clear also above before trying to copy to target folder
+    // may throw BuildFailureException 
+    boolean coincideChecked = runDiffPdf(pdfFileCmpOpt.get(), pdfFileAct);
+    if (coincideChecked) {
+      this.log.info("Checked result: coincides with expected artifact. ");
+    }
+    return coincideChecked;
   }
 
   // TBD: rework documentation 
@@ -586,6 +640,50 @@ public class LatexProcessor extends AbstractLatexProcessor {
       this.log.info("Magic comment 'chkDiff=" + chkDiff + "' overrides setting.");
     }
     return chkDiff;
+  }
+
+  // TBD: value must admit also nested braces 
+  private static final Pattern PATTERN_METADATA = 
+  Pattern.compile("(\\s*,\\s*)?(?<key>[-a-z]+)(?:=(?<value>[^{}, ]+|\\{[^{}]*\\}))?");
+
+  private boolean claimsStdMetadata(LatexMainDesc desc) {
+    //boolean chkDiffSetting = this.settings.isChkDiff();
+    if (!desc.groupMatches(LatexMainParameterNames.docMetadata)) {
+      // Here, no metadata at all, so no claim 
+      this.log.info("No DocumenMetadata.");
+      return false;
+    }
+    // Here, metadata are given 
+    // TBD: make this more precise later. 
+    Optional<String> docMetadataValue = 
+    desc.groupMatch(LatexMainParameterNames.docMetadata);
+    String docMetadataString = docMetadataValue.get();
+
+System.out.println("docMetadata: |"+docMetadataString+"|");
+    Map<String, String> key2val = new TreeMap<String, String>();
+    Matcher matcher = PATTERN_METADATA.matcher(docMetadataString);
+    String key, value;
+    while (matcher.find()) {
+      key = matcher.group("key");
+      value = matcher.group("value");
+      System.out.println("key: |"+key+"| value: |" + value+"|");
+      key2val.put(key, value);
+      // value may be well null but only for uncompress, 
+      // currently, this is not checked. 
+      // for pdfstandard, the key may repeat. 
+      // currently this is just overwritten. 
+    }
+    boolean claimsStd =  key2val.containsKey("pdfstandard");
+
+
+    // Pattern patStd = Pattern.compile("^.*pdfstandard.*$");
+    // boolean claimsStd = patStd.matcher(docMetadataString).matches();
+    if (claimsStd) {
+      this.log.info("DocumenMetadata specifies standard.");
+    } else {
+      this.log.info("DocumenMetadata does not specify standard.");
+    }
+    return claimsStd;
   }
 
   /**
@@ -2514,6 +2612,69 @@ public class LatexProcessor extends AbstractLatexProcessor {
   }
 
   /**
+   * Logs an error on command <code>command</code> if the result <code>command</code> 
+   * returned an unexpected return value. 
+   * This method shall be used for checker commands only. 
+   * The background is, that an error like that comes from a change in the application 
+   * which needs adaption of this software. 
+   * The error is the trigger for further development. 
+   * 
+   * @param command
+   *    the ckecker command which returned an unexpected return value. 
+   * @param res
+   *    the result with unexpected return value. 
+   */
+  private void logErrUnexpectedReturnCode(String command, CommandExecutor.CmdResult res) {
+        this.log.error("ELP01: For command '" + command
+            + "' found unexpected return code " + res.returnCode + ". ");
+  }
+
+  /**
+   * Runs the validation command for PDF format given by {@link Settings#getcommand
+   * @param desc
+   * @throws BuildFailureException
+   */
+  private void runValidatePdf(LatexMainDesc desc) throws BuildFailureException {
+    File pdfFile = desc.pdfFile;
+    String command = this.settings.getCommand(ConverterCategory.StandardValidator);
+    this.log.debug("Running " + command + " on '" + pdfFile.getName() + "'. ");
+    String[] args = buildArguments(this.settings.getChkTexOptions(), pdfFile);
+    // may throw BuildFailureException TEX01,
+    // may log warning EEX01, EEX02, EEX03, WEX04, WEX05
+    CommandExecutor.CmdResult res = this.executor.executeEmptyEnv(
+        pdfFile.getParentFile(), this.settings.getTexPath(), command,
+        CommandExecutor.ReturnCodeChecker.IsNotZeroOrOne, args);
+        // TBD: display the standards. 
+        // TBD: clarify how to use verapdf output 
+        switch (res.returnCode) {
+          case 0: // check executed and passed
+            this.log.info("Validation of '" + pdfFile.getName() + "' passed. ");
+            break;
+          case 1: // check executed and failed
+            this.log.warn("XXX: Validation of '" + pdfFile.getName() + "' failed. ");
+            break;
+          case 2:
+          case 3:
+          case 4:
+            // case 5 is missing 
+          case 6:
+          case 7:
+          case 8:
+          case 9:
+          case 10:
+          case 11:
+          case 12: // execution error already treated in executor;
+            // nothing to be done.
+            // see CommandExecutor.ReturnCodeChecker.IsNotZeroOrOne.hasFailed
+            break;
+          default:
+            logErrUnexpectedReturnCode(command, res);
+        }
+      }
+
+
+
+  /**
    * Returns an array of strings,
    * each entry with a single option given by <code>options</code>
    * except the last three which represent <code>-o clgFile texFile</code>.
@@ -2562,7 +2723,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
    *     <code>pdfFileCmp</code>. 
    *     This is false whether the check failed or the check could not be performed. 
    * @throws BuildFailureException
-   *      TEX01 if invocation of the check command failed. 
+   *      TEX01 if invocation of the diff command failed. 
    * @see #runChktex(LatexMainDesc)
    */
   private boolean runDiffPdf(File pdfFileCmp, File pdfFileAct)
