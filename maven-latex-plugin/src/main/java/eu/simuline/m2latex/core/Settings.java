@@ -363,7 +363,7 @@ public class Settings {
   \\\\PassOptionsToPackage\\s*\\{(\\s|\\w|[,=])*\\}\\s*\\{(\\w|-)+\\}|\
   \\\\newbool\\s*\\{\\w+\\}|\
   \\\\setbool\\s*\\{\\w+\\}\\{(true|false)\\}|\
-  \\\\DocumentMetadata(?<brace>\\{(?:[^{}]|(?'brace'))*\\})|\
+  \\\\DocumentMetadata(?<docMetadata>\\{(?:[^{}]|(?'docMetadata'))*\\})|\
   \\\\input\\s*\\{[^{}]*\\}\
   )?\\s*(%.*)?\\R)*\
   \\\\(documentstyle|documentclass)\\s*(\\[[^]]*\\])?\\s*\\{(?<docClass>[^} ]+)\\}\

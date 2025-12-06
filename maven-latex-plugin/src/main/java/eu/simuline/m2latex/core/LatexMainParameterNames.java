@@ -73,5 +73,15 @@ public enum LatexMainParameterNames {
    * representing the target set 
    * specified by the magic comment <code>% !TEX program=...</code>. 
    */
-  programMagic;
+  programMagic,
+
+  /**
+   * The name of the capturing group
+   * representing the argument of <code>\DocumentMetadata</code> 
+   * including the braces. 
+   * LaTeX does not strictly speaking require braces, 
+   * but LMP does. 
+   * This is a minor restriction. 
+   */
+  docMetadata;
 }

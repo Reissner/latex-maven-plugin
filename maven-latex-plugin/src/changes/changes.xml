@@ -1657,6 +1657,14 @@ discussion: currently disabled
        Differentiate between the flavors or German and also between the flavors of english, at least US and UK. 
        I think this new headerLetter.tex would be worth serving as injection. -->
 
+       <!-- whereas the pattern for DocumentMetadata works fine for java regex extension ffrom ingerl, 
+        in perl it seems not to work. 
+        This affects  pdfstandard=a-2b, pdfstandard=UA-1 vs pdfstandard={a=2b,ua=1}. 
+        Both match in java, whereas in perl only the first one matches. 
+        It is not easy to find a regular expression which works in both cases. 
+        
+        
+        -->
     <release version="2.1" date="2023-08-28" 
       description="build with latexmk and generalized reproducibility, readed glossary">
       <action dev='reissner' type='add'>
