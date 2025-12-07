@@ -642,12 +642,141 @@ public class LatexProcessor extends AbstractLatexProcessor {
     return chkDiff;
   }
 
-  // TBD: value must admit also nested braces 
-  private static final Pattern PATTERN_METADATA = 
-  Pattern.compile("(\\s*,\\s*)?(?<key>[-a-z]+)(?:\\s*=\\s*(?<value>[^{}, ]+|\\{[^{}]*\\}))?");
+  /**
+   * Represents the values of tagging in DocumentMetadata. 
+   */
+  static enum TaggingState {
+    /**
+     * Tagging is active. 
+     */
+    on,
+    /**
+     * Tagging is not active. 
+     */
+    off,
+    /**
+     * Tagging commands are active emitting warnings by need, 
+     * but finally the tagging structure is not written to the final output. 
+     */
+    draft;
+  }
 
-  private static final String KEY_STD = "pdfstandard";
+  /**
+   * Represents the settings in DocumentMetadata. 
+   * This means that all data is a request not reality. 
+   * For example, standards are only claimed, not validated. 
+   * Some aspects, as compression should be quite reliable, 
+   * whereas for example the pdfversion can be manipulated. 
+   */
+  static class MetaData {
+
+  // TBD: value must admit also nested braces 
+    private static final Pattern PATTERN_METADATA = Pattern
+        .compile("(\\s*,\\s*)?(?<key>[-a-z]+)(?:\\s*=\\s*(?<value>[^{}, ]+|\\{[^{}]*\\}))?");
+
+    private static final String KEY_PDFVERSION = "pdfversion";
   private static final String KEY_UNCOMP = "uncompress";
+    private static final String KEY_STD = "pdfstandard";
+    private static final String KEY_XMP = "xmp";
+    private static final String KEY_TAGGING = "tagging";
+
+    /**
+     * The version as an optional which is empty if the version is not given explicitly. 
+     */
+    final Optional<String> pdfversion;
+
+    final boolean isCompressed;
+
+    //EnumSet<PdfStandard> standards;
+
+    final boolean withXMP;
+    final TaggingState tagging;
+
+
+
+    private final Map<String, String> key2value;
+
+    private static String unwrap(String str) {
+      str = str.trim();
+      return  (str.startsWith("{") && str.endsWith("}"))
+        ? str.substring(1,str.length()-1)
+        : str;
+    }
+
+    MetaData(String docMetadataString) {
+      this.key2value = new TreeMap<String, String>();
+    Matcher matcher = PATTERN_METADATA.matcher(docMetadataString);
+    String key, value;
+    while (matcher.find()) {
+      key = matcher.group("key");
+      value = matcher.group("value");
+        System.out.println("key: |" + key + "| value: |" + value + "|");
+        switch (key) {
+          case KEY_STD:
+            String org = this.key2value.get(KEY_STD);
+            value = unwrap(value).toLowerCase();
+        if (org == null) {
+              this.key2value.put(KEY_STD, value);
+
+        } else {
+              this.key2value.put(KEY_STD, org + "," + value);
+        }
+        continue;
+          case KEY_UNCOMP:
+            assert value == null;
+            // continue; fallthrough
+          default:
+            this.key2value.put(key, value);
+        } // switch
+      } // while 
+
+      // no action for 'backend'
+      // pdfversion may be given explicitly or not 
+      this.pdfversion = this.key2value.containsKey(KEY_PDFVERSION)
+      ? Optional.of(this.key2value.get(KEY_PDFVERSION))
+      : Optional.empty();
+      // uncompression TBD: there is a second way to reach this. 
+      this.isCompressed = !this.key2value.containsKey(KEY_UNCOMP);
+      // no action for lang; but if not present: latex complains 
+      // pdfstandard 
+      // String stdsStr = this.key2value.get(KEY_STD);
+      // this.standards = EnumSet.noneOf(PdfStandard.class);
+      // if (stdsStr != null) {
+      //   // Here, at least one standard is requested 
+      //   String[] stdArr = stdsStr.split(",");
+      //   for (String std : stdArr) {
+      //     this.standards.add(PdfStandard.valueOf(std));
+      //   }
+      // }
+
+      // xmp 
+      this.withXMP = this.key2value.containsKey(KEY_XMP)
+          ? Boolean.parseBoolean(this.key2value.get(KEY_XMP))
+          : true; // the default value.
+
+      // tagging 
+      this.tagging = this.key2value.containsKey(KEY_TAGGING)
+        ? TaggingState.valueOf(this.key2value.get(KEY_TAGGING))
+        : TaggingState.off;
+ 
+      // value may be well null but only for uncompress, 
+      // currently, this is not checked. 
+      // for pdfstandard, the key may repeat. 
+      // currently this is just overwritten. 
+
+    } // MetaData 
+
+    // Set<String> getClaimedStandard(String xaua) {
+
+    // }
+
+    boolean claimsSomeStandard() {
+      return this.key2value.containsKey(KEY_STD);
+    }
+
+  } // class MetaData 
+
+
 
   private boolean claimsStdMetadata(LatexMainDesc desc) {
     //boolean chkDiffSetting = this.settings.isChkDiff();
@@ -663,35 +792,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
     String docMetadataString = docMetadataValue.get();
 
 System.out.println("docMetadata: |"+docMetadataString+"|");
-    Map<String, String> key2value = new TreeMap<String, String>();
-    Matcher matcher = PATTERN_METADATA.matcher(docMetadataString);
-    String key, value;
-    while (matcher.find()) {
-      key = matcher.group("key");
-      value = matcher.group("value");
-      System.out.println("key: |"+key+"| value: |" + value+"|");
-      if (KEY_UNCOMP.equals(key)) {
-        assert value == null;
-        continue;
-      }
-      if (KEY_STD.equals(key)) {
-        String org = key2value.get(KEY_STD);
-        value = value.toLowerCase().trim();
-        if (org == null) {
-          key2value.put(KEY_STD, value);
-
-        } else {
-          key2value.put(KEY_STD, org + "," + value);
-        }
-        continue;
-      }
-      key2value.put(key, value);
-      // value may be well null but only for uncompress, 
-      // currently, this is not checked. 
-      // for pdfstandard, the key may repeat. 
-      // currently this is just overwritten. 
-    }
-    boolean claimsStd =  key2value.containsKey(KEY_STD);
+     boolean claimsStd =  new MetaData(docMetadataString).claimsSomeStandard();
 
 
     // Pattern patStd = Pattern.compile("^.*pdfstandard.*$");
