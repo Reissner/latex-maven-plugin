@@ -644,7 +644,10 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
   // TBD: value must admit also nested braces 
   private static final Pattern PATTERN_METADATA = 
-  Pattern.compile("(\\s*,\\s*)?(?<key>[-a-z]+)(?:=(?<value>[^{}, ]+|\\{[^{}]*\\}))?");
+  Pattern.compile("(\\s*,\\s*)?(?<key>[-a-z]+)(?:\\s*=\\s*(?<value>[^{}, ]+|\\{[^{}]*\\}))?");
+
+  private static final String KEY_STD = "pdfstandard";
+  private static final String KEY_UNCOMP = "uncompress";
 
   private boolean claimsStdMetadata(LatexMainDesc desc) {
     //boolean chkDiffSetting = this.settings.isChkDiff();
@@ -660,20 +663,35 @@ public class LatexProcessor extends AbstractLatexProcessor {
     String docMetadataString = docMetadataValue.get();
 
 System.out.println("docMetadata: |"+docMetadataString+"|");
-    Map<String, String> key2val = new TreeMap<String, String>();
+    Map<String, String> key2value = new TreeMap<String, String>();
     Matcher matcher = PATTERN_METADATA.matcher(docMetadataString);
     String key, value;
     while (matcher.find()) {
       key = matcher.group("key");
       value = matcher.group("value");
       System.out.println("key: |"+key+"| value: |" + value+"|");
-      key2val.put(key, value);
+      if (KEY_UNCOMP.equals(key)) {
+        assert value == null;
+        continue;
+      }
+      if (KEY_STD.equals(key)) {
+        String org = key2value.get(KEY_STD);
+        value = value.toLowerCase().trim();
+        if (org == null) {
+          key2value.put(KEY_STD, value);
+
+        } else {
+          key2value.put(KEY_STD, org + "," + value);
+        }
+        continue;
+      }
+      key2value.put(key, value);
       // value may be well null but only for uncompress, 
       // currently, this is not checked. 
       // for pdfstandard, the key may repeat. 
       // currently this is just overwritten. 
     }
-    boolean claimsStd =  key2val.containsKey("pdfstandard");
+    boolean claimsStd =  key2value.containsKey(KEY_STD);
 
 
     // Pattern patStd = Pattern.compile("^.*pdfstandard.*$");
