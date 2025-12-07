@@ -447,7 +447,17 @@ public class LatexProcessor extends AbstractLatexProcessor {
         for (Target target : targetsForBuild) {
           Optional<File> pdfFileCmpOpt = Optional.empty();
           // Do it really, if an original artifact exists 
-          boolean doTryVeri = target.hasVerificationTool() && claimsStdMetadata(desc);
+
+          // Pattern patStd = Pattern.compile("^.*pdfstandard.*$");
+          // boolean claimsStd = patStd.matcher(docMetadataString).matches();
+          MetaData docMeta = docMetadata(desc);
+          boolean claimsStd = docMeta.claimsSomeStandard();
+          if (claimsStd) {
+            this.log.info("DocumenMetadata specifies standard.");
+          } else {
+            this.log.info("DocumenMetadata does not specify standard.");
+          }
+          boolean doTryVeri = target.hasVerificationTool() && claimsStd;
           boolean doTryDiff = target.hasDiffTool() && isChkDiff(desc);
           if (doTryDiff) {
             File pdfFileCmp = TexFileUtils.getPdfFileDiff(desc.pdfFile,
@@ -659,7 +669,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
      * but finally the tagging structure is not written to the final output. 
      */
     draft;
-  }
+  } // enum TaggingState 
 
   /**
    * Represents the settings in DocumentMetadata. 
@@ -680,6 +690,8 @@ public class LatexProcessor extends AbstractLatexProcessor {
     private static final String KEY_XMP = "xmp";
     private static final String KEY_TAGGING = "tagging";
 
+
+    final static MetaData NO_METADATA = new MetaData(KEY_XMP + "=" +false);
     /**
      * The version as an optional which is empty if the version is not given explicitly. 
      */
@@ -737,17 +749,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
       : Optional.empty();
       // uncompression TBD: there is a second way to reach this. 
       this.isCompressed = !this.key2value.containsKey(KEY_UNCOMP);
-      // no action for lang; but if not present: latex complains 
-      // pdfstandard 
-      // String stdsStr = this.key2value.get(KEY_STD);
-      // this.standards = EnumSet.noneOf(PdfStandard.class);
-      // if (stdsStr != null) {
-      //   // Here, at least one standard is requested 
-      //   String[] stdArr = stdsStr.split(",");
-      //   for (String std : stdArr) {
-      //     this.standards.add(PdfStandard.valueOf(std));
-      //   }
-      // }
+
 
       // xmp 
       this.withXMP = this.key2value.containsKey(KEY_XMP)
@@ -778,12 +780,12 @@ public class LatexProcessor extends AbstractLatexProcessor {
 
 
 
-  private boolean claimsStdMetadata(LatexMainDesc desc) {
+  private MetaData docMetadata(LatexMainDesc desc) {
     //boolean chkDiffSetting = this.settings.isChkDiff();
     if (!desc.groupMatches(LatexMainParameterNames.docMetadata)) {
       // Here, no metadata at all, so no claim 
-      this.log.info("No DocumenMetadata.");
-      return false;
+      this.log.info("No DocumentMetadata.");
+      return MetaData.NO_METADATA;
     }
     // Here, metadata are given 
     // TBD: make this more precise later. 
@@ -792,17 +794,7 @@ public class LatexProcessor extends AbstractLatexProcessor {
     String docMetadataString = docMetadataValue.get();
 
 System.out.println("docMetadata: |"+docMetadataString+"|");
-     boolean claimsStd =  new MetaData(docMetadataString).claimsSomeStandard();
-
-
-    // Pattern patStd = Pattern.compile("^.*pdfstandard.*$");
-    // boolean claimsStd = patStd.matcher(docMetadataString).matches();
-    if (claimsStd) {
-      this.log.info("DocumenMetadata specifies standard.");
-    } else {
-      this.log.info("DocumenMetadata does not specify standard.");
-    }
-    return claimsStd;
+     return new MetaData(docMetadataString);
   }
 
   /**
