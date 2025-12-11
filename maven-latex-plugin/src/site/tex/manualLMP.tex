@@ -1,4 +1,14 @@
-\DocumentMetadata{lang=en-US,pdfstandard=a-4}%pdfversion=1.7,pdfstandard=a-2b}%lang=en-USlang=en,
+%\DocumentMetadata{lang=en-US,pdfversion=1.7,pdfstandard=a-3b}%,tagging=on,pdfversion=2.0,pdfversion=1.7,dfversion=2.0,pdfstandard=a-4}%pdfversion=1.7,pdfstandard=a-2b}%lang=en-USlang=en,
+%,tagging=on,pdfversion=2.0,pdfversion=1.7,dfversion=2.0,pdfstandard=a-4}%pdfversion=1.7,pdfstandard=a-2b}%lang=en-USlang=en,
+% a-4 says: switching t a-4f because embedding non-pdf pictures.... Means, a-4 is not a-4f
+% Note: a-4f ok, but a-4e (interesting for engineering) is not ok 
+\DocumentMetadata{lang=en-US,tagging=on,pdfversion=2.0,pdfstandard=a-4f,pdfstandard=UA-2} 
+%tagging=on,,pdfstandard=UA-2,tagging=on,pdfversion=2.0,pdfversion=1.7,dfversion=2.0,pdfstandard=a-4}%pdfversion=1.7,pdfstandard=a-2b}%lang=en-USlang=en,
+% Specifying UA-2 works because this just writes required metadata, 
+% but validation can pass only with tagging=on, but this document does not work with tagging on. 
+% Reaching tagged documents would be another task. 
+% NOTE: gnuplot required 1.7; still true? 
+
 
 % \DocumentMetadata{
 %   %pdfversion={2.0}, %then not compliant
@@ -34,6 +44,47 @@
 
 % before \input{header.tex} because header.tex contains a patch for listings 
 \usepackage{listings}
+% patching of package listing applying to float lstlisting 
+% see https://tex.stackexchange.com/questions/755546/understanding-and-avoiding-tagpdf-warning-caused-by-lstlisting-environment
+\ExplSyntaxOn
+% Internal variable, temporary work-around!
+\prop_gput:Nnn\g__tag_float_sect_prop{lstlisting-struct}{\tag_get:n{current_Sect}}
+\ExplSyntaxOff
+
+% patching package listings with 
+% https://tex.stackexchange.com/questions/755794/problem-with-tagging-non-floating-lstlisting
+% https://github.com/latex3/tagging-project/issues/70#issuecomment-2005126960
+% providing taglstlisting if non-floating 
+\makeatletter
+\ExplSyntaxOn
+\DeclareInstance{blockenv}{lstlisting}{display}
+{
+  name       = lstlisting,
+  tag-name       = verbatim,
+  tag-attr-class      = ,
+  tagging-recipe = standard,
+  inner-level-counter  = ,
+  increment-level = false,
+  setup-code     = ,
+  block-instance = displayblock ,
+  inner-instance = ,
+  final-code     =  \tl_set:Nn \l__tag_para_main_tag_tl {codeline}\tagtool{paratag=Code},
+}
+\ExplSyntaxOff
+\lstnewenvironment{taglstlisting}[2][]{%
+     \UseInstance{blockenv}{lstlisting} {}
+     \lst@TestEOLChar{#2}%
+     \lstset{#1}%
+     \csname\@lst @SetFirstNumber\endcsname%
+   }{%
+     \@nobreakfalse
+     \csname\@lst @SaveFirstNumber\endcsname%
+     \endblockenv
+   }
+\makeatother
+% patch for tagging of unnumbered glossaries section 
+%\renewcommand\phantomsection{\MakeLinkTarget[section]{}}
+
 \usepackage{iftex}% This is a hack: is loaded later also in header.tex
 % it is needed for htlatex because there is no htlualatex. 
 % Even if there were, we had to change latex compiler separately for pdf and html. 
@@ -66,7 +117,15 @@
   \makeglossaries%
 
 }
-\setMinorVersionPdf{7}% because of gnuplot file only 
+
+\usepackage{unicode-math}
+%\setmainfont{STIX Two Text}
+%\setmathfont{STIX Two Math}
+%\tagpdfsetup{activate/all=false}
+%\usepackage{tagpdfdocu-patches}
+%\usepackage{accessibility}% REIE: currently only with pdflatex. but other elements require lualatex. 
+
+% \setMinorVersionPdf{7}% because of gnuplot file only 
 % how to number the glossary in the toc? seemingly a gap in tocbibind 
 %\usepackage[nottoc, numindex, numbib]{tocbibind}
 \input{headerGrp.tex}
@@ -273,6 +332,27 @@ Version \strippedVersionID}
 
 % seems to have a problem with pythontexW maybe clean before
 %\includeonly{manualC4graphics}
+
+\NewTaggingSocket{extFigAlt}{2}
+\NewTaggingSocketPlug{extFigAlt}{default}
+ {%
+   \par
+   \tagstructbegin{tag=Figure,alt={#1}}%
+   \tagmcbegin{}%
+   \SuspendTagging{}%
+   #2%
+   \par
+   \ResumeTagging{}%
+   \tagmcend
+   \tagstructend
+ }
+ \AssignTaggingSocketPlug{extFigAlt}{default}
+
+% \AddToHook{cmd/@float@HH/before}{\par\tagstructbegin{tag=float}}
+% \AddToHook{cmd/float@endH/after}{\par\tagstructend}
+
+% patch for tagging of unnumbered glossaries section 
+\renewcommand\phantomsection{\MakeLinkTarget[section]{}}
 
 \begin{document}
 \maketitle
