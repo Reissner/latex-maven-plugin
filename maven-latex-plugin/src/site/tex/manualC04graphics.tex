@@ -350,9 +350,9 @@ caption={The ptx-file for a fig-file}]{F4_01fig2dev.ptx}
 The file \texttt{xxx.ptx} is ``imported'' into the tex-file of this manual 
 by the command 
 %
-\begin{lstlisting}[language=TeX]
+\begin{taglstlisting}[language=TeX]
 \import{yyy}{xxx.ptx}
-\end{lstlisting}
+\end{taglstlisting}
 %texttt
 and includes \texttt{xxx.pdf} automatically the file \texttt{xxx.pdf} 
 via \cmd[\{xxx\}]{includegraphics} (line 2). 
@@ -508,9 +508,11 @@ which is typeset with a postscript font to make the difference visible.
 \IfPackageLoadedTF{tex4ht}{%
 should be a picture 
 }{
-\import{}{F4_01fig2dev.ptx}
+\UseTaggingSocket{extFigAlt}%
+{Conversion of a FIG file with fig2dev to TEX file including a PDF/EPS.}%
+{\import{}{F4_01fig2dev.ptx}}
 }
-\caption{\label{fig:fig2dev}Conversion of a fig-file 
+\caption{\label{fig:fig2dev}Conversion of a FIG file 
 into pdf-, eps- and ptx-files with inclusions}
 \end{figure}
 
@@ -546,9 +548,9 @@ really works
 with the current \texttt{gnuplot} and to see how it is interpreted,
 it is recommended to convert it via
 %
-\begin{lstlisting}
+\begin{taglstlisting}
 gnuplot -persist -e "load 'xxx.gp'; save 'xxx.gp'"
-\end{lstlisting}
+\end{taglstlisting}
 %
 If you have a look inside the resulting file 
 \href{\urlSite fromTex/F4_03someGnuplot.gp}{\texttt{F4\_03someGnuplot.gp}}, 
@@ -600,9 +602,9 @@ Accordingly, the export yields two files \texttt{xxx.ptx} and
 in which \texttt{xxx.gp} resides. 
 The file \texttt{xxx.ptx} must be imported via 
 %
-\begin{lstlisting}[language=TeX]
+\begin{taglstlisting}[language=TeX]
 \import{yyy}{xxx.ptx}
-\end{lstlisting}
+\end{taglstlisting}
 %
 It contains the texts and includes \texttt{xxx.pdf} 
 via \cmd[\{xxx\}]{includegraphics} without specifying a suffix. 
@@ -667,7 +669,9 @@ and embedded in this \LaTeX-file.
 \IfPackageLoadedTF{tex4ht}{%
 should be a picture 
 }{
-\import{}{F4_02gp2pdf.ptx}
+\UseTaggingSocket{extFigAlt}%
+{Conversion of a gnuplot file to TEX file including a PDF/EPS.}%
+{\import{}{F4_02gp2pdf.ptx}}
 }
 \caption{\label{fig:gp2pdf}Conversion of a gnuplot-file 
 into pdf-, eps- and ptx-files with inclusions}
@@ -678,7 +682,9 @@ into pdf-, eps- and ptx-files with inclusions}
 \IfPackageLoadedTF{tex4ht}{%
 should be a picture 
 }{
-\import{}{F4_03someGnuplot.ptx}
+\UseTaggingSocket{extFigAlt}%
+{A TEX file created from a gnuplot-file.}
+{\import{}{F4_03someGnuplot.ptx}}
 }
 \caption{\label{fig:gnuplot}
 Converted sample gnuplot-file into ptx and pdf files }
@@ -860,7 +866,9 @@ this is not created if there is no such text.
 \IfPackageLoadedTF{tex4ht}{%
 should be a picture 
 }{
-\import{}{F4_04mp2mps.ptx}
+\UseTaggingSocket{extFigAlt}%
+{Conversion of an MP- (metapost) file into an MPS-file.}
+{\import{}{F4_04mp2mps.ptx}}
 }
 \caption{\label{fig:mp2mps}Conversion of a MetaPost-file into an MPS-file}
 \end{figure}
@@ -907,12 +915,12 @@ ensuring that the package is loaded only if lualatex or that like is run.
 That this allows better integration within the enclosing latex document 
 is illustrated by redefining the letter $\aleph$ as $\alpha$ which is really related. 
 %
-\begin{lstlisting}[language=TeX]
+\begin{taglstlisting}[language=TeX]
   {% make redefine local 
   \renewcommand{\aleph}{\alpha}
   \inputmpcode{F4_05someMetapost}
   }% to recover from redefine {manualC4graphics.tex}
-\end{lstlisting}
+\end{taglstlisting}
 
 Figure~\ref{fig:metapostLua} Documents, 
 that the redefinition really influences rendering in the MetaPost file. 
@@ -924,8 +932,12 @@ that the redefinition really influences rendering in the MetaPost file.
   }{
   \ifluatex%
   {% make redefine local 
+\UseTaggingSocket{extFigAlt}%
+{An example for a metapost file rendered via luamplib for lualatex.}%
+{
   \renewcommand{\aleph}{\alpha}
   \inputmpcode{F4_05someMetapost}
+}
   }% to recover from redefine 
   \else
   \includegraphics[alt=typical metapost]{F4_05someMetapost.mps}
@@ -994,9 +1006,9 @@ using the \LaTeX-packages \pkg{xcolor} and \pkg{graphicx},
 virtually, 
 \texttt{xxx.svg} can be included directly via 
 % FIXME\@: done differently 
-\begin{lstlisting}[language=TeX]
+\begin{taglstlisting}[language=TeX]
 %\includesvg[width=0.5\textwidth]{xxx}%
-\end{lstlisting}
+\end{taglstlisting}
 %
 using the \LaTeX-packages \pkg{svg} described in~\cite{SvgP}. 
 Note that the suffix of the file name shall be omitted. 
@@ -1055,10 +1067,10 @@ containing text and including \texttt{xxx.pdf}.
 The file \texttt{xxx.pdf\_tex}
 can be integrated into the latex document as
 %
-\begin{lstlisting}[language=TeX]
+\begin{taglstlisting}[language=TeX]
 \def\svgwidth{0.5\textwidth}
 \import{yyy}{xxx.pdf\_tex}%
-\end{lstlisting}
+\end{taglstlisting}
 %
 Unlike \tool{fig2dev} and \tool{gnuplot}, 
 specifying the files with their full path, 
@@ -1102,7 +1114,9 @@ to avoid this workaround in the future.
 \IfPackageLoadedTF{tex4ht}{%
 should be a picture 
 }{
-\import{}{F4_06svg2pdf.ptx}%
+  \UseTaggingSocket{extFigAlt}%
+{Conversion of an SVG file with inkscape into a TEX picture including a PDF/EPS file.}%
+{\import{}{F4_06svg2pdf.ptx}}
 }
 \caption{\label{fig:svg2pdf}Conversion of an SVG-file 
 into pdf-, eps- and ptx-files with inclusions}
@@ -1115,7 +1129,10 @@ into pdf-, eps- and ptx-files with inclusions}
 \IfPackageLoadedTF{tex4ht}{%
 should be a picture 
 }{
-  \import{}{F4_07someSvg.ptx}% this should be the standard
+  \UseTaggingSocket{extFigAlt}%
+{The result of converting some SVG file into TEX including PDF/EPS.}%
+{\import{}{F4_07someSvg.ptx}}
+  % this should be the standard
 }
 \caption{\label{fig:svgWithText}Some svg-picture with text FIXME\@: uniformity}
 \end{figure}

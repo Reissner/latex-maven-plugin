@@ -75,14 +75,14 @@ Not taking comments and that like into account,
 master TEX files roughly have the form\sindex[cmd]{documentclass} 
 %
 %\lstset{language=tex, basicstyle=\small}
-\begin{lstlisting}[language=tex, basicstyle=\small]
+\begin{taglstlisting}[language=tex, basicstyle=\small]
 \RequirePackage[l2tabu, orthodox]{nag} % optional 
 \documentclass{...}
 
 \begin{document}
 ...
 \end{document}
-\end{lstlisting}
+\end{taglstlisting}
 
 The core of conversion of a TEX file into a PDF file 
 is running a \LaTeX{} engine \texttt{latex2pdf} 
@@ -229,7 +229,9 @@ followed by invocation of the \LaTeX{} engine \texttt{latex2pdf} may be necessar
 \IfPackageLoadedTF{tex4ht}{%
 should be a picture 
 }{
-\import{}{F5_01tex2pdf.ptx}
+  \UseTaggingSocket{extFigAlt}%
+{Conversion of a TEX file into PDF, DVI, XDV file using several applications, with auxiliary files created and where they go into.}%
+{\import{}{F5_01tex2pdf.ptx}}
 }
 \caption{\label{fig:tex2pdf}Conversion of a TEX file into a PDF, DVI, XDV file }
 \end{figure}
@@ -322,7 +324,9 @@ whether \tool{bibtex} emitted an error or warnings.
 \IfPackageLoadedTF{tex4ht}{%
 should be a picture 
 }{
-\import{}{F5_02aux2bbl.ptx}
+  \UseTaggingSocket{extFigAlt}%
+{Conversion of an AUX file into a BBL file using bibliographies via bibtex.}%
+{\import{}{F5_02aux2bbl.ptx}}
 }
 \caption{\label{fig:aux2bbl}
 Conversion of an AUX file into a BBL file using bibliographies}% TBD: how to include \gls in captions? 
@@ -374,9 +378,9 @@ which relates the entry with the page number where it occurred.
 
 For example \cmd[\{ant-task\}]{index} occurring on page 3 creates an entry 
 %
-\begin{lstlisting}[language=TeX]
+\begin{taglstlisting}[language=TeX]
 \indexentry{ant-task}{3}
-\end{lstlisting}
+\end{taglstlisting}
 %
 in the \gls{idx} file. 
 Caution: If the \gls{idx} file is not open, 
@@ -473,7 +477,9 @@ whether \texttt{makeindex} emitted an error or warnings.
 \IfPackageLoadedTF{tex4ht}{%
 should be a picture 
 }{
-\import{}{F5_03idx2ind.ptx}
+  \UseTaggingSocket{extFigAlt}%
+{Conversion of an IDX file into an IND file using makeindex.}%
+{\import{}{F5_03idx2ind.ptx}}
 }
 \caption{\label{fig:idx2ind}Conversion of an IDX file into an IND file}
 \end{figure}
@@ -534,7 +540,9 @@ and is thus not recommended and not supported by this software.
   \IfPackageLoadedTF{tex4ht}{%
   should be a picture 
   }{
-  \import{}{F5_04idx2indMult.ptx}
+    \UseTaggingSocket{extFigAlt}%
+{Conversion of an IDX file into an IND file with makeindex.}%
+{\import{}{F5_04idx2indMult.ptx}}
   }
   \caption{\label{fig:idx2indMult}
   Not supported: Conversion of IDX files into IND files}
@@ -551,9 +559,9 @@ and \cmd[{[pkg]}\{splitidx\}]{sindex} on page 3 indicates
 that index there shall be an entry \texttt{splitidx} referring to page 3. 
 The according entry in the \gls{idx} file is as follows: 
 %
-\begin{lstlisting}[language=TeX]
+\begin{taglstlisting}[language=TeX]
   \indexentry[pkg]{splitidx}{3}
-\end{lstlisting}
+\end{taglstlisting}
 %
 Note that both \cmd[\{\dots\}]{sindex} and \cmd[\{\dots\}]{index} 
 create entries \cmd[\{\dots\}]{indexentry} as with a single index. 
@@ -577,7 +585,9 @@ but it may be interested to generalize this to the version in the Lua language.
   \IfPackageLoadedTF{tex4ht}{%
   should be a picture 
   }{
-  \import{}{F5_05idx2indSplit.ptx}
+    \UseTaggingSocket{extFigAlt}%
+{Conversion of an IDX file into several IND files using splitindex invoking makeindex.}%
+{\import{}{F5_05idx2indSplit.ptx}}
   }
   \caption{\label{fig:idx2indSplit}Conversion of an IDX file into IND files}
   \end{figure}
@@ -592,15 +602,15 @@ but it can also create a single index and if so, it is better to use it in conju
 \tool{makeindex} or that like. 
 This software can decide on the \gls{idx} file whether there is a line specifying an index like so, 
 %
-\begin{lstlisting}[language=TeX]
+\begin{taglstlisting}[language=TeX]
   \indexentry[pkg]{splitidx}{3}
-\end{lstlisting}
+\end{taglstlisting}
 %
 or neither has an explicit index, i.e.\@ like so 
 %
-\begin{lstlisting}[language=TeX]
+\begin{taglstlisting}[language=TeX]
   \indexentry[pkg]{splitidx}{3}
-\end{lstlisting}
+\end{taglstlisting}
 %
 In the first case \tool{splitindex} is invoked, in the second \tool{makeindex} is invoked. 
 \medskip
@@ -674,7 +684,7 @@ are not treated properly.
 As a consequence, this document, or to be more precise its glossary, 
 could not always be reproduced and so the author excluded the glossary until the problem is fixed. 
 
-In addition, it is a conceptual weakness that a glossary data base 
+In addition, it is a conceptual weakness that a glossary database 
 shall be centralized and shall thus not be included in a \LaTeX{} document 
 and not even be written in \LaTeX. 
 All weaknesses, bugs and conceptual shortcomings are overcome 
@@ -734,14 +744,14 @@ Using \texttt{xindy} instead of \texttt{makeindex} is triggered through
 \cmd[{[xindy]}\{glossaries\}]{usepackage}. 
 Accordingly, for option \texttt{makeindex} the AUX file receives lines 
 %
-\begin{lstlisting}[language=TeX]
+\begin{taglstlisting}[language=TeX]
 \providecommand\@istfilename[1]{}
 \@istfilename{manualLMP.ist}
-\end{lstlisting}
+\end{taglstlisting}
 %
 whereas for option \texttt{xindy}, there are lines 
 %
-\begin{lstlisting}[language=TeX]
+\begin{taglstlisting}[language=TeX]
 \providecommand\@istfilename[1]{}
 \@istfilename{manualLMP.xdy}
 ...
@@ -749,7 +759,7 @@ whereas for option \texttt{xindy}, there are lines
 \@xdylanguage{main}{english}
 \providecommand\@gls@codepage[2]{}
 \@gls@codepage{main}{}
-\end{lstlisting}
+\end{taglstlisting}
 
 
 
@@ -789,9 +799,9 @@ defined by \texttt{makeindex} and by \texttt{xindy}.
 
 The style \texttt{list} (which is the default) is set in the form 
 %
-\begin{lstlisting}[language=TeX]
+\begin{taglstlisting}[language=TeX]
 \usepackage[style=list]{glossaries}
-\end{lstlisting}
+\end{taglstlisting}
 %
 where~\cite{GloP4_54}, Section~13 lists predefined styles. 
 So, the style determines the content of the style definition, 
@@ -832,10 +842,11 @@ This is illustrated in Figure~\ref{fig:glo2gls}.
 \IfPackageLoadedTF{tex4ht}{%
 should be a picture 
 }{
-\import{}{F5_06glo2gls.ptx}
+  \UseTaggingSocket{extFigAlt}%
+{Conversion of a GLO file into a GLS file using makeglossaries.}%
+{\import{}{F5_06glo2gls.ptx}}
 }
-\caption{\label{fig:glo2gls}Conversion of a glo file into a gls file 
-using \texttt{makeglossaries}}
+\caption{\label{fig:glo2gls}Conversion of a GLO file into a GLS file }%using \tool{makeglossaries}
 \end{figure}
 
 
@@ -995,11 +1006,11 @@ Fortunately, the latter two command line options have no counterpart in the pack
 
 If we place some code, e.g.~python code as inline code using \cmd{pyc}
 %
-\begin{lstlisting}[basicstyle=\footnotesize]
+\begin{taglstlisting}[basicstyle=\footnotesize]
   \usepackage[depythontex]{pythontex}
   ...
   \pyc|print(rf'Python inside latex says: "Hello World; 1+1={1+1}"')|
-\end{lstlisting}
+\end{taglstlisting}
 %
 the code is really evaluated, and the string result is included at proper place 
 as illustrated by the following text which is created by python: 
@@ -1033,9 +1044,11 @@ the according interpreter must be installed in addition to python.
   \IfPackageLoadedTF{tex4ht}{%
   should be a picture 
   }{
-  \import{}{F5_07py2dir.ptx}
+    \UseTaggingSocket{extFigAlt}%
+{Conversion of a pytxcode file using pythontex.}%
+{\import{}{F5_07py2dir.ptx}}
   }
-  \caption{\label{fig:py2dir}Conversion of a \texttt{pytxcode} file using \texttt{pythontex}}
+  \caption{\label{fig:py2dir}Conversion of a \texttt{pytxcode} file }%using \tool{pythontex}
   \end{figure}
 
 
@@ -1050,9 +1063,11 @@ the according interpreter must be installed in addition to python.
     \IfPackageLoadedTF{tex4ht}{%
     should be a picture 
     }{
-    \import{}{F5_08depy2out.ptx}
+      \UseTaggingSocket{extFigAlt}%
+{Conversion of a depytx file using depythontex.}%
+{\import{}{F5_08depy2out.ptx}}
     }
-    \caption{\label{fig:depy2out}Conversion of a \texttt{depytx} file using \texttt{depythontex}}
+    \caption{\label{fig:depy2out}Conversion of a \texttt{depytx} file }%using \tool{depythontex}
     \end{figure}
   
 \section{Running and rerunning auxiliary programs}%
@@ -1371,6 +1386,10 @@ Note that these families consist of individual parts,
 partially tied to an according PDF version. 
 For example, the PDF/A-2 is tied to PDF 1.7. 
 Parts 1,2 and 3 have conformance levels b for basic and a for accessible. 
+In addition, Parts 2 and 3 have the level u for Unicode. 
+With Part 4 the system changes: PDF/A-4 makes sense in itself and there are extensions 
+PDF/A-4e and PDF/A-4f. 
+
 Table~\ref{tab:versPdfStd} shows the possible combinations. 
 PDF/X-2 extends PDF/X-3 and thus is listed after PDF/X-3. 
 
@@ -1382,20 +1401,26 @@ PDF/X-2 extends PDF/X-3 and thus is listed after PDF/X-3.
   \midrule
   \midrule
   PDF/A-1b,a    & ---     & x       & ---     & ---     & ---     \\
-  PDF/A-2b,a,u  & ---     & ---     & ---     & x       & ---     \\
-  PDF/A-3b,a,u  & ---     & ---     & ---     & x       & ---     \\
-  PDF/A-4f,e    & ---     & ---     & ---     & ---     & x       \\
+  PDF/A-2b,a,u  & ---     & ---     & ---     & x       & (x)     \\
+  PDF/A-3b,a,u  & ---     & ---     & ---     & x       & (x)     \\
+  PDF/A-4(f,e)  & ---     & ---     & ---     & ---     & x       \\
   \midrule
   PDF/UA-1      & ---     & ---     & ---     & x       & ---     \\
   PDF/UA-2      & ---     & ---     & ---     & ---     & x       \\
   \midrule
-  PDF/X-1a      & x       & x       & ---     & ---     & ---     \\
-  PDF/X-3       & x       & x       & ---     & ---     & ---     \\
-  PDF/X-2       & ---     & x       & ---     & ---     & ---     \\
-  PDF/X-4,4p    & ---     & ---     & x       & ---     & ---     \\
-  PDF/X-5g,pg,n & ---     & ---     & x       & ---     & ---     \\
-  PDF/X-6p,n    & ---     & ---     & ---     & ---     & x       \\
+  PDF/X-1a      & x       & x       & ---     & ---     & ---     \\% ISO 15930-1 for PDF 1.3, ISO 15930-4 for PDF 1,4
+  PDF/X-3       & x       & x       & ---     & ---     & ---     \\% ISO 15930-3 for PDF 1.3, ISO 15930-6 for PDF 1,4, complete exchange
+  PDF/X-2       & ---     & x       & ---     & ---     & ---     \\% ISO 15930-2 never published, ISO 15930-5, partial exchange
+  PDF/X-4,4p    & ---     & ---     & x       & ---     & ---     \\% ISO 15930-7, complete exchange
+  PDF/X-5g,pg,n & ---     & ---     & x       & ---     & ---     \\% ISO 15930-8, partial exchange
+  PDF/X-6(p,n)  & ---     & ---     & ---     & ---     & x       \\% ISO 15930-9, complete exchange
+  \midrule
+  PDF/E         & ---     & ---     & x       & ---     & ---     \\
+  PDF/VT        & ---     & ---     & x       & ---     & ---     \\
  \bottomrule
+%  Starting with version 0.95s of pdfmanagement-testphase it is also possible to use
+% the values X-4, X-4p, X-5g, X-5n, X-5pg, X-6, X-6n, X-6p, UA-1 for a PDF/X and
+% PDF/UA standard. 
   % maybe missing  (see verapdf -l): Well-Tagged PDF 
   % - wt1r WTPDF 1.0 reuse validation profile, 
   % - wt1a WTPDF 1.0 accessibility validation profile 
@@ -1409,8 +1434,66 @@ PDF/X-2 extends PDF/X-3 and thus is listed after PDF/X-3.
 \caption{\label{tab:versPdfStd} versions fitting of PDF and standards}
 \end{table}
 
+Declared conformance with a part is a prerequisite for conformance, 
+but it is not sufficient. 
+Nevertheless, this excludes conformances with two different parts. 
+
+%    <pdf:PDFVersion>2.0</pdf:PDFVersion>
+%    <pdfaid:part>4</pdfaid:part>
+%    <pdfaid:conformance>F</pdfaid:conformance>
+%    <pdfaid:rev>2020</pdfaid:rev>
+
+%       <pdf:PDFVersion>2.0</pdf:PDFVersion>
+%    <pdfaid:part>4</pdfaid:part>
+%    <pdfaid:conformance>F</pdfaid:conformance>
+%    <pdfaid:rev>2020</pdfaid:rev>
+
+%    <pdfuaid:part>2</pdfuaid:part>
+%    <pdfuaid:rev>2024</pdfuaid:rev>
+
+%       <pdf:PDFVersion>1.7</pdf:PDFVersion>
+%    <pdfxid:GTS_PDFXVersion>PDF/X-4</pdfxid:GTS_PDFXVersion>
 
 
+
+
+%         <rdf:li rdf:parseType="Resource">
+%       <pdfd:conformsTo>http://pdfa.org/declarations/wtpdf#reuse1.0</pdfd:conformsTo>
+%       <pdfd:claimData>
+%        <rdf:Bag>
+%         <rdf:li rdf:parseType="Resource">
+%          <pdfd:claimBy>LaTeX Project</pdfd:claimBy>
+%          <pdfd:claimDate>2025-11-28</pdfd:claimDate>
+%         </rdf:li>
+%        </rdf:Bag>
+%       </pdfd:claimData>
+%      </rdf:li>
+
+
+%         <rdf:li rdf:parseType="Resource">
+%       <pdfd:conformsTo>http://pdfa.org/declarations/wtpdf#accessibility1.0</pdfd:conformsTo>
+%       <pdfd:claimData>
+%        <rdf:Bag>
+%         <rdf:li rdf:parseType="Resource">
+%          <pdfd:claimBy>LaTeX Project</pdfd:claimBy>
+%          <pdfd:claimDate>2025-11-28</pdfd:claimDate>
+%         </rdf:li>
+%        </rdf:Bag>
+%       </pdfd:claimData>
+%      </rdf:li>
+
+
+%    for part 3 the conformance level may be missing which is impossible for the other parts. 
+%    Conformance is only if part and conformance level coincide. 
+%    With special case, 4 for which the lack of explicit conformance level is necessary condition to conform with 4. 
+
+%    Several PDFa part/level declarations are ignored except the last one. 
+
+
+% For the tagging status of the various packages see 
+% \url{https://latex3.github.io/tagging-project/tagging-status/}.
+
+% checker tool rups \url{https://itextpdf.com/products/rups}
 
 As~\cite{PdfxP}, Section~2.1 shows, the package \pkg{pdfx} supports creation of roughly the standards 
 listed in Table~\ref{tab:versPdfStd}. 
@@ -1449,19 +1532,21 @@ For a list of supported parts and levels invoke \texttt{verapdf -l}.
 
 
 
-As described in Section~\ref{****}, 
+As described in %Section~\ref{****}, 
 \cmd{DocumentMetadata} among other things, allows specifying the PDF version and the PDF standard, 
 as e.g. \texttt{a-2b}. 
 This is the so called \emph{claimed standard}, 
 which is stored in the XMP metadata standardized in~\cite{ISO16684-2} of the PDF artifact. 
 An example for such metadata which can be retrieved via \texttt{pdfinfo -meta xxx.pdf} follows. 
 
-\begin{lstlisting}
-   <pdf:PDFVersion>1.7</pdf:PDFVersion>
-   <pdfaid:part>2</pdfaid:part>
-   <pdfaid:conformance>B</pdfaid:conformance>
-   <pdfaid:year>2011</pdfaid:year>
-\end{lstlisting}
+Note that \LaTeX{} does not support PDF/A-1a. 
+
+% \begin{lstlisting}
+%    <pdf:PDFVersion>1.7</pdf:PDFVersion>
+%    <pdfaid:part>2</pdfaid:part>
+%    <pdfaid:conformance>B</pdfaid:conformance>
+%    <pdfaid:year>2011</pdfaid:year>
+% \end{lstlisting}
 
 Because of this metadata \tool{verapdf} applied to the PDF file, 
 knows the precise claimed standard(s) with part and level to be verified 
@@ -1928,9 +2013,9 @@ From the input \LaTeX{} file \texttt{xxx.tex}
 another \LaTeX{} file \texttt{yyy.tex} is created 
 which arises from \texttt{xxx.tex} by adding 
 %FIXME\@: maybe instead: \RequirePackage which may be placed before documentclass
-\begin{lstlisting}[language=TeX]
-\usepackage[...]{tex4ht}. 
-\end{lstlisting}
+% \begin{lstlisting}[language=TeX]
+% \usepackage[...]{tex4ht}. 
+% \end{lstlisting}
 %
 Then \texttt{htlatex} runs \texttt{latex} on \texttt{yyy.tex} 
 which results in \texttt{yyy.dvi}. 
@@ -1988,9 +2073,11 @@ through the ``\cmd{Needs}'' command.
 \IfPackageLoadedTF{tex4ht}{%
 should be a picture 
 }{
-\import{}{F5_09tex2xml.ptx}
+  \UseTaggingSocket{extFigAlt}%
+{Conversion of a TEX file into an XML file with tex4ht.}%
+{\import{}{F5_09tex2xml.ptx}}
 }
-\caption{\label{fig:tex2xml}Conversion of a TEX file into an xml file}
+\caption{\label{fig:tex2xml}Conversion of a TEX file into an XML file}
 \end{figure}
 
 % LTeX: enabled=false
@@ -2239,9 +2326,11 @@ which is illustrated in Figure~\ref{fig:tex2doc}.
 \IfPackageLoadedTF{tex4ht}{%
 should be a picture 
 }{
-\import{}{F5_10tex2doc.ptx}
+  \UseTaggingSocket{extFigAlt}%
+{Conversion of a TEX file into a DOCX file using odt2doc.}%
+{\import{}{F5_10tex2doc.ptx}}
 }
-\caption{\label{fig:tex2doc}Conversion of a TEX file into a docx file}
+\caption{\label{fig:tex2doc}Conversion of a TEX file into a DOCX file}
 \end{figure}
 
 
@@ -2274,9 +2363,11 @@ Figure~\ref{fig:tex2txt} illustrates the translation process.
 \IfPackageLoadedTF{tex4ht}{%
 should be a picture 
 }{
-\import{}{F5_11tex2txt.ptx}
+  \UseTaggingSocket{extFigAlt}%
+{Conversion of a TEX file into a TXT file using pdftotext.}%
+{\import{}{F5_11tex2txt.ptx}}
 }
-\caption{\label{fig:tex2txt}Conversion of a TEX file into a txt file}
+\caption{\label{fig:tex2txt}Conversion of a TEX file into a TXT file}
 \end{figure}
 
 Note that \texttt{pdftotext} produces a text file with page numbers 

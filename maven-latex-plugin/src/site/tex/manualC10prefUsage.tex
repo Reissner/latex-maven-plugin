@@ -30,7 +30,14 @@ The preferred usage is defined as follows:
   \texttt{latexmk (latexmkrc)}. 
   \item The maven plugin, rather than the ant task. 
   \item Configuration is the default setting of this plugin. 
-  In particular, the latex processor is \lualatex. 
+  All tools listed as default tools in the configuration belong to the preferred usage. 
+  In particular, the preferred latex processor is \lualatex. 
+  % TBD: this may change: 
+  % bibtex and friends may be replaced by biber, 
+  % makeindex may be replaced by upmendex 
+  % makeglossaries may be replaced by bib2gls 
+  % These examples are all that are dynamically chosen by the software. 
+  % For example bibtex remains in the config. 
   \item If \tool{latexmk} is used, then with config file \texttt{.latexmkrc}, 
   whereas \texttt{chktex} is definitely used, 
   and it is configured with config file \texttt{.chktexrc}. 
