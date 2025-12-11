@@ -17,7 +17,8 @@ The preferred usage is defined as follows:
   \item Linux, to be more precise, SuSE tumbleweed. 
   The author used this software frequently and always with success on Windows also. 
   As a shell use git shell. 
-  \item \LaTeX{} Distribution \texlive, to be more precise the SuSE specific variant. 
+  \item \LaTeX{} Distribution \texlive, to be more precise the newest official variant, 
+  not the one offered by SuSE tumbleweed. 
   In the long run \miktex{} must be at least tried also. 
   As \miktex{} is available for Linux also, test will be under Linux. 
   \item 
@@ -105,6 +106,10 @@ The preferred usage is defined as follows:
   \item Tools must be used with accepted version, 
   in the sense that \texttt{mvn latex:vrs} does not emit a warning. 
   \item The output format is PDF\@. 
+  \item Although Section~\ref{sec:verify} describes various PDF standards, 
+  among those PDF/A, PDF/UA and PDF/X, 
+  only PDF/A is preferred usage and only if this is done using \cmd{DocumentMetadata}. 
+  Using packages \pkg{pdfx} or \pkg{hyperxmp} is possible but not preferred. 
   \item 
   Security issues are addressed by including a header described in Section~\ref{subsec:headerSuppressMetaPDF}. 
 \end{itemize}
