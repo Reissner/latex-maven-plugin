@@ -80,12 +80,12 @@ sub parseTexFile($fileName) {
 
 #parseTexFile($ARGV[0]);
 
-use Cwd;
-use File::Spec::Functions;
+#use Cwd;
+#use File::Spec::Functions;
 use Capture::Tiny 'capture_stdout';
 
-use DateTime;
-use DateTime::Format::ISO8601;
+#use DateTime;
+use DateTime::Format::ISO8601; # for ->parse_datetime
 
 sub getTimestampDiff($fileName) {
   # The following is to determing PDF file to diff if chkDiff is set 
