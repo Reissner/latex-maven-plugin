@@ -610,7 +610,15 @@ sub run_onSuccessWarn {
     return;
   }
   # currently, postprocessing occurs for pdf files only 
-  my $res = system("${verifyStdCommand} ${verifyStdOptions} $target");
+
+  # Generalization needed for windows only 
+  $bat="" ;
+  $cmd="" ;
+  if ($^O eq "Mswin32" ) {
+    $bat=".bat";
+    $cmd="cmd /c " ;
+  } 
+  my $res = system("$cmd" . "${verifyStdCommand}$bat ${verifyStdOptions} $target");
   $res >>= 8; # reconstruct return value of the application 
   print("${verifyStdCommand} return value: $res\n");
   if ($res == 0) {
