@@ -605,12 +605,25 @@ version = {refers to package version 1.1.7},
 note = {\url{henrikmidtiby@gmail.com}}
 }
 
+  % Shall not be used to create PDF/X and that like. Instead, DocumentMetadata
+  % But nevertheless, this documentation is a very helpful source of knowledge 
+  % on metadata in PDF files. 
 @Manual{HyperXmpP,
 title = 	 {The hyperxmp package},
 author = 	 {Scott Pakin},
-month = 	 {9},
-year = 	 {2023},
+month = 	 {3},
+year = 	 {2024},
 misc = {email: \url{scott+hyxmp@pakin.org}}
+}
+
+  % Shall not be used. Instead, DocumentMetadata
+
+@Manual{PdfxP,
+title = 	 {Generation of {PDF/X}- and {PDF/A}-compliant {PDF}s with pdf{TEX}},
+author = 	 {C. V. Radhakrishnan and H. T. Thanh and R. Moore and P. Selinger},
+month = 	 {7},
+year = 	 {2024},
+misc = {email: \url{selinger@mathstat.dal.ca}}
 }
 
 %  address  is heiko.oberdiek at googlemail.com
@@ -989,7 +1002,118 @@ OPTannote = 	 {}
   OPTannote = 	 {with PDF 2.0}
 }
 
-  @Manual{PdfX6,
+   ISO 15930-1:2001 Graphic technology — Prepress digital data exchange — Use of PDFPart 1: Complete exchange using CMYK data (PDF/X-1 and PDF/X-1a)
+Published (Edition 1, 2001)
+This publication was last reviewed and confirmed in 2022. Therefore this version remains current.
+
+
+ISO 15930-2 never published
+
+Graphic technology — Prepress digital data exchange — Use of PDFPart 3: Complete exchange suitable for colour-managed workflows (PDF/X-3)
+Published (Edition 1, 2002)
+This publication was last reviewed and confirmed in 2023. Therefore this version remains current.
+
+
+@Manual{PdfX1p,
+  title = 	 {Graphic Technology —
+  Prepress digital data exchange using PDF — Use of PDF
+  Part 1: Complete exchange using CMYK data (PDF/X-1 and PDF/X-1a)},
+  key = 	 {ISO 15930-1},
+  note = 	 {ISO 15930-1},
+  OPTauthor = 	 {},
+  organization = {International Organization for Standardization (ISO) },
+  OPTedition = 	 {},
+  OPTmonth = 	 {},
+  year = 	 {2001}
+}
+
+% part 2 never published 
+
+@Manual{PdfX3p,
+  title = 	 {Graphic Technology —
+  Prepress digital data exchange using PDF — Use of PDF
+  Part 3: Complete exchange suitable for colour-managed workflows (PDF/X-3)},
+  key = 	 {ISO 15930-3},
+  note = 	 {ISO 15930-13},
+  OPTauthor = 	 {},
+  organization = {International Organization for Standardization (ISO) },
+  OPTedition = 	 {},
+  OPTmonth = 	 {},
+  year = 	 {2002}
+}
+
+@Manual{PdfX1,
+  title = 	 {Graphic Technology —
+  Prepress digital data exchange using PDF —
+  Part 4: Complete exchange of CMYK and spot colour printing data using PDF 1.4 (PDF/X-1a)},
+  key = 	 {ISO 15930-4},
+  note = 	 {ISO 15930-4},
+  OPTauthor = 	 {},
+  organization = {International Organization for Standardization (ISO) },
+  OPTedition = 	 {},
+  OPTmonth = 	 {},
+  year = 	 {2003},
+  note = 	 {last reviewed and confirmed in 2025}
+}
+  @Manual{PdfX2,
+  title = 	 {Graphic Technology —
+  Prepress digital data exchange using PDF —
+  Part 5: Partial exchange of printing data using PDF 1.4 (PDF/X-2)},
+  key = 	 {ISO 15930-5},
+  note = 	 {ISO 15930-5},
+  OPTauthor = 	 {},
+  organization = {International Organization for Standardization (ISO) },
+  OPTedition = 	 {},
+  OPTmonth = 	 {},
+  year = 	 {2003},
+  note = 	 {withdrawn}
+}
+
+@Manual{PdfX3,
+  title = 	 {Graphic Technology —
+  Prepress digital data exchange using PDF —
+  Part 6: Complete exchange of printing data suitable for colour-managed workflows using PDF 1.4 (PDF/X-3)},
+  key = 	 {ISO 15930-6},
+  note = 	 {ISO 15930-6},
+  OPTauthor = 	 {},
+  organization = {International Organization for Standardization (ISO) },
+  OPTedition = 	 {},
+  OPTmonth = 	 {},
+  year = 	 {2003},
+  note = 	 {withdrawn}
+}
+
+
+@Manual{PdfX4,
+  title = 	 {Graphic Technology —
+  Prepress digital data exchange using PDF —
+  Part 7: Complete exchange of printing data (PDF/X-4) and partial exchange of printing data with external profile reference (PDF/X-4p) using PDF 1.6},
+  key = 	 {ISO 15930-7},
+  note = 	 {ISO 15930-7},
+  OPTauthor = 	 {},
+  organization = {International Organization for Standardization (ISO) },
+  OPTedition = 	 {},
+  OPTmonth = 	 {},
+  year = 	 {2010},
+  note = 	 {last reviewed and confirmed in 2021}
+}
+
+  SO 15930-8:2010 Graphic technology — Prepress digital data exchange using PDFPart 8: Partial exchange of printing data using PDF 1.6 (PDF/X-5)
+
+@Manual{PdfX5,
+  title = 	 {Graphic Technology —
+  Prepress digital data exchange using PDF —
+  Part 8: Partial exchange of printing data using PDF 1.6 (PDF/X-5)},
+  key = 	 {ISO 15930-7},
+  note = 	 {ISO 15930-7},
+  OPTauthor = 	 {},
+  organization = {International Organization for Standardization (ISO) },
+  OPTedition = 	 {},
+  OPTmonth = 	 {},
+  year = 	 {2010},
+  note = 	 {last reviewed and confirmed in 2021}
+}
+@Manual{PdfX6,
   title = 	 {Graphic Technology —
   Prepress digital data exchange using PDF —
   Part 9: Complete exchange of printing data (PDF/X-6) and partial exchange of printing data with external profile reference (PDF/X-6p and PDF/X-6n) using PDF 2.0},
@@ -1003,6 +1127,36 @@ OPTannote = 	 {}
   OPTannote = 	 {}
 }
 
+ ISO 24517-1:2008 Document management — Engineering document format using PDFPart 1: Use of PDF 1.6 (PDF/E-1)
+Published (Edition 1, 2008)
+This publication was last reviewed and confirmed in 2022. Therefore this version remains current.
+
+@Manual{PdfE,
+  title = 	 {Document management — Engineering document format using PDFPart 1: Use of PDF 1.6 (PDF/E-1)},
+  key = 	 {ISO 24517-1},
+  note = 	 {ISO 24517-1},
+  OPTauthor = 	 {},
+  organization = {International Organization for Standardization (ISO) },
+  OPTedition = 	 {},
+  OPTmonth = 	 {},
+  year = 	 {2008},
+  note = 	 {last review 2022, new version for PDF 2.0 in preparation }
+}
+
+
+   ISO 16612-2:2010 Graphic technology — Variable data exchangePart 2: Using PDF/X-4 and PDF/X-5 (PDF/VT-1 and PDF/VT-2)
+  @Manual{PdfVT,
+  title = 	 {Graphic technology — Variable data exchangePart 2: Using PDF/X-4 and PDF/X-5 (PDF/VT-1 and PDF/VT-2)},
+  key = 	 {ISO 16612-2},
+  note = 	 {ISO 16612-2},
+  OPTauthor = 	 {},
+  organization = {International Organization for Standardization (ISO) },
+  OPTedition = 	 {},
+  OPTmonth = 	 {},
+  year = 	 {2010},
+  note = 	 {last review 2022 }
+}
+
 
 % available also as a document from adobe 
 % same as with pdf17 
@@ -1010,7 +1164,9 @@ OPTannote = 	 {}
 % both references with mutual link in between. 
 % But before research how to do this.. with biblatex? 
 % standard 
-@Manual{ISO16684-1,
+
+% The following is superseded by ISO16684-1:2019
+@Manual{ISO16684-1:12,
 title = 	 {Extensible metadata platform (XMP) specification 
 {P}art 1: {D}ata model, serialization and core properties},
 key = 	 {ISO 16684-1},
@@ -1023,6 +1179,22 @@ year = 	 {2012},
 OPTannote = 	 {}
 }
 
+  @Manual{ISO16684-1:19,
+title = 	 {Extensible metadata platform (XMP) specification 
+{P}art 1: {D}ata model, serialization and core properties},
+key = 	 {ISO 16684-1},
+note = 	 {ISO 16684-1, withdrawn; superseeded 2019},
+OPTauthor = 	 {},
+organization = {International Organization for Standardization (ISO) },
+OPTedition = 	 {},
+month = 	 {4},
+year = 	 {2019},
+OPTannote = 	 {}
+}
+
+  %https://github.com/adobe/XMP-Toolkit-SDK/blob/main/docs/XMPSpecificationPart1.pdf
+  % This may be just the norm ISO16684-1:2012 but the latter is superseeded 
+  % It contains the elements 
 @Manual{XMP1,
 title = 	 {Extensible metadata platform (XMP) specification 
 {P}art 1: {D}ata model, serialization and core properties},
@@ -1031,7 +1203,7 @@ organization = {Adobe Systems Incorporated },
 OPTedition = 	 {},
 month = 	 {4.},
 year = 	 {2012},
-OPTannote = 	 {see ISO16684-1}
+OPTannote = 	 {see ISO16684-1:2012 which is superseded}
 }
 
 @Manual{ISO16684-2,
@@ -1044,6 +1216,43 @@ OPTedition = 	 {},
 month = 	 {12},
 year = 	 {2014},
 OPTannote = 	 {}
+}
+
+@Manual{ISO16684-3,
+title = 	 {Graphic technology - {E}xtensible metadata platform ({XMP}) - Part 3: {JSON-LD} serialization of {XMP}},
+key = 	 {ISO 16684-3},
+note = 	 {ISO 16684-3},
+OPTauthor = 	 {},
+organization = {International Organization for Standardization (ISO) },
+OPTedition = 	 {},
+month = 	 {8},
+year = 	 {2021},
+OPTannote = 	 {}
+}
+
+@Manual{WtPDF,
+title = 	 {Well-{T}agged {PDF} ({WTPDF})},
+key = 	 {ISO 16684-3},
+note = 	 {ISO 16684-3},
+OPTauthor = 	 {},
+organization = {PDF association },
+address = {Friedenstr. 2A, 16321 Bernau bei Berlin, Germany},
+OPTedition = 	 {},
+month = 	 {82},
+year = 	 {2024},
+note = 	 {version 1.0.0}
+}
+
+ 
+
+@Manual{eformP,
+title = 	 {AcroTEX.Net eforms and insdljs Documentation},
+author = 	 {D. P. Story},
+organization = {PDF association },
+Optaddress = {Friedenstr. 2A, 16321 Bernau bei Berlin, Germany},
+OPTedition = 	 {},
+month = 	 {1},
+year = 	 {2016}
 }
 
 
