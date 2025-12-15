@@ -44,4 +44,3 @@ beginfig(1);
     (stopPaused.nw = 0.5[Paused.ne, Stopped.sw]);
 endfig;
 end
-
