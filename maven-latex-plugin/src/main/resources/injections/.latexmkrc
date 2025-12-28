@@ -60,10 +60,15 @@ sub parseTexFile($fileName) {
       print("preamble matches: \n");
       {
         no warnings;
-        print("programMagic=$+{programMagic}\n");# interesting 
-        print("chkDiffMagic=$+{chkDiffMagic} value=$+{chkDiffMagicVal}\n");# interesting 
-        print("latexmkMagic=$+{latexmkMagic} value=$+{latexmkMagicVal}\n");# intentionally ignored 
+        # for compatibility with other IDEs 
+        print("programMagic=$+{programMagic}\n");
+        # reflect settings for LatexBuilder 
+        print("chkDiffMagic=$+{chkDiffMagic} value=$+{chkDiffMagicVal}\n");
+        # intentionally ignored 
+        print("latexmkMagic=$+{latexmkMagic} value=$+{latexmkMagicVal}\n");
         print("targetsMagic=$+{targetsMagic}\n");
+        # parse argument of \DocumentMetadata{...}
+        print("docMetadata=$+{docMetadata}\n");
       }
       print("docClass: $+{docClass}\n");
       # Make default value explicit 
@@ -73,23 +78,23 @@ sub parseTexFile($fileName) {
       return ($+{programMagic}, $chkDiffMagic);
     }
     # Here, the line does not match: go on 
-  }
+  } # while 
   close $info;
   die("$fileName is no latex main file: no line match\n");
 }
 
 #parseTexFile($ARGV[0]);
 
-#use Cwd;
-#use File::Spec::Functions;
-use Capture::Tiny 'capture_stdout';
+use Cwd qw(getcwd);
+use File::Spec::Functions qw(catfile);
+use Capture::Tiny qw(capture_stdout);
 
 #use DateTime;
 use DateTime::Format::ISO8601; # for ->parse_datetime
 
 sub getTimestampDiff($fileName) {
   # The following is to determing PDF file to diff if chkDiff is set 
-  my $pdfFileOrg = catfile(getcwd, $fileName);
+  my $pdfFileOrg = catfile(getcwd(), $fileName);
 
   my $baseDirectory   = '${baseDirectory}/'; # trailing '/' for concatenation 
   my $texSrcDirectory = '${texSrcDirectory}/';
