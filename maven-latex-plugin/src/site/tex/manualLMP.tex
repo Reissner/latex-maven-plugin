@@ -2,7 +2,10 @@
 %,tagging=on,pdfversion=2.0,pdfversion=1.7,dfversion=2.0,pdfstandard=a-4}%pdfversion=1.7,pdfstandard=a-2b}%lang=en-USlang=en,
 % a-4 says: switching t a-4f because embedding non-pdf pictures.... Means, a-4 is not a-4f
 % Note: a-4f ok, but a-4e (interesting for engineering) is not ok 
-\DocumentMetadata{lang=en-US,tagging=on,pdfversion=2.0,pdfstandard=a-4f,pdfstandard=UA-2} 
+%\input{seed}
+\UseName{sys_gset_rand_seed:n}{42}
+%tagging-setup={role/user-NS=latex},
+\DocumentMetadata{lang=en-US,tagging=on,pdfstandard=UA-2,pdfversion=2.0,pdfstandard=a-4f} %
 %tagging=on,,pdfstandard=UA-2,tagging=on,pdfversion=2.0,pdfversion=1.7,dfversion=2.0,pdfstandard=a-4}%pdfversion=1.7,pdfstandard=a-2b}%lang=en-USlang=en,
 % Specifying UA-2 works because this just writes required metadata, 
 % but validation can pass only with tagging=on, but this document does not work with tagging on. 
@@ -94,7 +97,9 @@
 \usepackage{luamplib}% works with lualatex only maybe with magic comment 
 \else
 \fi
+
 \input{header.tex}
+
 \IfPackageLoadedTF{tex4ht}{
 }{
   % TBD: clarify: 
