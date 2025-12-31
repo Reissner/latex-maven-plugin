@@ -510,9 +510,9 @@ through Section~\ref{subsec:sourcesLatex} and~\ref{sec:outputFormats}
 for intuitive understanding. 
 
 The regular expression pattern \texttt{patternLatexMainFile} 
-matches exactly the files to be compiled, 
-the so called \LaTeX{} main files, and for \LaTeX{} main files 
-it extracts the following pieces of information, 
+matches the files to be compiled, the so called \LaTeX{} main files. 
+Among the correct \LaTeX{} files it matches exactly the \LaTeX{} main files. 
+Moreover, it extracts the following pieces of information, 
 all by named capturing groups which have the form \texttt{(!<name>pattern)} 
 but in the pom \texttt{<} and \texttt{>} must be escaped 
 and so capturing groups take the form \texttt{(!\&lt;name\&gt;pattern)}. 
@@ -578,6 +578,13 @@ the magic comments are all optional, i.e.\@ they need not match any part of the 
   The magic comment can take the form \texttt{\% !LMP chkDiff=<bool>} % chktex 26
   or \texttt{\% !LMP chkDiff} % chktex 26
   which is just short for \texttt{\% !LMP chkDiff=true}. % chktex 26
+
+  \item[arg] the argument of invoking a function given by \cmd{UseName}. 
+  This is quite specal and may be used to ensure reproducible builds. 
+  \item[docMetadata] This is the argument of \cmd{DocumentMetadata}. 
+  It is used to specify language, the version of the PDF to be created, 
+  conformance to various standards like PDF/A and much more. 
+  Like \texttt{arg} it may be involved in ensuring reproducible builds. **** 
 \end{description}
 
 The default pattern for identifying \LaTeX{} main files 
@@ -587,7 +594,7 @@ is given by Listing~\ref{lst:patternLatexMainFile}.
 
 \lstinputlisting[language=XML, basicstyle=\scriptsize,
 numbers={left}, %stepnumber={5},
-linerange={166-181}, % chktex 8 TBD: why is this not covered by .chktexrc? 
+linerange={166-182}, % chktex 8 TBD: why is this not covered by .chktexrc? 
 breaklines,
 float,
 captionpos=b, label={lst:patternLatexMainFile},
@@ -607,7 +614,8 @@ caption={The default pattern of the \LaTeX{} main file in a form as in a pom con
   % \\PassOptionsToPackage\s*\{(\s|\w|[,=])*\}\s*\{(\w|-)+\}|
   % \\newbool\s*\{\w+\}|
   % \\setbool\s*\{\w+\}\{(true|false)\}|
-  % \\DocumentMetadata(?&lt;brace&gt;\{(?:[^{}]|(?'brace'))*\})|
+  % \\UseName\s*\{[^{}]*\}(?&lt;arg&gt;\{(?:[^{}]|(?'arg'))*\})*|
+  % \\DocumentMetadata(?&lt;docMetadata&gt;\{(?:[^{}]|(?'docMetadata'))*\})|
   % \\input\s*\{[^{}]*\}
   % )?\s*(%.*)?\R)*
   % \\(documentstyle|documentclass)\s*(\[[^]]*\])?\s*\{(?&lt;docClass&gt;[^} ]+)\}
@@ -643,7 +651,7 @@ Let us trace through line by line:
   This is the sole of these magic comments not only applying to creating PDF files.
 \end{description}
   %  It defines optionally \texttt{docClassMagic} and 
-  \item[8--11]
+  \item[8--16]
   This defines material which may precede the command \cmd{documentclass}, 
   except for magic comments and is the only one without magic comments. 
   Besides lines with specific commands, it matches empty lines and comment lines. 
@@ -651,7 +659,7 @@ Let us trace through line by line:
   and may contain a command and end in a comment. 
   The commands specified there may occur in arbitrary multiplicity and order. 
   This section is likely to be modified by the user. 
-  \item[11]
+  \item[17]
   Matches the command \cmd{documentclass} and extracts \texttt{docClass}. 
 \end{description}
 
@@ -674,7 +682,9 @@ although including with \cmd{usepackage} is without options,
 \cmd{newbool} and \cmd{setbool} to define and set a boolean value 
 defining variants (preceeded by \cmd[\{etoolbox\}]{RequirePackage}), 
 \item 
-the command \cmd{DocumentMetadata} allowing arbitrarily nested braces, 
+the commands \cmd{UseName} and above all \cmd{DocumentMetadata} allowing arbitrarily nested braces 
+which are to control metadata as described in Section~\ref{sec:verify} and may be needed to ensure reproducibility 
+as described in Section~\ref{sec:chkReprod}, % **** TBD: references 
 \item
 the command \cmd{input}, and 
 \item

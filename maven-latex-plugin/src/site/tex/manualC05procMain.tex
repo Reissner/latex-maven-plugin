@@ -1592,6 +1592,11 @@ by ensuring that each artifact created
 is equivalent with a confirmed version, 
 although this software changed. 
 Details are given in Section~\ref{chap:tests}. 
+More general, 
+if you use this builder to create the manual for a software product and in particular, 
+if parts of the text is created by the software for illustration 
+in a way described in Section~\ref{sec:pythontex}, 
+then it makes sense to make sure that the manual does not change after internal changes in the software. 
 
 
 Currently, reproducibility checks are supported for PDF files only. 
@@ -1606,7 +1611,7 @@ There are two strategies to deal with the problem:
 %
 \begin{itemize}
   \item
-  Make the build process reproducible. 
+  Make the build process reproducible in a hard sense. 
   The advantage of this approach is that diffing is quite simple, 
   fast and reproducible: 
   it is byte by byte as provided by command \tool{diff}. 
@@ -1631,7 +1636,7 @@ There are two strategies to deal with the problem:
   with equivalence of part of metadata. 
 \end{itemize}%
 
-Since the first one works very well, it is the one we describe here, 
+Since the first technique works very well, it is the one we describe here, 
 but it is always possible to configure a diff tool with a weaker equivalence check. 
 
 The first question is, whether reproducibility is requested. 
