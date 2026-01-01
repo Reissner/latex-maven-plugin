@@ -174,7 +174,7 @@
     <!-- checked during validation -->
     <versionMvn>3.9.2</versionMvn>
     <versionJava>17</versionJava>
-    <versionTestPlugins>3.5.3</versionTestPlugins>
+    <versionTestPlugins>3.5.4</versionTestPlugins><!--3.5.3-->
     <versionJunit5>5.8.2</versionJunit5>
     <!--versionJunit5Platform>5.8.2</versionJunit5Platform-->
     <versionJunit4>4.13.2</versionJunit4>
@@ -623,7 +623,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.6.0</version>
+        <version>3.6.1</version><!--3.6.0-->
         <configuration>
           <locale>en_US</locale>
         </configuration>
