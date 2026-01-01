@@ -460,17 +460,17 @@
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-ftp</artifactId>
-        <version>3.3.2</version>
+        <version>3.5.3</version><!--3.3.2-->
       </extension>
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-file</artifactId>
-        <version>3.3.2</version>
+        <version>3.5.3</version><!--3.3.2-->
       </extension>
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-http</artifactId>
-        <version>3.3.2</version>
+        <version>3.5.3</version><!--3.3.2-->
       </extension>
     </extensions>
 
