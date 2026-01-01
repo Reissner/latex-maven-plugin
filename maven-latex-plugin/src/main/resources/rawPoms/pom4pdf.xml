@@ -138,17 +138,35 @@ By default, this list is empty. -->
             <!--convertersExcluded>xindy, upmendex</convertersExcluded-->
 
             <!-- The pattern to be applied to the beginning of the contents of TEX-files 
-which identifies a latex main file and which extracts the document class 
-if the file is really a latex main file. 
+which identifies a LaTeX main file, i.e. a file to be compiled. 
+Here we assume that the LaTeX main file should contain 
+the declaration of the document class by '\documentclass' 
+or by the old-fashioned '\documentstyle' 
+preceded by a few constructs as comments and in particular magic comments 
+and also '\DocumentMetadata' to control metadata. 
+
+If the file is really a LaTeX main file, 
+the pattern extracts the document class and 
+if present the declaration of meta data through '\DocumentMetadata' 
+and magic comments. 
+All these pieces of information influence the build process. 
+The magic comments and the document class may even control the target artifact to be created. 
+
+Note that the regular expressions generalize those offered by the java platform 
+allowing recursions to match also arbitrarily nested braces. 
+Whereas the regular expressions of the java platform are understood by newer Perl regular expression engines, 
+and may thus be used one to one in the injection '.latexmkrc' to configure 'latexmk', 
+for recursions a transformation is applied. 
+
 The default value is chosen to match quite exactly the start of 
-the latex main files. 
-Here we assume that the latex main file should contain 
+the LaTeX main files. 
+Here we assume that the LaTeX main file should contain 
 the declaration `\documentclass' 
 or the old fashioned `\documentstyle' 
 preceeded by a few constructs and followed by the document class. 
 
-Strictly speaking, a tight match is not necessary, 
-only separation of latex main files from other files is 
+Strictly speaking, a tight match of LaTeX main files is not necessary, 
+only separation of LaTeX main files from other files is 
 and so is extraction of the document class. 
 For a more thorough discussion, 
 and for an alternative approach, consult the manual. 
@@ -160,7 +178,7 @@ one can never be sure whether the pattern is perfect.
 If the current default value is not appropriate, 
 please overwrite it in the configuration 
 and notify the developer of this plugin of the deficiency. 
-In any case, matching of the group named 'class' must be retained 
+In any case, matching of the group named 'docClass' must be retained 
 so that the document class is matched.  -->
             <patternLatexMainFile>
 \A
@@ -175,7 +193,8 @@ so that the document class is matched.  -->
 \\PassOptionsToPackage\s*\{(\s|\w|[,=])*\}\s*\{(\w|-)+\}|
 \\newbool\s*\{\w+\}|
 \\setbool\s*\{\w+\}\{(true|false)\}|
-\\DocumentMetadata(?&lt;brace&gt;\{(?:[^{}]|(?'brace'))*\})|
+\\UseName\s*\{[^{}]*\}(?&lt;arg&gt;\{(?:[^{}]|(?'arg'))*\})*|
+\\DocumentMetadata(?&lt;docMetadata&gt;\{(?:[^{}]|(?'docMetadata'))*\})|
 \\input\s*\{[^{}]*\}
 )?\s*(%.*)?\R)*
 \\(documentstyle|documentclass)\s*(\[[^]]*\])?\s*\{(?&lt;docClass&gt;[^} ]+)\}
@@ -1263,7 +1282,7 @@ avoiding verbose output and backing up the output log-file. -->
                    
                  The default value is 'verapdf' 
                  and the according default options ${verifyStdOptions} are adapted to this. -->
-                 <verifyStdCommand>verapdf</verifyStdCommand>
+            <verifyStdCommand>verapdf</verifyStdCommand>
 
             <!-- The options for the command ${verifyStdCommand}. 
                  The default value is adapted to the default command. 

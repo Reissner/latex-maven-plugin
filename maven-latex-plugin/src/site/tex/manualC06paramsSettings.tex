@@ -290,24 +290,30 @@ and of course they are not allowed to be used.
 \begin{minipage}{0.95\linewidth}
 The pattern to be applied to the beginning of the contents of TEX-files 
 which identifies a \LaTeX{} main file, i.e.\@ a file to be compiled. 
-If the file is really a \LaTeX{} main file, 
-the pattern contributes to finding the targets for compilation. 
-This may be done either directly via a magic comment 
-or via the document class. 
-
-The default value for the pattern is chosen to match quite exactly the start of 
-the \LaTeX{} main files. 
 Here we assume that the \LaTeX{} main file should contain 
-the declaration ``\cmd{documentclass}'' 
-or the old-fashioned ``\cmd{documentstyle}'' 
-preceded by a few constructs and followed by the document class. 
-Among the few constructs are also comments and in particular magic comments. 
+the declaration of the document class by ``\cmd{documentclass}'' 
+or by the old-fashioned ``\cmd{documentstyle}'' 
+preceded by a few constructs as comments and in particular magic comments 
+and also ``\cmd{DocumentMetadata}'' to control metadata. 
 
-Strictly speaking, a tight match is not necessary, 
+If the file is really a \LaTeX{} main file, 
+the pattern extracts the document class and 
+if present the declaration of metadata through ``\cmd{DocumentMetadata}'' 
+and magic comments. 
+All these pieces of information influence the build process. 
+The magic comments and the document class may even control the target artifact to be created. 
+
+Note that the regular expressions generalize those offered by the java platform 
+allowing recursions to match also arbitrarily nested braces. 
+Whereas the regular expressions of the java platform are understood by newer Perl regular expression engines, 
+and may thus be used one to one in the injection \texttt{.latexmkrc} to configure \tool{latexmk}, 
+for recursions a transformation is applied. 
+
+Strictly speaking, a tight match of \LaTeX{} main files is not necessary, 
 only separation of \LaTeX{} main files from other files is 
 and so is extraction of the document class. 
 For a more thorough discussion, 
-and for an alternative approach, consult the manual. 
+and for an alternative approach, see Section~\ref{subsec:patternLatexMainFile}. 
 
 Since the pattern is chosen 
 according to documentation collected from the internet, 

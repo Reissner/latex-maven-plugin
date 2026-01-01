@@ -309,17 +309,34 @@ public class Settings {
 
   /**
    * The pattern to be applied to the beginning of the contents of TEX-files 
-   * which identifies a latex main file and which extracts the document class 
-   * if the file is really a latex main file. 
+   * which identifies a LaTeX main file, i.e. a file to be compiled. 
+   * Here we assume that the LaTeX main file should contain 
+   * the declaration of the document class by <code>\documentclass</code> 
+   * or by the old-fashioned <code>\documentstyle</code> 
+   * preceded by a few constructs as comments and in particular magic comments 
+   * and also <code>\DocumentMetadata<code> to control metadata. 
+   * 
+   * If the file is really a LaTeX main file, 
+   * the pattern extracts the document class and 
+   * if present the declaration of meta data through <code>\DocumentMetadata</code> 
+   * and magic comments. 
+   * All these pieces of information influence the build process. 
+   * The magic comments and the document class may even control the target artifact to be created. 
+   * 
+   * Note that the regular expressions generalize those offered by the java platform 
+   * allowing recursions to match also arbitrarily nested braces. 
+   * Whereas the regular expressions of the java platform are understood by newer Perl regular expression engines, 
+   * and may thus be used one to one in the injection <code>.latexmkrc</code> to configure <code>latexmk</code>, 
+   * for recursions a transformation is applied. 
+   * 
    * The default value is chosen to match quite exactly the start of 
-   * the latex main files. 
-   * Here we assume that the latex main file should contain 
-   * the declaration `\documentclass' 
-   * or the old fashioned `\documentstyle' 
-   * preceeded by a few constructs and followed by the documen class. 
+   * the LaTeX main files. 
+   * Here we assume that the LaTeX main file should contain 
+   * the declaration <code>\documentclass</code> or the old fashioned <code>\documentstyle</code> 
+   * preceeded by a few constructs and followed by the document class. 
    * <p>
-   * Strictly speaking, a tight match is not necessary, 
-   * only separation of latex main files from other files is 
+   * Strictly speaking, a tight match of LaTeX main files is not necessary, 
+   * only separation of LaTeX main files from other files is 
    * and so is extraction of the document class. 
    * For a more thorough discussion, 
    * and for an alternative approach, consult the manual. 
@@ -331,7 +348,7 @@ public class Settings {
    * If the current default value is not appropriate, 
    * please overwrite it in the configuration 
    * and notify the developer of this plugin of the deficiency. 
-   * In any case, matching of the group named <code>class</code> must be retained 
+   * In any case, matching of the group named <code>docClass</code> must be retained 
    * so that the document class is matched. 
    * <p>
    * Note that this pattern contains named groups 
