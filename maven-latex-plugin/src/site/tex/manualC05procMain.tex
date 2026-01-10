@@ -38,14 +38,14 @@ whereas Section~\ref{sec:rerunLatex}
 essentially describes the exchange of information 
 between individual runs of the \LaTeX{} engine. 
 
-Section~\ref{sec:verify} is special in that it is not related with conversion, 
+Section~\ref{sec:stdVerify} is special in that it is not related with conversion, 
 but it is on specifying and verifying PDF standards, 
 with a focus on PDF/A and PDF/UA\@. 
 Modern \LaTeX{} compiler support creating PDF artifacts conform with these standards 
 to a wide extent, but this \LaTeX{} builder provides real validation. 
 Note that without, the artifact just claims conformance. 
 
-Section~\ref{sec:chkReprod} is also on checking but 
+Section~\ref{sec:chkReprod} is also on checking 
 but under the aspect of reproducibility. 
 This \LaTeX{} builder has some built-in build algorithm, 
 but one can also use \tool{latexmk} as a build tool 
@@ -1368,30 +1368,102 @@ between two runs of \texttt{latex2pdf},
 this may require a change in this software. 
 
 % TBD: add a section on chktex 
-\section{Verifying}\label{sec:verify}
+\section{Metadata, PDF standards and their verification}\label{sec:stdVerify}
 
-In particular in safety and security sensitive fields of application, 
-frequently the artifacts are not only required to be in a particular format, 
-but shall satisfy particular standards. 
-Also, the print industry and organizations which want to provide accessible documents 
-impose particular standards. 
+The core of this section is the technique to create PDF artifacts 
+conform with more special standards like PDF/A and to verify conformance. 
+A necessary condition for conformance with each of the standards we consider 
+is that the artifact contains the claim of the precise standard it conforms with, 
+and this claim is part of the metadata. 
+Of course, the claim itself is not sufficient but as a rule 
+the standards require the presence of various pieces of metadata, 
+so e.g.\@ for PDF/A, the title must be given, but may also require absence of metadata 
+and there are typically further requirements going beyond metadata. 
 
-For the PDF format, which is a standard in itself, 
-as e.g.\@ PDF 1.7 (see~\cite{Pdf17}) or PDF 2.0 described in~\cite{Pdf20}, 
-the newest standard at time of this writing, 
-the sub-standards families PDF/A, for archiving, 
-PDF/X (from eXchange) for print and PDF/UA for unlimited accessibility are defined. 
+We start listing and relating the standards 
+which are related to standards being offered by \LaTeX{} engines 
+in Section~\ref{subsec:stdPdf}. 
+Then we turn our attention to how to tell the \LaTeX{} engines 
+to create PDF artifacts 
+conform with these standards in Section~\ref{subsec:stdDecl}. 
+Requiring these standards is one thing but as the standards are quite complex, 
+it is recommended to verify the results. 
+Section~\ref{subsec:stdVeri} described how this \LaTeX{} builder supports verification. 
+One cannot assume conformance only because compilation passed without error or warning. 
+Thus, there are verification tools dedicated to test 
+and even these don't gibe full reliability. 
 
-Note that these families consist of individual parts, 
-partially tied to an according PDF version. 
-For example, the PDF/A-2 is tied to PDF 1.7. 
-Parts 1,2 and 3 have conformance levels b for basic and a for accessible. 
+
+
+\subsection{Standards based on PDF}\label{subsec:stdPdf}
+
+The most recent PDF file formats are standardized by the ISO, 
+version 1.7 in~\cite{Pdf17} and version 2.0 in~\cite{Pdf20}. 
+The latter standard mentions further more specific standards based on PDF in its foreword: 
+PDF/E is for engineering, 
+PDF/X (the X is for eXchange) apply to print industry in general 
+and PDF/VT (variable data and transactional printing) is for printing variants of one and the same template 
+and for documentation of transactions like bills. 
+In contrast, the ISO standards PDF/A for archiving and PDF/UA for unlimited access 
+are applied across several industries, public administration, academia and in governmental authorities. 
+The main fields of industrial applications are those with legally restriction admission processes 
+like medical, military, aviation and other safety and security critical industries, 
+where documents must be kept readable for long time. 
+Unlimited access refers to access by disabled persons via assistive technologies, 
+and is thus required by governmental authorities and other organizations aiming inclusion. 
+What is less understood is the fact, that unlimited access also helps search engines 
+and technologies based on these to find and index PDF documents. 
+The main technology is tagging which describes the logical structure of a document. \index{tagging}
+Tagging is specified in more recent versions of PDF, 
+e.g.\@ for PDF 2.0 in~\cite{Pdf20}, Section~14.8. 
+PDF/UA imposes requirements beyond mere existence of tagging. 
+Since part of these requirements are not easily verifiable automatically\footnote%
+{Others may say it is impossible. }, 
+the PDF association published a standard on well tagged PDF,~\cite{WtPDF1} 
+which describes, according to its introduction, ``a usage of PDF 2.0 compatible with PDF/UA-2''. 
+This seems vague, but means that it is a set of rules 
+which suggest a reasonable way to satisfy a considerable set of requirements of the PDF/UA standard. 
+Unlike the ISO standards, it is not written from the point of view of users of documents 
+but for authors of verification tools. 
+
+Note that the PDF association published a series of introductions to ISO standards 
+``PDF/X in a nutshell'',~\cite{PDFXnut}, 
+``PDF/A in a nutshell'',~\cite{PDFAnut2} and ``PDF/UA in a nutshell'',~\cite{PDFUAnut}, 
+providing some history, an overview on the requirements, 
+basic techniques used to reach the aims and a view on the role of the standards in society. 
+
+In reality, all specializations of the PDF standard mentioned above, 
+are not single standards but families of standards consisting of several \index{part}\emph{part}s 
+published separately. 
+As shows Table~\ref{tab:versPdfStd}, roughly speaking, 
+the parts of the standards are tied to specific PDF versions. 
+For example, PDF/UA-1 is based on PDF 1.7, whereas PDF/UA-2 is based on PDF 2.0. 
+But there are also exceptions: Both PDF/A-2 and PDF/A-3 are defined for PDF 1.7. 
+The difference is, that PDF/A-2 does not allow embedded files, whereas PDF/A-3 does. 
+
+In many cases, one and the same part defines various\index{conformance level} \emph{conformance level}s. 
+For example, PDF/A parts 1,2 and 3 have conformance levels b for basic and a for accessible. 
 In addition, Parts 2 and 3 have the level u for Unicode. 
-With Part 4 the system changes: PDF/A-4 makes sense in itself and there are extensions 
-PDF/A-4e and PDF/A-4f. 
+The conformance levels define a hierarchy: level a implies u which implies b. 
+Creating a PDF document by scanning allows normally level b only. 
+From level u on, cut-and-paste even in mathematical formulae is possible. 
+With Part 4 given by~\cite{PdfA4}, which requires PDF 2.9, the system changes: PDF/A-4 makes sense in itself, 
+i.e.\@ the absence of a conformance level is in a sense a kind of implicit conformance level 
+and there are extensions PDF/A-4e (flat) and PDF/A-4e (engineering) 
+defined in~\cite{PdfA4}, Annex A and Annex B, respectively. 
+Note that even~\cite{WtPDF1} on well tagged PDF define conformance level r for reproducible 
+and a for accessible, whereas either part of PDF/UA defines a conformance level. 
 
 Table~\ref{tab:versPdfStd} shows the possible combinations. 
 PDF/X-2 extends PDF/X-3 and thus is listed after PDF/X-3. 
+The standards PDF/VT further restrict the according standards PDF/X. 
+Note that PDF/A-4e is the counterpart of PDF/E in a sense: 
+PDF/E (engineering) part 1 specifies PDF with 3D graphics for construction for PDF 1.6. 
+Part 2 referred to PDF 2.0 but was withdrawn in favor of integrating the functionality into PDF/A-4e. 
+PDF/VT makes the PDF/X norms more specific which refer to the according PDF versions. 
+So PDF/VT-1,2 specialize PDF/X-4 and PDF/X-5, whereas PDF/VT3 specializes PDF/X-6. 
+Note that there are further standards like PDF/R (raster) but these are not considered here, 
+because they are not related with the standards which can be specified by \LaTeX{} engines. 
 
 \begin{table}[htb]
   \centering
@@ -1401,27 +1473,31 @@ PDF/X-2 extends PDF/X-3 and thus is listed after PDF/X-3.
   Name        & Reference        & 1.3 & 1.4 & 1.6 & 1.7 & 2.0 \\
   \midrule
   \midrule
-  PDF/A-1b,a    & \cite{PdfA1}   & ---     & x       & ---     & ---     & ---     \\
-  PDF/A-2b,a,u  & \cite{PdfA2}   & ---     & ---     & ---     & x       & (x)     \\
-  PDF/A-3b,a,u  & \cite{PdfA3}   & ---     & ---     & ---     & x       & (x)     \\
-  PDF/A-4(f,e)  & \cite{PdfA4}   & ---     & ---     & ---     & ---     & x       \\
+  PDF/A-1b,a    & \cite{PdfA1}   & --- & x   & --- & --- & --- \\
+  PDF/A-2b,a,u  & \cite{PdfA2}   & --- & --- & --- & x   & (x) \\
+  PDF/A-3b,a,u  & \cite{PdfA3}   & --- & --- & --- & x   & (x) \\
+  PDF/A-4(f,e)  & \cite{PdfA4}   & --- & --- & --- & --- & x   \\
   \midrule
-  PDF/UA-1      & \cite{PdfUA1}  & ---     & ---     & ---     & x       & ---     \\
-  PDF/UA-2      & \cite{PdfUA2}  & ---     & ---     & ---     & ---     & x       \\
+  PDF/UA-1      & \cite{PdfUA1}  & --- & --- & --- & x   & --- \\
+  PDF/UA-2      & \cite{PdfUA2}  & --- & --- & --- & --- & x   \\
   \midrule
-  PDF/X-1a      & \cite{PdfX1p}  & x       & ---     & ---     & ---     & ---     \\% ISO 15930-1 for PDF 1.3
-  PDF/X-1a      & \cite{PdfX1}   & ---     & x       & ---     & ---     & ---     \\% ISO 15930-4 for PDF 1.4
-  PDF/X-3       & \cite{PdfX3p}  & x       & ---     & ---     & ---     & ---     \\% ISO 15930-3 for PDF 1.3
-  PDF/X-3       & \cite{PdfX3}   & ---     & x       & ---     & ---     & ---     \\% ISO 15930-6 for PDF 1,4, complete exchange
-  PDF/X-2       & \cite{PdfX2}   & ---     & x       & ---     & ---     & ---     \\% ISO 15930-2 never published, ISO 15930-5, partial exchange is withdrawn 
-  PDF/X-4,4p    & \cite{PdfX4}   & ---     & ---     & x       & ---     & ---     \\% ISO 15930-7, complete exchange
-  PDF/X-5g,pg,n & \cite{PdfX5}   & ---     & ---     & x       & ---     & ---     \\% ISO 15930-8, partial exchange
-  PDF/X-6(p,n)  & \cite{PdfX6}   & ---     & ---     & ---     & ---     & x       \\% ISO 15930-9, complete exchange
+  PDF/X-1a      & \cite{PdfX1p}  & x   & --- & --- & --- & --- \\% ISO 15930-1 for PDF 1.3
+  PDF/X-1a      & \cite{PdfX1}   & --- & x   & --- & --- & --- \\% ISO 15930-4 for PDF 1.4
+  PDF/X-3       & \cite{PdfX3p}  & x   & --- & --- & --- & --- \\% ISO 15930-3 for PDF 1.3
+  PDF/X-3       & \cite{PdfX3}   & --- & x   & --- & --- & --- \\% ISO 15930-6 for PDF 1,4, complete exchange
+  PDF/X-2       & \cite{PdfX2}   & --- & x   & --- & --- & --- \\% ISO 15930-2 never published, ISO 15930-5, partial exchange is withdrawn 
+  PDF/X-4,4p    & \cite{PdfX4}   & --- & --- & x   & --- & --- \\% ISO 15930-7, complete exchange
+  PDF/X-5g,pg,n & \cite{PdfX5}   & --- & --- & x   & --- & --- \\% ISO 15930-8, partial exchange
+  PDF/X-6(p,n)  & \cite{PdfX6}   & --- & --- & --- & --- & x   \\% ISO 15930-9, complete exchange
   \midrule
-  PDF/E         & \cite{PdfE}    & ---     & ---     & x       & ---     & ---     \\
-  PDF/VT        & \cite{PdfVT}   & ---     & ---     & x       & ---     & ---     \\
- \bottomrule
-
+  PDF/E-1       & \cite{PdfE1}   & --- & --- & x   & --- & --- \\
+  PDF/E-2       & \cite{PdfE2}   & --- & --- & --- & --- & x   \\
+  PDF/VT1,2     & \cite{PdfVT12} & --- & --- & x   & --- & --- \\
+  PDF/VT3       & \cite{PdfVT3}  & --- & --- & --- & --- & x   \\
+  \midrule
+  WTPDF1r       & \cite{WtPDF1}  & --- & --- & --- & --- & x   \\
+  WTPDF1a       & \cite{WtPDF1}  & --- & --- & --- & --- & x   \\
+\bottomrule
  % need to explain ISO 15930-2 never published, ISO 15930-5, partial exchange is withdrawn 
 %  Starting with version 0.95s of pdfmanagement-testphase it is also possible to use
 % the values X-4, X-4p, X-5g, X-5n, X-5pg, X-6, X-6n, X-6p, UA-1 for a PDF/X and
@@ -1439,53 +1515,61 @@ PDF/X-2 extends PDF/X-3 and thus is listed after PDF/X-3.
 \caption{\label{tab:versPdfStd} versions fitting of PDF and standards}
 \end{table}
 
+One requirement all these standards have in common is, 
+that so called \emph{claimed standard}, 
+is stored in the PDF artifact as metadata in the XMP (Extensible metadata platform) format. 
+This is an XML format standardized in~\cite{ISO16684-2}. 
+
+
 Declared conformance with a part is a prerequisite for conformance, 
 but it is not sufficient. 
 Nevertheless, this excludes conformances with two different parts. 
 
-%    <pdf:PDFVersion>2.0</pdf:PDFVersion>
-%    <pdfaid:part>4</pdfaid:part>
-%    <pdfaid:conformance>F</pdfaid:conformance>
-%    <pdfaid:rev>2020</pdfaid:rev>
-
-%       <pdf:PDFVersion>2.0</pdf:PDFVersion>
-%    <pdfaid:part>4</pdfaid:part>
-%    <pdfaid:conformance>F</pdfaid:conformance>
-%    <pdfaid:rev>2020</pdfaid:rev>
-
-%    <pdfuaid:part>2</pdfuaid:part>
-%    <pdfuaid:rev>2024</pdfuaid:rev>
-
-%       <pdf:PDFVersion>1.7</pdf:PDFVersion>
-%    <pdfxid:GTS_PDFXVersion>PDF/X-4</pdfxid:GTS_PDFXVersion>
-
-
-
-
-%         <rdf:li rdf:parseType="Resource">
-%       <pdfd:conformsTo>http://pdfa.org/declarations/wtpdf#reuse1.0</pdfd:conformsTo>
-%       <pdfd:claimData>
-%        <rdf:Bag>
-%         <rdf:li rdf:parseType="Resource">
-%          <pdfd:claimBy>LaTeX Project</pdfd:claimBy>
-%          <pdfd:claimDate>2025-11-28</pdfd:claimDate>
-%         </rdf:li>
-%        </rdf:Bag>
-%       </pdfd:claimData>
-%      </rdf:li>
-
-
-%         <rdf:li rdf:parseType="Resource">
-%       <pdfd:conformsTo>http://pdfa.org/declarations/wtpdf#accessibility1.0</pdfd:conformsTo>
-%       <pdfd:claimData>
-%        <rdf:Bag>
-%         <rdf:li rdf:parseType="Resource">
-%          <pdfd:claimBy>LaTeX Project</pdfd:claimBy>
-%          <pdfd:claimDate>2025-11-28</pdfd:claimDate>
-%         </rdf:li>
-%        </rdf:Bag>
-%       </pdfd:claimData>
-%      </rdf:li>
+\begin{lstlisting}[language=xml,basicstyle=\tiny,
+  float, captionpos=b, label={lst:metaXmpStd},
+  caption={XMP metadata declaring PDF 2.0, PDF/X-6n, A-4f, UA-2 and WtPDF1a,r}]
+<x:xmpmeta xmlns:x="adobe:ns:meta/">
+ <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about=""
+   ...
+   <pdf:PDFVersion>2.0</pdf:PDFVersion>
+   <pdfxid:GTS_PDFXVersion>PDF/X-6n</pdfxid:GTS_PDFXVersion>
+   <pdfaid:part>4</pdfaid:part>
+   <pdfaid:conformance>F</pdfaid:conformance>
+   <pdfaid:rev>2020</pdfaid:rev>
+   <pdfuaid:part>2</pdfuaid:part>
+   <pdfuaid:rev>2024</pdfuaid:rev>
+   <pdfd:declarations>
+    <rdf:Bag>
+     <rdf:li rdf:parseType="Resource">
+      <pdfd:conformsTo>http://pdfa.org/declarations/wtpdf#accessibility1.0</pdfd:conformsTo>
+      <pdfd:claimData>
+       <rdf:Bag>
+        <rdf:li rdf:parseType="Resource">
+         <pdfd:claimBy>LaTeX Project</pdfd:claimBy>
+         <pdfd:claimDate>2026-01-06</pdfd:claimDate>
+        </rdf:li>
+       </rdf:Bag>
+      </pdfd:claimData>
+     </rdf:li>
+     <rdf:li rdf:parseType="Resource">
+      <pdfd:conformsTo>http://pdfa.org/declarations/wtpdf#reuse1.0</pdfd:conformsTo>
+      <pdfd:claimData>
+       <rdf:Bag>
+        <rdf:li rdf:parseType="Resource">
+         <pdfd:claimBy>LaTeX Project</pdfd:claimBy>
+         <pdfd:claimDate>2026-01-06</pdfd:claimDate>
+        </rdf:li>
+       </rdf:Bag>
+      </pdfd:claimData>
+     </rdf:li>
+    </rdf:Bag>
+   </pdfd:declarations>
+   ...
+  </rdf:Description>
+ </rdf:RDF>
+</x:xmpmeta>
+\end{lstlisting}
 
 
 %    for part 3 the conformance level may be missing which is impossible for the other parts. 
@@ -1507,6 +1591,10 @@ Nevertheless, this excludes conformances with two different parts.
 % but avoids implementing the check in latex builder. 
 % further research is required. 
 
+
+
+\subsection{Declaring PDF output standards \LaTeX}\label{subsec:stdDecl}
+
 As~\cite{PdfxP}, Section~2.1 shows, the package \pkg{pdfx} supports creation of roughly the standards 
 listed in Table~\ref{tab:versPdfStd}. 
 It goes beyond these standards supporting PDF/E, which has just one part, PDF/E-1, applies from PDF 1.6 on 
@@ -1514,10 +1602,6 @@ and is superseded by PDF/A-4e, but which requires PDF 2.0.
 Another standard not mentioned above is PDF/VT the various parts of which 
 are superseded by according PDF/X standards. 
 
-One requirement all these standards have in common is, 
-that certain pieces of metadata are available in the XMP (Extensible metadata platform) format. 
-This is described in a series of norms, 
-but for an overview, 
 
 
 An alternative to create documents conform with the above standards is package \pkg{hyperxmp} 
@@ -1577,6 +1661,34 @@ Note that this is valid only if reproducibility checks follow the hard strategy 
 Section~\ref{sec:verapdf} allows configuring the validator to some extent 
 and in particular the parameter \texttt{verifyByCmp} described there 
 controls whether a reproduced PDF artifact substitutes the invocation of a validator tool. 
+
+
+\subsection{Verification of PDF standards}\label{subsec:stdVeri}
+
+Independent of the technique to create PDF output, 
+verification of the reached standards is essential: 
+PDF generators normally ensure, that a requested standard is claimed, 
+but hardly do any verification by themselves and \LaTeX{} engines are no exception to that rule. 
+
+As indicated in Section~\ref{subsec:stdDecl}, 
+\LaTeX{} engines allow to declare the version of PDF output and more than that, 
+conformance with standards PDF/A, PDF/UA and PDF/X by means of \cmd{Documentmetadata}. 
+Whereas at time of this writing, no free validator for PDF/X seems available, 
+\tool{verapdf} is a renowned open source and free tool to verify PDF/A and PDF/UA\@. 
+
+Although Since PDF files claim performance, including part and conformance level, 
+it is not sensible to 
+It uses check on the standard~\cite{WtPDF1} on well-tagged PDF to verify PDF/UA-2 
+if conformance to the latter is declared. 
+To be more precise, it uses both conformance level, WtPDF1r and WtPDF1a. 
+If both, some PDF/A and PDF/UA-2 are claimed, then four standards are verified. 
+
+What is strange, if no conformance is claimed, neither PDF/A nor PDF/UA, 
+\tool{verapdf} nevertheless verifies PDF/A-1b which fails because conformance is not even claimed. 
+This can be explained only if we assume that \tool{verapdf} is used to check PDF/A only 
+and if we assume PDF/A-1b the lowest conformance, which is strictly speaking not the truth. 
+So, this is just a bug. 
+I
 
 
 

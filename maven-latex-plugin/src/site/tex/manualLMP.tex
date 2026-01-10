@@ -3,9 +3,9 @@
 % a-4 says: switching t a-4f because embedding non-pdf pictures.... Means, a-4 is not a-4f
 % Note: a-4f ok, but a-4e (interesting for engineering) is not ok 
 %\input{seed}
-\UseName{sys_gset_rand_seed:n}{42}
+%\UseName{sys_gset_rand_seed:n}{42}
 %tagging-setup={role/user-NS=latex},
-\DocumentMetadata{lang=en-US,tagging=on,pdfstandard=UA-2,pdfversion=2.0,pdfstandard=a-4f} %
+\DocumentMetadata{lang=en-US,tagging=on,tagging-setup={role/user-NS=latex},pdfstandard=UA-2,pdfversion=2.0,pdfstandard=a-4f} %
 %tagging=on,,pdfstandard=UA-2,tagging=on,pdfversion=2.0,pdfversion=1.7,dfversion=2.0,pdfstandard=a-4}%pdfversion=1.7,pdfstandard=a-2b}%lang=en-USlang=en,
 % Specifying UA-2 works because this just writes required metadata, 
 % but validation can pass only with tagging=on, but this document does not work with tagging on. 
@@ -33,8 +33,6 @@
 \documentclass[a4paper,12pt,USenglish]{book}%,USenglish unused because already in \DocumentMetadata
 %\overfullrule=10mm
 %\newif\iflatextortf% false for latex but set true for latex2rtf internally 
-
-%\usepackage{unicode-math}
 
 %\includeonly{manualC3usage}
 %\usepackage{totpages}
@@ -94,7 +92,7 @@
 % The solution is to use make4ht and to pass the latex compiler as an argument.  
 % 
 \iftutex%
-\usepackage{luamplib}% works with lualatex only maybe with magic comment 
+  \usepackage{luamplib}% works with lualatex only maybe with magic comment 
 \else
 \fi
 
@@ -123,7 +121,11 @@
 
 }
 
-\usepackage{unicode-math}
+\ifPDFTeX%
+\else
+  \usepackage{unicode-math} % REIE: for lualatex or xelatex only 
+\fi
+
 %\setmainfont{STIX Two Text}
 %\setmathfont{STIX Two Math}
 %\tagpdfsetup{activate/all=false}

@@ -689,7 +689,7 @@ although including with \cmd{usepackage} is without options,
 defining variants (preceeded by \cmd[\{etoolbox\}]{RequirePackage}), 
 \item 
 the commands \cmd{UseName} and above all \cmd{DocumentMetadata} allowing arbitrarily nested braces 
-which are to control metadata as described in Section~\ref{sec:verify} and may be needed to ensure reproducibility 
+which are to control metadata as described in Section~\ref{subsec:stdDecl} and may be needed to ensure reproducibility 
 as described in Section~\ref{sec:chkReprod}, % **** TBD: references 
 \item
 the command \cmd{input}, and 
@@ -2617,7 +2617,8 @@ the PDF verifyer plays a special role:
 It is not really a converter and resembles more a code checker as described in Section~\ref{sec:chkTex}. 
 Like for the most converters also for the codechecker 
 we can specify the command ant its options, both given in Table~\ref{tab:paramVeraPdf}. 
-For a general description of the validation feature consult Section~\ref{sec:verify}. 
+For a general description of the validation feature consult Section~\ref{sec:stdVerify} 
+and in particular Section~\ref{subsec:stdVeri}.  
 
 
 \begin{longtable}{|ll|}
@@ -2634,7 +2635,8 @@ For a general description of the validation feature consult Section~\ref{sec:ver
   \multicolumn2{|l|}{
   \begin{minipage}{0.95\linewidth}
   The command for a tool to verify a PDF standard, 
-  which is one of kinds of PDF/A, PDF/X or PDF/UA at the time of this writing 
+  which can be claimed by a PDF file created from \LaTeX{} 
+  which is one of kinds of PDF/A, PDF/X or PDF/UA, WtPDF at the time of this writing 
   or some else in future. 
   It must provide return values 
   %
@@ -2649,7 +2651,7 @@ For a general description of the validation feature consult Section~\ref{sec:ver
   That \texttt{verapdf} yields the according return values is documented in~\cite{DocMeta}, Section~3. 
   \end{minipage}
   } \\
-  \texttt{verifyStdOptions}      & \texttt{-f 0 -{}-format text}  \\
+  \texttt{verifyStdOptions}      & \texttt{--flavour 0 -{}-format text}  \\
   \multicolumn2{|l|}{
   \begin{minipage}{0.95\linewidth}
   The options for the command \texttt{\$verifyStdCommand}. 
@@ -2665,7 +2667,7 @@ For a general description of the validation feature consult Section~\ref{sec:ver
   one shall neither give a profile via \texttt{-{}-profile} or that like, 
   nor a flavor via \texttt{-{}-defaultflavor} or \texttt{-{}-flavor} 
   except flavor 0 which means, 
-  use flavor determined by the PDF file itself, 
+  to use flavor claimed by the PDF file itself, 
   which is what is specified in the according TEX file. 
   For obvious reason, \texttt{-{}-off}, \texttt{-{}-help}, 
   \texttt{-{}-list} and \texttt{-{}-version} are not allowed either. 

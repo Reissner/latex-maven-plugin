@@ -1,0 +1,486 @@
+%\DocumentMetadata{xmp=false,uncompress}%xmp=true,uncompress,
+%\DocumentMetadata{pdfversion=2.0,_pdfstandard/UA-2,_pdfstandard/A-4,_pdfstandard/X-6n,tagging=on,lang=en-US}%xmp=true,
+\DocumentMetadata{pdfversion=2.0,pdfstandard={a-4,ua-2},tagging=on,lang=en-US}%xmp=true,
+%\\DocumentMetadata{pdfversion=1.7,pdfstandard=x-1b,lang=en-US}%xmp=true,ua-1
+%\RequirePackage[l2tabu, orthodox]{nag} not with 2.0
+
+\documentclass[a4paper, USenglish]{article}%scrartcl [12pt, a4paper]%, english]
+
+
+%\usepackage[rerun=always]{pythontex}%rerun=always
+
+%\usepackage[destlabel,pdfusetitle]{hyperref}
+%\usepackage{listings}
+
+% TBD: eliminate later 
+\PassOptionsToPackage{pdfusetitle}{hyperref}
+
+\input{../header.tex}
+
+\ifPDFTeX%
+\else
+\usepackage{unicode-math} % REIE: for lualatex or xelatex only 
+\fi
+% TBD: work out 
+
+
+\IfPackageLoadedTF{tex4ht}{
+}{
+  \newindex[LaTeX Packages]{pkg}
+  \newindex[LaTeX Commands]{cmd}
+  \makeindex
+}
+
+\IfPackageLoadedTF{tex4ht}{
+  \newcommand{\cmd}[2][]{\texttt{\textbackslash{}#2#1}}
+  \newcommand{\pkg}[1]{\texttt{#1}}% without indexing 
+  % \newcommand{\tool}[1]{\texttt{#1}}% without indexing 
+  % \newcommand{\param}[1]{\texttt{#1}}% without indexing 
+}
+{
+  %TBD: ask in formum: would prefer texorpdfstring in the macto. 
+  %\newcommand{\cmd}[2][]{\texorpdfstring{\texttt{\textbackslash{}#2#1}\sindex[cmd]{#2@\texttt{\textbackslash{}#2}}}{xxx}}%\unichar{0092}
+ \newcommand{\cmd}[2][]{\texttt{\textbackslash{}#2#1}\sindex[cmd]{#2@\texttt{\textbackslash{}#2}}}%\unichar{0092}
+%   \newcommand{\cmd}[2][]{%
+%   \ifpdfstring
+%     \unichar{92}#2%
+%   \else
+%     \texttt{\textbackslash{}#2#1}\sindex[cmd]{#2@\texttt{\textbackslash{}#2}}%
+%   \fi
+% }
+  % TBD: clarify different behavior: 1 or two arguments. 
+  % seemingly there is a problem with detokenize also 
+  \newcommand{\pkg}[2][]{\texorpdfstring{\texttt{#2}\sindex[pkg]{#2@\texttt{#2}}}{xxx}} % TBD: this must be extracted 
+  % \newcommand{\tool}[1]{\texttt{#1}\sindex[tool]{#1}}% TBD: this must be extracted 
+  % \newcommand{\param}[1]{\texttt{#1}\sindex[param]{#1}}% TBD: this must be extracted 
+}
+
+%\usepackage{hyperxmp}
+
+\input{../headerSuppressMetaPDF.tex}
+
+\hypersetup{%
+  pdfinfo={
+    %Author      ={Ernst Reissner},
+    %Title       ={On PDF files created from LaTeX and analyzing them },
+    %Creator     ={unknown}, 
+    % % LaTeX with hyperref; this is uniform for hyperref. 
+    % % except for beamer class, then it is LaTeX with Beamer class
+    % % else TeX for lua/pdflatex, but  XeTeX output 2023.12.06:0106 for xelatex 
+    % % thus it is advisable to eliminate this 
+    % % maybe security issue, but it is well visible. 
+    % % also corrupts reproducibility. 
+    % Producer    ={unknown},
+    % % xdvipdfmx with version and that like for dvi or xelatex; 
+    % % pdfTeX-1.40.25, LuaTeX-1.17.0 for pdf
+    % % This shall be eliminated. 
+    %CreationDate={unknown},
+    % ModDate     ={unknown},
+    % % these two are only overwritten to avoid wrong entry 
+    % % when using \texttt{SOURCE\_DATE\_EPOCH=0 FORCE\_SOURCE\_DATE=1}
+    % % This is recommended for tests, because else we cannot give a \date 
+    Subject     ={Form and analysis of PDF files created from LaTeX},
+    Keywords    ={LaTeX;PDF;pdfinfo;exiftool;pdflatex;xelatex;lualatex}
+  }
+  %pdfsource   ={no latex main file}
+}
+
+%\newcommand{\cmd}[1]{\textbackslash #1}
+
+\title{On PDF files created from \LaTeX{} and analyzing them  }
+\author{Ernst Reissner (rei3ner@arcor.de)}
+\date{\Today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+% TBD: glossary based on a database. 
+% It is quite natural that this 
+
+\section{Introduction}\label{sec:intro}
+
+This document is created with \texttt{lualatex} or that like 
+with output format 
+\ifpdf%
+PDF%
+\else
+DVI% TBD: take XDV into account also 
+\fi.
+The package \texttt{tex4ht} 
+is \IfPackageLoadedTF{tex4ht}{}{not} loaded. 
+
+
+This is about the special form of PDF files created from \LaTeX{} 
+and about analyzing them. 
+Accordingly, there are two sections,~\ref{sec:pdfFromLatex} on the special form of PDF files 
+if created from \LaTeX{} and~\ref{sec:pdfAna} on how to analyze the created PDF file. 
+Note that this document covers both, PDF 1.7 described in~\cite{Pdf17} as a representative of PDF 1.x 
+and PDF 2.0 described in~\cite{Pdf20}. 
+
+This document is a torso, Section~\ref{sec:pdfAna} contains a lot of experimental material. 
+Maybe, we shall reorganize, merging creation and analysis and treating various aspects one after the other. 
+
+
+\section{PDF files from \LaTeX}\label{sec:pdfFromLatex}
+
+Modern \LaTeX{} compilers are mainly focussed on creating PDF files. 
+On the other hand, PDF technology is quite general 
+whereas \LaTeX{} compilers are just one creator for PDF files out of many. 
+PDF technology evolves quickly and the \LaTeX{} world struggles to keep pace. 
+So in general, \LaTeX{} compilers do not implement all features offered by PDF technology. 
+Furthermore, \LaTeX{} is very special, and thus the created files will be very special forever. 
+
+Whereas the visual appearance of PDF file from \LaTeX{} sources is quite mature, 
+the focus is now on metadata which is data on the content, so to speak describing the nature of the various pieces of information 
+independent of their representation. 
+
+\subsection{Metadata comprising XMP}\label{subsec:meta}
+
+% TBD: this requires rework. 
+% First of all, we shall explain what XMP data is and that latex creates it if \DocumentMetadata is configured alike. 
+% This could be a separate section. 
+
+% After that maybe a separate section on time stamps with the pieces of information below. 
+
+\subsection{Metadata with \texorpdfstring{\cmd{DocumentMetadata}}{\unichar{0092}DocumentMetadata}}\label{subsec:docMeta}
+%\subsection{Metadata with \texorpdfstring{\cmd{DocumentMetadata}}{\unichar{0092}DocumentMetadata}}\label{subsec:docMeta}
+
+This precedes usage of package \pkg{hyperref} as described in Section~\ref{subsec:hyperref} because takes over certain functionality: 
+The options \texttt{pdfa}, \texttt{pdfversion} should no longer be used. 
+Others interfere like \texttt{CJKbookmarks}, \texttt{psdextra} and \texttt{nesting}. 
+Take care of \texttt{booktabs}, which may change. 
+For a collection of all settings and starting point for further pieces of information see~ \cite{HyperTextP}, Section 5.10. 
+
+Interesting is option \texttt{pdfusetitle} which ``tries to'' take over title and also author. 
+
+
+
+
+
+\subsection{The package \texorpdfstring{\pkg{hyperref}}{hyperref}}\label{subsec:hyperref}
+
+Here we describe how to set author, title, subject and keywords using \texttt{hyperref}. 
+
+% Another aspect deserving analysis is the features of package hyperref 
+% and how we use it to include pieces of information but also how to hide other aspects for security reasons. 
+% provided: Title, author, subject, keywords 
+% hidden: creator, producer 
+% possibly forced: creation date and related. 
+
+One aspect is that \LaTeX{} creates PDF from TEX independently of old versions of the PDF file. 
+Thus, it does not use the intrinsic version management system. 
+As a consequence, (initial) creation date and modification date, i.e.\@ date of last modification coincide. 
+The same for last modification date of metadata if XMP data is written. 
+%  <xmp:CreateDate>2025-12-14T12:59:53Z</xmp:CreateDate>
+%  <xmp:ModifyDate>2025-12-14T12:59:53Z</xmp:ModifyDate>
+%  <xmp:MetadataDate>2025-12-14T12:59:53Z</xmp:MetadataDate>
+%  CreationDate:    Sun Dec 14 13:59:53 2025 CET
+%  ModDate:         Sun Dec 14 13:59:53 2025 CET
+
+
+\subsection{Hiding metadata with injection \texttt{headerSuppressMetaPDF.tex}}\label{subsec:hide}
+
+
+
+\section{Analysis of PDF files}\label{sec:pdfAna}
+
+Two tools for analyzing general metadata in PDF files deserve to be highlighted, \texttt{exiftool} and \texttt{pdfinfo}. 
+Currently, we restrict ourselves to the latter and describe it in Section~\ref{subsec:pdfAnaPdfInfo}. 
+In addition, \texttt{show-pdf-tags} displays the tags in a tagged PDF file. 
+This is described in Section~\ref{subsec:pdfAnaShowTags}. 
+
+
+\subsection{The \texttt{pdfinfo} tool}\label{subsec:pdfAnaPdfInfo}
+
+Let us start with metadata of a TEX file without \cmd{DocumentMetadata}, loaded package \pkg{hyperref}. 
+Without any options, \texttt{pdfinfo} yields something like the following: 
+
+\begin{verbatim}
+Creator:         TeX
+Producer:        LuaTeX-1.22.0
+CreationDate:    Sun Dec 14 20:47:26 2025 CET
+ModDate:         Sun Dec 14 20:47:26 2025 CET
+Custom Metadata: yes
+Metadata Stream: no
+Tagged:          no
+UserProperties:  no
+Suspects:        no
+Form:            none
+JavaScript:      no
+Pages:           3
+Encrypted:       no
+Page size:       595.276 x 841.89 pts (A4)
+Page rot:        0
+File size:       45572 bytes
+Optimized:       no
+PDF version:     1.7
+\end{verbatim}
+
+TBD\@: clarify what we see here really. 
+Is it a particular dictionary? 
+
+Page size is not specific for PDF created from TEX, but it is due to the option \texttt{a4paper} 
+passed to \cmd{documentclass}; else this would be \texttt{letter}. 
+
+Note that \texttt{Creator} and \texttt{Producer} is specific for PDF created from TEX or even for the \LaTeX{} compiler. 
+The \texttt{xelatex} compiler deviates from the others insofar as the creator is xelatex, but the producer is the backend as e.g. \texttt{xdvipdfmx}. 
+
+Also, that \texttt{CreationDate} and \texttt{ModDate} coincide is typical for a tool chain based on \LaTeX, 
+because \LaTeX{} compiler are not incremental: they do not add diffs to original PDF files, 
+but create anew. 
+
+What is also typical are that in the basic configuration, most values are \texttt{no} or \texttt{none}. 
+In particular, there is no \texttt{Metadata Stream} and consequently, invoking \texttt{pdfinfo} with option \texttt{-meta} is empty. 
+Likewise, the document is not \texttt{Tagged} and consequently, invoking \texttt{show-pdf-tags} yields 
+%
+\begin{verbatim}
+Document catalog has no markinfo.Marked entry. It might not be tagged.
+\end{verbatim}
+%
+Still the return value is $0$. 
+
+Tagging information can be retrieved by \texttt{pdfinfo -struct} and by \texttt{pdfinfo -struct-text}, 
+but we decided to treat these functions together with \texttt{show-pdf-tags} in Section~\ref{subsec:pdfAnaShowTags}. 
+TBD here> combination with other options, \texttt{opw}, \texttt{upw}
+
+
+
+Only \texttt{Custom Metadata} is set. 
+As a consequence, invoking \texttt{pdfinfo} with option \texttt{-custom} is not empty. 
+In our case it shows 
+%
+\begin{verbatim}
+CreationDate:    Sun Dec 14 21:08:46 2025 CET
+Creator:         TeX
+ModDate:         Sun Dec 14 21:08:46 2025 CET
+PTEX.FullBanner: This is LuaHBTeX, Version 1.22.0 (TeX Live 2025)
+Producer:        LuaTeX-1.22.0
+\end{verbatim}
+%
+but the only novelty is the banner. 
+It is even specific for the compiler. 
+%PTEX.Fullbanner: This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) kpathsea version 6.4.1
+Note that \texttt{xelatex} creates much different output and in particular no banner. 
+
+By the way, the date format can be modified with options \texttt{-isodates} and \texttt{-rawdates}. 
+Both options can be well combined with option \texttt{-custom}. 
+Note that the help text on \texttt{-custom} is misleading. 
+
+Loading the package \pkg{hyperref} 
+adds the keys \texttt{Title} \texttt{Subject} \texttt{Keywords}  and \texttt{Author} to the metadata, 
+but the according values are empty. 
+Loading with option \texttt{pdftitle}, seems to include the title and the author given by \cmd{title} and \cmd{author}, respectively. 
+Note that the \texttt{Creator} is no longer just \texttt{TeX}, but \texttt{aTeX with hyperref}. 
+
+Also, custom metadata becomes richer, namely Author, Keywords, Subject and Title added: 
+%
+\begin{verbatim}
+Author:          Ernst Reissner (rei3ner@arcor.de)
+CreationDate:    Sun Dec 14 22:09:44 2025 CET
+Creator:         LaTeX with hyperref
+Keywords:        LaTeX;PDF;pdfinfo;exiftool;pdflatex;xelatex;lualatex
+ModDate:         Sun Dec 14 22:09:44 2025 CET
+PTEX.FullBanner: This is LuaHBTeX, Version 1.22.0 (TeX Live 2025)
+Producer:        LuaTeX-1.22.0
+Subject:         Form and analysis of PDF files created from LaTeX
+Title:           On PDF files created from LaTeX and analyzing them 
+\end{verbatim}
+%
+Interesting enough, setting these user properties, 
+does keeps the value for key \texttt{UserProperties} unchanged at value \texttt{no}. 
+% TBD: search in hyperref documentation: there is a way to add further properties. 
+% Maybe this changes the value. 
+
+Note that including \texttt{headerSuppressMetaPDF.tex} suppresses the custom metadata and more than that. 
+As a consequence, key \texttt{Custom Metadata} receives value \texttt{no} and consequently 
+\texttt{pdfinfo} invoked with option \texttt{-custom} is empty. 
+This hides hints on the toolchain which may be a security measure. 
+
+Now we specify 
+%
+\begin{verbatim}
+\DocumentMetadata{xmp=false,pdfversion=2.0,lang=en-US}
+\end{verbatim}
+%
+
+The default is \texttt{xmp=true}, so if removing, the value for key \texttt{Metadata Stream} switches to \texttt{yes} 
+and accordingly, \texttt{pdfinfo} invoked with option \texttt{-meta} is no longer empty. 
+
+TBD: describe here. Maybe better extract. It has a lot of details. 
+
+Accordingly, if setting \texttt{tagging} to \texttt{on} activates tagging of course 
+and so the key \texttt{Tagged} receives the value \texttt{yes}. 
+If tagging is not ok, then the suspect flag may be set, i.e.\@ the key \texttt{Suspects} receives the value \texttt{yes}. 
+TBD\@: more research based on the specifications~\cite{Pdf17} and~\cite{Pdf20}. 
+It is also not clear whether this can be set, although certain PDF standards are satisfied, 
+like that on Well-Tagged-PDF~\cite{WtPDF1}. 
+
+
+Note that package \pkg{hyperref} supports creating forms also. 
+For details see~\cite{HyperTextP}, Section 9. % TBD: eforms package
+Also, there is the \texttt{eforms} package described in~\cite{eformP}. 
+TBD\@: It must be checked whether then the key \texttt{Form} receives the value \texttt{yes}. 
+
+% \documentclass{article}
+% \usepackage[pdftex]{insdljs}
+ 
+% \OpenAction{\JS{%
+% app.alert("HALLO WELT");
+% }}
+ 
+% \begin{document}
+% THIS DOCUMENT IS A DOCUMENT
+% \end{document}
+
+
+
+% Creator:         TeX
+% Producer:        LuaTeX-1.22.0
+% CreationDate:    2025-12-14T19:47:26Z
+% ModDate:         2025-12-14T19:47:26Z
+% Custom Metadata: yes
+% Metadata Stream: no
+% Tagged:          no
+% UserProperties:  no
+% Suspects:        no
+% Form:            none
+% JavaScript:      no
+% Pages:           3
+% Encrypted:       no
+% Page size:       595.276 x 841.89 pts (A4)
+% Page rot:        0
+% File size:       45572 bytes
+% Optimized:       no
+
+
+Applying \texttt{pdfinfo} with option \texttt{-isodates} on the PDF file created from this TEX file yields 
+something like the following. \\
+
+\noindent
+\begin{verbatim}
+Title: On PDF files created from and analyzing them
+Subject: Form and analysis of PDF files created from LaTeX
+Keywords: LaTeX;PDF;pdfinfo;exiftool;pdflatex;xelatex;lualatex
+Author: Ernst Reissner (rei3ner@arcor.de)
+Creator: unknown
+Producer: unknown
+CreationDate: 2025-12-25T21:15:21Z
+ModDate: 2025-12-25T21:15:21Z
+Custom Metadata: no
+Metadata Stream: yes
+Tagged: yes
+UserProperties: no
+Suspects: no
+Form: none
+JavaScript: no
+Pages: 8
+Encrypted: no
+Page size: 595.276 x 841.89 pts (A4)
+Page rot: 0
+File size: 133298 bytes
+Optimized: no
+PDF version: 1.7
+\end{verbatim}
+% \begin{pycode}
+% import subprocess
+
+% output = subprocess.check_output("pdfinfo -isodates pdfFromLatex.pdf", shell=True)
+% str = output.decode("utf-8")
+% str = str.replace("\n", "\\\\")
+% print(str)
+% \end{pycode}
+
+As one can see, the lines take the form \texttt{<key>: <value}, 
+but the original is even better: The space after the colon is in fact a tab 
+so that the values are printed in line. 
+
+Output of that kind is created without any option, with options referring to passwords like \texttt{-opw} and \texttt{-opw}. 
+Alone or in conjunction with options referring to date like \texttt{-isodates} or \texttt{-rawdates}, 
+the format of the dates can be adapted to the own needs. 
+
+Before moving on to the further options, 
+let us describe the meaning of the keys in detail: 
+%
+\begin{description}
+\item[Title] The title set by package \texttt{hyperref} as described in Section~\ref{subsec:hyperref}
+\item[Subject] The subject set by package \texttt{hyperref} as described in Section~\ref{subsec:hyperref}
+\item[Keywords] The keywords set by package \texttt{hyperref} as described in Section~\ref{subsec:hyperref}
+\item[Author] The author(s) set by package \texttt{hyperref} as described in Section~\ref{subsec:hyperref}
+\end{description}
+
+
+
+
+
+\subsection{The \texttt{show-pdf-tags} tool}\label{subsec:pdfAnaShowTags}
+
+Here, it must be clarified the relation between \texttt{show-pdf-tags}, \texttt{pdfinfo -struct} and \texttt{pdfinfo -struct-text}
+
+\subsection{The \texttt{qpdf} tool}\label{subsec:pdfAnaQpdf}
+
+This provides a low level detailed sight onto the PDF file. 
+%
+\begin{Verbatim}
+qpdf --show-object=trailer pdfFromLatex.pdf 
+\end{Verbatim}
+%
+shows the trailer directory as described in~/cite{Pdf20}, Table~15. 
+Inserting line breaks this looks as follows: 
+%
+\begin{Verbatim}
+<< 
+/Filter /FlateDecode 
+/ID [ <2192177301c209a1f9a0efaf865496a0> <2192177301c209a1f9a0efaf865496a0> ] 
+/Index [ 0 574 ] 
+/Info 572 0 R 
+/Length 1401 
+/Root 571 0 R 
+/Size 574 
+/Type /XRef 
+/W [ 1 3 1 ] 
+>>
+\end{Verbatim}
+
+Strictly speaking, the trailer IDs are optional in many situations, but in fact, without, the PDF document is quite degraded. 
+According to~\cite{Pdf20}, Section~14.4, it consists of two hashes. 
+The two coincide if the document is newly created, 
+whereas only the second one is adapted with incremental updates. 
+Since \LaTeX{} compilers do not support internal versioning, the two hashes always coincide. 
+It is quite unfortunate that the specification how to create the hashes is a ``may'' condition. 
+It may depend on 
+%
+\begin{itemize}
+\item the current time, 
+\item a string representation of file location, 
+\item the size of the file. 
+\end{itemize}
+
+The author hopes that the \LaTeX{} compiler conform with this and even that it is not the file location 
+but only the file name. 
+There is a lack of documentation. 
+For \texttt{pdflatex},~\cite{PdfTexUsr25}, 
+Section~4.2.9 indicates that by default only the processing time and the file name are used. 
+
+
+
+The only aspect we are currently interested in is the trailer ID which consists of two hashes. 
+PDF has an 
+
+\bibliographystyle{alpha}
+\bibliography{../lit,../litTools}{}% chktex 11 
+
+\IfPackageLoadedTF{tex4ht}{%
+  % no index and no glossaries with tex4ht 
+}{
+%\chapter{Indices}
+  %\printindex[idx]
+  %\printindex[tool]
+  \printindex[pkg]
+  \printindex[cmd]
+  %\printindex[param]
+  %\printglossaries%
+}
+
+\end{document}
