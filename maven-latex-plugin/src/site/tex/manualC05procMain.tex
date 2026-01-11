@@ -1,5 +1,5 @@
 
-\chapter{Processing of \LaTeX{} Main Files}\label{chap:latexMainConversions}
+\chapter{Processing of \texorpdfstring{\LaTeX}{LaTeX} Main Files}\label{chap:latexMainConversions}
 
 Given graphics in formats includable in TEX files, 
 which may require preprocessing described in 
@@ -41,7 +41,7 @@ between individual runs of the \LaTeX{} engine.
 Section~\ref{sec:stdVerify} is special in that it is not related with conversion, 
 but it is on specifying and verifying PDF standards, 
 with a focus on PDF/A and PDF/UA\@. 
-Modern \LaTeX{} compiler support creating PDF artifacts conform with these standards 
+Modern \LaTeX{} compiler support creating PDF artifacts conformant with these standards 
 to a wide extent, but this \LaTeX{} builder provides real validation. 
 Note that without, the artifact just claims conformance. 
 
@@ -1371,7 +1371,7 @@ this may require a change in this software.
 \section{Metadata, PDF standards and their verification}\label{sec:stdVerify}
 
 The core of this section is the technique to create PDF artifacts 
-conform with more special standards like PDF/A and to verify conformance. 
+conformant with more special standards like PDF/A and to verify conformance. 
 A necessary condition for conformance with each of the standards we consider 
 is that the artifact contains the claim of the precise standard it conforms with, 
 and this claim is part of the metadata. 
@@ -1406,35 +1406,35 @@ and PDF/VT (variable data and transactional printing) is for printing variants o
 and for documentation of transactions like bills. 
 In contrast, the ISO standards PDF/A for archiving and PDF/UA for unlimited access 
 are applied across several industries, public administration, academia and in governmental authorities. 
-The main fields of industrial applications are those with legally restriction admission processes 
+The main fields of industrial applications are those with legally restricted admission processes 
 like medical, military, aviation and other safety and security critical industries, 
 where documents must be kept readable for long time. 
 Unlimited access refers to access by disabled persons via assistive technologies, 
 and is thus required by governmental authorities and other organizations aiming inclusion. 
 What is less understood is the fact, that unlimited access also helps search engines 
 and technologies based on these to find and index PDF documents. 
-The main technology is tagging which describes the logical structure of a document. \index{tagging}
+The main technology is tagging which describes the logical structure of a document\index{tagging}. 
 Tagging is specified in more recent versions of PDF, 
 e.g.\@ for PDF 2.0 in~\cite{Pdf20}, Section~14.8. 
 PDF/UA imposes requirements beyond mere existence of tagging. 
 Since part of these requirements are not easily verifiable automatically\footnote%
 {Others may say it is impossible. }, 
-the PDF association published a standard on well tagged PDF,~\cite{WtPDF1} 
+the PDF association published a standard on \emph{well-tagged PDF} (WtPDF1),~\cite{WtPDF1}\index{well-tagged} 
 which describes, according to its introduction, ``a usage of PDF 2.0 compatible with PDF/UA-2''. 
 This seems vague, but means that it is a set of rules 
-which suggest a reasonable way to satisfy a considerable set of requirements of the PDF/UA standard. 
+which suggest a reasonable way to satisfy a considerable set of requirements of the PDF/UA-2 standard. 
 Unlike the ISO standards, it is not written from the point of view of users of documents 
 but for authors of verification tools. 
+Note that WtPDF1 applies to PDF/UA-2, not to PDF/UA-1 which we mention to avoid confusion. 
 
-Note that the PDF association published a series of introductions to ISO standards 
+The PDF association published a series of introductions to ISO standards 
 ``PDF/X in a nutshell'',~\cite{PDFXnut}, 
 ``PDF/A in a nutshell'',~\cite{PDFAnut2} and ``PDF/UA in a nutshell'',~\cite{PDFUAnut}, 
 providing some history, an overview on the requirements, 
 basic techniques used to reach the aims and a view on the role of the standards in society. 
 
-In reality, all specializations of the PDF standard mentioned above, 
-are not single standards but families of standards consisting of several \index{part}\emph{part}s 
-published separately. 
+In reality, all specializations of the PDF standard mentioned above, are not single standards 
+but families of standards consisting of several \emph{part}s\index{part} published separately. 
 As shows Table~\ref{tab:versPdfStd}, roughly speaking, 
 the parts of the standards are tied to specific PDF versions. 
 For example, PDF/UA-1 is based on PDF 1.7, whereas PDF/UA-2 is based on PDF 2.0. 
@@ -1446,17 +1446,30 @@ For example, PDF/A parts 1,2 and 3 have conformance levels b for basic and a for
 In addition, Parts 2 and 3 have the level u for Unicode. 
 The conformance levels define a hierarchy: level a implies u which implies b. 
 Creating a PDF document by scanning allows normally level b only. 
-From level u on, cut-and-paste even in mathematical formulae is possible. 
-With Part 4 given by~\cite{PdfA4}, which requires PDF 2.9, the system changes: PDF/A-4 makes sense in itself, 
+From level u on, cut-and-paste even in mathematical formulae is possible 
+and level a provides some accessibility. 
+With Part 4 given by~\cite{PdfA4}, which requires PDF 2.0, the system changes: 
+PDF/A-4 describes a standard in itself, 
 i.e.\@ the absence of a conformance level is in a sense a kind of implicit conformance level 
-and there are extensions PDF/A-4e (flat) and PDF/A-4e (engineering) 
-defined in~\cite{PdfA4}, Annex A and Annex B, respectively. 
+which allows no embedded files. 
+In contrast, the extensions PDF/A-4f (flat) and PDF/A-4e (engineering) 
+defined in~\cite{PdfA4}, Annex A and Annex B, respectively, 
+allow embedding two- or three-dimensional graphics. 
+So, PDF/A-4 is in fact stricter than PDF/A-4f. 
+The relation to accessibility was removed completely in PDF/A-4 
+in favor of separate standards PDF/UA\@. 
 Note that even~\cite{WtPDF1} on well tagged PDF define conformance level r for reproducible 
-and a for accessible, whereas either part of PDF/UA defines a conformance level. 
+and a for accessible, whereas neither part of PDF/UA defines a conformance level. 
 
-Table~\ref{tab:versPdfStd} shows the possible combinations. 
+Table~\ref{tab:versPdfStd} shows the possible combinations between PDF versions 
+and versions of standards restricting PDF further. 
 PDF/X-2 extends PDF/X-3 and thus is listed after PDF/X-3. 
 The standards PDF/VT further restrict the according standards PDF/X. 
+The attentive reader will realize that the PDF/X-n standards are published as ISO 15930-m 
+but the numbers n and m deviate. 
+This is due to the fact, that ISO 15930--2 was never published, ISO 15930--5, partial exchange has been withdrawn 
+and that delays prevented publishing in augmenting numbers n. 
+
 Note that PDF/A-4e is the counterpart of PDF/E in a sense: 
 PDF/E (engineering) part 1 specifies PDF with 3D graphics for construction for PDF 1.6. 
 Part 2 referred to PDF 2.0 but was withdrawn in favor of integrating the functionality into PDF/A-4e. 
@@ -1484,7 +1497,7 @@ because they are not related with the standards which can be specified by \LaTeX
   PDF/X-1a      & \cite{PdfX1p}  & x   & --- & --- & --- & --- \\% ISO 15930-1 for PDF 1.3
   PDF/X-1a      & \cite{PdfX1}   & --- & x   & --- & --- & --- \\% ISO 15930-4 for PDF 1.4
   PDF/X-3       & \cite{PdfX3p}  & x   & --- & --- & --- & --- \\% ISO 15930-3 for PDF 1.3
-  PDF/X-3       & \cite{PdfX3}   & --- & x   & --- & --- & --- \\% ISO 15930-6 for PDF 1,4, complete exchange
+  PDF/X-3       & \cite{PdfX3}   & --- & x   & --- & --- & --- \\% ISO 15930-6 for PDF 1.4, complete exchange
   PDF/X-2       & \cite{PdfX2}   & --- & x   & --- & --- & --- \\% ISO 15930-2 never published, ISO 15930-5, partial exchange is withdrawn 
   PDF/X-4,4p    & \cite{PdfX4}   & --- & --- & x   & --- & --- \\% ISO 15930-7, complete exchange
   PDF/X-5g,pg,n & \cite{PdfX5}   & --- & --- & x   & --- & --- \\% ISO 15930-8, partial exchange
@@ -1498,7 +1511,7 @@ because they are not related with the standards which can be specified by \LaTeX
   WTPDF1r       & \cite{WtPDF1}  & --- & --- & --- & --- & x   \\
   WTPDF1a       & \cite{WtPDF1}  & --- & --- & --- & --- & x   \\
 \bottomrule
- % need to explain ISO 15930-2 never published, ISO 15930-5, partial exchange is withdrawn 
+% need to explain ISO 15930-2 never published, ISO 15930-5, partial exchange is withdrawn 
 %  Starting with version 0.95s of pdfmanagement-testphase it is also possible to use
 % the values X-4, X-4p, X-5g, X-5n, X-5pg, X-6, X-6n, X-6p, UA-1 for a PDF/X and
 % PDF/UA standard. 
@@ -1516,14 +1529,20 @@ because they are not related with the standards which can be specified by \LaTeX
 \end{table}
 
 One requirement all these standards have in common is, 
-that so called \emph{claimed standard}, 
+that so called \emph{claimed conformance}, 
 is stored in the PDF artifact as metadata in the XMP (Extensible metadata platform) format. 
 This is an XML format standardized in~\cite{ISO16684-2}. 
+Listing~\ref{lst:metaXmpStd} is part of XMP metadata of a PDF artifact created from \LaTeX{}. 
+Observe that the PDF version is 2.0 and that the document is conform with several standards specializing PDF 2.0. 
+It is conform with PDF/X-6n, PDF/A-4f, PDF/UA-2 and Well-Tagged PDF WtPDF1 with conformance levels r and a. 
 
+Declared conformance with a part is a prerequisite for conformance, but it is not sufficient. 
+Nevertheless, the syntax excludes conformance with two different parts and also with two different conformance levels, 
+of a single family be it PDF/X, PDF/A or PDF/UA\@. 
+Note also that PDF/A-4, PDF/A-4f and PDF/A-4e exclude one another. 
+In contrast, according to~\cite{WtPDF1}, Section~6.1.1, WtPDF1 allows conformance with both conformance levels r and a 
+and this is also typical, as both are required for PDF/UA-2. 
 
-Declared conformance with a part is a prerequisite for conformance, 
-but it is not sufficient. 
-Nevertheless, this excludes conformances with two different parts. 
 
 \begin{lstlisting}[language=xml,basicstyle=\tiny,
   float, captionpos=b, label={lst:metaXmpStd},
@@ -1570,6 +1589,33 @@ Nevertheless, this excludes conformances with two different parts.
  </rdf:RDF>
 </x:xmpmeta>
 \end{lstlisting}
+
+As Listing~\ref{lst:metaXmpStd} illustrates, one and the same PDF document 
+may claim conformance and in fact conform with some PDF/A, PDF/UA and PDF/X in parallel, 
+as long as the parts fit the PDF version. 
+This is also illustrated in~\cite{PDFaUA}. 
+
+The requirements of the standards going beyond claimed conformance, depend on the individual standard. 
+PDF/A for instance is for archiving, so certain metadata are required for indexing in an archive 
+as the title and for example the author(s). 
+Another component is reproducibility which requires embedded fonts and restricted color schemes. 
+For PDF/UA, above all tagging is crucial and being well tagged. 
+The author has no PDF/X standard at hand, so the reader must do some research himself/herself 
+if interested in details of PDF/X. 
+
+In most cases, the choice of the PDF version restricts the choice of the part and conformance level of the more specific standards. 
+In fact, for PDF/UA, there is no choice left. 
+For PDF/X only little is publicly known, 
+but for PDF/A, the German \foreignlanguage{german}{Bundesarchiv} published the recommendation~\cite{PdfAempf24}. 
+The summary is right in Section~1. 
+Negative criteria are embedded files in particular of unrestricted formats, image compression and above all javascript. 
+
+The core for comparing parts is Section~2.6, which clearly shows that PDF/A-2 avoids the caveats. 
+What is not taken into account is, that PDF/A-4 does not allow embedded files either. 
+The arguments in Section~1 exclude just PDF/A-4e and PDF/A-4f. 
+What is really a problem is, that PDF/A-4 allows javascript, but this can be excluded in an additional step. 
+As the PDF version will increase, one cannot stick to PDF/A-2 which corresponds with PDF 1.7 forever. 
+
 
 
 %    for part 3 the conformance level may be missing which is impossible for the other parts. 

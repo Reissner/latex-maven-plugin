@@ -914,6 +914,45 @@ year = 	 {2020},
 OPTannote = 	 {}
 }
 
+
+@Manual{PDFAnut2,
+title = 	 {PDF/A in a Nutshell 2.0},
+OPTkey = 	 {PDF association, PDF/A - the ISO Standard – from PDF/A-1 to PDF/A-3},
+note = 	 {\url{https://pdfa.org/wp-content/uploads/2013/05/PDFA_in_a_Nutshell_211.pdf}},
+author = 	 {A. Oettler},
+organization = {PDF association},
+address = {Friedenstr. 2A, 16321 Bernau bei Berlin, Germany},
+edition = 	 {version 2.0},
+month = 	 {9},
+year = 	 {2013}
+}
+%https://pdfa.org/pdf-standards/?utm_source=chatgpt.com
+% https://www.loc.gov/preservation/digital/formats/fdd/fdd000532.shtml
+% very valuable source, should be included as a reference 
+% relates PDF/A-4(e,f) with PDF/UA, PDF/A-2,3 PDF/E 
+% clarifies about embedded files and javascript 
+
+  % locally stored as beratungsangebote-grundl-sgv-empfehlungen-pdf-a-versionen.pdf
+  % Analysis with pdfinfo shows how unprofessional the bundesarchiv works: 
+  % Officially, 2024-01, but crated in 2024-02-02 and modified even 2024-02-06
+  % Interesting: not even claims to be PDF/A itself. 
+  % The core is Section 2.6 showing that PDF/A-2 is the most rescrictive standard 
+  % which may be the reason for recommending it. 
+  % Where PDF/A-3 goes beyond is embedding of files 
+  % and PDF/A-4 even allows javascript. 
+  % It seems as if only PDF/A-4e,f allows embedded files. 
+  % So possibly, embedded files are no reason to refrain from PDF/A-4. 
+  % Also, protection from javascript can be done separately like forms user properties and other features 
+
+@misc{PdfAempf24,
+author = {S. Busch}, 
+title = {Empfehlungen des Bundesarchivs zur Anwendung der verschiedenen PDF/A-Versionen}, 
+howpublished = {\url{https://www.bundesarchiv.de/assets/bundesarchiv/de/Downloads/Erklaerungen/beratungsangebote-grundl-sgv-empfehlungen-pdf-a-versionen.pdf}}, 
+month = {1}, 
+year = {2024}, 
+note  = {In German language}
+}
+
 % standard 
 @Manual{PdfA1,
   title = 	 {Document management -
@@ -962,6 +1001,8 @@ OPTannote = 	 {}
   OPTannote = 	 {with PDF 1.7}
 }
 
+  % a table of content of PdfA4 is given locally 
+  % good explanation https://wwws.loc.gov/preservation/digital/formats/fdd/fdd000532.shtml
 @Manual{PdfA4,
   title = 	 {Document management —
   Electronic document file format for long-term preservation —
@@ -974,6 +1015,18 @@ OPTannote = 	 {}
   OPTmonth = 	 {},
   year = 	 {2020},
   OPTannote = 	 {with PDF 2.0}
+}
+
+@Manual{PDFUAnut,
+title = 	 {PDF/UA in a Nutshell},
+OPTkey = 	 {PDF association, PDF/UA },
+note = 	 {\url{https://pdfa.org/wp-content/uploads/2013/05/PDFA_in_a_Nutshell_211.pdf}},
+author = 	 {O. Drümmer and B. Chang},
+organization = {PDF association},
+address = {Friedenstr. 2A, 16321 Bernau bei Berlin, Germany},
+OPTedition = 	 {version 2.0},
+OPTmonth = 	 {9},
+year = 	 {2013}
 }
 
 
@@ -1003,6 +1056,31 @@ OPTannote = 	 {}
   OPTmonth = 	 {},
   year = 	 {2014},
   OPTannote = 	 {with PDF 2.0}
+}
+
+@Manual{PDFaUA,
+title = 	 {Conforming to both PDF/A \& PDF/UA},
+OPTkey = 	 {PDF association},
+note = 	 {\url{https://pdfa.org/download-area/publications/Conforming-to-both-PDFA-&-PDFUA.pdf}},
+author = 	 {PDF/A TWG and PDF/UA TWG},
+organization = {PDF association},
+address = {Friedenstr. 2A, 16321 Bernau bei Berlin, Germany},
+OPTedition = 	 {version 1.0},
+OPTmonth = 	 {6},
+year = 	 {2025}
+}
+
+
+@Manual{PDFXnut,
+title = 	 {PDF/X in a Nutshell - PDF for printing},
+OPTkey = 	 {PDF association, PDF/X },
+note = 	 {\url{https://pdfa.org/wp-content/uploads/2017/05/PDFX-in-a-Nutshell.pdf}},
+author = 	 {D. von Seggern and P. De Bruyne and A. Bailes-Collins and S. Jaegg},
+organization = {PDF association},
+address = {Friedenstr. 2A, 16321 Bernau bei Berlin, Germany},
+OPTedition = 	 {version 2.0},
+OPTmonth = 	 {9},
+year = 	 {2017}
 }
 
    ISO 15930-1:2001 Graphic technology — Prepress digital data exchange — Use of PDFPart 1: Complete exchange using CMYK data (PDF/X-1 and PDF/X-1a)
@@ -1126,11 +1204,11 @@ This publication was last reviewed and confirmed in 2023. Therefore this version
   OPTannote = 	 {}
 }
 
- ISO 24517-1:2008 Document management — Engineering document format using PDFPart 1: Use of PDF 1.6 (PDF/E-1)
+ ISO 24517-1:2008 Document management — Engineering document format using PDF Part 1: Use of PDF 1.6 (PDF/E-1)
 Published (Edition 1, 2008)
 This publication was last reviewed and confirmed in 2022. Therefore this version remains current.
 
-@Manual{PdfE,
+@Manual{PdfE1,
   title = 	 {Document management — Engineering document format using PDF Part 1: Use of PDF 1.6 (PDF/E-1)},
   key = 	 {ISO 24517-1},
   note = 	 {ISO 24517-1, last review 2022, new version for PDF 2.0 in preparation },
@@ -1141,9 +1219,34 @@ This publication was last reviewed and confirmed in 2022. Therefore this version
   year = 	 {2008}
 }
 
+@Manual{PdfE2,
+  title = 	 {Document management — Engineering document format using PDF 
+  Part 2: Use of ISO 32000-2 including support for long-term preservation (PDF/E-2)},
+  key = 	 {ISO 24517-2},
+  note = 	 {ISO 24517-2, draft, withdrawn },
+  OPTauthor = 	 {},
+  organization = {International Organization for Standardization (ISO) },
+  OPTedition = 	 {1},
+  month = 	 {1},
+  year = 	 {2017}
+}
+
+
+  % Not really about PDF/VT
+@Manual{PdfPreVT1,
+  title = 	 {Graphic technology — Variable printing data exchange Part 1: Using PPML 2.1 and PDF 1.4 (PPML/VDX-2005)},
+  key = 	 {ISO 16612-1},
+  note = 	 {ISO 16612-1},
+  OPTauthor = 	 {},
+  organization = {International Organization for Standardization (ISO) },
+  edition = 	 {1},
+  month = 	 {12},
+  year = 	 {2005}
+}
+
 
    ISO 16612-2:2010 Graphic technology — Variable data exchangePart 2: Using PDF/X-4 and PDF/X-5 (PDF/VT-1 and PDF/VT-2)
-  @Manual{PdfVT,
+  @Manual{PdfVT12,
   title = 	 {Graphic technology — Variable data exchange Part 2: Using PDF/X-4 and PDF/X-5 (PDF/VT-1 and PDF/VT-2)},
   key = 	 {ISO 16612-2},
   note = 	 {ISO 16612-2, last review 2021},
@@ -1152,6 +1255,17 @@ This publication was last reviewed and confirmed in 2022. Therefore this version
   edition = 	 {1},
   month = 	 {8},
   year = 	 {2010}
+}
+
+  @Manual{PdfVT3,
+  title = 	 {Graphic technology — Variable data exchange Part 3: Using PDF/X-6 (PDF/VT-3)},
+  key = 	 {ISO 16612-3},
+  note = 	 {ISO 16612-3, 2025: under review},
+  OPTauthor = 	 {},
+  organization = {International Organization for Standardization (ISO) },
+  edition = 	 {1},
+  month = 	 {11},
+  year = 	 {2020}
 }
 
 
@@ -1227,8 +1341,22 @@ year = 	 {2021},
 OPTannote = 	 {}
 }
 
+
+@article{XMPlatex,
+title = 	 {Adding XMP metadata in LATEX},
+OPTkey = 	 {ISO 16684-3},
+OPTnote = 	 {ISO 16684-3},
+author = 	 {U. Fischer and F. Mittelbach},
+journal = {TUGboat},
+volume = {43}, 
+number = {3}, 
+pages = {263--267}, 
+year = 	 {2022},
+OPTnote = 	 {}
+}
+
   % 
-@Manual{WtPDF,
+@Manual{WtPDF1,
 title = 	 {Well-{T}agged {PDF} ({WTPDF})},
 key = 	 {PDF association, WRPDF},
 note = 	 {\url{https://pdfa.org/download-area/specifications/Well-Tagged-PDF-WTPDF-1.0.pdf}},
