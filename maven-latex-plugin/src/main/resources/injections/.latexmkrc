@@ -290,9 +290,8 @@ sub quote {
 
 
 add_cus_dep('fig', 'ptx', 0, 'fig2dev');
-sub fig2dev {
-  $file = $_[0];
-  print("create from $file.fig\n");
+sub fig2dev($file) {
+  print("create 'ptx' from '$file.fig'\n");
   rdb_add_generated("$file.pdf", "$file.eps");
   #fig2dev -L pstex    <fig2devGenOptions> <fig2devPdfEpsOptions>        xxx.fig xxx.eps   
   #fig2dev -L pdftex   <fig2devGenOptions> <fig2devPdfEpsOptions>        xxx.fig xxx.pdf   
@@ -307,9 +306,8 @@ sub fig2dev {
 
 my $gnuplotOptions = "";
 add_cus_dep('gp', 'ptx', 0, 'gnuplot');
-sub gnuplot {
-  $file = $_[0];
-  print("create from $file.gp\n");
+sub gnuplot($file) {
+  print("create 'ptx' from '$file.gp'\n");
   rdb_add_generated("$file.pdf", "$file.eps");
   # here in the java code no quoting occurs 
   #my $gnuplotOptionsQ = quote(qq/${gnuplotOptions}/);
@@ -326,9 +324,8 @@ sub gnuplot {
 # metapost rule from http://tex.stackexchange.com/questions/37134
 #add_cus_dep('mp', 'mps', 0, 'mpost');
 add_cus_dep('mp', 'mps', 0, 'mpost');
-sub mpost {
-  my $file = $_[0];
-  print("create from $file.mp\n");
+sub mpost($file) {
+  print("create 'mps' from '$file.mp'\n");
   rdb_add_generated("$file.mpx", "$file.fls", "$file.log");
   my ($name, $path) = fileparse($file);
   pushd($path);
@@ -342,9 +339,8 @@ sub mpost {
 
 
 add_cus_dep('svg', 'ptx', 0, 'inkscape');
-sub inkscape {
-  my $file = $_[0];
-  print("create from $file.svg\n");
+sub inkscape($file) {
+  print("create  'ptx'from '$file.svg'\n");
   rdb_add_generated("$file.pdf", "$file.eps");
   my $ret1 = system(qq/${getSvg2devCommand()} --export-filename=$file.pdf ${svg2devOptions} $file.svg/);
   #my $ret2 = system("inkscape --export-filename=$file.eps -D --export-latex $file.svg ");
@@ -437,8 +433,7 @@ push @generated_exts, "ist", "xdy"; # index stylefile created by the glossaries 
 
 #$clean_ext .= " acr acn alg glo gls glg";# TBD: clarify: better in @generated_exts? 
 
-sub run_makeglossaries {
-  my $file = $_[0];
+sub run_makeglossaries($file) {
   my $options = "${makeGlossariesOptions}";
   if ($silent) {
     $options = "$options -q";
@@ -490,24 +485,25 @@ add_cus_dep('aux', 'glstex', 0, 'run_bib2gls');
 # Explanation can be found in 
 # https://tex.stackexchange.com/questions/400325/latexmkrc-for-bib2gls
 sub run_bib2gls {
+  my $file = $_[0];
   $options = "--group";
   if ($silent) {
     $options = "--silent $options";
   }
-  my $ret = system("bib2gls $options $_[0]");
+  my $ret = system("bib2gls $options $file");
   $ret >>= 8; # reconstruct return value of the application 
   if ($ret) {
     warn "Run_bib2gls: Error, running bib2gls; return value $ret.\n";
     return $ret;
   }
 
-  # my ($base, $path) = fileparse($_[0]);
+  # my ($base, $path) = fileparse($file);
   # if ($path && -e "$base.glstex") {
   #   rename "$base.glstex", "$path$base.glstex";
   # }
 
   # Analyze log file to find the bib-files.
-  my $glg= "$_[0].glg";
+  my $glg= "$file.glg";
   $isopen = open(my $glg_fh, '<', $glg);
   if (not $isopen) {
     warn "Run_bib2gls: Error opening log file '$glg'\n";
@@ -549,6 +545,8 @@ $extra_rule_spec{'pythontex'} = [
 # can be found in changes/PythonTeXdep 
 # In fact, to make this work, 
 # the code provided there must be included in package pythontex
+# TBD: this function is invoked based on global variables. 
+# For me, this is quite ugly... no parameters 
 sub mypythontex {
   my $result_dir = $aux_dir1 . "${prefixPytexOutFolder}$$Pbase";
   my $ret        = Run_subst($pythontex, 2);
@@ -597,18 +595,18 @@ $warning_cmd="internal run_onWarn %D";
 
 $failure_cmd="echo '...compilation with failure'";
 
-sub run_onSuccess {
+sub run_onSuccess($target) {
   print("Compilation succeeded without warning.\n");
-  run_onSuccessWarn($_[0]);
+  run_onSuccessWarn($target);
 }
 
-sub run_onWarn {
+sub run_onWarn($target) {
   print("Compilation succeeded with warning(s).\n");
-  run_onSuccessWarn($_[0]);
+  run_onSuccessWarn($target);
 }
 
-sub run_onSuccessWarn {
-  $target = $_[0];
+sub run_onSuccessWarn($target) {
+  #$target = $_[0];
 
   if ($target !~ m/.pdf$/) {
     print("created no pdf\n");
