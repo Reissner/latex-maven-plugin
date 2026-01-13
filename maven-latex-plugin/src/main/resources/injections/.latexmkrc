@@ -484,8 +484,7 @@ push @generated_exts, 'glg', '%R*.glstex';
 add_cus_dep('aux', 'glstex', 0, 'run_bib2gls');
 # Explanation can be found in 
 # https://tex.stackexchange.com/questions/400325/latexmkrc-for-bib2gls
-sub run_bib2gls {
-  my $file = $_[0];
+sub run_bib2gls($file) {
   $options = "--group";
   if ($silent) {
     $options = "--silent $options";
