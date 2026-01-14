@@ -1,0 +1,109 @@
+# for a list of all package `tlmgr list`; the installed ones are makred with an i 
+
+accessibility  # accessibility into latex
+adrconv         # address database as bib file
+anyfontsize # allow any font size
+
+#babel # in small already 
+babel-russian # maybe more is missing 
+bib2gls       # glossaries
+biber    # bibliography with biber
+bibtex8 
+bibtexu 
+bibtools
+
+changes  # to make track changes
+chktex 
+#collection-basic # already in schema small 
+collection-fontsrecommended # load most important fonts
+commutative-diagrams
+cprotect     # verbatim in macro
+csquotes 
+currfile 
+
+datetime2 # for date and time
+datetime2-english # for date and time
+datetime2-french  # for date and time
+datetime2-german  # for date and time
+datetime2-spanish # for date and time
+draftwatermark  # for watermarks like confidential or DRAFT
+dratex       # only used to compile tex2ht
+
+enumitem 
+etoc 
+
+functional   # provides functions like ifExists
+fvextra 
+
+glossaries-english  # for glossaries
+glossaries-french    # for glossaries
+glossaries-german   # for glossaries
+glossaries-spanish  # for glossaries
+
+hanging   # for doxygen
+#hyperref  # in schema small already 
+hyperxmp 
+hyphenat # hyphenation 
+
+ifmtarg 
+imakeidx # only for compiling latexmk documentation 
+import 
+
+jupynotex # for jupyter notebook
+
+latex2man    # converter
+latex2nemeth # converter
+latexmk 
+leaflet     # to support leaflets
+luacode 
+lualatex-math # not in suse tumbleweed
+luamml        # lua to mathml 
+luamplib 
+#luaotfload   # in schema small already 
+luatex85 
+
+markdown  # markdown into latex
+mathabx   # additional math fonts 
+
+nag
+newverbs     # verbatim as macro
+noto         # texlive noto fonts support 
+
+pdfpagediff  # for pdf
+pdfprivacy   # for pdf
+pgfopts 
+placeins   # prevent floats from floating too far 
+pythontex  # pythontex and depythontex (unfortunately outdated; see below) 
+
+robustindex # indices
+
+# show-pdf-tags  occurs in 2025 first 
+showlabels  # to make labels visible
+silence  # to be able to silence warnings and even errors
+splitindex  
+stackengine 
+stix stix2-otf # additional math like widetilde 
+
+tagpdf 
+tex4ht # the current way to create floating formats like html; shall be replaced by latexml 
+texdoc
+texinfo
+tikz-optics    # grapical editing for tikz
+tocbibind 
+tocloft 
+transparent transparent-io 
+
+#unicode-math # already in schema small 
+unicode-math-input # unicode in math, not pdftex
+#upquote # already in schema small 
+upmendex 
+uptex 
+
+verbatimbox 
+
+xifthen
+xstring 
+xindy  # mostly for makeglossaries 
+xindex 
+xurl   # xurl: line break in urls
+
