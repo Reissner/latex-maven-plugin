@@ -380,6 +380,7 @@ public class Settings {
   \\\\PassOptionsToPackage\\s*\\{(\\s|\\w|[,=])*\\}\\s*\\{(\\w|-)+\\}|\
   \\\\newbool\\s*\\{\\w+\\}|\
   \\\\setbool\\s*\\{\\w+\\}\\{(true|false)\\}|\
+  \\\\UseName\\s*\\{[^{}]*\\}(?<arg>\\{(?:[^{}]|(?'arg'))*\\})*|\
   \\\\DocumentMetadata(?<docMetadata>\\{(?:[^{}]|(?'docMetadata'))*\\})|\
   \\\\input\\s*\\{[^{}]*\\}\
   )?\\s*(%.*)?\\R)*\
@@ -387,6 +388,76 @@ public class Settings {
   """;
   //"\\\\newbool\\s*\\{(\\w)+\\}\\s*|" + // newbool
   //"\\\\setbool\\s*\\{(\\w)+\\}\\{(true|false)\\}\\s*|" + // setbool only with literal values 
+
+  /**
+   * The named references in the style by F. Ingerl, is <code>\(\?'(\w+)'\)</code> 
+   * where <code>(\w+)</code> is the group containing the name; 
+   * the index of the group is 1, whereas the outermost group has index 0. 
+   * It is {@link #convertIngerlToPerl(String)} which converts regular expression in Ingerl-type 
+   * and in particular possibly containing named references as described above 
+   * into the according construct in Perl syntax which is given by {@link #FORMAT_REF_PERL}. 
+   */
+  private final static Pattern PATTERN_REF_INGERL = Pattern.compile("\\(\\?'(\\w+)'\\)");
+
+  /**
+   * Recursive references in the style of Perl >=5.10 which have the form <code>(?&%s)</code>, 
+   * where <code>%s</code> refers to the name of the reference. 
+   * It is {@link #convertIngerlToPerl(String)} which converts regular expression in Ingerl-type 
+   * as given by {@link #PATTERN_REF_INGERL}
+   * into the according construct in Perl syntax which is given here. 
+   */
+  private final static String FORMAT_REF_PERL = "(?&%s)";
+
+  /**
+   * Converts a pattern suitable for {@link Pattern} authored by F. Ingerl 
+   * into an according pattern suitable for Perl 5.10 or higher. 
+   * The difference is, that references given by {@link #PATTERN_REF_INGERL} 
+   * used to install recursive named patterns are converted into according references for Perl. 
+   * The names are assumed to consist of word symbols. 
+   * The references in the style by F. Ingerl, is <code>\(\?'(\w+)'\)</code> 
+   * where <code>(\w+)</code> is the group containing the name. 
+   * 
+   * @param patternIngerl
+   *    A regular expression in the style of F. Ingerl possibly containing named references 
+   *    matching {@link #PATTERN_REF_INGERL}. 
+   * @return
+   *    A regular expression in the style of Perl >=5.10 
+   *    which arises from <code>atternIngerl</code> 
+   *    by replacing named references matching {@link #PATTERN_REF_INGERL} 
+   *    by the according Perl construct given by {@link #FORMAT_REF_PERL} 
+   *    with the same name. 
+   */
+  private static String convertIngerlToPerl(String patternIngerl) {
+    // Pattern for Ingerl-References: (?'name') 
+    
+    Matcher matcher = PATTERN_REF_INGERL.matcher(patternIngerl);
+
+    StringBuffer sb = new StringBuffer();
+    while (matcher.find()) {
+      String groupName = matcher.group(1);
+      // Nur die Referenz ersetzen, Rest des Strings bleibt erhalten
+      matcher.appendReplacement(sb, String.format(FORMAT_REF_PERL, groupName));
+    }
+    matcher.appendTail(sb);
+
+    return sb.toString();
+  }
+
+  /**
+   * Returns the pattern matching latex main files in the Perl >=5.10 regex engine 
+   * which arises from {@link #patternLatexMainFile} which presupposes the java 
+   * regex engine by F. Ingerl 
+   * by transformation {@link #convertIngerlToPerl(String)}. 
+   * 
+   * @return
+   *    The regular expression in Perl style given by 
+   *    {@link #patternLatexMainFile} for java 
+   *    using the engine by F. Ingerl. 
+   */
+  @RuntimeParameter
+  public String patternLatexMainFilePerl() {
+    return convertIngerlToPerl(getPatternLatexMainFile());
+  }
 
   /**
    * Assigns to document classes their allowed {@link #targets}. 

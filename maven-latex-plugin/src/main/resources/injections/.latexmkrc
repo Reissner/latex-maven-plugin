@@ -41,7 +41,7 @@ sub parseTexFile($fileName) {
   # The pattern is used to read magic comments. 
   # Double quotes because the pattern contains single quotes; 
   # no interpolation 
-  my $patternLatexMainFile = "${patternLatexMainFile}";
+  my $patternLatexMainFile = "${patternLatexMainFilePerl()}";
   print("patternLatexMainFile: \n$patternLatexMainFile\n");
   open my $info, $fileName or die "Could not open $fileName: $!";
   # the lines read so far (each line with newline)
@@ -69,7 +69,8 @@ sub parseTexFile($fileName) {
         print("targetsMagic=$+{targetsMagic}\n");
         # parse argument of \DocumentMetadata{...}
         print("docMetadata=$+{docMetadata}\n");
-      }
+        print("usename arg=$+{arg}\n");
+       }
       print("docClass: $+{docClass}\n");
       # Make default value explicit 
       my $chkDiffMagic = ($+{chkDiffMagic} and not $+{chkDiffMagicVal})
