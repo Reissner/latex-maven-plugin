@@ -1641,26 +1641,143 @@ As the PDF version will increase, one cannot stick to PDF/A-2 which corresponds 
 
 \subsection{Declaring PDF output standards \LaTeX}\label{subsec:stdDecl}
 
+
+A milestone in XMP support in \LaTeX{} is given in~\cite{XMPlatex} 
+which at the same time gives an overview over mutually incompatible techniques for creating artifacts conforming with PDF standards from \LaTeX{}. 
+First the state of the art in these days is described which includes a reference to the manual~\cite{PdfxP}, of the \pkg{pdfx} package. 
+Although heavily outdated, is worth reading the manual, because the introduction offers a beautiful overview over PDF standards. 
 As~\cite{PdfxP}, Section~2.1 shows, the package \pkg{pdfx} supports creation of roughly the standards 
 listed in Table~\ref{tab:versPdfStd}. 
-It goes beyond these standards supporting PDF/E, which has just one part, PDF/E-1, applies from PDF 1.6 on 
-and is superseded by PDF/A-4e, but which requires PDF 2.0. 
-Another standard not mentioned above is PDF/VT the various parts of which 
-are superseded by according PDF/X standards. 
+What is unique is some support for PDF/VT and for PDF/E. 
+On the other hand, only older parts of standards are supported which means that also the PDF versions are restricted. 
+Also, the focus is on the old-fashioned \texttt{pdflatex} compiler. 
+
+An alternative to create documents conform with the above standards also mentioned in~\cite{XMPlatex} is package \pkg{hyperxmp} 
+described in~\cite{HyperXmpP}. 
+Also, this manual is worth reading, because it gives some overview over XMP metadata 
+Although, its focus is on metadata, it is not difficult to set up a \LaTeX{} document to make it PDF/A conform 
+setting the appropriate metadata, ensuring that the fonts are embedded and restricting the color scheme. 
+In fact, \tool{pdflatex} embeds \pkg{lmodern} fonts loaded by the according package 
+whereas the more modern compiler use embedded fonts without further action. 
+
+Nevertheless, the modern technique introduced in~\cite{XMPlatex} to reach these standards 
+is by the command \cmd{DocumentMetadata}, which must precede the command \cmd{documentclass}, 
+and it provides a list of key, value pairs, described in~\cite{DocMetaDataSuppCode25}, Section~3. 
+As noted in~\cite{L3PdfMeta}, Section~2, packages like \pkg{pdfx} and \pkg{hyperxmp} are incompatible. 
+At time of this writing, this \LaTeX{} builder imposes the additional restriction, that \cmd{DocumentMetadata} with argument 
+must be on a single line. %TBD: eliminate this. 
+
+The most crucial key for \cmd{DocumentMetadata} is \texttt{xmp} 
+with boolean value which specifies whether the target PDF file shall contain XMP metadata. 
+Since the default is \texttt{true}, the mere existence of the command \cmd{DocumentMetadata} writes XMP metadata, 
+which is a prerequisite for all PDF standards. 
+To create for example a document claiming PDF/A-4f, 
+just write 
+%
+\begin{Verbatim}[fontsize=\small]
+\DocumentMetadata{lang=en-US,pdfversion=2.0,pdfstandard=A-4f}
+\end{Verbatim}
+%
+Here, \texttt{lang=en-US} is just to avoid a warning, and \texttt{pdfversion=2.0} is a recommendation of the author, 
+which makes the PDF version explicit and leads attention to fit between PDF version and the PDF/A standard specified. 
+As such, \texttt{pdfstandard} just writes the appropriate XMP metadata. 
+Besides the claimed conformance \texttt{A-4f}, a lot of material, the \LaTeX{} compiler can provide itself, 
+but it is also the title which must be given. 
+It is not sufficient, to give the title with \cmd{title}, but it must be available as metadata. 
+So use package \pkg{hyperref} and specify 
+%
+\begin{Verbatim}[fontsize=\small]
+\hypersetup{
+  pdfinfo={
+    Author      ={Ernst Reissner},
+    Title       ={Maven plugin and ant-task to process latex},
+    Subject     ={latex plugin for maven and latex task for ant},
+    Keywords    ={svg;png;metapost;PDF;LaTeX;maven;ant}
+  }
+}
+\end{Verbatim}
+%
+It hurts the single source principle to give author and title twice 
+so we recommend using \pkg{hyperref} with option \texttt{pdfusetitle} 
+which transfers not only the title but also the author to metadata 
+and with \cmd{DocumentMetadata} it occurs in the XMP metadata. 
+The above setup can then be reduced: 
+%
+\begin{Verbatim}[fontsize=\small]
+\hypersetup{
+  pdfinfo={
+    Subject     ={latex plugin for maven and latex task for ant},
+    Keywords    ={svg;png;metapost;PDF;LaTeX;maven;ant}
+  }
+}
+\end{Verbatim}
+%
+Strictly speaking these pieces of information are not strictly required by PDF/A, 
+but sign of quality. 
+
+% TBD: tell about which of the PDF/A standards are supported. 
+% Maybe for all standards together in a table. 
+
+To reach conformance with PDF/A-4f, \tool{pdflatex} must be supported in embedding fonts 
+by including package \pkg{lmodern}, whereas more modern compilers do not need any help here. 
+\medskip
+
+To reach PDF/UA conformance, besides metadata, tagging is required. 
+Essentially, there is a traditional declaration 
+%
+\begin{Verbatim}[fontsize=\small]
+\DocumentMetadata{lang=en-US,pdfversion=1.7,tagging=on,pdfstandard=UA-1}
+\end{Verbatim}
+%
+and a more progressive one, 
+%
+\begin{Verbatim}[fontsize=\small]
+\DocumentMetadata{lang=en-US,pdfversion=2.0,tagging=on,pdfstandard=UA-2}
+\end{Verbatim}
+
+Note that without further means, the latter introduces a problem with reproducibility, 
+because by default a namespace is added with random name. 
+In this manual, we avoided this specifying 
+%
+\begin{Verbatim}[fontsize=\small]
+\DocumentMetadata{lang=en-US,pdfversion=2.0,tagging=on,tagging-setup={role/user-NS=latex},pdfstandard=UA-2}
+\end{Verbatim}
+%
+For a more comprehensive discussion, see Section~\ref{sec:chkReprod}. 
 
 
-
-An alternative to create documents conform with the above standards is package \pkg{hyperxmp} 
-described in~\cite{HyperXmpP} although, its focus is on metadata. 
-
-Nevertheless, the modern technique to reach these standards 
-is by the command \cmd{DocumentMetadata}, which must be the first command in a \LaTeX{} main file 
-even in front of \cmd{documentclass}, 
-and it provides a list of key, value pairs, described in~\cite{DocMetaDataSuppCode}, Section~3. 
-As noted in~\cite{L3PdfMeta}, Section~2, packages like \pkg{pdfx} and \pkg{hyperxmp} are incompatible 
-but still their manuals prove helpful. 
+TBD\@: \cmd[colorprofile]{DocumentMetadata}
 
 
+As already pointed out in Section~\ref{subsec:stdPdf}, 
+a PDF document may conform with different standards 
+as long as they do not belong to the same family. 
+For example to combine PDF/A-4 with PDF/UA-2 one may write 
+%
+\begin{Verbatim}[fontsize=\small]
+\DocumentMetadata{lang=en-US,pdfversion=2.0,tagging=on,pdfstandard={UA-2,A-4}}
+\end{Verbatim}
+%
+or one may repeat the key \texttt{pdfstandard} like so: 
+%
+\begin{Verbatim}[fontsize=\small]
+\DocumentMetadata{lang=en-US,pdfversion=2.0,tagging=on,pdfstandard=UA-2,pdfstandard=A-4}
+\end{Verbatim}
+
+Specifying two standards of the same family 
+%
+\begin{Verbatim}[fontsize=\small]
+\DocumentMetadata{lang=en-US,pdfstandard=A-2b,pdfstandard=A-4}
+\end{Verbatim}
+%
+the latter overwrites the former. 
+Note that the PDF version is detected from the part of the standard; 
+here it would be PDF 2.0 being aligned with PDF/A-4. 
+
+% TBD: here, PDF/X shall be described. 
+% First what~\cite{DocMetaDataSuppCode25}, Section~3 says. 
+% Then that this is not true 
+%\DocumentMetadata{pdfversion=2.0,_pdfstandard/UA-2,_pdfstandard/A-4,_pdfstandard/X-6n,tagging=on,lang=en-US}%xmp=true,
 
 
 
@@ -1738,8 +1855,51 @@ I
 
 
 
+% TBD: not only checking, also reaching 
 
 \section{Checking reproducibility}\label{sec:chkReprod}
+
+TBD: rework: also reaching reproducibility. 
+Role of timestamp and time zone. 
+Trailer ID and what it may depend on. 
+In particular, isolating the environment. 
+Special care for tagging with PDF 2.0. 
+
+Another source of random is tagging in PDF 2.0 specified for example via 
+%
+\begin{Verbatim}[fontsize=\small]
+\DocumentMetadata{pdfversion=2.0,tagging=on}
+\end{Verbatim}
+%
+This adds a namespace with random name. 
+Two techniques avoid this. 
+The first is to set the random seed: 
+%
+\begin{Verbatim}[fontsize=\small]
+\UseName{sys_gset_rand_seed:n}{42}
+\DocumentMetadata{pdfversion=2.0,tagging=on}
+\end{Verbatim}
+%
+This keeps the namespace random in a sense but makes it reproducible. 
+The more brutal way is 
+%
+\begin{Verbatim}[fontsize=\small]
+\DocumentMetadata{pdfversion=2.0,tagging=on,tagging-setup={role/user-NS=latex}}
+\end{Verbatim}
+%
+setting the namespace hardcoded and no longer random. 
+As described in~\cite{DocMetaDataSuppCode25}, Section~3, 
+\texttt{tagging-setup}'s value is itself a map accepting keys comprising those valid for \cmd{tagpdfsetup} 
+defined in package \pkg{tagpdf}. 
+The according manual~\cite{tagpdfP}, Table~1, is also the key \texttt{role/user-NS} 
+so this can be used also as key as of \texttt{tagging-setup} as in the above \cmd{DocumentMetadata}. 
+The value is immaterial. 
+
+
+
+
+
+
 
 There are use cases, where it is extremely important 
 that the according artifacts are really reproducible. 

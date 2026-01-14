@@ -5,7 +5,7 @@
 %\input{seed}
 %\UseName{sys_gset_rand_seed:n}{42}
 %tagging-setup={role/user-NS=latex},
-\DocumentMetadata{lang=en-US,tagging=on,tagging-setup={role/user-NS=latex},pdfstandard=UA-2,pdfversion=2.0,pdfstandard=a-4f} %
+\DocumentMetadata{lang=en-US,tagging=on,tagging-setup={role/user-NS=latex},pdfstandard={A-4,UA-2},pdfversion=2.0} %
 %tagging=on,,pdfstandard=UA-2,tagging=on,pdfversion=2.0,pdfversion=1.7,dfversion=2.0,pdfstandard=a-4}%pdfversion=1.7,pdfstandard=a-2b}%lang=en-USlang=en,
 % Specifying UA-2 works because this just writes required metadata, 
 % but validation can pass only with tagging=on, but this document does not work with tagging on. 
@@ -20,7 +20,7 @@
 %   lang={en-US}%, %colorprofiles={A = sRGB.icc}
 % }
 
-
+\PassOptionsToPackage{log}{luaotfload}
 %\RequirePackage[l2tabu, orthodox]{nag}
 % blabla 
 \PassOptionsToPackage{autostyle}{csquotes}
@@ -96,6 +96,9 @@
 \else
 \fi
 
+% TBD: eliminate later 
+\PassOptionsToPackage{pdfusetitle}{hyperref}
+
 \input{header.tex}
 
 \IfPackageLoadedTF{tex4ht}{
@@ -142,8 +145,8 @@
 
 \hypersetup{
   pdfinfo={
-    Author      ={Ernst Reissner},
-    Title       ={Maven plugin and ant-task to process latex},
+%    Author      ={Ernst Reissner},
+%    Title       ={Maven plugin and ant-task to process latex},
     Subject     ={latex plugin for maven and latex task for ant},
     Keywords    ={svg;png;metapost;PDF;LaTeX;maven;ant}
   }
