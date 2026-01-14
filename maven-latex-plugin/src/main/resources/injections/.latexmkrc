@@ -275,14 +275,13 @@ push @generated_exts, '%ist', '%xdy', '%R-*.ind', '%R-*.idx', '%R-*.ilg', '%R-*.
 
 # many arguments shall be quoted 
 # but in many cases it is immaterial; except in metapost 
-sub quote {
-  $inString = $_[0];
-  #print "in: $inString\n";
+sub quote($inString) {
   $outString = $inString;
-  $outString =~ s/^ */'/;
-  $outString =~ s/ *$/'/;
-  $outString =~ s/ +/' '/g;
-  $outString =~ s/''//;# empty if "''"
+  $outString =~ s/^ */'/; # add leading ' after eliminating leading blanks 
+  $outString =~ s/ *$/'/; # add closing ' after eliminating trailing blanks 
+  # so far: quote after trim 
+  $outString =~ s/ +/' '/g; # replace a sequence of blanks by a single one 
+  $outString =~ s/''//;     # unquote the empty string 
   
   #print "out: $outString\n";
   return $outString;
@@ -300,8 +299,10 @@ sub fig2dev($file) {
   my $ret1 = system(qq/${getFig2devCommand()} -L  pstex   ${fig2devGenOptions} ${fig2devPdfEpsOptions}       $file.fig $file.eps/);
   my $ret2 = system(qq/${getFig2devCommand()} -L pdftex   ${fig2devGenOptions} ${fig2devPdfEpsOptions}       $file.fig $file.pdf/);
   my $ret3 = system(qq/${getFig2devCommand()} -L pdftex_t ${fig2devGenOptions} ${fig2devPtxOptions} -p $file $file.fig $file.ptx/);
-
-  return ($ret1 or $ret2 or $ret3);
+  $res1 >>= 8;
+  $res2 >>= 8;
+  $res3 >>= 8;
+ return ($ret1 or $ret2 or $ret3);
 }
 
 my $gnuplotOptions = "";
@@ -329,9 +330,9 @@ sub mpost($file) {
   rdb_add_generated("$file.mpx", "$file.fls", "$file.log");
   my ($name, $path) = fileparse($file);
   pushd($path);
-  my $metapostOptionsQ = quote(qq/${metapostOptions}/);
-  #print "quoted: $metapostOptionsQ\n";
-  my $return = system(qq/${getMetapostCommand()} $metapostOptionsQ $name/);
+    my $metapostOptionsQ = quote(qq/${metapostOptions}/);
+    #print "quoted: $metapostOptionsQ\n";
+    my $return = system(qq/${getMetapostCommand()} $metapostOptionsQ $name/);
   popd();
   $res >>= 8; # reconstruct return value of the application 
   return $return;
